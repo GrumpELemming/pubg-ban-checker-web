@@ -1,31 +1,72 @@
 const backendURL = "https://pubg-ban-checker-backend.onrender.com";
-const input = document.getElementById("playerName");
-const resultsDiv = document.getElementById("results");
-const searchBtn = document.getElementById("searchBtn");
 
-async function searchPlayer() {
-    const player = input.value.trim();
-    if (!player) {
-        resultsDiv.textContent = "Please enter a player name.";
-        return;
-    }
+let watchlist = JSON.parse(localStorage.getItem("watchlist")) || [];
 
-    resultsDiv.textContent = "Checking...";
+const playerInput = document.getElementById("player-input");
+const platformSelect = document.getElementById("platform-select");
+const searchBtn = document.getElementById("search-btn");
+const addWatchlistBtn = document.getElementById("add-watchlist-btn");
+const resultDiv = document.getElementById("result");
+const watchlistUl = document.getElementById("watchlist");
 
+// Render watchlist
+function renderWatchlist() {
+    watchlistUl.innerHTML = "";
+    watchlist.forEach(player => {
+        const li = document.createElement("li");
+        li.textContent = player;
+        li.className = "watchlist-item";
+        li.onclick = () => checkBan(player);
+        const removeBtn = document.createElement("button");
+        removeBtn.textContent = "Remove";
+        removeBtn.onclick = (e) => {
+            e.stopPropagation();
+            removeFromWatchlist(player);
+        };
+        li.appendChild(removeBtn);
+        watchlistUl.appendChild(li);
+    });
+}
+
+// Add to watchlist
+function addToWatchlist(player) {
+    if (!player || watchlist.includes(player)) return;
+    watchlist.push(player);
+    localStorage.setItem("watchlist", JSON.stringify(watchlist));
+    renderWatchlist();
+}
+
+// Remove from watchlist
+function removeFromWatchlist(player) {
+    watchlist = watchlist.filter(p => p !== player);
+    localStorage.setItem("watchlist", JSON.stringify(watchlist));
+    renderWatchlist();
+}
+
+// Check ban status
+async function checkBan(player) {
+    const platform = platformSelect.value;
+    resultDiv.textContent = "Checking...";
     try {
-        const response = await fetch(`${backendURL}/check-ban?player=${encodeURIComponent(player)}&platform=steam`);
+        const response = await fetch(`${backendURL}/check-ban?player=${encodeURIComponent(player)}&platform=${platform}`);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
-        resultsDiv.textContent = `Player: ${player}\nBan Status: ${data.banStatus || data.error || "Unknown"}`;
+        resultDiv.textContent = `${player}: ${data.banStatus || data.error}`;
     } catch (err) {
-        resultsDiv.textContent = `Failed to fetch data. Try again in a few seconds.\nError: ${err}`;
+        resultDiv.textContent = `Failed to fetch: ${err.message}`;
     }
 }
 
-// Button click
-searchBtn.addEventListener("click", searchPlayer);
+// Event listeners
+searchBtn.onclick = () => checkBan(playerInput.value.trim());
+addWatchlistBtn.onclick = () => addToWatchlist(playerInput.value.trim());
 
-// Enter key
-input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") searchPlayer();
+// Allow Enter key to search
+playerInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+        checkBan(playerInput.value.trim());
+    }
 });
+
+// Initial render
+renderWatchlist();
