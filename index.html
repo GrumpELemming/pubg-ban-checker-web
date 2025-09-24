@@ -1,90 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PUBG Ban Checker</title>
-<style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    input, textarea, button { padding: 8px; margin: 5px 0; width: 100%; }
-    #results { margin-top: 20px; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PUBG Ban Checker</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+        input, button { padding: 10px; font-size: 16px; }
+        #results { margin-top: 20px; }
+    </style>
 </head>
 <body>
+    <h1>PUBG Ban Checker</h1>
+    <input type="text" id="playerInput" placeholder="Enter player name" />
+    <button id="searchButton">Check Ban</button>
+    
+    <div id="results"></div>
 
-<h1>PUBG Ban Checker</h1>
+    <script>
+        const input = document.getElementById("playerInput");
+        const button = document.getElementById("searchButton");
+        const resultsDiv = document.getElementById("results");
+        const backendURL = "https://pubg-ban-checker-backend.onrender.com";
 
-<input id="playerInput" placeholder="Enter player name" list="suggestions" />
-<datalist id="suggestions"></datalist>
-<button id="addToWatchlistBtn">Add to Watchlist</button>
+        async function searchPlayer() {
+            const player = input.value.trim();
+            const platform = "steam"; // You can make this dynamic if needed
 
-<textarea id="watchlistInput" rows="10" placeholder="Watchlist (one player per line)"></textarea>
-<button id="checkBtn">Check Ban Status</button>
+            if (!player) {
+                resultsDiv.textContent = "Please enter a player name.";
+                return;
+            }
 
-<div id="results"></div>
+            resultsDiv.textContent = "Checking...";
 
-<script>
-const playerInput = document.getElementById('playerInput');
-const suggestionsList = document.getElementById('suggestions');
-const watchlistInput = document.getElementById('watchlistInput');
-const addToWatchlistBtn = document.getElementById('addToWatchlistBtn');
-const checkBtn = document.getElementById('checkBtn');
-const resultsDiv = document.getElementById('results');
+            try {
+                const response = await fetch(`${backendURL}/check-ban?player=${encodeURIComponent(player)}&platform=${platform}`);
+                
+                if (!response.ok) {
+                    resultsDiv.textContent = `Error: ${response.status} ${response.statusText}`;
+                    return;
+                }
 
-// Autocomplete suggestions
-playerInput.addEventListener('input', async () => {
-    const query = playerInput.value.trim();
-    if (!query) return;
-    try {
-        const response = await fetch(`/suggest-names?query=${encodeURIComponent(query)}`);
-        const data = await response.json();
-        suggestionsList.innerHTML = '';
-        data.suggestions?.forEach(name => {
-            const option = document.createElement('option');
-            option.value = name;
-            suggestionsList.appendChild(option);
-        });
-    } catch (err) {
-        console.error('Failed to fetch suggestions', err);
-    }
-});
-
-// Add to watchlist
-addToWatchlistBtn.addEventListener('click', () => {
-    const name = playerInput.value.trim();
-    if (!name) return;
-    const current = watchlistInput.value.split('\n').map(n => n.trim());
-    if (!current.includes(name)) {
-        watchlistInput.value += (watchlistInput.value ? '\n' : '') + name;
-    }
-    playerInput.value = '';
-});
-
-// Check ban status for all watchlist players
-checkBtn.addEventListener('click', async () => {
-    resultsDiv.innerHTML = 'Checking...';
-    const players = watchlistInput.value.split('\n').map(n => n.trim()).filter(Boolean);
-    if (!players.length) {
-        resultsDiv.innerHTML = 'Watchlist is empty.';
-        return;
-    }
-
-    resultsDiv.innerHTML = '';
-    for (const player of players) {
-        try {
-            const response = await fetch(`/check-ban?player=${encodeURIComponent(player)}&platform=steam`);
-            const data = await response.json();
-            const div = document.createElement('div');
-            div.textContent = `${player}: ${data.banStatus || data.error}`;
-            resultsDiv.appendChild(div);
-        } catch (err) {
-            const div = document.createElement('div');
-            div.textContent = `${player}: Failed to fetch`;
-            resultsDiv.appendChild(div);
+                const data = await response.json();
+                resultsDiv.textContent = `Player: ${player}\nBan Status: ${data.banStatus || data.error || "Unknown"}`;
+            } catch (err) {
+                resultsDiv.textContent = `Failed to fetch data. Make sure the backend is running.\n${err}`;
+            }
         }
-    }
-});
-</script>
 
+        // Button click
+        button.addEventListener("click", searchPlayer);
+
+        // Enter key
+        input.addEventListener("keyup", (event) => {
+            if (event.key === "Enter") searchPlayer();
+        });
+    </script>
 </body>
 </html>
