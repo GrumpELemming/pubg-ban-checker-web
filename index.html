@@ -2,60 +2,37 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PUBG Ban Checker</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; }
-        input, button { padding: 10px; font-size: 16px; }
-        #results { margin-top: 20px; }
+        body {
+            font-family: Arial, sans-serif;
+            padding: 2rem;
+            max-width: 600px;
+            margin: auto;
+        }
+        input, button {
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        #results {
+            margin-top: 1rem;
+            white-space: pre-wrap;
+            background: #f0f0f0;
+            padding: 1rem;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
     <h1>PUBG Ban Checker</h1>
-    <input type="text" id="playerInput" placeholder="Enter player name" />
-    <button id="searchButton">Check Ban</button>
-    
+
+    <input type="text" id="playerName" placeholder="Enter player name">
+    <button id="searchBtn">Check Ban</button>
+
     <div id="results"></div>
 
-    <script>
-        const input = document.getElementById("playerInput");
-        const button = document.getElementById("searchButton");
-        const resultsDiv = document.getElementById("results");
-        const backendURL = "https://pubg-ban-checker-backend.onrender.com";
-
-        async function searchPlayer() {
-            const player = input.value.trim();
-            const platform = "steam"; // You can make this dynamic if needed
-
-            if (!player) {
-                resultsDiv.textContent = "Please enter a player name.";
-                return;
-            }
-
-            resultsDiv.textContent = "Checking...";
-
-            try {
-                const response = await fetch(`${backendURL}/check-ban?player=${encodeURIComponent(player)}&platform=${platform}`);
-                
-                if (!response.ok) {
-                    resultsDiv.textContent = `Error: ${response.status} ${response.statusText}`;
-                    return;
-                }
-
-                const data = await response.json();
-                resultsDiv.textContent = `Player: ${player}\nBan Status: ${data.banStatus || data.error || "Unknown"}`;
-            } catch (err) {
-                resultsDiv.textContent = `Failed to fetch data. Make sure the backend is running.\n${err}`;
-            }
-        }
-
-        // Button click
-        button.addEventListener("click", searchPlayer);
-
-        // Enter key
-        input.addEventListener("keyup", (event) => {
-            if (event.key === "Enter") searchPlayer();
-        });
-    </script>
+    <script src="app.js"></script>
 </body>
 </html>
