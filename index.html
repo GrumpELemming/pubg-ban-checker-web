@@ -2,36 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PUBG Ban Checker</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 2rem;
-            max-width: 600px;
-            margin: auto;
-        }
-        input, button {
-            padding: 0.5rem;
-            margin: 0.5rem 0;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        #results {
-            margin-top: 1rem;
-            white-space: pre-wrap;
-            background: #f0f0f0;
-            padding: 1rem;
-            border-radius: 5px;
-        }
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        input, button { padding: 8px; margin: 5px 0; }
+        ul { list-style: none; padding-left: 0; }
+        li { margin: 5px 0; }
+        .watchlist-item { cursor: pointer; color: blue; text-decoration: underline; }
+        .watchlist-item:hover { text-decoration: none; }
     </style>
 </head>
 <body>
     <h1>PUBG Ban Checker</h1>
 
-    <input type="text" id="playerName" placeholder="Enter player name">
-    <button id="searchBtn">Check Ban</button>
+    <input type="text" id="player-input" placeholder="Enter PUBG player name">
+    <select id="platform-select">
+        <option value="steam">Steam</option>
+        <option value="xbox">Xbox</option>
+        <option value="psn">PlayStation</option>
+    </select>
+    <button id="search-btn">Search</button>
+    <button id="add-watchlist-btn">Add to Watchlist</button>
 
-    <div id="results"></div>
+    <h2>Results</h2>
+    <div id="result"></div>
+
+    <h2>Watchlist</h2>
+    <ul id="watchlist"></ul>
 
     <script src="app.js"></script>
 </body>
