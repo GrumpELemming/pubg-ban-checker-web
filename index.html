@@ -55,6 +55,8 @@
     input {
       flex: 1 1 200px;
       min-width: 200px;
+      position: relative;
+      z-index: 2;
     }
 
     select {
@@ -67,6 +69,8 @@
       color: white;
       font-weight: bold;
       transition: background 0.3s;
+      position: relative;
+      z-index: 2;
     }
 
     button:hover {
@@ -79,7 +83,6 @@
       margin-bottom: 40px;
     }
 
-    /* Card pop animation */
     @keyframes cardPop {
       0% { background-color: rgba(255, 255, 255, 0); transform: scale(0.95); }
       50% { background-color: rgba(255, 255, 255, 0.15); transform: scale(1.02); }
@@ -95,7 +98,6 @@
       animation: cardPop 0.6s ease forwards;
     }
 
-    /* Row fade in + slide */
     @keyframes fadeInUp {
       0% { opacity: 0; transform: translateY(10px); }
       100% { opacity: 1; transform: translateY(0); }
@@ -116,7 +118,6 @@
       color: #ddd;
     }
 
-    /* Glow/pulse animations */
     @keyframes pulseRed {
       0% { box-shadow: 0 0 0px rgba(255,0,0,0.7); }
       50% { box-shadow: 0 0 15px rgba(255,0,0,0.9); }
@@ -135,7 +136,6 @@
       100% { box-shadow: 0 0 0px rgba(0,255,0,0.6); }
     }
 
-    /* Status styles with glow/pulse */
     .not-banned {
       background: linear-gradient(90deg, #28a745, #2ecc71);
       color: white;
@@ -175,17 +175,18 @@
       text-decoration: underline;
     }
 
-    /* Autocomplete suggestions */
     #suggestions {
       background: rgba(255,255,255,0.9);
       color: #333;
       border-radius: 6px;
       margin-top: 5px;
       position: absolute;
-      width: calc(100% - 20px);
-      z-index: 100;
+      top: 40px;
+      left: 0;
+      right: 0;
       max-height: 150px;
       overflow-y: auto;
+      z-index: 1; /* behind input/button so buttons remain clickable */
     }
 
     .suggestion-item {
@@ -199,11 +200,12 @@
   </style>
 </head>
 <body>
-  <h1>PUBG Ban Checker v1.2 testing phase</h1>
+  <h1>PUBG Ban Checker v1.0</h1>
   <h2>Check if players are banned on Steam, Xbox, or PlayStation</h2>
 
   <div class="controls">
     <input id="playerInput" type="text" placeholder="Enter player names, separated by commas">
+    <div id="suggestions"></div>
     <select id="platformSelect">
       <option value="steam">Steam</option>
       <option value="xbox">Xbox</option>
@@ -211,7 +213,6 @@
     </select>
     <button onclick="checkBan()">Check Ban</button>
     <button onclick="clearResults()">Clear Results</button>
-    <div id="suggestions"></div>
   </div>
 
   <div id="results"></div>
@@ -319,6 +320,30 @@
         } else {
           resultsDiv.innerHTML = "No results found.";
         }
-
       } catch (err) {
+        resultsDiv.innerHTML = `<p class='unknown'>Error fetching results: ${err}</p>`;
+      }
+    }
 
+    function clearResults() {
+      document.getElementById("results").innerHTML = "";
+      document.getElementById("playerInput").value = "";
+      clearStoredNames();
+    }
+
+    const playerInputEl = document.getElementById("playerInput");
+    playerInputEl.addEventListener("input", (e) => showSuggestions(e.target.value));
+    playerInputEl.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") checkBan();
+    });
+
+    // Hide suggestions when clicking outside
+    document.addEventListener("click", function(e) {
+      const suggestionList = document.getElementById("suggestions");
+      if (!playerInputEl.contains(e.target)) {
+        suggestionList.innerHTML = "";
+      }
+    });
+  </script>
+</body>
+</html>
