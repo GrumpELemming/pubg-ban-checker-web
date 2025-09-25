@@ -7,8 +7,22 @@
   <style>
     body {
       font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #eceff1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+    .container {
       margin: 40px;
-      background: #f9f9f9;
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      max-width: 700px;
+      width: 100%;
     }
     h1 {
       font-size: 2em;
@@ -16,6 +30,7 @@
     }
     .subtitle {
       margin-bottom: 5px;
+      color: #444;
     }
     .note {
       font-size: 0.9em;
@@ -27,7 +42,7 @@
     .counter {
       font-size: 0.85em;
       color: #333;
-      margin-bottom: 15px;
+      margin: 5px 0 15px 0;
     }
     input, button, select {
       padding: 10px;
@@ -36,6 +51,14 @@
     }
     button {
       cursor: pointer;
+      background: #1976d2;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #0d47a1;
     }
     .result {
       margin-top: 20px;
@@ -91,41 +114,77 @@
       font-size: 0.9em;
       color: #444;
     }
+    /* Tooltip */
+    .tooltip {
+      display: inline-block;
+      position: relative;
+      cursor: help;
+      margin-left: 8px;
+      font-weight: bold;
+      color: #1976d2;
+    }
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 220px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 8px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%; /* position above */
+      left: 50%;
+      margin-left: -110px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 0.85em;
+    }
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
-  <h1>PUBG Ban Checker <span style="font-size:0.6em; color:#555;">v1.2</span></h1>
-  <p class="subtitle">Check if players are banned on Steam, Xbox, or PlayStation</p>
-  <p class="note">Enter up to 10 player names separated by commas.<br>
-  Example: <em>PlayerOne, PlayerTwo, PlayerThree</em></p>
+  <div class="container">
+    <h1>PUBG Ban Checker <span style="font-size:0.6em; color:#555;">v1.2</span></h1>
+    <p class="subtitle">Check if players are banned on Steam, Xbox, or PlayStation</p>
+    <p class="note">Enter up to 10 player names separated by commas.<br>
+    Example: <em>PlayerOne, PlayerTwo, PlayerThree</em></p>
 
-  <div class="controls">
-    <input id="playerInput" type="text" placeholder="Enter player names, separated by commas">
-    <p id="nameCounter" class="counter">Names entered: 0 / 10</p>
-    <select id="platformSelect">
-      <option value="steam">Steam</option>
-      <option value="xbox">Xbox</option>
-      <option value="psn">PlayStation</option>
-    </select>
-    <button onclick="checkBan()">Check Ban</button>
-    <button onclick="clearResults()">Clear Results</button>
+    <div class="controls">
+      <input id="playerInput" type="text" placeholder="Enter player names, separated by commas">
+      <span class="tooltip">?
+        <span class="tooltiptext">You can only check up to 10 names at a time. Separate names with commas.</span>
+      </span>
+      <p id="nameCounter" class="counter">Names entered: 0 / 10</p>
+      <select id="platformSelect">
+        <option value="steam">Steam</option>
+        <option value="xbox">Xbox</option>
+        <option value="psn">PlayStation</option>
+      </select>
+      <button onclick="checkBan()">Check Ban</button>
+      <button onclick="clearResults()">Clear Results</button>
+    </div>
+
+    <div id="results"></div>
+
+    <footer>
+      <p>Created by Grump E Lemming</p>
+      <p>Please visit my YouTube channel: 
+        <a href="https://www.youtube.com/@GrumPeLemminG" target="_blank">youtube.com/@GrumPeLemminG</a>
+      </p>
+      <p><strong>Updates:</strong></p>
+      <ul>
+        <li>Search by multiple names separated by commas (limit 10)</li>
+        <li>Names remembered locally for quick lookup next time</li>
+        <li>Warning if more than 10 names are entered</li>
+        <li>Live counter shows how many names you’ve entered</li>
+        <li>Tooltip added for input help</li>
+      </ul>
+    </footer>
   </div>
-
-  <div id="results"></div>
-
-  <footer>
-    <p>Created by Grump E Lemming</p>
-    <p>Please visit my YouTube channel: 
-      <a href="https://www.youtube.com/@GrumPeLemminG" target="_blank">youtube.com/@GrumPeLemminG</a>
-    </p>
-    <p><strong>Updates:</strong></p>
-    <ul>
-      <li>Search by multiple names separated by commas (limit 10)</li>
-      <li>Names remembered locally for quick lookup next time</li>
-      <li>Warning if more than 10 names are entered</li>
-      <li>Live counter shows how many names you’ve entered</li>
-    </ul>
-  </footer>
 
   <script>
     function getStatusClass(status) {
@@ -160,7 +219,6 @@
         return;
       }
 
-      // Split and enforce 10-name limit
       const players = playerInput.split(",").map(p => p.trim()).filter(p => p.length > 0);
       if (players.length > 10) {
         alert("You can only check up to 10 player names at a time.");
@@ -205,10 +263,7 @@
       updateCounter();
     }
 
-    // Live counter updates as you type
     document.getElementById("playerInput").addEventListener("input", updateCounter);
-
-    // Allow pressing ENTER to trigger check
     document.getElementById("playerInput").addEventListener("keypress", function (e) {
       if (e.key === "Enter") {
         checkBan();
