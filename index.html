@@ -1,223 +1,81 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PUBG Ban Checker v1.0</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #1f1c2c, #928dab);
-      color: #f0f0f0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
+<script>
+  function getStatusClass(status) {
+    switch (status) {
+      case "Not banned": return "not-banned";
+      case "Temporarily banned": return "temp-banned";
+      case "Permanently banned": return "perm-banned";
+      default: return "unknown";
+    }
+  }
+
+  async function checkBan() {
+    const playerInput = document.getElementById("playerInput").value.trim();
+    const platform = document.getElementById("platformSelect").value;
+    const resultsDiv = document.getElementById("results");
+
+    if (!playerInput) {
+      alert("Please enter at least one player name.");
+      return;
     }
 
-    h1 {
-      font-size: 2.2em;
-      margin-top: 40px;
-      margin-bottom: 10px;
-      text-align: center;
-      color: #ffdd59;
+    // Optional: limit batch size for safety
+    const players = playerInput.split(",").map(p => p.trim()).filter(p => p);
+    if (players.length > 20) {
+      alert("Please check 20 or fewer players at a time.");
+      return;
     }
 
-    h2 {
-      font-size: 1em;
-      margin-bottom: 30px;
-      color: #ffd700;
-    }
+    resultsDiv.innerHTML = "<p class='loading'>Checking… please wait</p>";
 
-    .controls {
-      background-color: rgba(255, 255, 255, 0.1);
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 30px;
-    }
+    try {
+      const response = await fetch(
+        `https://pubg-ban-checker-backend.onrender.com/check-ban?player=${encodeURIComponent(playerInput)}&platform=${platform}`
+      );
 
-    input, button, select {
-      padding: 10px 12px;
-      font-size: 1em;
-      border-radius: 6px;
-      border: none;
-      outline: none;
-    }
+      const data = await response.json();
+      resultsDiv.innerHTML = "";
 
-    input {
-      flex: 1 1 200px;
-      min-width: 200px;
-    }
-
-    select {
-      background-color: #fff;
-      color: #333;
-    }
-
-    button {
-      background-color: #ff4757;
-      color: white;
-      font-weight: bold;
-      transition: background 0.3s;
-    }
-
-    button:hover {
-      background-color: #e84118;
-    }
-
-    #results {
-      width: 90%;
-      max-width: 600px;
-      margin-bottom: 40px;
-    }
-
-    .group-result {
-      margin-bottom: 20px;
-      padding: 15px;
-      border-radius: 8px;
-      background-color: rgba(255, 255, 255, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .player-row {
-      margin: 6px 0;
-    }
-
-    .loading {
-      font-style: italic;
-      color: #ddd;
-    }
-
-    /* Color coding */
-    .status {
-      font-weight: bold;
-      padding: 3px 8px;
-      border-radius: 5px;
-    }
-    .not-banned {
-      background-color: #28a745;
-      color: white;
-    }
-    .temp-banned {
-      background-color: #ffc107;
-      color: black;
-    }
-    .perm-banned {
-      background-color: #dc3545;
-      color: white;
-    }
-    .unknown {
-      background-color: #6c757d;
-      color: white;
-    }
-
-    footer {
-      text-align: center;
-      margin-bottom: 20px;
-      font-size: 0.9em;
-      color: #ffebcd;
-    }
-
-    footer a {
-      color: #ffd700;
-      text-decoration: none;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
-    }
-  </style>
-</head>
-<body>
-  <h1>PUBG Ban Checker v1.0</h1>
-  <h2>Check if players are banned on Steam, Xbox, or PlayStation</h2>
-
-  <div class="controls">
-    <input id="playerInput" type="text" placeholder="Enter player names, separated by commas">
-    <select id="platformSelect">
-      <option value="steam">Steam</option>
-      <option value="xbox">Xbox</option>
-      <option value="psn">PlayStation</option>
-    </select>
-    <button onclick="checkBan()">Check Ban</button>
-    <button onclick="clearResults()">Clear Results</button>
-  </div>
-
-  <div id="results"></div>
-
-  <footer>
-    Created by Grump E Lemming | Please visit my <a href="https://www.youtube.com/@GrumPeLemminG" target="_blank">YouTube channel</a>
-  </footer>
-
-  <script>
-    function getStatusClass(status) {
-      switch (status) {
-        case "Not banned": return "not-banned";
-        case "Temporarily banned": return "temp-banned";
-        case "Permanently banned": return "perm-banned";
-        default: return "unknown";
-      }
-    }
-
-    async function checkBan() {
-      const playerInput = document.getElementById("playerInput").value.trim();
-      const platform = document.getElementById("platformSelect").value;
-      const resultsDiv = document.getElementById("results");
-
-      if (!playerInput) {
-        alert("Please enter at least one player name.");
+      if (response.status === 429) {
+        resultsDiv.innerHTML = "<p class='unknown'>Rate limit exceeded. Try fewer players or wait a few seconds.</p>";
         return;
       }
 
-      resultsDiv.innerHTML = "<p class='loading'>Checking… please wait</p>";
-
-      try {
-        const response = await fetch(
-          `https://pubg-ban-checker-backend.onrender.com/check-ban?player=${encodeURIComponent(playerInput)}&platform=${platform}`
-        );
-        const data = await response.json();
-
-        resultsDiv.innerHTML = "";
-
-        if (data.results && data.results.length > 0) {
-          const groupDiv = document.createElement("div");
-          groupDiv.className = "group-result";
-
-          data.results.forEach(item => {
-            const row = document.createElement("div");
-            row.className = "player-row";
-            const statusClass = getStatusClass(item.banStatus);
-            row.innerHTML = `<strong>${item.player}:</strong> <span class="status ${statusClass}">${item.banStatus}</span>`;
-            groupDiv.appendChild(row);
-          });
-
-          resultsDiv.appendChild(groupDiv);
-        } else {
-          resultsDiv.innerHTML = "No results found.";
-        }
-
-      } catch (err) {
-        resultsDiv.innerHTML = "Error fetching results: " + err;
+      if (data.error) {
+        resultsDiv.innerHTML = `<p class='unknown'>Error: ${data.error}</p>`;
+        return;
       }
-    }
 
-    function clearResults() {
-      document.getElementById("results").innerHTML = "";
-      document.getElementById("playerInput").value = "";
-    }
+      if (data.results && data.results.length > 0) {
+        const groupDiv = document.createElement("div");
+        groupDiv.className = "group-result";
 
-    document.getElementById("playerInput").addEventListener("keypress", function (e) {
-      if (e.key === "Enter") {
-        checkBan();
+        data.results.forEach(item => {
+          const row = document.createElement("div");
+          row.className = "player-row";
+          const statusClass = getStatusClass(item.banStatus);
+          row.innerHTML = `<strong>${item.player}:</strong> <span class="status ${statusClass}">${item.banStatus}</span>`;
+          groupDiv.appendChild(row);
+        });
+
+        resultsDiv.appendChild(groupDiv);
+      } else {
+        resultsDiv.innerHTML = "No results found.";
       }
-    });
-  </script>
-</body>
-</html>
+
+    } catch (err) {
+      resultsDiv.innerHTML = `<p class='unknown'>Error fetching results: ${err}</p>`;
+    }
+  }
+
+  function clearResults() {
+    document.getElementById("results").innerHTML = "";
+    document.getElementById("playerInput").value = "";
+  }
+
+  // Allow pressing ENTER to trigger check
+  document.getElementById("playerInput").addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+      checkBan();
+    }
+  });
+</script>
