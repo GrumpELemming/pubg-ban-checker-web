@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>PUBG Ban Checker v1.2</title>
 <style>
+  /* --- theme & layout --- */
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
@@ -17,22 +18,12 @@
     min-height: 100vh;
   }
 
-  h1 {
-    font-size: 2.2em;
-    margin-top: 40px;
-    margin-bottom: 10px;
-    text-align: center;
-    color: #ffdd59;
-  }
-
-  h2 {
-    font-size: 1em;
-    margin-bottom: 30px;
-    color: #ffd700;
-  }
+  h1 { font-size: 2.2em; margin-top: 40px; margin-bottom: 10px; color: #ffdd59; text-align:center; }
+  h2 { font-size: 1em; margin-bottom: 10px; color: #ffd700; text-align:center; }
+  .note { font-size: 0.9em; color: #ffebcd; margin-top:-5px; margin-bottom:25px; text-align:center; font-style:italic; }
 
   .controls {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255,255,255,0.1);
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
@@ -52,95 +43,67 @@
     outline: none;
   }
 
-  input {
-    flex: 1 1 200px;
-    min-width: 200px;
-    position: relative;
-    z-index: 2;
-  }
-
-  select {
-    background-color: #fff;
-    color: #333;
-  }
-
+  input { flex: 1 1 200px; min-width: 200px; position: relative; z-index: 10; }
+  select { background-color: #fff; color: #333; }
   button {
     background-color: #ff4757;
     color: white;
     font-weight: bold;
     transition: background 0.3s;
     position: relative;
-    z-index: 2;
+    z-index: 200; /* high so buttons remain clickable if overlap happens */
   }
+  button:hover { background-color: #e84118; }
 
-  button:hover {
-    background-color: #e84118;
-  }
+  #results { width: 90%; max-width: 600px; margin-bottom: 20px; }
 
-  #results {
-    width: 90%;
-    max-width: 600px;
-    margin-bottom: 20px;
-  }
+  /* animations & results styling */
+  @keyframes cardPop { 0%{background-color:rgba(255,255,255,0);transform:scale(0.95);}50%{background-color:rgba(255,255,255,0.15);transform:scale(1.02);}100%{background-color:rgba(255,255,255,0.1);transform:scale(1);} }
+  .group-result { margin-bottom:20px;padding:15px;border-radius:8px;background-color:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);animation:cardPop .6s ease forwards; }
+  @keyframes fadeInUp { 0%{opacity:0;transform:translateY(10px);}100%{opacity:1;transform:translateY(0);} }
+  .player-row { margin:6px 0;padding:6px 10px;border-radius:6px;animation:fadeInUp .4s ease forwards;display:flex;justify-content:space-between;align-items:center; }
+  .loading { font-style:italic;color:#ddd; }
 
-  @keyframes cardPop {
-    0% { background-color: rgba(255, 255, 255, 0); transform: scale(0.95); }
-    50% { background-color: rgba(255, 255, 255, 0.15); transform: scale(1.02); }
-    100% { background-color: rgba(255, 255, 255, 0.1); transform: scale(1); }
-  }
+  @keyframes pulseRed {0%{box-shadow:0 0 0 rgba(255,0,0,.7);}50%{box-shadow:0 0 15px rgba(255,0,0,.9);}100%{box-shadow:0 0 0 rgba(255,0,0,.7);} }
+  @keyframes pulseYellow {0%{box-shadow:0 0 0 rgba(255,255,0,.7);}50%{box-shadow:0 0 15px rgba(255,255,0,.9);}100%{box-shadow:0 0 0 rgba(255,255,0,.7);} }
+  @keyframes pulseGreen {0%{box-shadow:0 0 0 rgba(0,255,0,.6);}50%{box-shadow:0 0 10px rgba(0,255,0,.8);}100%{box-shadow:0 0 0 rgba(0,255,0,.6);} }
 
-  .group-result {
-    margin-bottom: 20px;
-    padding: 15px;
-    border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    animation: cardPop 0.6s ease forwards;
-  }
-
-  @keyframes fadeInUp {
-    0% { opacity: 0; transform: translateY(10px); }
-    100% { opacity: 1; transform: translateY(0); }
-  }
-
-  .player-row {
-    margin: 6px 0;
-    padding: 6px 10px;
-    border-radius: 6px;
-    animation: fadeInUp 0.4s ease forwards;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .loading { font-style: italic; color: #ddd; }
-
-  @keyframes pulseRed {0% {box-shadow:0 0 0 rgba(255,0,0,.7);}50% {box-shadow:0 0 15px rgba(255,0,0,.9);}100% {box-shadow:0 0 0 rgba(255,0,0,.7);}}
-  @keyframes pulseYellow {0% {box-shadow:0 0 0 rgba(255,255,0,.7);}50% {box-shadow:0 0 15px rgba(255,255,0,.9);}100% {box-shadow:0 0 0 rgba(255,255,0,.7);}}
-  @keyframes pulseGreen {0% {box-shadow:0 0 0 rgba(0,255,0,.6);}50% {box-shadow:0 0 10px rgba(0,255,0,.8);}100% {box-shadow:0 0 0 rgba(0,255,0,.6);}}
-
-  .not-banned { background: linear-gradient(90deg,#28a745,#2ecc71); color:white; animation:pulseGreen 1.2s ease-in-out 1; }
-  .temp-banned { background: linear-gradient(90deg,#ffc107,#ffcd39); color:black; animation:pulseYellow 1.2s ease-in-out 1; }
-  .perm-banned { background: linear-gradient(90deg,#dc3545,#e74c3c); color:white; animation:pulseRed 1.2s ease-in-out 1; }
-  .unknown { background: linear-gradient(90deg,#6c757d,#95a5a6); color:white; }
+  .not-banned { background:linear-gradient(90deg,#28a745,#2ecc71); color:white; animation:pulseGreen 1.2s ease-in-out 1; }
+  .temp-banned { background:linear-gradient(90deg,#ffc107,#ffcd39); color:black; animation:pulseYellow 1.2s ease-in-out 1; }
+  .perm-banned { background:linear-gradient(90deg,#dc3545,#e74c3c); color:white; animation:pulseRed 1.2s ease-in-out 1; }
+  .unknown { background:linear-gradient(90deg,#6c757d,#95a5a6); color:white; }
 
   footer { text-align:center; margin-bottom:10px; font-size:0.9em; color:#ffebcd; }
   footer a { color:#ffd700; text-decoration:none; }
   footer a:hover { text-decoration:underline; }
 
-  #updates { text-align:center; font-size:0.9em; color:#ffd; margin-bottom:20px; }
-  #suggestions { position:absolute; background:rgba(255,255,255,0.95); color:#333; border-radius:6px; max-height:150px; overflow-y:auto; display:none; z-index:10; }
-  .suggestion-item { padding:6px 10px; cursor:pointer; }
-  .suggestion-item:hover, .suggestion-active { background-color:#f0f0f0; }
+  /* suggestions box - absolute but dynamically positioned (JS will place it) */
+  #suggestions {
+    position: absolute;
+    background: rgba(255,255,255,0.95);
+    color: #333;
+    border-radius: 6px;
+    max-height: 150px;
+    overflow-y: auto;
+    display: none;
+    z-index: 50; /* moderate; buttons have higher z-index */
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  }
+  .suggestion-item { padding: 6px 10px; cursor: pointer; }
+  .suggestion-item:hover, .suggestion-active { background-color: #f0f0f0; }
 </style>
 </head>
 <body>
 
 <h1>PUBG Ban Checker v1.2</h1>
 <h2>Check if players are banned on Steam, Xbox, or PlayStation</h2>
+<p class="note">
+  Enter up to 10 player names separated by commas.<br>
+  Example: <em>PlayerOne, PlayerTwo, PlayerThree</em>
+</p>
 
 <div class="controls">
-  <input id="playerInput" type="text" placeholder="Enter player names, separated by commas">
+  <input id="playerInput" type="text" placeholder="Enter player names, separated by commas" autocomplete="off">
   <select id="platformSelect">
     <option value="steam">Steam</option>
     <option value="xbox">Xbox</option>
@@ -149,141 +112,246 @@
   <button onclick="checkBan()">Check Ban</button>
   <button onclick="clearResults()">Clear Results</button>
 </div>
-<div id="suggestions"></div>
 
-<div id="results"></div>
+<!-- suggestions is outside controls so it won't be part of the controls flow -->
+<div id="suggestions" aria-hidden="true"></div>
+
+<div id="results" role="region" aria-live="polite"></div>
 
 <footer>
-Created by Grump E Lemming | Please visit my <a href="https://www.youtube.com/@GrumPeLemminG" target="_blank">YouTube channel</a>
+  Created by Grump E Lemming | please visit my <a href="https://www.youtube.com/@GrumPeLemminG" target="_blank">YouTube channel</a>
 </footer>
 
 <div id="updates">
-<strong>Version 1.2 Updates:</strong><br>
-- Search by commas and remembers previous names for quick lookup next time
+  <strong>Version 1.2 Updates:</strong><br>
+  - Search by commas and remembers previous names for quick lookup next time
 </div>
 
 <script>
-const playerInputEl = document.getElementById("playerInput");
+/* ========= Autocomplete, keyboard nav, safe positioning, and storage ========= */
+
+const playerInputEl = document.getElementById('playerInput');
+const suggestionListEl = document.getElementById('suggestions');
 let suggestionIndex = -1;
-let currentSuggestions = [];
 const MAX_SUGGESTIONS = 50;
 
+/* Local-storage helpers */
 function getStoredNames() {
-  return JSON.parse(localStorage.getItem("searchedPlayers")||"[]");
+  return JSON.parse(localStorage.getItem('searchedPlayers') || '[]');
 }
-
-function storeName(name){
-  if(!name) return;
+function storeName(name) {
+  if (!name) return;
   let names = getStoredNames();
   names.unshift(name);
-  names=[...new Set(names)].slice(0,MAX_SUGGESTIONS);
-  localStorage.setItem("searchedPlayers",JSON.stringify(names));
+  names = [...new Set(names)].slice(0, MAX_SUGGESTIONS);
+  localStorage.setItem('searchedPlayers', JSON.stringify(names));
 }
+function clearStoredNames() { localStorage.removeItem('searchedPlayers'); }
 
-function clearStoredNames(){ localStorage.removeItem("searchedPlayers"); }
+/* Show suggestions: populate then measure and place so it never blocks buttons */
+function showSuggestions(input) {
+  suggestionListEl.innerHTML = '';
+  suggestionIndex = -1;
 
-function showSuggestions(input){
-  const suggestionList = document.getElementById("suggestions");
-  suggestionList.innerHTML="";
-  suggestionIndex=-1;
-  if(!input){ suggestionList.style.display="none"; return; }
+  if (!input) {
+    suggestionListEl.style.display = 'none';
+    suggestionListEl.setAttribute('aria-hidden', 'true');
+    return;
+  }
 
-  const names=getStoredNames();
-  const matches=names.filter(n=>n.toLowerCase().startsWith(input.toLowerCase()));
-  currentSuggestions=matches;
+  const names = getStoredNames();
+  const matches = names.filter(n => n.toLowerCase().startsWith(input.toLowerCase())).slice(0, 30); // cap suggestions
 
-  if(!matches.length){ suggestionList.style.display="none"; return; }
+  if (!matches.length) {
+    suggestionListEl.style.display = 'none';
+    suggestionListEl.setAttribute('aria-hidden', 'true');
+    return;
+  }
 
-  matches.forEach(match=>{
-    const item=document.createElement("div");
-    item.className="suggestion-item";
-    item.textContent=match;
-    item.onclick=()=>{ playerInputEl.value=match; suggestionList.style.display="none"; }
-    suggestionList.appendChild(item);
+  matches.forEach(match => {
+    const div = document.createElement('div');
+    div.className = 'suggestion-item';
+    div.textContent = match;
+    div.onclick = () => {
+      playerInputEl.value = match;
+      hideSuggestions();
+      playerInputEl.focus();
+    };
+    suggestionListEl.appendChild(div);
   });
 
-  const rect=playerInputEl.getBoundingClientRect();
-  suggestionList.style.top=rect.bottom+window.scrollY+"px";
-  suggestionList.style.left=rect.left+window.scrollX+"px";
-  suggestionList.style.width=rect.width+"px";
-  suggestionList.style.display="block";
+  // Make it visible to measure height, but keep it invisible to avoid flicker
+  suggestionListEl.style.display = 'block';
+  suggestionListEl.style.visibility = 'hidden';
+  suggestionListEl.style.maxHeight = '150px'; // default cap
+
+  // measure and position to avoid overlapping buttons:
+  const rect = playerInputEl.getBoundingClientRect();
+  const listHeight = suggestionListEl.offsetHeight;
+  const spaceBelow = window.innerHeight - rect.bottom - 10; // space below input
+  const spaceAbove = rect.top - 10; // space above input
+  let top;
+
+  if (listHeight <= spaceBelow) {
+    // enough space below — put it below
+    top = rect.bottom + window.scrollY + 6;
+  } else if (listHeight <= spaceAbove) {
+    // put above
+    top = rect.top + window.scrollY - listHeight - 6;
+  } else {
+    // neither fits fully — choose the side with more room and shrink height
+    if (spaceBelow >= spaceAbove) {
+      suggestionListEl.style.maxHeight = Math.max(40, spaceBelow) + 'px';
+      top = rect.bottom + window.scrollY + 6;
+    } else {
+      suggestionListEl.style.maxHeight = Math.max(40, spaceAbove) + 'px';
+      top = rect.top + window.scrollY - parseInt(suggestionListEl.style.maxHeight, 10) - 6;
+    }
+  }
+
+  suggestionListEl.style.left = rect.left + window.scrollX + 'px';
+  suggestionListEl.style.top = top + 'px';
+  suggestionListEl.style.width = rect.width + 'px';
+  suggestionListEl.style.visibility = 'visible';
+  suggestionListEl.setAttribute('aria-hidden', 'false');
 }
 
-playerInputEl.addEventListener("input",function(e){
-  const value=e.target.value;
-  showSuggestions(value);
-  if(value.endsWith(",")){ value.split(",").map(p=>p.trim()).filter(p=>p).forEach(storeName); }
-});
-
-playerInputEl.addEventListener("keydown",function(e){
-  const suggestionList=document.getElementById("suggestions");
-  const items=suggestionList.getElementsByClassName("suggestion-item");
-  if(!items.length) return;
-
-  if(e.key==="ArrowDown"){ e.preventDefault(); suggestionIndex=(suggestionIndex+1)%items.length; updateActive(); }
-  else if(e.key==="ArrowUp"){ e.preventDefault(); suggestionIndex=(suggestionIndex-1+items.length)%items.length; updateActive(); }
-  else if(e.key==="Enter"){ 
-    if(suggestionIndex>=0){ playerInputEl.value=items[suggestionIndex].textContent; suggestionList.style.display="none"; suggestionIndex=-1; }
-    else { checkBan(); }
-  } else if(e.key==="Escape"){ suggestionList.style.display="none"; }
-});
-
-function updateActive(){
-  const items=document.getElementById("suggestions").getElementsByClassName("suggestion-item");
-  Array.from(items).forEach((el,i)=>el.classList.toggle("suggestion-active",i===suggestionIndex));
+/* hide */
+function hideSuggestions() {
+  suggestionListEl.style.display = 'none';
+  suggestionListEl.setAttribute('aria-hidden', 'true');
+  suggestionIndex = -1;
 }
 
-document.addEventListener("click",function(e){
-  const suggestionList=document.getElementById("suggestions");
-  if(!playerInputEl.contains(e.target)) suggestionList.style.display="none";
+/* update active suggestion style during keyboard navigation */
+function updateActive() {
+  const items = suggestionListEl.getElementsByClassName('suggestion-item');
+  Array.from(items).forEach((el, i) => el.classList.toggle('suggestion-active', i === suggestionIndex));
+}
+
+/* input behaviour:
+   - show suggestions as you type
+   - if user types comma, store names immediately for instant suggestion availability */
+playerInputEl.addEventListener('input', (e) => {
+  const v = e.target.value;
+  showSuggestions(v);
+
+  if (v.endsWith(',')) {
+    v.split(',').map(p => p.trim()).filter(Boolean).forEach(storeName);
+  }
 });
 
-function getStatusClass(status){
-  switch(status){
-    case "Not banned": return "not-banned";
-    case "Temporarily banned": return "temp-banned";
-    case "Permanently banned": return "perm-banned";
-    default: return "unknown";
+/* keyboard navigation */
+playerInputEl.addEventListener('keydown', (e) => {
+  const items = suggestionListEl.getElementsByClassName('suggestion-item');
+  if (items.length === 0) {
+    if (e.key === 'Enter') {
+      // no suggestions open -> run check
+      checkBan();
+      e.preventDefault();
+    }
+    return;
+  }
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    suggestionIndex = (suggestionIndex + 1) % items.length;
+    updateActive();
+    items[suggestionIndex].scrollIntoView({ block: 'nearest' });
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    suggestionIndex = (suggestionIndex - 1 + items.length) % items.length;
+    updateActive();
+    items[suggestionIndex].scrollIntoView({ block: 'nearest' });
+  } else if (e.key === 'Enter') {
+    if (suggestionIndex >= 0) {
+      playerInputEl.value = items[suggestionIndex].textContent;
+      hideSuggestions();
+      e.preventDefault();
+    } else {
+      // allow default and let checkBan handle
+    }
+  } else if (e.key === 'Escape') {
+    hideSuggestions();
+  }
+});
+
+/* click outside hides suggestions */
+document.addEventListener('click', (evt) => {
+  if (!playerInputEl.contains(evt.target) && !suggestionListEl.contains(evt.target)) {
+    hideSuggestions();
+  }
+});
+
+/* ==================== Backend calls / UI logic ==================== */
+
+function getStatusClass(status) {
+  switch (status) {
+    case 'Not banned': return 'not-banned';
+    case 'Temporarily banned': return 'temp-banned';
+    case 'Permanently banned': return 'perm-banned';
+    default: return 'unknown';
   }
 }
 
-async function checkBan(){
-  const input=playerInputEl.value.trim();
-  const platform=document.getElementById("platformSelect").value;
-  const resultsDiv=document.getElementById("results");
+/* checkBan — enforces 10 limit and stores names on success */
+async function checkBan() {
+  const input = playerInputEl.value.trim();
+  const platform = document.getElementById('platformSelect').value;
+  const resultsDiv = document.getElementById('results');
 
-  if(!input){ alert("Enter at least one player name."); return; }
-  resultsDiv.innerHTML="<p class='loading'>Checking… please wait</p>";
+  if (!input) { alert('Enter at least one player name.'); return; }
 
-  try{
-    const response=await fetch(`https://pubg-ban-checker-backend.onrender.com/check-ban?player=${encodeURIComponent(input)}&platform=${platform}`);
-    const data=await response.json();
-    resultsDiv.innerHTML="";
+  const players = input.split(',').map(p => p.trim()).filter(Boolean);
+  if (players.length > 10) { alert('You can only check up to 10 player names at a time.'); return; }
 
-    if(data.error){ resultsDiv.innerHTML=`<p class='unknown'>Error: ${data.error}</p>`; return; }
+  resultsDiv.innerHTML = "<p class='loading'>Checking… please wait</p>";
 
-    if(data.results && data.results.length){
-      const groupDiv=document.createElement("div");
-      groupDiv.className="group-result";
-      data.results.forEach((item,i)=>{
-        const row=document.createElement("div");
-        row.className="player-row "+getStatusClass(item.banStatus);
-        row.style.animationDelay=`${i*0.1}s`;
-        row.innerHTML=`<strong>${item.player}:</strong> <span class="status">${item.banStatus}</span>`;
-        groupDiv.appendChild(row);
+  try {
+    const response = await fetch(`https://pubg-ban-checker-backend.onrender.com/check-ban?player=${encodeURIComponent(input)}&platform=${platform}`);
+    const data = await response.json();
+    resultsDiv.innerHTML = '';
+
+    if (data.error) {
+      resultsDiv.innerHTML = `<p class='unknown'>Error: ${data.error}</p>`;
+      return;
+    }
+
+    if (data.results && data.results.length) {
+      const group = document.createElement('div');
+      group.className = 'group-result';
+      data.results.forEach((item, i) => {
+        const row = document.createElement('div');
+        row.className = 'player-row ' + getStatusClass(item.banStatus);
+        row.style.animationDelay = `${i * 0.1}s`;
+        row.innerHTML = `<strong>${item.player}:</strong> <span class="status">${item.banStatus}</span>`;
+        group.appendChild(row);
       });
-      resultsDiv.appendChild(groupDiv);
-      // store all searched names
-      input.split(",").map(p=>p.trim()).filter(p=>p).forEach(storeName);
-    } else { resultsDiv.innerHTML="No results found."; }
-  } catch(err){ resultsDiv.innerHTML=`<p class='unknown'>Error fetching results: ${err}</p>`; }
+      resultsDiv.appendChild(group);
+
+      // store names locally for next-time autocomplete
+      players.forEach(storeName);
+    } else {
+      resultsDiv.innerHTML = 'No results found.';
+    }
+  } catch (err) {
+    resultsDiv.innerHTML = `<p class='unknown'>Error fetching results: ${err}</p>`;
+  }
 }
 
-function clearResults(){ 
-  document.getElementById("results").innerHTML=""; 
-  playerInputEl.value=""; 
+/* clear results and input (keeps local storage unless you want to clear it too) */
+function clearResults() {
+  document.getElementById('results').innerHTML = '';
+  playerInputEl.value = '';
+  hideSuggestions();
+}
+
+/* optional: a function to clear saved names (not used on clearResults by default)
+function clearSaved() {
   clearStoredNames();
 }
+*/
+
 </script>
 </body>
 </html>
