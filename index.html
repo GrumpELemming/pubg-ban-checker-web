@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PUBG Ban Checker v1.4</title>
+<title>PUBG Ban Checker v1.5</title>
 <style>
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -16,139 +16,64 @@
     align-items: center;
     min-height: 100vh;
   }
+  h1 { font-size: 2.2em; margin-top: 40px; margin-bottom: 10px; color: #ffdd59; }
+  h2 { font-size: 1em; margin-bottom: 30px; color: #ffd700; }
 
-  h1 {
-    font-size: 2.2em;
-    margin-top: 40px;
-    margin-bottom: 10px;
-    text-align: center;
-    color: #ffdd59;
-  }
-
-  h2 {
-    font-size: 1em;
-    margin-bottom: 15px;
-    color: #ffd700;
-    text-align: center;
-  }
-
-  .controls, .watchlist-controls {
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 15px 20px;
+  .controls, #watchlist {
+    background-color: rgba(255,255,255,0.1);
+    padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 15px;
-    position: relative;
-  }
-
-  input, button, select {
-    padding: 10px 12px;
-    font-size: 1em;
-    border-radius: 6px;
-    border: none;
-    outline: none;
-  }
-
-  input {
-    flex: 1 1 200px;
-    min-width: 200px;
-    position: relative;
-    z-index: 2;
-  }
-
-  select {
-    background-color: #fff;
-    color: #333;
-  }
-
-  button {
-    background-color: #ff4757;
-    color: white;
-    font-weight: bold;
-    transition: background 0.3s;
-    position: relative;
-    z-index: 2;
-    cursor: pointer;
-  }
-
-  button:hover { background-color: #e84118; }
-
-  #results, #watchlist {
+    margin-bottom: 20px;
     width: 90%;
     max-width: 600px;
-    margin-bottom: 20px;
   }
 
-  #watchlist { 
-    padding: 10px; 
-    border:1px solid rgba(255,255,255,0.3); 
-    border-radius:8px; 
-    background-color:rgba(0,0,0,0.2);
-  }
-
-  .watchlist-name { display:flex; justify-content:space-between; margin:4px 0; padding:4px 8px; border-radius:6px; background-color:rgba(255,255,255,0.1); }
-  .watchlist-name button { background-color:#ff6b81; color:white; border:none; border-radius:4px; padding:2px 6px; cursor:pointer; font-size:0.85em; }
-  .watchlist-name button:hover { background-color:#e84118; }
-
-  @keyframes cardPop {
-    0% { background-color: rgba(255, 255, 255, 0); transform: scale(0.95); }
-    50% { background-color: rgba(255, 255, 255, 0.15); transform: scale(1.02); }
-    100% { background-color: rgba(255, 255, 255, 0.1); transform: scale(1); }
-  }
-
-  .group-result {
-    margin-bottom: 20px;
-    padding: 15px;
-    border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    animation: cardPop 0.6s ease forwards;
-  }
-
-  @keyframes fadeInUp { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
-
-  .player-row {
-    margin: 6px 0;
-    padding: 6px 10px;
-    border-radius: 6px;
-    animation: fadeInUp 0.4s ease forwards;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .loading { font-style: italic; color: #ddd; }
-
-  @keyframes pulseRed {0% {box-shadow:0 0 0 rgba(255,0,0,.7);}50% {box-shadow:0 0 15px rgba(255,0,0,.9);}100% {box-shadow:0 0 0 rgba(255,0,0,.7);} }
-  @keyframes pulseYellow {0% {box-shadow:0 0 0 rgba(255,255,0,.7);}50% {box-shadow:0 0 15px rgba(255,255,0,.9);}100% {box-shadow:0 0 0 rgba(255,255,0,.7);} }
-  @keyframes pulseGreen {0% {box-shadow:0 0 0 rgba(0,255,0,.6);}50% {box-shadow:0 0 10px rgba(0,255,0,.8);}100% {box-shadow:0 0 0 rgba(0,255,0,.6);} }
-
-  .not-banned { background: linear-gradient(90deg,#28a745,#2ecc71); color:white; animation:pulseGreen 1.2s ease-in-out 1; }
-  .temp-banned { background: linear-gradient(90deg,#ffc107,#ffcd39); color:black; animation:pulseYellow 1.2s ease-in-out 1; }
-  .perm-banned { background: linear-gradient(90deg,#dc3545,#e74c3c); color:white; animation:pulseRed 1.2s ease-in-out 1; }
+  input, button, select { padding: 10px 12px; font-size: 1em; border-radius: 6px; border: none; }
+  button { background-color: #ff4757; color: white; font-weight: bold; cursor: pointer; }
+  button:hover { background-color: #e84118; }
+  #results { width: 90%; max-width: 600px; margin-bottom: 20px; }
+  .group-result { margin-bottom: 20px; padding: 15px; border-radius: 8px; background: rgba(255,255,255,0.1); }
+  .player-row { margin: 6px 0; padding: 6px 10px; border-radius: 6px; display: flex; justify-content: space-between; }
+  .not-banned { background: linear-gradient(90deg,#28a745,#2ecc71); color:white; }
+  .temp-banned { background: linear-gradient(90deg,#ffc107,#ffcd39); color:black; }
+  .perm-banned { background: linear-gradient(90deg,#dc3545,#e74c3c); color:white; }
   .unknown { background: linear-gradient(90deg,#6c757d,#95a5a6); color:white; }
+  .highlight { border:2px solid #ffd700; }
 
   footer { text-align:center; margin-bottom:10px; font-size:0.9em; color:#ffebcd; }
   footer a { color:#ffd700; text-decoration:none; }
   footer a:hover { text-decoration:underline; }
 
   #updates { text-align:center; font-size:0.9em; color:#ffd; margin-bottom:20px; }
-  #suggestions { position:absolute; background:rgba(255,255,255,0.95); color:#333; border-radius:6px; max-height:150px; overflow-y:auto; display:none; z-index:10; }
-  .suggestion-item { padding:6px 10px; cursor:pointer; }
-  .suggestion-item:hover, .suggestion-active { background-color:#f0f0f0; }
+
+  /* --- Watchlist fixes --- */
+  #watchlist h3 { margin-top: 0; margin-bottom: 10px; color: #ffd700; text-align: center; }
+  .watchlist-player {
+    padding: 6px 10px;
+    margin: 3px 0;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .watchlist-player button {
+    margin-left: 10px;
+    padding: 4px 8px;
+    font-size: 0.9em;
+  }
+
+  .controls p { text-align: center; font-size:0.85em; color:#ffd; margin-top:5px; }
 </style>
 </head>
 <body>
 
-<h1>PUBG Ban Checker v1.4</h1>
+<h1>PUBG Ban Checker v1.5</h1>
 <h2>Check if players are banned on Steam, Xbox, or PlayStation</h2>
 
 <div class="controls">
-  <input id="playerInput" type="text" placeholder="Enter player names, separated by commas (max 10)">
+  <input id="playerInput" type="text" placeholder="Enter player names, separated by commas">
   <select id="platformSelect">
     <option value="steam">Steam</option>
     <option value="xbox">Xbox</option>
@@ -156,127 +81,145 @@
   </select>
   <button onclick="checkBan()">Check Ban</button>
   <button onclick="clearResults()">Clear Results</button>
-</div>
-<div class="watchlist-controls">
-  <button onclick="addToWatchlist()">Add to Watchlist</button>
-  <button onclick="checkWatchlist()">Check Watchlist</button>
-  <button onclick="clearWatchlist()">Clear Watchlist</button>
+  <p>Example: Player1, Player2, Player3 — <strong>limit 10 names per check</strong></p>
 </div>
 
 <div id="watchlist">
-  <strong>My Watchlist:</strong>
-  <div id="watchlist-names"></div>
+  <h3>Watchlist</h3>
+  <input id="watchlistInput" type="text" placeholder="Add player to watchlist">
+  <button onclick="addToWatchlist()">Add</button>
+  <button onclick="clearWatchlist()">Clear Watchlist</button>
+  <button onclick="checkAllWatchlist()">Check All Watchlist</button>
+  <label style="display:block; margin-top:10px; font-size:0.9em;">
+    <input type="checkbox" id="autoCheckToggle"> Auto-check watchlist on page load
+  </label>
+  <div id="watchlistPlayersContainer"></div>
 </div>
 
-<div id="suggestions"></div>
 <div id="results"></div>
 
 <footer>
-Created by Grump E Lemming | Please visit my <a href="https://www.youtube.com/@GrumPeLemminG" target="_blank">YouTube channel</a>
+Created by Grump E Lemming | Please visit my 
+<a href="https://www.youtube.com/@GrumPeLemminG" target="_blank">YouTube channel</a>
 </footer>
 
 <div id="updates">
-<strong>Version 1.4 Updates:</strong><br>
-- Watchlist added: save, remove, clear, and check multiple accounts<br>
-- Autocomplete remembers previous searches for faster lookup
+<strong>Version 1.5 Updates:</strong><br>
+- Watchlist to save multiple accounts<br>
+- Check All Watchlist button<br>
+- Better error messages<br>
+- Highlight watchlist players in results<br>
+- Optional auto-check on page load<br>
+- Added 10-name limit note under main input
 </div>
 
 <script>
 const playerInputEl = document.getElementById("playerInput");
-let suggestionIndex = -1;
-let currentSuggestions = [];
-const MAX_SUGGESTIONS = 50;
 
-// === Autocomplete ===
-function getStoredNames() { return JSON.parse(localStorage.getItem("searchedPlayers")||"[]"); }
-function storeName(name){ if(!name) return; let names=getStoredNames(); names.unshift(name); names=[...new Set(names)].slice(0,MAX_SUGGESTIONS); localStorage.setItem("searchedPlayers",JSON.stringify(names)); }
-function clearStoredNames(){ localStorage.removeItem("searchedPlayers"); }
-
-function showSuggestions(input){
-  const suggestionList=document.getElementById("suggestions");
-  suggestionList.innerHTML=""; suggestionIndex=-1;
-  if(!input){ suggestionList.style.display="none"; return; }
-  const names=getStoredNames();
-  const matches=names.filter(n=>n.toLowerCase().startsWith(input.toLowerCase()));
-  currentSuggestions=matches;
-  if(!matches.length){ suggestionList.style.display="none"; return; }
-  matches.forEach(match=>{
-    const item=document.createElement("div");
-    item.className="suggestion-item"; item.textContent=match;
-    item.onclick=()=>{ playerInputEl.value=match; suggestionList.style.display="none"; }
-    suggestionList.appendChild(item);
-  });
-  const rect=playerInputEl.getBoundingClientRect();
-  suggestionList.style.top=rect.bottom+window.scrollY+"px";
-  suggestionList.style.left=rect.left+window.scrollX+"px";
-  suggestionList.style.width=rect.width+"px";
-  suggestionList.style.display="block";
+// --- Status classes ---
+function getStatusClass(status){
+  switch(status){
+    case "Not banned": return "not-banned";
+    case "Temporarily banned": return "temp-banned";
+    case "Permanently banned": return "perm-banned";
+    default: return "unknown";
+  }
 }
 
-playerInputEl.addEventListener("input", e=>{
-  const value=e.target.value;
-  showSuggestions(value);
-  if(value.endsWith(",")){ value.split(",").map(p=>p.trim()).filter(p=>p).forEach(storeName); }
-});
+// --- Check ban ---
+async function checkBan(names){
+  const input = names || playerInputEl.value.trim();
+  const platform = document.getElementById("platformSelect").value;
+  const resultsDiv = document.getElementById("results");
 
-playerInputEl.addEventListener("keydown", e=>{
-  const suggestionList=document.getElementById("suggestions");
-  const items=suggestionList.getElementsByClassName("suggestion-item");
-  if(!items.length) return;
-  if(e.key==="ArrowDown"){ e.preventDefault(); suggestionIndex=(suggestionIndex+1)%items.length; updateActive(); }
-  else if(e.key==="ArrowUp"){ e.preventDefault(); suggestionIndex=(suggestionIndex-1+items.length)%items.length; updateActive(); }
-  else if(e.key==="Enter"){ 
-    if(suggestionIndex>=0){ playerInputEl.value=items[suggestionIndex].textContent; suggestionList.style.display="none"; suggestionIndex=-1; }
-    else { checkBan(); }
-  } else if(e.key==="Escape"){ suggestionList.style.display="none"; }
-});
-
-function updateActive(){
-  const items=document.getElementById("suggestions").getElementsByClassName("suggestion-item");
-  Array.from(items).forEach((el,i)=>el.classList.toggle("suggestion-active",i===suggestionIndex));
-}
-
-document.addEventListener("click", e=>{ if(!playerInputEl.contains(e.target)) document.getElementById("suggestions").style.display="none"; });
-
-// === Watchlist ===
-function getWatchlist() { return JSON.parse(localStorage.getItem("watchlist")||"[]"); }
-function saveWatchlist(names){ const current=getWatchlist(); const updated=[...new Set([...current,...names])].slice(0,50); localStorage.setItem("watchlist",JSON.stringify(updated)); renderWatchlist(); }
-function renderWatchlist(){ const container=document.getElementById("watchlist-names"); container.innerHTML=""; getWatchlist().forEach(name=>{ const div=document.createElement("div"); div.className="watchlist-name"; div.innerHTML=`<span>${name}</span><button onclick="removeFromWatchlist('${name}')">Remove</button>`; container.appendChild(div); }); }
-function addToWatchlist(){ const input=playerInputEl.value.trim(); if(!input){ alert("Enter at least one player name to add."); return; } const names=input.split(",").map(p=>p.trim()).filter(Boolean); saveWatchlist(names); }
-function removeFromWatchlist(name){ let names=getWatchlist(); names=names.filter(n=>n!==name); localStorage.setItem("watchlist",JSON.stringify(names)); renderWatchlist(); }
-function clearWatchlist(){ if(confirm("Clear all names from your watchlist?")){ localStorage.removeItem("watchlist"); renderWatchlist(); } }
-async function checkWatchlist(){ const names=getWatchlist(); if(!names.length){ alert("Watchlist is empty."); return; } const batch=names.slice(0,10); playerInputEl.value=batch.join(", "); checkBan(); }
-
-// === Ban Checking ===
-function getStatusClass(status){ switch(status){ case "Not banned": return "not-banned"; case "Temporarily banned": return "temp-banned"; case "Permanently banned": return "perm-banned"; default: return "unknown"; } }
-
-async function checkBan(){
-  const input=playerInputEl.value.trim(); const platform=document.getElementById("platformSelect").value; const resultsDiv=document.getElementById("results");
   if(!input){ alert("Enter at least one player name."); return; }
-  resultsDiv.innerHTML="<p class='loading'>Checking… please wait</p>";
+
+  const players = input.split(",").map(p => p.trim()).filter(Boolean);
+  if(players.length > 10){
+    alert("You can only check up to 10 players at once. Please reduce your list.");
+    return;
+  }
+
+  resultsDiv.innerHTML="<p class='unknown'>Checking… please wait</p>";
+
   try{
-    const response=await fetch(`https://pubg-ban-checker-backend.onrender.com/check-ban?player=${encodeURIComponent(input)}&platform=${platform}`);
-    const data=await response.json(); resultsDiv.innerHTML="";
+    const response = await fetch(`https://pubg-ban-checker-backend.onrender.com/check-ban?player=${encodeURIComponent(input)}&platform=${platform}`);
+    const data = await response.json();
+    resultsDiv.innerHTML="";
+
     if(data.error){ resultsDiv.innerHTML=`<p class='unknown'>Error: ${data.error}</p>`; return; }
+
     if(data.results && data.results.length){
-      const groupDiv=document.createElement("div"); groupDiv.className="group-result";
-      data.results.forEach((item,i)=>{
+      const groupDiv=document.createElement("div");
+      groupDiv.className="group-result";
+      data.results.forEach(item=>{
         const row=document.createElement("div");
         row.className="player-row "+getStatusClass(item.banStatus);
-        row.style.animationDelay=`${i*0.1}s`;
-        row.innerHTML=`<strong>${item.player}:</strong> <span class="status">${item.banStatus}</span>`;
+        if(isInWatchlist(item.player)) row.classList.add("highlight");
+        row.innerHTML=`<strong>${item.player}:</strong> <span>${item.banStatus}</span>`;
         groupDiv.appendChild(row);
       });
       resultsDiv.appendChild(groupDiv);
-      // store all searched names
-      input.split(",").map(p=>p.trim()).filter(p=>p).forEach(storeName);
     } else { resultsDiv.innerHTML="No results found."; }
   } catch(err){ resultsDiv.innerHTML=`<p class='unknown'>Error fetching results: ${err}</p>`; }
 }
 
-function clearResults(){ document.getElementById("results").innerHTML=""; playerInputEl.value=""; clearStoredNames(); }
+function clearResults(){ document.getElementById("results").innerHTML=""; playerInputEl.value=""; }
 
-document.addEventListener("DOMContentLoaded", renderWatchlist);
+// --- Watchlist ---
+function getWatchlist(){ return JSON.parse(localStorage.getItem("watchlistPlayers")||"[]"); }
+function saveWatchlist(list){ localStorage.setItem("watchlistPlayers",JSON.stringify(list)); }
+function isInWatchlist(name){ return getWatchlist().includes(name); }
+
+function renderWatchlist(){
+  const container = document.getElementById("watchlistPlayersContainer");
+  container.innerHTML="";
+  const list = getWatchlist();
+  if(!list.length){ container.innerHTML="<p><i>Watchlist is empty</i></p>"; return; }
+  list.forEach(p=>{
+    const div = document.createElement("div");
+    div.className = "watchlist-player";
+    div.innerHTML = `${p} <button onclick="removeFromWatchlist('${p}')">Remove</button>`;
+    container.appendChild(div);
+  });
+}
+
+function addToWatchlist(){
+  const input=document.getElementById("watchlistInput").value.trim();
+  if(!input) return;
+  let list=getWatchlist();
+  if(!list.includes(input)) list.push(input);
+  saveWatchlist(list);
+  document.getElementById("watchlistInput").value="";
+  renderWatchlist();
+}
+
+function removeFromWatchlist(name){
+  let list=getWatchlist().filter(p=>p!==name);
+  saveWatchlist(list);
+  renderWatchlist();
+}
+
+function clearWatchlist(){ localStorage.removeItem("watchlistPlayers"); renderWatchlist(); }
+
+function checkAllWatchlist(){
+  const list=getWatchlist();
+  if(!list.length){ alert("Watchlist is empty"); return; }
+  const chunk=list.slice(0,10).join(",");
+  checkBan(chunk);
+}
+
+// --- Auto-check toggle ---
+function saveAutoCheckSetting(enabled){ localStorage.setItem("autoCheckWatchlist", enabled ? "true" : "false"); }
+function loadAutoCheckSetting(){ return localStorage.getItem("autoCheckWatchlist") === "true"; }
+
+document.addEventListener("DOMContentLoaded",()=>{
+  renderWatchlist();
+  const toggle=document.getElementById("autoCheckToggle");
+  toggle.checked=loadAutoCheckSetting();
+  toggle.addEventListener("change",()=>saveAutoCheckSetting(toggle.checked));
+  if(toggle.checked && getWatchlist().length){ checkAllWatchlist(); }
+});
 </script>
 </body>
 </html>
