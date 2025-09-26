@@ -19,7 +19,7 @@ body {
   color: var(--text-color);
   display: flex; flex-direction: column; align-items: center;
   min-height: 100vh;
-  transition: background 0.3s, color 0.3s;
+  transition: background 0.5s ease, color 0.5s ease;
 }
 
 /* --- Dark mode variables --- */
@@ -44,9 +44,10 @@ h2 { font-size:1em; margin-bottom:30px; color: var(--accent-color); text-align:c
   display:flex; flex-wrap:wrap; gap:10px;
   position: sticky; top:10px; z-index:5;
   justify-content:center;
+  transition: background 0.5s ease, color 0.5s ease;
 }
 
-input, select, button { padding:10px 12px; border:none; border-radius:6px; font-size:1em; }
+input, select, button { padding:10px 12px; border:none; border-radius:6px; font-size:1em; transition: background 0.5s ease, color 0.5s ease; }
 select { background:#fff; color:#333; }
 button { background:#ff4757; color:#fff; font-weight:bold; cursor:pointer; transition:0.3s; }
 button:hover { background:#e84118; transform: scale(1.02); }
@@ -71,7 +72,7 @@ button[title]:hover::after, input[title]:hover::after, select[title]:hover::afte
   width:90%; max-width:600px;
   margin-bottom:20px;
   box-shadow:0 3px 8px rgba(0,0,0,0.3);
-  transition: background 0.3s;
+  transition: background 0.5s ease, color 0.5s ease, border-color 0.5s ease;
 }
 #watchlist h3 { margin-top:0; color: var(--accent-color); text-align:center; cursor:pointer; }
 #watchlistPlayersContainer { margin-top:10px; }
@@ -85,23 +86,23 @@ button[title]:hover::after, input[title]:hover::after, select[title]:hover::afte
 .watchlist-player {
   display:flex; justify-content:space-between; align-items:center;
   padding:6px 10px; margin:3px 0; border-radius:6px;
-  background: rgba(255,255,255,0.1); transition:0.3s;
+  background: rgba(255,255,255,0.1);
   animation: popIn 0.4s ease forwards;
+  transition: background 0.5s ease, color 0.5s ease;
 }
 .watchlist-player:hover { background: rgba(255,255,255,0.2); }
 .watchlist-player button { margin-left:10px; padding:4px 8px; font-size:0.85em; cursor:pointer; }
 
 /* --- Results --- */
-#results { width:90%; max-width:600px; margin-bottom:20px; }
-.group-result { margin-bottom:20px; padding:15px; border-radius:8px; background: rgba(255,255,255,0.1); animation: fadeIn 0.5s ease forwards; }
-.player-row { display:flex; justify-content:space-between; align-items:center; margin:5px 0; padding:6px 10px; border-radius:6px; transition:0.3s; }
+#results { width:90%; max-width:600px; margin-bottom:20px; transition: background 0.5s ease, color 0.5s ease; }
+.group-result { margin-bottom:20px; padding:15px; border-radius:8px; background: rgba(255,255,255,0.1); animation: fadeIn 0.5s ease forwards; transition: background 0.5s ease, color 0.5s ease; }
+.player-row { display:flex; justify-content:space-between; align-items:center; margin:5px 0; padding:6px 10px; border-radius:6px; transition: background 0.5s ease, color 0.5s ease; }
 .player-row:hover { transform: scale(1.02); }
 
-@keyframes fadeIn {
-  0% {opacity:0; transform: translateY(10px);}
-  100% {opacity:1; transform: translateY(0);}
-}
+/* --- Fade-in --- */
+@keyframes fadeIn { 0% {opacity:0; transform: translateY(10px);} 100% {opacity:1; transform: translateY(0);} }
 
+/* --- Status classes --- */
 .not-banned { background: linear-gradient(90deg,#28a745,#2ecc71); color:white; }
 .temp-banned { background: linear-gradient(90deg,#ffc107,#ffcd39); color:black; }
 .perm-banned { background: linear-gradient(90deg,#dc3545,#e74c3c); color:white; }
@@ -109,13 +110,29 @@ button[title]:hover::after, input[title]:hover::after, select[title]:hover::afte
 .highlight { border:2px solid var(--accent-color); }
 
 /* --- Footer --- */
-footer { text-align:center; margin-bottom:10px; font-size:0.9em; color:#ffebcd; }
+footer { text-align:center; margin-bottom:10px; font-size:0.9em; color:#ffebcd; transition: color 0.5s ease; }
 footer a { color: var(--accent-color); text-decoration:none; }
 footer a:hover { text-decoration:underline; }
 
 /* --- Updates --- */
-#updates { text-align:center; font-size:0.9em; color:#ffd; margin-bottom:20px; }
+#updates { text-align:center; font-size:0.9em; color:#ffd; margin-bottom:20px; transition: color 0.5s ease; }
 
+/* --- Dark mode overrides for panels --- */
+body.dark-mode .controls,
+body.dark-mode #watchlist,
+body.dark-mode .group-result,
+body.dark-mode .player-row,
+body.dark-mode .watchlist-player {
+  background-color: rgba(255,255,255,0.1);
+  color: #222;
+  border-color: rgba(0,0,0,0.1);
+}
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode button {
+  background-color: #eee;
+  color: #222;
+}
 </style>
 </head>
 <body>
@@ -133,6 +150,11 @@ footer a:hover { text-decoration:underline; }
   <button onclick="checkBan()" title="Check if entered players are banned">Check Ban</button>
   <button onclick="clearResults()" title="Clear current results">Clear Results</button>
   <label style="width:100%; text-align:center; font-size:0.85em;">Example: Player1, Player2, Player3 — <strong>limit 10 names per check</strong></label>
+  
+  <!-- DARK MODE TOGGLE -->
+  <label style="width:100%; text-align:center; margin-top:10px;">
+    <input type="checkbox" id="darkModeToggle"> Dark Mode
+  </label>
 </div>
 
 <div id="watchlist">
@@ -154,7 +176,7 @@ Created by Grump E Lemming | Please visit my <a href="https://www.youtube.com/@G
 </footer>
 
 <div id="updates">
-<strong>Version 1.6 (UI/UX Enhancements) (if u see this im currently testing, will revert to 1.5 very soon):</strong><br>
+<strong>Version 1.6 (UI/UX Enhancements):</strong><br>
 - Tooltips on buttons and inputs<br>
 - Fade-in animation for results<br>
 - Hover effects on buttons, watchlist, and results<br>
@@ -181,40 +203,38 @@ function addToWatchlist(){
   const name=document.getElementById("watchlistInput").value.trim();
   if(!name) return;
   let names=getWatchlist();
-  if(!names.includes(name)){ names.push(name); storeWatchlist(names); renderWatchlist(); }
+  names.unshift(name);
+  names=[...new Set(names)].slice(0,50);
+  storeWatchlist(names);
   document.getElementById("watchlistInput").value="";
+  renderWatchlist();
 }
 function removeFromWatchlist(name){
-  let names=getWatchlist();
-  names=names.filter(n=>n!==name);
-  storeWatchlist(names); renderWatchlist();
+  let names=getWatchlist().filter(n=>n!==name);
+  storeWatchlist(names);
+  renderWatchlist();
 }
-function clearWatchlist(){ localStorage.removeItem("watchlist"); renderWatchlist(); }
-function toggleWatchlist(){
-  const container=document.getElementById("watchlistPlayersContainer");
-  container.style.display=(container.style.display==="none"?"block":"none");
-}
+function clearWatchlist(){ storeWatchlist([]); renderWatchlist(); }
 function checkAllWatchlist(){ const names=getWatchlist(); if(names.length) checkBan(names.join(",")); }
+function toggleWatchlist(){ const container=document.getElementById("watchlistPlayersContainer"); container.style.display=(container.style.display==="none"?"block":"none"); }
 
-// --- Dark/Light mode ---
+// --- Dark mode ---
 const darkToggle=document.getElementById("darkModeToggle");
-if(darkToggle){
-  darkToggle.addEventListener("change", ()=>{
-    document.body.classList.toggle("dark-mode", darkToggle.checked);
-    localStorage.setItem("darkMode", darkToggle.checked);
-  });
-  window.addEventListener("DOMContentLoaded", ()=>{
-    const enabled=localStorage.getItem("darkMode")==="true";
-    darkToggle.checked=enabled;
-    document.body.classList.toggle("dark-mode", enabled);
-  });
-}
+darkToggle.addEventListener("change", ()=>{
+  document.body.classList.toggle("dark-mode", darkToggle.checked);
+  localStorage.setItem("darkMode", darkToggle.checked);
+});
+window.addEventListener("DOMContentLoaded", ()=>{
+  const enabled=localStorage.getItem("darkMode")==="true";
+  darkToggle.checked=enabled;
+  document.body.classList.toggle("dark-mode", enabled);
+});
 
 // --- Auto-check watchlist ---
 window.addEventListener("DOMContentLoaded", ()=>{
   const autoCheck = localStorage.getItem("autoCheckWatchlist")==="true";
   const autoCheckToggle = document.getElementById("autoCheckToggle");
-  autoCheckToggle.checked=autoCheck;
+  autoCheckToggle.checked = autoCheck;
   autoCheckToggle.addEventListener("change", ()=>{ localStorage.setItem("autoCheckWatchlist", autoCheckToggle.checked); });
   if(autoCheck && getWatchlist().length) checkAllWatchlist();
 });
@@ -247,9 +267,8 @@ async function checkBan(input=null){
       data.results.forEach((item,i)=>{
         const row=document.createElement("div");
         row.className="player-row "+getStatusClass(item.banStatus);
-        row.style.animationDelay=`${i*0.1}s`;
-        // Highlight if in watchlist
         if(getWatchlist().includes(item.player)) row.classList.add("highlight");
+        row.style.animationDelay=`${i*0.1}s`;
         row.innerHTML=`<strong>${item.player}:</strong> <span class="status">${item.banStatus}</span>`;
         groupDiv.appendChild(row);
       });
@@ -260,12 +279,11 @@ async function checkBan(input=null){
 
 function clearResults(){ document.getElementById("results").innerHTML=""; document.getElementById("playerInput").value=""; }
 
-// --- Render watchlist on load ---
-renderWatchlist();
-
 // --- Watchlist input enter key ---
 document.getElementById("watchlistInput").addEventListener("keypress", function(e){ if(e.key==="Enter") addToWatchlist(); });
-</script>
 
+// Render watchlist on page load
+renderWatchlist();
+</script>
 </body>
 </html>
