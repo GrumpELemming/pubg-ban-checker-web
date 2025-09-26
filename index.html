@@ -5,18 +5,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PUBG Ban Checker v1.6</title>
 <style>
-/* --- General layout --- */
+:root {
+  --bg-gradient: linear-gradient(135deg,#1f1c2c,#928dab);
+  --bg-color: #1f1c2c;
+  --text-color: #f0f0f0;
+  --accent-color: #ffdd59;
+}
+
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin:0; padding:0;
-  background: linear-gradient(135deg,#1f1c2c,#928dab);
-  color: #f0f0f0;
+  background: var(--bg-gradient);
+  color: var(--text-color);
   display: flex; flex-direction: column; align-items: center;
   min-height: 100vh;
+  transition: background 0.3s, color 0.3s;
 }
 
-h1 { font-size:2.2em; margin:40px 0 10px; color:#ffdd59; text-align:center;}
-h2 { font-size:1em; margin-bottom:30px; color:#ffd700; text-align:center; }
+/* --- Dark mode variables --- */
+body.dark-mode {
+  --bg-gradient: linear-gradient(135deg,#f9f9f9,#e0e0e0);
+  --bg-color: #f9f9f9;
+  --text-color: #222;
+  --accent-color: #ff8c00;
+}
+
+/* --- Headings --- */
+h1 { font-size:2.2em; margin:40px 0 10px; color: var(--accent-color); text-align:center;}
+h2 { font-size:1em; margin-bottom:30px; color: var(--accent-color); text-align:center; }
 
 /* --- Controls panel --- */
 .controls {
@@ -33,9 +49,19 @@ h2 { font-size:1em; margin-bottom:30px; color:#ffd700; text-align:center; }
 input, select, button { padding:10px 12px; border:none; border-radius:6px; font-size:1em; }
 select { background:#fff; color:#333; }
 button { background:#ff4757; color:#fff; font-weight:bold; cursor:pointer; transition:0.3s; }
-button:hover { background:#e84118; }
+button:hover { background:#e84118; transform: scale(1.02); }
 
-.controls p { width:100%; text-align:center; font-size:0.85em; color:#ffd; margin-top:5px; }
+/* Tooltip hint style */
+button[title], input[title], select[title] { position: relative; }
+button[title]:hover::after, input[title]:hover::after, select[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 120%; left:50%; transform: translateX(-50%);
+  background: rgba(0,0,0,0.8); color:#fff;
+  padding:4px 8px; border-radius:4px;
+  font-size:0.8em; white-space: nowrap;
+  pointer-events: none;
+}
 
 /* --- Watchlist panel --- */
 #watchlist {
@@ -45,8 +71,9 @@ button:hover { background:#e84118; }
   width:90%; max-width:600px;
   margin-bottom:20px;
   box-shadow:0 3px 8px rgba(0,0,0,0.3);
+  transition: background 0.3s;
 }
-#watchlist h3 { margin-top:0; color:#ffd700; text-align:center; cursor:pointer; }
+#watchlist h3 { margin-top:0; color: var(--accent-color); text-align:center; cursor:pointer; }
 #watchlistPlayersContainer { margin-top:10px; }
 
 /* --- Pop-in animation --- */
@@ -55,7 +82,6 @@ button:hover { background:#e84118; }
   60% { transform: scale(1.05); opacity: 1; }
   100% { transform: scale(1); }
 }
-
 .watchlist-player {
   display:flex; justify-content:space-between; align-items:center;
   padding:6px 10px; margin:3px 0; border-radius:6px;
@@ -67,23 +93,29 @@ button:hover { background:#e84118; }
 
 /* --- Results --- */
 #results { width:90%; max-width:600px; margin-bottom:20px; }
-.group-result { margin-bottom:20px; padding:15px; border-radius:8px; background: rgba(255,255,255,0.1); }
+.group-result { margin-bottom:20px; padding:15px; border-radius:8px; background: rgba(255,255,255,0.1); animation: fadeIn 0.5s ease forwards; }
 .player-row { display:flex; justify-content:space-between; align-items:center; margin:5px 0; padding:6px 10px; border-radius:6px; transition:0.3s; }
 .player-row:hover { transform: scale(1.02); }
+
+@keyframes fadeIn {
+  0% {opacity:0; transform: translateY(10px);}
+  100% {opacity:1; transform: translateY(0);}
+}
 
 .not-banned { background: linear-gradient(90deg,#28a745,#2ecc71); color:white; }
 .temp-banned { background: linear-gradient(90deg,#ffc107,#ffcd39); color:black; }
 .perm-banned { background: linear-gradient(90deg,#dc3545,#e74c3c); color:white; }
 .unknown { background: linear-gradient(90deg,#6c757d,#95a5a6); color:white; }
-.highlight { border:2px solid #ffd700; }
+.highlight { border:2px solid var(--accent-color); }
 
 /* --- Footer --- */
 footer { text-align:center; margin-bottom:10px; font-size:0.9em; color:#ffebcd; }
-footer a { color:#ffd700; text-decoration:none; }
+footer a { color: var(--accent-color); text-decoration:none; }
 footer a:hover { text-decoration:underline; }
 
 /* --- Updates --- */
 #updates { text-align:center; font-size:0.9em; color:#ffd; margin-bottom:20px; }
+
 </style>
 </head>
 <body>
@@ -92,15 +124,15 @@ footer a:hover { text-decoration:underline; }
 <h2>Check if players are banned on Steam, Xbox, or PlayStation</h2>
 
 <div class="controls">
-  <input id="playerInput" type="text" placeholder="Enter player names, separated by commas">
-  <select id="platformSelect">
+  <input id="playerInput" type="text" placeholder="Enter player names, separated by commas" title="Separate multiple names with commas, max 10">
+  <select id="platformSelect" title="Choose platform to check"> 
     <option value="steam">Steam</option>
     <option value="xbox">Xbox</option>
     <option value="psn">PlayStation</option>
   </select>
-  <button onclick="checkBan()">Check Ban</button>
-  <button onclick="clearResults()">Clear Results</button>
-  <p>Example: Player1, Player2, Player3 — <strong>limit 10 names per check</strong></p>
+  <button onclick="checkBan()" title="Check if entered players are banned">Check Ban</button>
+  <button onclick="clearResults()" title="Clear current results">Clear Results</button>
+  <label style="width:100%; text-align:center; font-size:0.85em;">Example: Player1, Player2, Player3 — <strong>limit 10 names per check</strong></label>
 </div>
 
 <div id="watchlist">
@@ -122,19 +154,18 @@ Created by Grump E Lemming | Please visit my <a href="https://www.youtube.com/@G
 </footer>
 
 <div id="updates">
-<strong>Version 1.6 (UI/UX):</strong><br>
-- Collapsible watchlist<br>
-- Pop-in animation for watchlist additions<br>
-- Sticky controls panel<br>
-- Hover effects on buttons and watchlist/results<br>
-- Improved spacing and color coding
+<strong>Version 1.6 (UI/UX Enhancements) (if u see this im currently testing, will revert to 1.5 very soon):</strong><br>
+- Tooltips on buttons and inputs<br>
+- Fade-in animation for results<br>
+- Hover effects on buttons, watchlist, and results<br>
+- Dark/Light mode toggle<br>
+- Pop-in animation for watchlist additions
 </div>
 
 <script>
-/* --- Watchlist functionality --- */
+// --- Watchlist ---
 function getWatchlist(){ return JSON.parse(localStorage.getItem("watchlist")||"[]"); }
 function storeWatchlist(names){ localStorage.setItem("watchlist", JSON.stringify(names)); }
-
 function renderWatchlist(){
   const container=document.getElementById("watchlistPlayersContainer");
   container.innerHTML="";
@@ -146,7 +177,6 @@ function renderWatchlist(){
     container.appendChild(div);
   });
 }
-
 function addToWatchlist(){
   const name=document.getElementById("watchlistInput").value.trim();
   if(!name) return;
@@ -154,32 +184,54 @@ function addToWatchlist(){
   if(!names.includes(name)){ names.push(name); storeWatchlist(names); renderWatchlist(); }
   document.getElementById("watchlistInput").value="";
 }
-
 function removeFromWatchlist(name){
   let names=getWatchlist();
   names=names.filter(n=>n!==name);
-  storeWatchlist(names);
-  renderWatchlist();
+  storeWatchlist(names); renderWatchlist();
 }
-
 function clearWatchlist(){ localStorage.removeItem("watchlist"); renderWatchlist(); }
-
 function toggleWatchlist(){
   const container=document.getElementById("watchlistPlayersContainer");
   container.style.display=(container.style.display==="none"?"block":"none");
 }
+function checkAllWatchlist(){ const names=getWatchlist(); if(names.length) checkBan(names.join(",")); }
 
-function checkAllWatchlist(){
-  const names=getWatchlist();
-  if(!names.length){ alert("Watchlist is empty."); return; }
-  document.getElementById("playerInput").value=names.join(", ");
-  checkBan();
+// --- Dark/Light mode ---
+const darkToggle=document.getElementById("darkModeToggle");
+if(darkToggle){
+  darkToggle.addEventListener("change", ()=>{
+    document.body.classList.toggle("dark-mode", darkToggle.checked);
+    localStorage.setItem("darkMode", darkToggle.checked);
+  });
+  window.addEventListener("DOMContentLoaded", ()=>{
+    const enabled=localStorage.getItem("darkMode")==="true";
+    darkToggle.checked=enabled;
+    document.body.classList.toggle("dark-mode", enabled);
+  });
 }
 
-/* --- PUBG Check Ban --- */
-const playerInputEl=document.getElementById("playerInput");
-async function checkBan(){
-  const input=playerInputEl.value.trim();
+// --- Auto-check watchlist ---
+window.addEventListener("DOMContentLoaded", ()=>{
+  const autoCheck = localStorage.getItem("autoCheckWatchlist")==="true";
+  const autoCheckToggle = document.getElementById("autoCheckToggle");
+  autoCheckToggle.checked=autoCheck;
+  autoCheckToggle.addEventListener("change", ()=>{ localStorage.setItem("autoCheckWatchlist", autoCheckToggle.checked); });
+  if(autoCheck && getWatchlist().length) checkAllWatchlist();
+});
+
+// --- Status classes ---
+function getStatusClass(status){
+  switch(status){
+    case "Not banned": return "not-banned";
+    case "Temporarily banned": return "temp-banned";
+    case "Permanently banned": return "perm-banned";
+    default: return "unknown";
+  }
+}
+
+// --- Main check ban ---
+async function checkBan(input=null){
+  input=input||document.getElementById("playerInput").value.trim();
   const platform=document.getElementById("platformSelect").value;
   const resultsDiv=document.getElementById("results");
   if(!input){ alert("Enter at least one player name."); return; }
@@ -196,42 +248,24 @@ async function checkBan(){
         const row=document.createElement("div");
         row.className="player-row "+getStatusClass(item.banStatus);
         row.style.animationDelay=`${i*0.1}s`;
+        // Highlight if in watchlist
+        if(getWatchlist().includes(item.player)) row.classList.add("highlight");
         row.innerHTML=`<strong>${item.player}:</strong> <span class="status">${item.banStatus}</span>`;
-        // highlight if in watchlist
-        if(getWatchlist().includes(item.player)){ row.classList.add("highlight"); }
         groupDiv.appendChild(row);
       });
       resultsDiv.appendChild(groupDiv);
-    } else { resultsDiv.innerHTML="No results found."; }
+    } else resultsDiv.innerHTML="No results found.";
   } catch(err){ resultsDiv.innerHTML=`<p class='unknown'>Error fetching results: ${err}</p>`; }
 }
 
-function clearResults(){ document.getElementById("results").innerHTML=""; playerInputEl.value=""; }
-function getStatusClass(status){
-  switch(status){
-    case "Not banned": return "not-banned";
-    case "Temporarily banned": return "temp-banned";
-    case "Permanently banned": return "perm-banned";
-    default: return "unknown";
-  }
-}
+function clearResults(){ document.getElementById("results").innerHTML=""; document.getElementById("playerInput").value=""; }
+
+// --- Render watchlist on load ---
 renderWatchlist();
-// Auto-check watchlist on page load if enabled
-window.addEventListener("DOMContentLoaded", () => {
-  const autoCheck = localStorage.getItem("autoCheckWatchlist") === "true";
-  const autoCheckToggle = document.getElementById("autoCheckToggle");
-  autoCheckToggle.checked = autoCheck;
 
-  autoCheckToggle.addEventListener("change", () => {
-    localStorage.setItem("autoCheckWatchlist", autoCheckToggle.checked);
-  });
-
-  if(autoCheck && getWatchlist().length) {
-    checkAllWatchlist();
-  }
-});  
+// --- Watchlist input enter key ---
+document.getElementById("watchlistInput").addEventListener("keypress", function(e){ if(e.key==="Enter") addToWatchlist(); });
 </script>
-  
+
 </body>
 </html>
-
