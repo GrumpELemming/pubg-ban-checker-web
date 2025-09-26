@@ -216,6 +216,22 @@ function getStatusClass(status){
   }
 }
 renderWatchlist();
+// Auto-check watchlist on page load if enabled
+window.addEventListener("DOMContentLoaded", () => {
+  const autoCheck = localStorage.getItem("autoCheckWatchlist") === "true";
+  const autoCheckToggle = document.getElementById("autoCheckToggle");
+  autoCheckToggle.checked = autoCheck;
+
+  autoCheckToggle.addEventListener("change", () => {
+    localStorage.setItem("autoCheckWatchlist", autoCheckToggle.checked);
+  });
+
+  if(autoCheck && getWatchlist().length) {
+    checkAllWatchlist();
+  }
+});  
 </script>
+  
 </body>
 </html>
+
