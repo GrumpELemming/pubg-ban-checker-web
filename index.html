@@ -18,13 +18,17 @@
   }
   h1 { font-size: 2.2em; margin-top: 40px; margin-bottom: 10px; color: #ffdd59; }
   h2 { font-size: 1em; margin-bottom: 30px; color: #ffd700; }
-  .controls, #watchlistControls {
+
+  .controls, #watchlist {
     background-color: rgba(255,255,255,0.1);
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     margin-bottom: 20px;
+    width: 90%;
+    max-width: 600px;
   }
+
   input, button, select { padding: 10px 12px; font-size: 1em; border-radius: 6px; border: none; }
   button { background-color: #ff4757; color: white; font-weight: bold; cursor: pointer; }
   button:hover { background-color: #e84118; }
@@ -35,19 +39,23 @@
   .temp-banned { background: linear-gradient(90deg,#ffc107,#ffcd39); color:black; }
   .perm-banned { background: linear-gradient(90deg,#dc3545,#e74c3c); color:white; }
   .unknown { background: linear-gradient(90deg,#6c757d,#95a5a6); color:white; }
+  .highlight { border:2px solid #ffd700; }
+
   footer { text-align:center; margin-bottom:10px; font-size:0.9em; color:#ffebcd; }
   footer a { color:#ffd700; text-decoration:none; }
   footer a:hover { text-decoration:underline; }
+
   #updates { text-align:center; font-size:0.9em; color:#ffd; margin-bottom:20px; }
 
   /* --- Watchlist fixes --- */
+  #watchlist h3 { margin-top: 0; margin-bottom: 10px; color: #ffd700; text-align: center; }
   .watchlist-player {
     padding: 6px 10px;
     margin: 3px 0;
     border-radius: 6px;
     background: rgba(255,255,255,0.1);
     display: flex;
-    justify-content: space-between; /* name on left, button on right */
+    justify-content: space-between;
     align-items: center;
   }
   .watchlist-player button {
@@ -55,7 +63,8 @@
     padding: 4px 8px;
     font-size: 0.9em;
   }
-  .highlight { border:2px solid #ffd700; }
+
+  .controls p { text-align: center; font-size:0.85em; color:#ffd; margin-top:5px; }
 </style>
 </head>
 <body>
@@ -72,9 +81,11 @@
   </select>
   <button onclick="checkBan()">Check Ban</button>
   <button onclick="clearResults()">Clear Results</button>
+  <p>Example: Player1, Player2, Player3 — <strong>limit 10 names per check</strong></p>
 </div>
 
-<div id="watchlistControls">
+<div id="watchlist">
+  <h3>Watchlist</h3>
   <input id="watchlistInput" type="text" placeholder="Add player to watchlist">
   <button onclick="addToWatchlist()">Add</button>
   <button onclick="clearWatchlist()">Clear Watchlist</button>
@@ -82,8 +93,8 @@
   <label style="display:block; margin-top:10px; font-size:0.9em;">
     <input type="checkbox" id="autoCheckToggle"> Auto-check watchlist on page load
   </label>
+  <div id="watchlistPlayersContainer"></div>
 </div>
-<div id="watchlist"></div>
 
 <div id="results"></div>
 
@@ -98,12 +109,14 @@ Created by Grump E Lemming | Please visit my
 - Check All Watchlist button<br>
 - Better error messages<br>
 - Highlight watchlist players in results<br>
-- Optional auto-check on page load
+- Optional auto-check on page load<br>
+- Added 10-name limit note under main input
 </div>
 
 <script>
 const playerInputEl = document.getElementById("playerInput");
 
+// --- Status classes ---
 function getStatusClass(status){
   switch(status){
     case "Not banned": return "not-banned";
@@ -113,6 +126,7 @@ function getStatusClass(status){
   }
 }
 
+// --- Check ban ---
 async function checkBan(names){
   const input = names || playerInputEl.value.trim();
   const platform = document.getElementById("platformSelect").value;
@@ -120,7 +134,6 @@ async function checkBan(names){
 
   if(!input){ alert("Enter at least one player name."); return; }
 
-  // 🔴 Limit to 10 names
   const players = input.split(",").map(p => p.trim()).filter(Boolean);
   if(players.length > 10){
     alert("You can only check up to 10 players at once. Please reduce your list.");
@@ -159,15 +172,15 @@ function saveWatchlist(list){ localStorage.setItem("watchlistPlayers",JSON.strin
 function isInWatchlist(name){ return getWatchlist().includes(name); }
 
 function renderWatchlist(){
-  const listDiv=document.getElementById("watchlist");
-  const list=getWatchlist();
-  listDiv.innerHTML="";
-  if(!list.length){ listDiv.innerHTML="<p><i>Watchlist is empty</i></p>"; return; }
+  const container = document.getElementById("watchlistPlayersContainer");
+  container.innerHTML="";
+  const list = getWatchlist();
+  if(!list.length){ container.innerHTML="<p><i>Watchlist is empty</i></p>"; return; }
   list.forEach(p=>{
-    const div=document.createElement("div");
-    div.className="watchlist-player";
-    div.innerHTML=`${p} <button onclick="removeFromWatchlist('${p}')">Remove</button>`;
-    listDiv.appendChild(div);
+    const div = document.createElement("div");
+    div.className = "watchlist-player";
+    div.innerHTML = `${p} <button onclick="removeFromWatchlist('${p}')">Remove</button>`;
+    container.appendChild(div);
   });
 }
 
@@ -191,7 +204,7 @@ function clearWatchlist(){ localStorage.removeItem("watchlistPlayers"); renderWa
 
 function checkAllWatchlist(){
   const list=getWatchlist();
-  if(!list.length){ alert("Watchlist is empty."); return; }
+  if(!list.length){ alert("Watchlist is empty"); return; }
   const chunk=list.slice(0,10).join(",");
   checkBan(chunk);
 }
