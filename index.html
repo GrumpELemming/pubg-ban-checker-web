@@ -104,6 +104,14 @@ async function checkBan(names){
   const resultsDiv = document.getElementById("results");
 
   if(!input){ alert("Enter at least one player name."); return; }
+
+  // 🔴 Limit to 10 names
+  const players = input.split(",").map(p => p.trim()).filter(Boolean);
+  if(players.length > 10){
+    alert("You can only check up to 10 players at once. Please reduce your list.");
+    return;
+  }
+
   resultsDiv.innerHTML="<p class='unknown'>Checking… please wait</p>";
 
   try{
@@ -174,12 +182,8 @@ function checkAllWatchlist(){
 }
 
 // --- Auto-check toggle ---
-function saveAutoCheckSetting(enabled){
-  localStorage.setItem("autoCheckWatchlist", enabled ? "true" : "false");
-}
-function loadAutoCheckSetting(){
-  return localStorage.getItem("autoCheckWatchlist") === "true";
-}
+function saveAutoCheckSetting(enabled){ localStorage.setItem("autoCheckWatchlist", enabled ? "true" : "false"); }
+function loadAutoCheckSetting(){ return localStorage.getItem("autoCheckWatchlist") === "true"; }
 
 document.addEventListener("DOMContentLoaded",()=>{
   renderWatchlist();
