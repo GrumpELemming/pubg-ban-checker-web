@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Watchlist - PUBG Ban Checker</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+  <h1>Watchlist</h1>
+  <nav>
+    <a href="index.html">Home</a> |
+    <a href="watchlist.html">Watchlist</a> |
+    <a href="about.html">About / Updates</a>
+  </nav>
+</header>
+
+<div class="container watchlist-container">
+  <h3>Your Watchlist</h3>
+  <input id="watchlistInput" placeholder="Add player to watchlist">
+  <button onclick="addToWatchlist(document.getElementById('watchlistInput').value)">Add Player</button>
+  <button onclick="checkAllWatchlist()">Check All</button>
+  <button onclick="clearWatchlist()">Clear Watchlist</button>
+  <div id="watchlistPlayersContainer"></div>
+</div>
+
+<footer>
+Created by Grump E Lemming
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+  renderWatchlist();
+});
+</script>
+</body>
+</html>
