@@ -4,19 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PUBG Ban Checker v1.5</title>
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/main.css">
 </head>
 <body>
 
-<header>
-  <h1>PUBG Ban Checker</h1>
-  <nav>
-    <a href="index.html">Home</a> |
-    <a href="watchlist.html">Watchlist</a> |
-    <a href="about.html">About / Updates</a>
-  </nav>
-</header>
+<h1>PUBG Ban Checker</h1>
+<h2>Check if players are banned on Steam, Xbox, or PlayStation (max 10 names)</h2>
 
+<!-- Controls -->
 <div class="container controls">
   <input id="playerInput" placeholder="Enter player names, separated by commas">
   <select id="platformSelect">
@@ -24,27 +19,37 @@
     <option value="xbox">Xbox</option>
     <option value="psn">PlayStation</option>
   </select>
-  <div class="buttons">
+  <div class="control-buttons">
     <button onclick="checkBan()">Check Ban</button>
     <button onclick="clearResults()">Clear Results</button>
     <label><input type="checkbox" id="darkModeToggle"> Dark Mode</label>
     <label><input type="checkbox" id="autoCheckToggle"> Auto-check Watchlist</label>
+    <a href="watchlist.html" class="nav-link">Watchlist Page</a>
+    <a href="updates.html" class="nav-link">About / Updates</a>
   </div>
 </div>
 
+<!-- Watchlist section -->
+<div class="container watchlist-container">
+  <h3>Watchlist</h3>
+  <div id="watchlistPlayersContainer"></div>
+  <div class="watchlist-buttons">
+    <button onclick="checkAllWatchlist()">Check All Watchlist</button>
+    <button onclick="clearWatchlist()">Clear Watchlist</button>
+  </div>
+</div>
+
+<!-- Results -->
 <div class="container results-container" id="results"></div>
 
+<!-- Suggestions -->
 <div id="suggestions"></div>
 
 <footer>
-Created by Grump E Lemming | <a href="https://www.youtube.com/@GrumPeLemminG" target="_blank">YouTube</a>
+Created by Grump E Lemming | Visit my <a href="https://www.youtube.com/@GrumPeLemminG" target="_blank">YouTube channel</a>
 </footer>
 
 <script src="js/main.js"></script>
-<script>
-window.addEventListener("DOMContentLoaded", () => {
-  initPage(); // initialize watchlist, dark mode, auto-check
-});
-</script>
+<script>initPage();</script>
 </body>
 </html>
