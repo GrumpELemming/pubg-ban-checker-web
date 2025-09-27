@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PUBG Ban Checker v1.3</title>
+<title>PUBG Ban Checker v1.4</title>
 <style>
 :root { --accent-color: #ffdd59; }
 
@@ -23,7 +23,9 @@ h2 { font-size:1em; margin-bottom:20px; color:#ffd700; text-align:center; }
 
 .container { width:90%; max-width:700px; margin-bottom:20px; padding:20px; border-radius:12px; background: rgba(255,255,255,0.1); box-shadow:0 4px 10px rgba(0,0,0,0.3); }
 
-.controls, .watchlist-container, .results-container { display:flex; flex-direction:column; gap:10px; }
+.controls, .watchlist-container, .results-container {
+  display:flex; flex-direction:column; gap:10px;
+}
 
 input, select, button {
   padding:10px; font-size:1em; border-radius:6px; border:none; outline:none;
@@ -36,16 +38,11 @@ button:hover { transform:scale(1.05); box-shadow:0 4px 10px rgba(0,0,0,0.3); }
 button:active { transform:scale(0.98); box-shadow:0 2px 6px rgba(0,0,0,0.2); }
 
 #results .group-result, #watchlistPlayersContainer .watchlist-player {
-  display:flex; flex-direction: column; gap:6px;
+  margin:6px 0; padding:10px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; transition: transform 0.2s ease, background 0.3s ease;
 }
+#results .group-result .player-row, #watchlistPlayersContainer .watchlist-player { display:flex; justify-content:space-between; align-items:center; margin:4px 0; }
 
-.player-row, .watchlist-player {
-  display:flex; justify-content:space-between; align-items:center;
-  padding:8px 10px; border-radius:6px;
-  background: rgba(255,255,255,0.1);
-  transition: transform 0.2s, background 0.3s;
-}
-.player-row:hover, .watchlist-player:hover { transform:scale(1.02); background-color: rgba(255,255,255,0.15); }
+#results .group-result .player-row:hover, #watchlistPlayersContainer .watchlist-player:hover { transform:scale(1.02); background-color: rgba(255,255,255,0.15); }
 
 .not-banned { background: linear-gradient(90deg,#28a745,#2ecc71); color:white; }
 .temp-banned { background: linear-gradient(90deg,#ffc107,#ffcd39); color:black; }
@@ -63,11 +60,14 @@ footer a:hover { text-decoration:underline; }
 
 #updates { text-align:center; font-size:0.9em; color:#ffd; margin-bottom:20px; }
 
+/* Animations */
+@keyframes popIn { 0% { transform: scale(0.7); opacity:0; } 60% { transform: scale(1.05); opacity:1; } 100% { transform:scale(1); } }
+.player-row, .watchlist-player { animation: popIn 0.4s ease forwards; }
 </style>
 </head>
 <body>
 
-<h1>PUBG Ban Checker v1.3</h1>
+<h1>PUBG Ban Checker v1.4</h1>
 <h2>Check if players are banned on Steam, Xbox, or PlayStation (max 10 names)</h2>
 
 <!-- Controls -->
@@ -90,7 +90,7 @@ footer a:hover { text-decoration:underline; }
 <div class="container watchlist-container">
   <h3>Watchlist</h3>
   <div id="watchlistPlayersContainer"></div>
-  <div style="margin-top:10px; display:flex; gap:10px;">
+  <div style="margin-top:10px;">
     <button onclick="checkAllWatchlist()">Check All Watchlist</button>
     <button onclick="clearWatchlist()">Clear Watchlist</button>
   </div>
@@ -120,14 +120,9 @@ function renderWatchlist(){
   const container=document.getElementById("watchlistPlayersContainer");
   container.innerHTML="";
   getWatchlist().forEach(name=>{
-    const div=document.createElement("div");
-    div.className="watchlist-player";
-    div.textContent=name;
-    const btn=document.createElement("button");
-    btn.textContent="Remove";
-    btn.onclick=()=>{ removeFromWatchlist(name); };
-    div.appendChild(btn);
-    container.appendChild(div);
+    const div=document.createElement("div"); div.className="watchlist-player"; div.textContent=name;
+    const btn=document.createElement("button"); btn.textContent="Remove"; btn.onclick=()=>{ removeFromWatchlist(name); };
+    div.appendChild(btn); container.appendChild(div);
   });
 }
 function addToWatchlist(name){ if(!name) return; let names=[name,...getWatchlist()]; names=[...new Set(names)].slice(0,50); storeWatchlist(names); renderWatchlist(); }
@@ -144,26 +139,26 @@ const playerInput=document.getElementById("playerInput");
 let suggestionIndex=-1; let currentSuggestions=[]; const MAX_SUGGESTIONS=50;
 function getStoredNames(){ return JSON.parse(localStorage.getItem("searchedPlayers")||"[]"); }
 function storeName(name){ if(!name) return; let names=getStoredNames(); names.unshift(name); names=[...new Set(names)].slice(0,MAX_SUGGESTIONS); localStorage.setItem("searchedPlayers", JSON.stringify(names)); }
+
 function showSuggestions(input){
   const suggestionList=document.getElementById("suggestions"); suggestionList.innerHTML=""; suggestionIndex=-1;
   if(!input){ suggestionList.style.display="none"; return; }
   const matches=getStoredNames().filter(n=>n.toLowerCase().startsWith(input.toLowerCase())); currentSuggestions=matches;
   if(!matches.length){ suggestionList.style.display="none"; return; }
-  matches.forEach(match=>{
-    const item=document.createElement("div");
-    item.className="suggestion-item"; item.textContent=match;
-    item.onclick=()=>{ playerInput.value=match; suggestionList.style.display="none"; };
-    suggestionList.appendChild(item);
+  matches.forEach(match=>{ const item=document.createElement("div"); item.className="suggestion-item"; item.textContent=match;
+    item.onclick=()=>{ playerInput.value=match; suggestionList.style.display="none"; }; suggestionList.appendChild(item);
   });
   const rect=playerInput.getBoundingClientRect();
   suggestionList.style.top=rect.bottom+window.scrollY+"px";
   suggestionList.style.left=rect.left+window.scrollX+"px";
   suggestionList.style.width=rect.width+"px"; suggestionList.style.display="block";
 }
+
 playerInput.addEventListener("input", e=>{
   const value=e.target.value; showSuggestions(value);
   if(value.endsWith(",")) value.split(",").map(p=>p.trim()).filter(p=>p).forEach(storeName);
 });
+
 playerInput.addEventListener("keydown", e=>{
   const items=document.getElementById("suggestions").getElementsByClassName("suggestion-item");
   if(!items.length) return;
@@ -198,7 +193,6 @@ async function checkBan(namesInput){
         row.style.animationDelay=`${i*0.1}s`; row.innerHTML=`<strong>${item.player}:</strong> <span class="status">${item.banStatus}</span>`;
         if(getWatchlist().includes(item.player)) row.classList.add("highlight");
         groupDiv.appendChild(row);
-        addToWatchlist(item.player); // optional auto-add
       });
       resultsDiv.appendChild(groupDiv);
     } else resultsDiv.innerHTML="No results found.";
@@ -208,15 +202,21 @@ async function checkBan(namesInput){
 // ---------- CLEAR ----------
 function clearResults(){ document.getElementById("results").innerHTML=""; playerInput.value=""; }
 
+// ---------- INITIAL LOAD ----------
 window.addEventListener("DOMContentLoaded", ()=>{
   renderWatchlist();
-  // Auto-check
+
+  // Auto-check only if toggle is checked
+  const autoCheckToggle=document.getElementById("autoCheckToggle");
   const autoCheck=localStorage.getItem("autoCheckWatchlist")==="true";
-  document.getElementById("autoCheckToggle").checked=autoCheck;
+  autoCheckToggle.checked=autoCheck;
+  autoCheckToggle.addEventListener("change", ()=>{ localStorage.setItem("autoCheckWatchlist", autoCheckToggle.checked); });
   if(autoCheck && getWatchlist().length) checkAllWatchlist();
+
   // Dark mode
   const darkStored=localStorage.getItem("darkMode")==="true";
-  document.body.classList.toggle("dark-mode",darkStored); document.getElementById("darkModeToggle").checked=darkStored;
+  document.body.classList.toggle("dark-mode",darkStored); 
+  document.getElementById("darkModeToggle").checked=darkStored;
 });
 </script>
 </body>
