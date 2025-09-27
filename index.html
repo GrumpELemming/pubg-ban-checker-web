@@ -71,7 +71,7 @@ footer a:hover { text-decoration:underline; }
 </head>
 <body>
 
-<h1>PUBG Ban Checker v1.3</h1>
+<h1>PUBG Ban Checker v1.4</h1>
 <h2>Check if players are banned on Steam, Xbox, or PlayStation (max 10 names)</h2>
 
 <!-- Controls -->
@@ -112,8 +112,9 @@ Created by Grump E Lemming | Please visit my <a href="https://www.youtube.com/@G
 </footer>
 
 <div id="updates">
-<strong></strong><br>
-
+<strong>Version 1.4 Updates:</strong><br>
+- Watchlist check on load added<br>
+- Animations added
 </div>
 
 <script>
@@ -124,19 +125,37 @@ function renderWatchlist(){
   const container=document.getElementById("watchlistPlayersContainer");
   container.innerHTML="";
   getWatchlist().forEach(name=>{
-    const div=document.createElement("div"); div.className="watchlist-player"; div.textContent=name;
-    const btn=document.createElement("button"); btn.textContent="Remove"; btn.onclick=()=>{ removeFromWatchlist(name); };
-    div.appendChild(btn); container.appendChild(div);
+    const div=document.createElement("div"); 
+    div.className="watchlist-player"; 
+    div.textContent=name;
+    const btn=document.createElement("button"); 
+    btn.textContent="Remove"; 
+    btn.onclick=()=>{ removeFromWatchlist(name); };
+    div.appendChild(btn); 
+    container.appendChild(div);
   });
 }
-function addToWatchlist(name){ if(!name) return; let names=[name,...getWatchlist()]; names=[...new Set(names)].slice(0,50); storeWatchlist(names); renderWatchlist(); }
-function removeFromWatchlist(name){ let names=getWatchlist().filter(n=>n!==name); storeWatchlist(names); renderWatchlist(); }
+function addToWatchlist(name){ 
+  if(!name) return; 
+  let names=[name,...getWatchlist()]; 
+  names=[...new Set(names)].slice(0,50); 
+  storeWatchlist(names); 
+  renderWatchlist(); 
+}
+function removeFromWatchlist(name){ 
+  let names=getWatchlist().filter(n=>n!==name); 
+  storeWatchlist(names); 
+  renderWatchlist(); 
+}
 function clearWatchlist(){ storeWatchlist([]); renderWatchlist(); }
 function checkAllWatchlist(){ const names=getWatchlist(); if(names.length) checkBan(names.join(",")); }
 
 // ---------- DARK MODE ----------
 const darkToggle=document.getElementById("darkModeToggle");
-darkToggle.addEventListener("change",()=>{ document.body.classList.toggle("dark-mode",darkToggle.checked); localStorage.setItem("darkMode",darkToggle.checked); });
+darkToggle.addEventListener("change",()=>{ 
+  document.body.classList.toggle("dark-mode",darkToggle.checked); 
+  localStorage.setItem("darkMode",darkToggle.checked); 
+});
 
 // ---------- SUGGESTIONS ----------
 const playerInput=document.getElementById("playerInput");
@@ -149,13 +168,18 @@ function showSuggestions(input){
   if(!input){ suggestionList.style.display="none"; return; }
   const matches=getStoredNames().filter(n=>n.toLowerCase().startsWith(input.toLowerCase())); currentSuggestions=matches;
   if(!matches.length){ suggestionList.style.display="none"; return; }
-  matches.forEach(match=>{ const item=document.createElement("div"); item.className="suggestion-item"; item.textContent=match;
-    item.onclick=()=>{ playerInput.value=match; suggestionList.style.display="none"; }; suggestionList.appendChild(item);
+  matches.forEach(match=>{
+    const item=document.createElement("div"); 
+    item.className="suggestion-item"; 
+    item.textContent=match;
+    item.onclick=()=>{ playerInput.value=match; suggestionList.style.display="none"; }; 
+    suggestionList.appendChild(item);
   });
   const rect=playerInput.getBoundingClientRect();
   suggestionList.style.top=rect.bottom+window.scrollY+"px";
   suggestionList.style.left=rect.left+window.scrollX+"px";
-  suggestionList.style.width=rect.width+"px"; suggestionList.style.display="block";
+  suggestionList.style.width=rect.width+"px"; 
+  suggestionList.style.display="block";
 }
 
 playerInput.addEventListener("input", e=>{ 
@@ -173,11 +197,21 @@ playerInput.addEventListener("keydown", e=>{
     else checkBan();
   } else if(e.key==="Escape"){ document.getElementById("suggestions").style.display="none"; }
 });
-function updateActive(){ const items=document.getElementById("suggestions").getElementsByClassName("suggestion-item"); Array.from(items).forEach((el,i)=>el.classList.toggle("suggestion-active",i===suggestionIndex)); }
+function updateActive(){ 
+  const items=document.getElementById("suggestions").getElementsByClassName("suggestion-item"); 
+  Array.from(items).forEach((el,i)=>el.classList.toggle("suggestion-active",i===suggestionIndex)); 
+}
 document.addEventListener("click", e=>{ if(!playerInput.contains(e.target)) document.getElementById("suggestions").style.display="none"; });
 
 // ---------- BAN CHECK ----------
-function getStatusClass(status){ switch(status){ case "Not banned": return "not-banned"; case "Temporarily banned": return "temp-banned"; case "Permanently banned": return "perm-banned"; default: return "unknown"; } }
+function getStatusClass(status){ 
+  switch(status){ 
+    case "Not banned": return "not-banned"; 
+    case "Temporarily banned": return "temp-banned"; 
+    case "Permanently banned": return "perm-banned"; 
+    default: return "unknown"; 
+  } 
+}
 
 async function checkBan(namesInput){
   const input=namesInput || playerInput.value.trim();
@@ -193,11 +227,12 @@ async function checkBan(namesInput){
     if(data.results && data.results.length){
       const groupDiv=document.createElement("div"); groupDiv.className="group-result";
       data.results.forEach((item,i)=>{
-        const row=document.createElement("div"); row.className="player-row "+getStatusClass(item.banStatus);
-        row.style.animationDelay=`${i*0.1}s`; row.innerHTML=`<strong>${item.player}:</strong> <span class="status">${item.banStatus}</span>`;
+        const row=document.createElement("div"); 
+        row.className="player-row "+getStatusClass(item.banStatus);
+        row.style.animationDelay=`${i*0.1}s`; 
+        row.innerHTML=`<strong>${item.player}:</strong> <span class="status">${item.banStatus}</span>`;
         if(getWatchlist().includes(item.player)) row.classList.add("highlight");
         groupDiv.appendChild(row);
-        addToWatchlist(item.player); // optional auto-add
       });
       resultsDiv.appendChild(groupDiv);
     } else resultsDiv.innerHTML="No results found.";
@@ -207,15 +242,29 @@ async function checkBan(namesInput){
 // ---------- CLEAR ----------
 function clearResults(){ document.getElementById("results").innerHTML=""; playerInput.value=""; }
 
+// ---------- DOM CONTENT LOADED ----------
 window.addEventListener("DOMContentLoaded", ()=>{
   renderWatchlist();
-  // Auto-check
-  const autoCheck=localStorage.getItem("autoCheckWatchlist")==="true";
-  document.getElementById("autoCheckToggle").checked=autoCheck;
-  if(autoCheck && getWatchlist().length) checkAllWatchlist();
+
+  // Auto-check watchlist
+  const autoCheckToggle = document.getElementById("autoCheckToggle");
+  const autoCheck = localStorage.getItem("autoCheckWatchlist") === "true";
+  autoCheckToggle.checked = autoCheck;
+
+  // Save toggle changes
+  autoCheckToggle.addEventListener("change", ()=>{
+    localStorage.setItem("autoCheckWatchlist", autoCheckToggle.checked);
+  });
+
+  // Only auto-check if enabled
+  if(autoCheck && getWatchlist().length){
+    checkAllWatchlist();
+  }
+
   // Dark mode
-  const darkStored=localStorage.getItem("darkMode")==="true";
-  document.body.classList.toggle("dark-mode",darkStored); document.getElementById("darkModeToggle").checked=darkStored;
+  const darkStored = localStorage.getItem("darkMode") === "true";
+  document.body.classList.toggle("dark-mode", darkStored);
+  document.getElementById("darkModeToggle").checked = darkStored;
 });
 </script>
 </body>
