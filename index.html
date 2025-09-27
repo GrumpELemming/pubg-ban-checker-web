@@ -58,10 +58,6 @@ button:active { transform:scale(0.98); box-shadow:0 2px 6px rgba(0,0,0,0.2); }
 
 .highlight { box-shadow:0 0 10px 2px rgba(255,255,0,0.7); }
 
-#suggestions { position:absolute; background:rgba(255,255,255,0.95); color:#333; border-radius:6px; max-height:150px; overflow-y:auto; display:none; z-index:10; }
-.suggestion-item { padding:6px 10px; cursor:pointer; }
-.suggestion-item:hover, .suggestion-active { background-color:#f0f0f0; }
-
 footer { text-align:center; margin-bottom:10px; font-size:0.9em; color:#ffebcd; }
 footer a { color:#ffd700; text-decoration:none; }
 footer a:hover { text-decoration:underline; }
@@ -103,16 +99,13 @@ footer a:hover { text-decoration:underline; }
 <!-- Results Section -->
 <div class="container results-container" id="results"></div>
 
-<!-- Suggestions -->
-<div id="suggestions"></div>
-
 <!-- Footer -->
 <footer>
 Created by Grump E Lemming | Please visit my <a href="https://www.youtube.com/@GrumPeLemminG" target="_blank">YouTube channel</a>
 </footer>
 
 <div id="updates">
-<strong>Version 1.4 Updates:</strong><br>
+<strong>Version 1.4:</strong><br>
 - Watchlist check on load added<br>
 - Animations added
 </div>
@@ -125,14 +118,9 @@ function renderWatchlist(){
   const container=document.getElementById("watchlistPlayersContainer");
   container.innerHTML="";
   getWatchlist().forEach(name=>{
-    const div=document.createElement("div"); 
-    div.className="watchlist-player"; 
-    div.textContent=name;
-    const btn=document.createElement("button"); 
-    btn.textContent="Remove"; 
-    btn.onclick=()=>{ removeFromWatchlist(name); };
-    div.appendChild(btn); 
-    container.appendChild(div);
+    const div=document.createElement("div"); div.className="watchlist-player"; div.textContent=name;
+    const btn=document.createElement("button"); btn.textContent="Remove"; btn.onclick=()=>{ removeFromWatchlist(name); };
+    div.appendChild(btn); container.appendChild(div);
   });
 }
 function addToWatchlist(name){ 
@@ -148,7 +136,10 @@ function removeFromWatchlist(name){
   renderWatchlist(); 
 }
 function clearWatchlist(){ storeWatchlist([]); renderWatchlist(); }
-function checkAllWatchlist(){ const names=getWatchlist(); if(names.length) checkBan(names.join(",")); }
+function checkAllWatchlist(){ 
+  const names=getWatchlist(); 
+  if(names.length) checkBan(names.join(",")); 
+}
 
 // ---------- DARK MODE ----------
 const darkToggle=document.getElementById("darkModeToggle");
@@ -156,52 +147,6 @@ darkToggle.addEventListener("change",()=>{
   document.body.classList.toggle("dark-mode",darkToggle.checked); 
   localStorage.setItem("darkMode",darkToggle.checked); 
 });
-
-// ---------- SUGGESTIONS ----------
-const playerInput=document.getElementById("playerInput");
-let suggestionIndex=-1; let currentSuggestions=[]; const MAX_SUGGESTIONS=50;
-function getStoredNames(){ return JSON.parse(localStorage.getItem("searchedPlayers")||"[]"); }
-function storeName(name){ if(!name) return; let names=getStoredNames(); names.unshift(name); names=[...new Set(names)].slice(0,MAX_SUGGESTIONS); localStorage.setItem("searchedPlayers", JSON.stringify(names)); }
-
-function showSuggestions(input){
-  const suggestionList=document.getElementById("suggestions"); suggestionList.innerHTML=""; suggestionIndex=-1;
-  if(!input){ suggestionList.style.display="none"; return; }
-  const matches=getStoredNames().filter(n=>n.toLowerCase().startsWith(input.toLowerCase())); currentSuggestions=matches;
-  if(!matches.length){ suggestionList.style.display="none"; return; }
-  matches.forEach(match=>{
-    const item=document.createElement("div"); 
-    item.className="suggestion-item"; 
-    item.textContent=match;
-    item.onclick=()=>{ playerInput.value=match; suggestionList.style.display="none"; }; 
-    suggestionList.appendChild(item);
-  });
-  const rect=playerInput.getBoundingClientRect();
-  suggestionList.style.top=rect.bottom+window.scrollY+"px";
-  suggestionList.style.left=rect.left+window.scrollX+"px";
-  suggestionList.style.width=rect.width+"px"; 
-  suggestionList.style.display="block";
-}
-
-playerInput.addEventListener("input", e=>{ 
-  const value=e.target.value; showSuggestions(value);
-  if(value.endsWith(",")) value.split(",").map(p=>p.trim()).filter(p=>p).forEach(storeName);
-});
-
-playerInput.addEventListener("keydown", e=>{
-  const items=document.getElementById("suggestions").getElementsByClassName("suggestion-item");
-  if(!items.length) return;
-  if(e.key==="ArrowDown"){ e.preventDefault(); suggestionIndex=(suggestionIndex+1)%items.length; updateActive(); }
-  else if(e.key==="ArrowUp"){ e.preventDefault(); suggestionIndex=(suggestionIndex-1+items.length)%items.length; updateActive(); }
-  else if(e.key==="Enter"){ 
-    if(suggestionIndex>=0){ playerInput.value=items[suggestionIndex].textContent; document.getElementById("suggestions").style.display="none"; suggestionIndex=-1; }
-    else checkBan();
-  } else if(e.key==="Escape"){ document.getElementById("suggestions").style.display="none"; }
-});
-function updateActive(){ 
-  const items=document.getElementById("suggestions").getElementsByClassName("suggestion-item"); 
-  Array.from(items).forEach((el,i)=>el.classList.toggle("suggestion-active",i===suggestionIndex)); 
-}
-document.addEventListener("click", e=>{ if(!playerInput.contains(e.target)) document.getElementById("suggestions").style.display="none"; });
 
 // ---------- BAN CHECK ----------
 function getStatusClass(status){ 
@@ -214,7 +159,7 @@ function getStatusClass(status){
 }
 
 async function checkBan(namesInput){
-  const input=namesInput || playerInput.value.trim();
+  const input=namesInput || document.getElementById("playerInput").value.trim();
   const platform=document.getElementById("platformSelect").value;
   const resultsDiv=document.getElementById("results");
   if(!input){ alert("Enter at least one player name."); return; }
@@ -229,9 +174,20 @@ async function checkBan(namesInput){
       data.results.forEach((item,i)=>{
         const row=document.createElement("div"); 
         row.className="player-row "+getStatusClass(item.banStatus);
-        row.style.animationDelay=`${i*0.1}s`; 
+        row.style.animationDelay=`${i*0.1}s`;
         row.innerHTML=`<strong>${item.player}:</strong> <span class="status">${item.banStatus}</span>`;
+
+        // Add "Add to Watchlist" button if not already in watchlist
+        if(!getWatchlist().includes(item.player)){
+          const addBtn = document.createElement("button");
+          addBtn.textContent = "Add to Watchlist";
+          addBtn.onclick = () => { addToWatchlist(item.player); addBtn.remove(); };
+          row.appendChild(addBtn);
+        }
+
+        // Highlight if already in watchlist
         if(getWatchlist().includes(item.player)) row.classList.add("highlight");
+
         groupDiv.appendChild(row);
       });
       resultsDiv.appendChild(groupDiv);
@@ -240,31 +196,25 @@ async function checkBan(namesInput){
 }
 
 // ---------- CLEAR ----------
-function clearResults(){ document.getElementById("results").innerHTML=""; playerInput.value=""; }
+function clearResults(){ document.getElementById("results").innerHTML=""; document.getElementById("playerInput").value=""; }
 
-// ---------- DOM CONTENT LOADED ----------
+// ---------- PAGE LOAD ----------
 window.addEventListener("DOMContentLoaded", ()=>{
   renderWatchlist();
 
-  // Auto-check watchlist
-  const autoCheckToggle = document.getElementById("autoCheckToggle");
+  // Auto-check watchlist on load only if checkbox is true
   const autoCheck = localStorage.getItem("autoCheckWatchlist") === "true";
+  const autoCheckToggle = document.getElementById("autoCheckToggle");
   autoCheckToggle.checked = autoCheck;
-
-  // Save toggle changes
-  autoCheckToggle.addEventListener("change", ()=>{
+  autoCheckToggle.addEventListener("change", () => {
     localStorage.setItem("autoCheckWatchlist", autoCheckToggle.checked);
   });
-
-  // Only auto-check if enabled
-  if(autoCheck && getWatchlist().length){
-    checkAllWatchlist();
-  }
+  if(autoCheck && getWatchlist().length) checkAllWatchlist();
 
   // Dark mode
-  const darkStored = localStorage.getItem("darkMode") === "true";
-  document.body.classList.toggle("dark-mode", darkStored);
-  document.getElementById("darkModeToggle").checked = darkStored;
+  const darkStored=localStorage.getItem("darkMode")==="true";
+  document.body.classList.toggle("dark-mode",darkStored); 
+  document.getElementById("darkModeToggle").checked=darkStored;
 });
 </script>
 </body>
