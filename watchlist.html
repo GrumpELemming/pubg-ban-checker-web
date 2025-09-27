@@ -1,31 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="stylesheet" href="main.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Watchlist - PUBG Ban Checker</title>
 <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-
 <h1>Watchlist</h1>
-
+<div class="nav-links">
+  <button onclick="location.href='index.html'">Checker</button>
+  <button onclick="location.href='updates.html'">Updates</button>
+</div>
 <div class="container watchlist-container">
-  <h3>Your Watchlist</h3>
   <div id="watchlistPlayersContainer"></div>
-  <div class="watchlist-buttons">
+  <div style="margin-top:10px;">
     <button onclick="checkAllWatchlist()">Check All Watchlist</button>
     <button onclick="clearWatchlist()">Clear Watchlist</button>
-    <a href="index.html" class="nav-link">Back to Ban Checker</a>
-    <a href="updates.html" class="nav-link">About / Updates</a>
   </div>
 </div>
 
-<!-- Results -->
-<div class="container results-container" id="results"></div>
+<footer>
+Created by Grump E Lemming | Please visit my <a href="https://www.youtube.com/@GrumPeLemminG" target="_blank">YouTube channel</a>
+</footer>
 
 <script src="js/main.js"></script>
-<script>initPage();</script>
+<script>renderWatchlist();</script>
 </body>
 </html>
