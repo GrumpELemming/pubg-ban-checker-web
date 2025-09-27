@@ -74,4 +74,36 @@ document.addEventListener("click", e=>{ if(!playerInput?.contains(e.target)) doc
 // ---------- BAN CHECK ----------
 function getStatusClass(status){ switch(status){ case "Not banned": return "not-banned"; case "Temporarily banned": return "temp-banned"; case "Permanently banned": return "perm-banned"; default: return "unknown"; } }
 
-async function check
+async function checkBan(namesInput){
+  if(!playerInput) return;
+  const input=namesInput || playerInput.value.trim();
+  const platform=document.getElementById("platformSelect").value;
+  const resultsDiv=document.getElementById("results");
+  if(!input){ alert("Enter at least one player name."); return; }
+  if(input.split(",").length>10){ alert("Maximum 10 names at a time."); return; }
+  if(!resultsDiv) return;
+  resultsDiv.innerHTML="<p class='loading'>Checking… please wait</p>";
+  try{
+    const response=await fetch(`https://pubg-ban-checker-backend.onrender.com/check-ban?player=${encodeURIComponent(input)}&platform=${platform}`);
+    const data=await response.json(); resultsDiv.innerHTML="";
+    if(data.error){ resultsDiv.innerHTML=`<p class='unknown'>Error: ${data.error}</p>`; return; }
+    if(data.results && data.results.length){
+      const groupDiv=document.createElement("div"); groupDiv.className="group-result";
+      data.results.forEach((item,i)=>{
+        const row=document.createElement("div"); row.className="player-row "+getStatusClass(item.banStatus);
+        row.style.animationDelay=`${i*0.1}s`;
+        row.innerHTML=`<strong>${item.player}:</strong> <span class="status">${item.banStatus}</span> 
+          <button onclick="addToWatchlist('${item.player}')">Add to Watchlist</button>`;
+        groupDiv.appendChild(row);
+      });
+      resultsDiv.appendChild(groupDiv);
+    } else resultsDiv.innerHTML="No results found.";
+  } catch(err){ resultsDiv.innerHTML=`<p class='unknown'>Error fetching results: ${err}</p>`; }
+}
+
+// ---------- CLEAR ----------
+function clearResults(){ const resultsDiv=document.getElementById("results"); if(resultsDiv) resultsDiv.innerHTML=""; if(playerInput) playerInput.value=""; }
+
+window.addEventListener("DOMContentLoaded", ()=>{
+  renderWatchlist();
+});
