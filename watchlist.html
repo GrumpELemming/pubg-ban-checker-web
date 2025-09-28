@@ -11,13 +11,13 @@
 <h1>PUBG Watchlist</h1>
 <h2>Manage and check your watchlist</h2>
 
-<!-- Navigation -->
+<!-- Navigation Buttons -->
 <div class="container controls">
   <button onclick="location.href='index.html'">Ban Checker</button>
-  <button onclick="location.href='about.html'">About</button>
+  <button onclick="location.href='updates.html'">About</button>
 </div>
 
-<!-- Add Player -->
+<!-- Add Player to Watchlist -->
 <div class="container controls">
   <input id="watchlistInput" placeholder="Enter player name">
   <button onclick="addWatchlistFromInput()">Add to Watchlist</button>
@@ -27,7 +27,7 @@
 <!-- Watchlist Section -->
 <div class="container watchlist-container">
   <div id="watchlistPlayersContainer"></div>
-  <div class="watchlist-buttons">
+  <div style="margin-top:10px;">
     <button onclick="checkAllWatchlist()">Check All Watchlist</button>
     <button onclick="clearWatchlist()">Clear Watchlist</button>
   </div>
@@ -50,10 +50,7 @@ window.addEventListener("DOMContentLoaded", ()=>{
   const toggle=document.getElementById("autoCheckWatchlist");
   if(toggle) toggle.checked=autoCheck;
   if(autoCheck && getWatchlist().length) checkAllWatchlist();
-
-  if(toggle) toggle.addEventListener("change",()=>{
-    localStorage.setItem("autoCheckWatchlist", toggle.checked);
-  });
+  if(toggle) toggle.addEventListener("change",()=>{ localStorage.setItem("autoCheckWatchlist", toggle.checked); });
 });
 </script>
 </body>
