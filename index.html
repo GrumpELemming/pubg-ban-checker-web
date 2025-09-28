@@ -12,7 +12,7 @@
 <h2>Check if players are banned on Steam, Xbox, or PlayStation (max 10 names)</h2>
 
 <!-- Navigation Buttons -->
-<div class="container controls" style="flex-direction:row; justify-content:center; gap:10px; flex-wrap:wrap;">
+<div class="container controls" style="flex-direction:row; justify-content:center; gap:20px; flex-wrap:wrap; margin-bottom:20px;">
   <a href="watchlist.html"><button>Watchlist</button></a>
   <a href="updates.html"><button>Updates/About</button></a>
 </div>
@@ -25,11 +25,10 @@
     <option value="xbox">Xbox</option>
     <option value="psn">PlayStation</option>
   </select>
-  <div style="display:flex; gap:10px; flex-wrap:wrap;">
+  <div style="display:flex; gap:15px; flex-wrap:wrap; margin-top:15px;">
     <button onclick="checkBan()">Check Ban</button>
     <button onclick="clearResults()">Clear Results</button>
     <label><input type="checkbox" id="darkModeToggle"> Dark Mode</label>
-    <label><input type="checkbox" id="autoCheckToggle"> Auto-check Watchlist</label>
   </div>
 </div>
 
@@ -41,12 +40,14 @@
 
 <!-- Footer -->
 <footer>
-Created by Grump E Lemming | Please visit my <a href="https://www.youtube.com/@GrumPeLemminG" target="_blank">YouTube channel</a>
+Created by Grump E Lemming | Please visit my 
+<a href="https://www.youtube.com/@GrumPeLemminG" target="_blank">YouTube channel</a><br>
+<em>If you're seeing this I am testing and will revert to 1.4 soon</em>
 </footer>
 
 <div id="updates">
 <strong>Version 1.5 Updates:</strong><br>
-- Watchlist check on load added<br>
+- Watchlist check on load added (watchlist page only)<br>
 - Animations added
 </div>
 
