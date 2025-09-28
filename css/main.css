@@ -11,10 +11,12 @@ body {
 }
 body.dark-mode { background: linear-gradient(135deg, #222, #444); color:#eee; }
 
-h1 { font-size:2.2em; margin:40px 0 10px 0; text-align:center; color:var(--accent-color); }
+h1 { font-size:2.2em; margin:40px 0 10px 0; text-align:center; color:#ffdd59; }
 h2 { font-size:1em; margin-bottom:20px; color:#ffd700; text-align:center; }
 
 .container { width:90%; max-width:700px; margin-bottom:20px; padding:20px; border-radius:12px; background: rgba(255,255,255,0.1); box-shadow:0 4px 10px rgba(0,0,0,0.3); }
+
+.controls, .watchlist-container, .results-container, .nav-links { display:flex; flex-direction:column; gap:10px; }
 
 input, select, button {
   padding:10px; font-size:1em; border-radius:6px; border:none; outline:none;
@@ -26,10 +28,8 @@ button { background-color:#ff4757; color:white; font-weight:bold; cursor:pointer
 button:hover { transform:scale(1.05); box-shadow:0 4px 10px rgba(0,0,0,0.3); }
 button:active { transform:scale(0.98); box-shadow:0 2px 6px rgba(0,0,0,0.2); }
 
-#results .group-result { display:flex; flex-direction:column; gap:6px; }
-#results .player-row, #watchlistPlayersContainer .watchlist-player {
-  padding:10px; border-radius:6px; display:flex; justify-content:space-between; align-items:center;
-  transition: transform 0.2s ease, background 0.3s ease;
+#results .group-result, #watchlistPlayersContainer .watchlist-player {
+  display:flex; flex-direction:column; gap:6px; padding:10px; border-radius:6px; transition: transform 0.2s ease, background 0.3s ease;
 }
 #results .player-row:hover, #watchlistPlayersContainer .watchlist-player:hover { transform:scale(1.02); background-color: rgba(255,255,255,0.15); }
 
@@ -37,10 +37,5 @@ button:active { transform:scale(0.98); box-shadow:0 2px 6px rgba(0,0,0,0.2); }
 .temp-banned { background: linear-gradient(90deg,#ffc107,#ffcd39); color:black; }
 .perm-banned { background: linear-gradient(90deg,#dc3545,#e74c3c); color:white; }
 .unknown { background: linear-gradient(90deg,#6c757d,#95a5a6); color:white; }
+
 .highlight { box-shadow:0 0 10px 2px rgba(255,255,0,0.7); }
-
-footer { text-align:center; margin-bottom:10px; font-size:0.9em; color:#ffebcd; }
-footer a { color:#ffd700; text-decoration:none; }
-footer a:hover { text-decoration:underline; }
-
-#updates { text-align:center; font-size:0.9em; color:#ffd; margin-bottom:20px; }
