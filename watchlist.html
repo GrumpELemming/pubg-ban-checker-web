@@ -17,14 +17,14 @@
   <button onclick="location.href='updates.html'">About</button>
 </div>
 
-<!-- Add Player to Watchlist -->
+<!-- Add Player -->
 <div class="container controls">
   <input id="watchlistInput" placeholder="Enter player name">
   <button onclick="addWatchlistFromInput()">Add to Watchlist</button>
   <label><input type="checkbox" id="autoCheckWatchlist"> Auto-check watchlist on load</label>
 </div>
 
-<!-- Watchlist Section -->
+<!-- Watchlist -->
 <div class="container watchlist-container">
   <div id="watchlistPlayersContainer"></div>
   <div style="margin-top:10px;">
@@ -33,24 +33,28 @@
   </div>
 </div>
 
-<!-- Results Section -->
+<!-- Results -->
 <div class="container results-container" id="results"></div>
 
 <script src="js/main.js"></script>
 <script>
 function addWatchlistFromInput(){
-  const input=document.getElementById("watchlistInput");
+  const input = document.getElementById("watchlistInput");
   if(input && input.value.trim()) addToWatchlist(input.value.trim());
   input.value="";
 }
 
+// Auto-check on load for watchlist page
 window.addEventListener("DOMContentLoaded", ()=>{
   renderWatchlist();
+  const toggle = document.getElementById("autoCheckWatchlist");
   const autoCheck = localStorage.getItem("autoCheckWatchlist")==="true";
-  const toggle=document.getElementById("autoCheckWatchlist");
-  if(toggle) toggle.checked=autoCheck;
+  if(toggle) toggle.checked = autoCheck;
   if(autoCheck && getWatchlist().length) checkAllWatchlist();
-  if(toggle) toggle.addEventListener("change",()=>{ localStorage.setItem("autoCheckWatchlist", toggle.checked); });
+
+  if(toggle) toggle.addEventListener("change", ()=>{
+    localStorage.setItem("autoCheckWatchlist", toggle.checked);
+  });
 });
 </script>
 </body>
