@@ -12,145 +12,49 @@
 <h2>Manage and check your watchlist</h2>
 
 <!-- Navigation Buttons -->
-<div class="container nav-links">
+<div class="container controls">
   <button onclick="location.href='index.html'">Ban Checker</button>
   <button onclick="location.href='updates.html'">About</button>
 </div>
 
-<!-- Add Player to Watchlist -->
+<!-- Add Player -->
 <div class="container controls">
   <input id="watchlistInput" placeholder="Enter player name">
   <button onclick="addWatchlistFromInput()">Add to Watchlist</button>
   <label><input type="checkbox" id="autoCheckWatchlist"> Auto-check watchlist on load</label>
 </div>
 
-<!-- Watchlist Section -->
+<!-- Watchlist -->
 <div class="container watchlist-container">
   <div id="watchlistPlayersContainer"></div>
-  <div class="control-buttons">
+  <div style="margin-top:10px;">
     <button onclick="checkAllWatchlist()">Check All Watchlist</button>
     <button onclick="clearWatchlist()">Clear Watchlist</button>
   </div>
 </div>
 
-<!-- Results Section -->
+<!-- Results -->
 <div class="container results-container" id="results"></div>
 
 <script src="js/main.js"></script>
 <script>
-// ---------- WATCHLIST FUNCTIONS ----------
-function getWatchlist() { 
-  return JSON.parse(localStorage.getItem("watchlist") || "[]"); 
-}
-function storeWatchlist(names) { 
-  localStorage.setItem("watchlist", JSON.stringify(names)); 
-}
-function renderWatchlist() {
-  const container = document.getElementById("watchlistPlayersContainer");
-  container.innerHTML = "";
-  getWatchlist().forEach(name => {
-    const div = document.createElement("div");
-    div.className = "watchlist-player";
-    div.textContent = name;
-
-    const btn = document.createElement("button");
-    btn.textContent = "Remove";
-    btn.onclick = () => removeFromWatchlist(name);
-
-    div.appendChild(btn);
-    container.appendChild(div);
-  });
-}
-function addToWatchlist(name) {
-  if (!name) return;
-  let names = [name, ...getWatchlist()];
-  names = [...new Set(names)].slice(0, 50);
-  storeWatchlist(names);
-  renderWatchlist();
-}
-function removeFromWatchlist(name) {
-  let names = getWatchlist().filter(n => n !== name);
-  storeWatchlist(names);
-  renderWatchlist();
-}
-function clearWatchlist() {
-  storeWatchlist([]);
-  renderWatchlist();
-}
-
-// ---------- ADD PLAYER INPUT ----------
-function addWatchlistFromInput() {
+function addWatchlistFromInput(){
   const input = document.getElementById("watchlistInput");
-  if (input && input.value.trim()) addToWatchlist(input.value.trim());
-  input.value = "";
+  if(input && input.value.trim()) addToWatchlist(input.value.trim());
+  input.value="";
 }
 
-// ---------- BAN CHECK ----------
-async function checkAllWatchlist() {
-  const names = getWatchlist().map(n => n.trim()).filter(Boolean);
-  if (!names.length) return alert("Watchlist is empty.");
-  if (names.length > 10) return alert("Maximum 10 names at a time.");
-  
-  const platform = document.getElementById("platformSelect")?.value || "steam";
-  const resultsDiv = document.getElementById("results");
-  resultsDiv.innerHTML = "<p class='loading'>Checking… please wait</p>";
-
-  try {
-    const response = await fetch(
-      `https://pubg-ban-checker-backend.onrender.com/check-ban?player=${encodeURIComponent(names.join(","))}&platform=${platform}`
-    );
-    const data = await response.json();
-    resultsDiv.innerHTML = "";
-
-    if (data.error) {
-      resultsDiv.innerHTML = `<p class='unknown'>Error: ${data.error}</p>`;
-      return;
-    }
-
-    if (data.results && data.results.length) {
-      const groupDiv = document.createElement("div");
-      groupDiv.className = "group-result";
-
-      data.results.forEach((item, i) => {
-        const row = document.createElement("div");
-        row.className = "player-row " + getStatusClass(item.banStatus);
-        row.innerHTML = `<strong>${item.player}:</strong> <span class="status">${item.banStatus}</span>`;
-        groupDiv.appendChild(row);
-      });
-
-      resultsDiv.appendChild(groupDiv);
-    } else {
-      resultsDiv.innerHTML = "No results found.";
-    }
-  } catch (err) {
-    resultsDiv.innerHTML = `<p class='unknown'>Error fetching results: ${err}</p>`;
-  }
-}
-
-// ---------- BAN STATUS CLASS ----------
-function getStatusClass(status) {
-  switch (status) {
-    case "Not banned": return "not-banned";
-    case "Temporarily banned": return "temp-banned";
-    case "Permanently banned": return "perm-banned";
-    default: return "unknown";
-  }
-}
-
-// ---------- AUTO-CHECK & RENDER ----------
-window.addEventListener("DOMContentLoaded", () => {
+// Auto-check on load for watchlist page
+window.addEventListener("DOMContentLoaded", ()=>{
   renderWatchlist();
-
   const toggle = document.getElementById("autoCheckWatchlist");
-  const autoCheck = localStorage.getItem("autoCheckWatchlist") === "true";
-  if (toggle) toggle.checked = autoCheck;
-  if (autoCheck && getWatchlist().length) checkAllWatchlist();
+  const autoCheck = localStorage.getItem("autoCheckWatchlist")==="true";
+  if(toggle) toggle.checked = autoCheck;
+  if(autoCheck && getWatchlist().length) checkAllWatchlist();
 
-  if (toggle) {
-    toggle.addEventListener("change", () => {
-      localStorage.setItem("autoCheckWatchlist", toggle.checked);
-    });
-  }
+  if(toggle) toggle.addEventListener("change", ()=>{
+    localStorage.setItem("autoCheckWatchlist", toggle.checked);
+  });
 });
 </script>
 </body>
