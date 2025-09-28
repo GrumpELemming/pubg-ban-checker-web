@@ -1,56 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PUBG Ban Checker v1.5</title>
-<link rel="stylesheet" href="css/main.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PUBG Ban Checker v1.5.1</title>
+  <link rel="stylesheet" href="main.css">
 </head>
 <body>
 
-<h1>PUBG Ban Checker v1.5</h1>
-<h2>Check if players are banned on Steam, Xbox, or PlayStation (max 10 names)</h2>
+  <h1>PUBG Ban Checker v1.5.1</h1>
+  <h2>Check if players are banned on Steam, Xbox, or PlayStation (max 10 names)</h2>
 
-<!-- Navigation Buttons -->
-<div class="container controls" style="flex-direction:row; justify-content:center; gap:20px; flex-wrap:wrap; margin-bottom:20px;">
-  <a href="watchlist.html"><button>Watchlist</button></a>
-  <a href="updates.html"><button>Updates/About</button></a>
-</div>
-
-<!-- Controls -->
-<div class="container controls">
-  <input id="playerInput" placeholder="Enter player names, separated by commas">
-  <select id="platformSelect">
-    <option value="steam">Steam</option>
-    <option value="xbox">Xbox</option>
-    <option value="psn">PlayStation</option>
-  </select>
-  <div style="display:flex; gap:15px; flex-wrap:wrap; margin-top:15px;">
-    <button onclick="checkBan()">Check Ban</button>
-    <button onclick="clearResults()">Clear Results</button>
-    <label><input type="checkbox" id="darkModeToggle"> Dark Mode</label>
+  <!-- Navigation Buttons -->
+  <div class="container nav-links">
+    <button onclick="location.href='watchlist.html'">Watchlist</button>
+    <button onclick="location.href='about.html'">About</button>
+    <button onclick="location.href='updates.html'">Updates</button>
   </div>
-</div>
 
-<!-- Results Section -->
-<div class="container results-container" id="results"></div>
+  <!-- Controls -->
+  <div class="container controls">
+    <input id="playerInput" placeholder="Enter player names, separated by commas">
+    <select id="platformSelect">
+      <option value="steam">Steam</option>
+      <option value="xbox">Xbox</option>
+      <option value="psn">PlayStation</option>
+    </select>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <button onclick="checkBan()">Check Ban</button>
+      <button onclick="clearResults()">Clear Results</button>
+      <label><input type="checkbox" id="darkModeToggle"> Dark Mode</label>
+    </div>
+  </div>
 
-<!-- Suggestions -->
-<div id="suggestions"></div>
+  <!-- Results Section -->
+  <div class="container results-container" id="results"></div>
 
-<!-- Footer -->
-<footer>
-Created by Grump E Lemming | Please visit my 
-<a href="https://www.youtube.com/@GrumPeLemminG" target="_blank">YouTube channel</a><br>
-<em>If you're seeing this I am testing and will revert to 1.4 soon</em>
-</footer>
+  <!-- Suggestions -->
+  <div id="suggestions"></div>
 
-<div id="updates">
-<strong>Version 1.5 Updates:</strong><br>
-- Watchlist check on load added (watchlist page only)<br>
-- Animations added
-</div>
-
-<script src="js/main.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>
