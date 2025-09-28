@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Watchlist - PUBG Ban Checker</title>
+<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<h1>PUBG Watchlist</h1>
+<h2>Manage and check your watchlist</h2>
+
+<!-- Navigation Buttons -->
+<div class="container controls" style="flex-direction:row; justify-content:center; gap:10px; flex-wrap:wrap;">
+  <a href="index.html"><button>Ban Checker</button></a>
+  <a href="updates.html"><button>Updates/About</button></a>
+</div>
+
+<!-- Add Player to Watchlist -->
+<div class="container controls">
+  <input id="watchlistInput" placeholder="Enter player name">
+  <button onclick="addWatchlistFromInput()">Add to Watchlist</button>
+  <label><input type="checkbox" id="autoCheckWatchlist"> Auto-check watchlist on load</label>
+</div>
+
+<!-- Watchlist Section -->
+<div class="container watchlist-container">
+  <div id="watchlistPlayersContainer"></div>
+  <div style="margin-top:10px;">
+    <button onclick="checkAllWatchlist()">Check All Watchlist</button>
+    <button onclick="clearWatchlist()">Clear Watchlist</button>
+  </div>
+</div>
+
+<!-- Results Section -->
+<div class="container results-container" id="results"></div>
+
+<!-- Footer -->
+<footer>
+Created by Grump E Lemming | Please visit my <a href="https://www.youtube.com/@GrumPeLemminG" target="_blank">YouTube channel</a>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+function addWatchlistFromInput(){
+  const input=document.getElementById("watchlistInput");
+  if(input && input.value.trim()) addToWatchlist(input.value.trim());
+  input.value="";
+}
+
+// Auto-check on load for watchlist page
+window.addEventListener("DOMContentLoaded", ()=>{
+  renderWatchlist();
+  const autoCheck = localStorage.getItem("autoCheckWatchlist")==="true";
+  const toggle=document.getElementById("autoCheckWatchlist");
+  if(toggle) toggle.checked=autoCheck;
+  if(autoCheck && getWatchlist().length) checkAllWatchlist();
+
+  // Save toggle change
+  if(toggle) toggle.addEventListener("change",()=>{
+    localStorage.setItem("autoCheckWatchlist", toggle.checked);
+  });
+});
+</script>
+</body>
+</html>
