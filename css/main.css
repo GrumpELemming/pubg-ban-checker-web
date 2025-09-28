@@ -1,115 +1,96 @@
 :root {
   --accent-color: #ffdd59;
-  --bg-light: rgba(255,255,255,0.1);
-  --bg-dark: #222;
-  --text-light: #f0f0f0;
-  --text-dark: #eee;
-  --btn-color: #ff4757;
-  --btn-hover: #ff6b81;
-  --watchlist-btn: #1e90ff;
-  --watchlist-hover: #3399ff;
+  --bg-light: #f0f0f0;
+  --bg-dark: #1f1c2c;
+  --card-light: rgba(255,255,255,0.1);
+  --card-dark: rgba(0,0,0,0.3);
+  --text-light: #222;
+  --text-dark: #f0f0f0;
 }
 
-/* ---------- BODY ---------- */
+/* GENERAL STYLING */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin:0; padding:0;
-  background: linear-gradient(135deg, #1f1c2c, #928dab);
-  color: var(--text-light);
-  display: flex; flex-direction: column; align-items: center;
-  min-height: 100vh;
+  background: linear-gradient(135deg, var(--bg-dark), #928dab);
+  color: var(--text-dark);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  min-height:100vh;
   transition: background 0.3s, color 0.3s;
 }
+
 body.dark-mode {
   background: linear-gradient(135deg, #222, #444);
-  color: var(--text-dark);
+  color: #eee;
 }
 
-h1 { font-size:2.2em; margin:40px 0 10px 0; text-align:center; color:var(--accent-color); }
-h2 { font-size:1em; margin-bottom:20px; color:#ffd700; text-align:center; }
+/* HEADINGS */
+h1 { font-size:2em; margin:20px 0 10px; text-align:center; color:var(--accent-color); }
+h2 { font-size:1em; margin-bottom:15px; color:#ffd700; text-align:center; }
 
-/* ---------- CONTAINERS ---------- */
+/* CONTAINERS */
 .container {
   width:90%;
   max-width:700px;
   margin-bottom:20px;
   padding:20px;
   border-radius:12px;
-  background: var(--bg-light);
-  box-shadow:0 4px 10px rgba(0,0,0,0.3);
+  background: var(--card-light);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transition: background 0.3s;
 }
 
-/* ---------- CONTROLS ---------- */
-.controls {
+body.dark-mode .container { background: var(--card-dark); }
+
+/* NAVIGATION BUTTONS */
+.nav-links {
   display:flex;
-  flex-direction:column;
+  justify-content:center;
   gap:10px;
+  margin-bottom:16px;
 }
-.controls input, .controls select {
+
+/* BUTTONS */
+button {
+  padding:10px 16px;
+  font-size:1em;
+  border-radius:6px;
+  border:none;
+  cursor:pointer;
+  font-weight:bold;
+  background-color:#ff4757;
+  color:white;
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+
+button:hover { transform: scale(1.05); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+button:active { transform: scale(0.98); box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+
+/* CONTROLS */
+.controls { display:flex; flex-direction:column; gap:10px; }
+.control-buttons { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+
+input, select {
   padding:10px;
   font-size:1em;
   border-radius:6px;
   border:none;
   outline:none;
-  transition: border 0.3s, box-shadow 0.3s, transform 0.2s;
+  transition: border 0.3s, box-shadow 0.3s;
 }
-.controls input:focus, .controls select:focus {
+
+input:focus, select:focus {
   border:1px solid var(--accent-color);
-  box-shadow:0 0 8px rgba(255,221,89,0.5);
+  box-shadow: 0 0 8px rgba(255,221,89,0.5);
 }
 
-/* ---------- BUTTONS ---------- */
-button {
-  padding:10px 14px;
-  font-size:1em;
-  border-radius:6px;
-  border:none;
-  outline:none;
-  cursor:pointer;
-  font-weight:bold;
-  transition: transform 0.2s, box-shadow 0.3s, background 0.3s;
-}
+/* RESULTS & WATCHLIST */
+#results .group-result { display:flex; flex-direction:column; gap:6px; }
 
-/* Main buttons */
-.control-buttons button, .nav-links button {
-  background-color: var(--btn-color);
-  color:white;
-}
-.control-buttons button:hover, .nav-links button:hover {
-  background-color: var(--btn-hover);
-  transform: scale(1.05);
-  box-shadow:0 4px 10px rgba(0,0,0,0.3);
-}
-.control-buttons button:active, .nav-links button:active {
-  transform: scale(0.98);
-}
-
-/* Add to Watchlist buttons */
-.player-row button, .watchlist-player button, #watchlistInput + button {
-  background-color: var(--watchlist-btn);
-  color:white;
-}
-.player-row button:hover, .watchlist-player button:hover, #watchlistInput + button:hover {
-  background-color: var(--watchlist-hover);
-  transform: scale(1.05);
-}
-
-/* ---------- NAVIGATION ---------- */
-.nav-links {
-  display:flex;
-  justify-content:center;
-  gap:12px;
-  margin-bottom:16px;
-}
-
-/* ---------- RESULTS & WATCHLIST ---------- */
-#results .group-result, .watchlist-container {
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-}
-
-#results .player-row, #watchlistPlayersContainer .watchlist-player {
+#results .player-row, 
+#watchlistPlayersContainer .watchlist-player {
   padding:10px;
   border-radius:6px;
   display:flex;
@@ -117,12 +98,14 @@ button {
   align-items:center;
   transition: transform 0.2s ease, background 0.3s ease;
 }
-#results .player-row:hover, #watchlistPlayersContainer .watchlist-player:hover {
-  transform:scale(1.02);
+
+#results .player-row:hover, 
+#watchlistPlayersContainer .watchlist-player:hover {
+  transform: scale(1.02);
   background-color: rgba(255,255,255,0.15);
 }
 
-/* ---------- BAN STATUS COLORS ---------- */
+/* BAN STATUS COLORS */
 .not-banned { background: linear-gradient(90deg,#28a745,#2ecc71); color:white; }
 .temp-banned { background: linear-gradient(90deg,#ffc107,#ffcd39); color:black; }
 .perm-banned { background: linear-gradient(90deg,#dc3545,#e74c3c); color:white; }
@@ -130,7 +113,7 @@ button {
 
 .highlight { box-shadow:0 0 10px 2px rgba(255,255,0,0.7); }
 
-/* ---------- SUGGESTIONS ---------- */
+/* SUGGESTIONS */
 #suggestions {
   position:absolute;
   background:rgba(255,255,255,0.95);
@@ -141,20 +124,15 @@ button {
   display:none;
   z-index:10;
 }
-.suggestion-item {
-  padding:6px 10px;
-  cursor:pointer;
-}
+.suggestion-item { padding:6px 10px; cursor:pointer; }
 .suggestion-item:hover, .suggestion-active { background-color:#f0f0f0; }
 
-/* ---------- FOOTER ---------- */
-footer { text-align:center; margin-bottom:10px; font-size:0.9em; color:#ffebcd; }
+/* FOOTER */
+footer {
+  text-align:center;
+  margin-bottom:10px;
+  font-size:0.9em;
+  color:#ffebcd;
+}
 footer a { color:#ffd700; text-decoration:none; }
 footer a:hover { text-decoration:underline; }
-
-/* ---------- RESPONSIVE ---------- */
-@media (max-width:480px){
-  .nav-links { flex-direction:column; }
-  .control-buttons { flex-direction:column; gap:8px; }
-  #results .player-row, #watchlistPlayersContainer .watchlist-player { flex-direction:column; align-items:flex-start; gap:6px; }
-}

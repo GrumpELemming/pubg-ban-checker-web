@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Watchlist - PUBG Ban Checker v1.5.2</title>
+<title>Watchlist - PUBG Ban Checker</title>
 <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -36,29 +36,26 @@
 <!-- Results Section -->
 <div class="container results-container" id="results"></div>
 
-<!-- Footer -->
-<footer>
-Created by Grump E Lemming | Please visit my <a href="https://www.youtube.com/@GrumPeLemminG" target="_blank">YouTube channel</a>
-</footer>
-
 <script src="js/main.js"></script>
 <script>
 function addWatchlistFromInput(){
-  const input=document.getElementById("watchlistInput");
+  const input = document.getElementById("watchlistInput");
   if(input && input.value.trim()) addToWatchlist(input.value.trim());
   input.value="";
 }
 
-// Auto-check on load
+// Apply dark mode on page load
+const darkStored = localStorage.getItem("darkMode") === "true";
+document.body.classList.toggle("dark-mode", darkStored);
+
+// Auto-check watchlist
 window.addEventListener("DOMContentLoaded", ()=>{
   renderWatchlist();
-  const autoCheck = localStorage.getItem("autoCheckWatchlist")==="true";
-  const toggle=document.getElementById("autoCheckWatchlist");
-  if(toggle) toggle.checked=autoCheck;
+  const autoCheck = localStorage.getItem("autoCheckWatchlist") === "true";
+  const toggle = document.getElementById("autoCheckWatchlist");
+  if(toggle) toggle.checked = autoCheck;
   if(autoCheck && getWatchlist().length) checkAllWatchlist();
-
-  // Save toggle change
-  if(toggle) toggle.addEventListener("change",()=>{ localStorage.setItem("autoCheckWatchlist", toggle.checked); });
+  if(toggle) toggle.addEventListener("change", ()=>{ localStorage.setItem("autoCheckWatchlist", toggle.checked); });
 });
 </script>
 </body>

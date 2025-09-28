@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Updates/About - PUBG Ban Checker</title>
-  <link rel="stylesheet" href="css/main.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Updates/About - PUBG Ban Checker</title>
+<link rel="stylesheet" href="css/main.css">
 </head>
 <body>
 
@@ -12,35 +12,27 @@
 
 <!-- Navigation Buttons -->
 <div class="container nav-links">
-  <a href="index.html"><button>Ban Checker</button></a>
-  <a href="watchlist.html"><button>Watchlist</button></a>
+  <button onclick="location.href='index.html'">Ban Checker</button>
+  <button onclick="location.href='watchlist.html'">Watchlist</button>
 </div>
 
 <div class="container">
-  <h2>About Me</h2>
-  <p>Hello, I'm Grump E Lemming. I created this PUBG Ban Checker to help players see ban statuses across Steam, Xbox, and PlayStation. This tool also has a watchlist feature for quick monitoring.</p>
+<h2>About Me</h2>
+<p>Hello, I'm Grump E Lemming. I created this PUBG Ban Checker to help players see ban statuses across Steam, Xbox, and PlayStation. This tool also has a watchlist feature for quick monitoring.</p>
 
-  <h2>Version History</h2>
-  <ul>
-    <li>v1.3: Watchlist feature, Dark mode, Animations</li>
-    <li>v1.4: Stable release, equal boxes, fixed layout</li>
-    <li>v1.5: Watchlist check on load, animations, multi-page structure</li>
-  </ul>
+<h2>Version History</h2>
+<ul>
+  <li>v1.3: Watchlist feature, Dark mode, Animations</li>
+  <li>v1.4: Stable release, equal boxes, fixed layout</li>
+  <li>v1.5: Watchlist check on load, animations, multi-page structure</li>
+</ul>
 </div>
 
-<footer>
-  Created by Grump E Lemming | Please visit my 
-  <a href="https://www.youtube.com/@GrumPeLemminG" target="_blank">YouTube channel</a>
-</footer>
-
-<script src="js/main.js"></script>
 <script>
-  // Apply dark mode if previously set
-  window.addEventListener("DOMContentLoaded", () => {
-    if (localStorage.getItem("darkMode") === "enabled") {
-      document.body.classList.add("dark-mode");
-    }
-  });
+  // Apply dark mode on page load
+  const darkStored = localStorage.getItem("darkMode") === "true";
+  document.body.classList.toggle("dark-mode", darkStored);
 </script>
+
 </body>
 </html>
