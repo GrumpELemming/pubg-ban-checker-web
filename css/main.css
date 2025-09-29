@@ -65,8 +65,8 @@ button:active { transform:scale(0.98); box-shadow:0 2px 6px rgba(0,0,0,0.2); }
 
 .social-buttons button {
   font-weight:bold;
-  padding:8px 20px;              /* wider horizontally for elongated shape */
-  border-radius:25px / 50%;       /* pointy-ended oval / capsule */
+  padding:8px 20px;
+  border-radius:25px / 50%;
   border:none; 
   cursor:pointer;
   color:white;
@@ -83,7 +83,6 @@ button:active { transform:scale(0.98); box-shadow:0 2px 6px rgba(0,0,0,0.2); }
   box-shadow:0 2px 6px rgba(0,0,0,0.2); 
 }
 
-/* Brand colors */
 .social-buttons button.youtube { background-color:#FF0000; }
 .social-buttons button.x { background-color:#1DA1F2; }
 .social-buttons button.instagram { background: linear-gradient(45deg,#feda75,#d62976,#962fbf,#4f5bd5); }
