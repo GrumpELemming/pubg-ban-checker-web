@@ -1,4 +1,4 @@
-// ---------- WATCHLIST ----------
+// WATCHLIST
 function getWatchlist(){ return JSON.parse(localStorage.getItem("watchlist")||"[]"); }
 function storeWatchlist(names){ localStorage.setItem("watchlist", JSON.stringify(names)); }
 function renderWatchlist(){
@@ -30,12 +30,12 @@ function removeFromWatchlist(name){
 }
 function clearWatchlist(){ storeWatchlist([]); renderWatchlist(); }
 function checkAllWatchlist(){
-  const names=getWatchlist();
+  const names = getWatchlist();
   if(names.length) checkBan(names.join(","), true);
   else document.getElementById("results").innerHTML="<p>No players in watchlist.</p>";
 }
 
-// ---------- DARK MODE ----------
+// DARK MODE
 const darkToggle=document.getElementById("darkModeToggle");
 if(darkToggle){
   darkToggle.addEventListener("change",()=>{ 
@@ -49,7 +49,7 @@ window.addEventListener("DOMContentLoaded",()=>{
   if(darkToggle) darkToggle.checked=darkStored;
 });
 
-// ---------- SUGGESTIONS ----------
+// SUGGESTIONS
 const playerInput=document.getElementById("playerInput");
 let suggestionIndex=-1; let currentSuggestions=[]; const MAX_SUGGESTIONS=50;
 function getStoredNames(){ return JSON.parse(localStorage.getItem("searchedPlayers")||"[]"); }
@@ -72,7 +72,7 @@ function showSuggestions(input){
   suggestionList.style.width=rect.width+"px"; suggestionList.style.display="block";
 }
 if(playerInput){
-  playerInput.addEventListener("input", e=>{
+  playerInput.addEventListener("input", e=>{ 
     const value=e.target.value; showSuggestions(value);
     if(value.endsWith(",")) value.split(",").map(p=>p.trim()).filter(p=>p).forEach(storeName);
   });
@@ -81,7 +81,7 @@ if(playerInput){
     if(!items.length) return;
     if(e.key==="ArrowDown"){ e.preventDefault(); suggestionIndex=(suggestionIndex+1)%items.length; updateActive(); }
     else if(e.key==="ArrowUp"){ e.preventDefault(); suggestionIndex=(suggestionIndex-1+items.length)%items.length; updateActive(); }
-    else if(e.key==="Enter"){
+    else if(e.key==="Enter"){ 
       if(suggestionIndex>=0){ playerInput.value=items[suggestionIndex].textContent; document.getElementById("suggestions").style.display="none"; suggestionIndex=-1; }
       else checkBan();
     } else if(e.key==="Escape"){ document.getElementById("suggestions").style.display="none"; }
@@ -89,7 +89,7 @@ if(playerInput){
 }
 function updateActive(){ const items=document.getElementById("suggestions").getElementsByClassName("suggestion-item"); Array.from(items).forEach((el,i)=>el.classList.toggle("suggestion-active",i===suggestionIndex)); }
 
-// ---------- BAN CHECK ----------
+// BAN CHECK
 function getStatusClass(status){ switch(status){ case "Not banned": return "not-banned"; case "Temporarily banned": return "temp-banned"; case "Permanently banned": return "perm-banned"; default: return "unknown"; } }
 async function checkBan(namesInput, fromWatchlist=false){
   const input=namesInput || (playerInput?playerInput.value.trim():"");
@@ -107,11 +107,11 @@ async function checkBan(namesInput, fromWatchlist=false){
       const groupDiv=document.createElement("div"); groupDiv.className="group-result";
       data.results.forEach((item,i)=>{
         const row=document.createElement("div"); row.className="player-row "+getStatusClass(item.banStatus);
-        row.style.animationDelay=`${i*0.1}s`;
+        row.style.animationDelay=`${i*0.1}s`; 
         row.innerHTML=`<strong>${item.player}:</strong> <span class="status">${item.banStatus}</span>`;
         if(getWatchlist().includes(item.player)) row.classList.add("highlight");
         if(!fromWatchlist && !getWatchlist().includes(item.player)){
-          const btn=document.createElement("button"); btn.textContent="Add to Watchlist";
+          const btn=document.createElement("button"); btn.textContent="Add to Watchlist"; 
           btn.onclick=()=>{ addToWatchlist(item.player); btn.disabled=true; btn.textContent="Added"; };
           row.appendChild(btn);
         }
@@ -122,8 +122,8 @@ async function checkBan(namesInput, fromWatchlist=false){
   } catch(err){ resultsDiv.innerHTML=`<p class='unknown'>Error fetching results: ${err}</p>`; }
 }
 
-// ---------- CLEAR ----------
+// CLEAR
 function clearResults(){ const r=document.getElementById("results"); if(r) r.innerHTML=""; if(playerInput) playerInput.value=""; }
 
-// ---------- WATCHLIST RENDER ----------
+// WATCHLIST RENDER
 window.addEventListener("DOMContentLoaded", ()=>{ renderWatchlist(); });
