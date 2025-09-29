@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PUBG Ban Checker v1.5.1</title>
+<title>PUBG Ban Checker</title>
 <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -11,11 +11,13 @@
 <h1>PUBG Ban Checker</h1>
 <h2>Check if players are banned on Steam, Xbox, or PlayStation (max 10 names)</h2>
 
+<!-- Navigation Buttons -->
 <div class="container nav-links">
   <button onclick="location.href='watchlist.html'">Watchlist</button>
   <button onclick="location.href='updates.html'">About</button>
 </div>
 
+<!-- Controls -->
 <div class="container controls">
   <input id="playerInput" placeholder="Enter player names, separated by commas">
   <select id="platformSelect">
@@ -31,7 +33,10 @@
   </div>
 </div>
 
+<!-- Results -->
 <div class="container results-container" id="results"></div>
+
+<!-- Suggestions -->
 <div id="suggestions"></div>
 
 <script src="js/main.js"></script>
