@@ -129,15 +129,22 @@ const ROW_IN = "rowIn 280ms cubic-bezier(.2,.8,.2,1) both";
 // Ban Checker (Main, ban-only)
 // =======================================
 async function checkBan(namesInput, fromWatchlist=false){
-  const input=namesInput || (playerInput?playerInput.value.trim():"");
+  let input = namesInput || (playerInput?playerInput.value.trim():"");
+
+  // ✅ Normalize input (support commas AND line breaks)
+  input = input.replace(/\n+/g, ",").replace(/\s*,\s*/g, ",");
+  const players = input.split(",").map(p=>p.trim()).filter(Boolean);
+
   const platform=document.getElementById("platformSelect")?.value || "steam";
   const resultsDiv=document.getElementById("results");
-  if(!input){ alert("Enter at least one player name."); return; }
-  if(input.split(",").length>10){ alert("Maximum 10 names at a time."); return; }
+
+  if(players.length === 0){ alert("Enter at least one player name."); return; }
+  if(players.length > 10){ alert("Maximum 10 names at a time."); return; }
   if(!resultsDiv) return;
+
   resultsDiv.innerHTML="<p class='loading'>Checking… please wait</p>";
   try{
-    const response=await fetch(`https://pubg-ban-checker-backend.onrender.com/check-ban?player=${encodeURIComponent(input)}&platform=${platform}`);
+    const response=await fetch(`https://pubg-ban-checker-backend.onrender.com/check-ban?player=${encodeURIComponent(players.join(","))}&platform=${platform}`);
     const data=await response.json(); resultsDiv.innerHTML="";
     if(data.error){ resultsDiv.innerHTML=`<p class='unknown'>Error: ${data.error}</p>`; return; }
     if(data.results && data.results.length){
@@ -192,9 +199,13 @@ function clearResults(){
 // Temporary Clan Checker (Ban + Clan)
 // =======================================
 async function checkClan(){
-  const input = document.getElementById("clanInput")?.value.trim();
-  if(!input) return alert("Enter at least one player name.");
-  const names = input.split(",").map(n=>n.trim()).filter(n=>n);
+  const inputRaw = document.getElementById("clanInput")?.value.trim();
+  if(!inputRaw) return alert("Enter at least one player name.");
+
+  // Normalize for line breaks + commas
+  const names = inputRaw.replace(/\n+/g, ",").replace(/\s*,\s*/g, ",")
+    .split(",").map(n=>n.trim()).filter(Boolean);
+
   if(names.length > 2) return alert("Clan checker is limited to 2 names.");
 
   const resultsDiv = document.getElementById("clanResults");
