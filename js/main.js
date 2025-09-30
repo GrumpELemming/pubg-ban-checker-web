@@ -129,11 +129,11 @@ const ROW_IN = "rowIn 280ms cubic-bezier(.2,.8,.2,1) both";
 // Ban Checker (Main, ban-only)
 // =======================================
 async function checkBan(namesInput, fromWatchlist=false){
-  let input = namesInput || (playerInput?playerInput.value.trim():"");
-
-  // ✅ Normalize input (support commas AND line breaks)
-  input = input.replace(/\n+/g, ",").replace(/\s*,\s*/g, ",");
-  const players = input.split(",").map(p=>p.trim()).filter(Boolean);
+  let raw = namesInput || (playerInput ? playerInput.value : "");
+  const players = raw
+    .split(/[\n,;|\t]+/)       // <-- split on newlines, commas, semicolons, pipes, tabs
+    .map(p => p.trim())
+    .filter(Boolean);
 
   const platform=document.getElementById("platformSelect")?.value || "steam";
   const resultsDiv=document.getElementById("results");
@@ -153,7 +153,6 @@ async function checkBan(namesInput, fromWatchlist=false){
         const row=document.createElement("div");
         row.className = "player-row " + getStatusClass(item.banStatus) + " result-appear";
 
-        // Inline combined animations
         if (row.classList.contains("temp-banned")) {
           row.style.animation = `${ROW_IN}, pulse 2s infinite`;
           row.style.animationDelay = `${i*0.06}s, 0s`;
@@ -199,14 +198,14 @@ function clearResults(){
 // Temporary Clan Checker (Ban + Clan)
 // =======================================
 async function checkClan(){
-  const inputRaw = document.getElementById("clanInput")?.value.trim();
-  if(!inputRaw) return alert("Enter at least one player name.");
+  const inputRaw = document.getElementById("clanInput")?.value || "";
+  const names = inputRaw
+    .split(/[\n,;|\t]+/)
+    .map(n=>n.trim())
+    .filter(Boolean);
 
-  // Normalize for line breaks + commas
-  const names = inputRaw.replace(/\n+/g, ",").replace(/\s*,\s*/g, ",")
-    .split(",").map(n=>n.trim()).filter(Boolean);
-
-  if(names.length > 2) return alert("Clan checker is limited to 2 names.");
+  if(names.length === 0) return alert("Enter at least one player name.");
+  if(names.length > 2)  return alert("Clan checker is limited to 2 names.");
 
   const resultsDiv = document.getElementById("clanResults");
   if(!resultsDiv) return;
