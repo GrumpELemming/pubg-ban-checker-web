@@ -1,103 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PUBG Ban Checker v1.5.2</title>
-<link rel="stylesheet" href="css/main.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PUBG Ban Checker</title>
+  <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
+  <h1>PUBG Ban Checker</h1>
 
-<h1>PUBG Ban Checker</h1>
-<h2>Check if players are banned on Steam, Xbox, or PlayStation (max 10 names)</h2>
-
-<!-- Navigation Buttons -->
-<div class="container nav-links">
-  <button onclick="location.href='watchlist.html'">Watchlist</button>
-  <button onclick="location.href='updates.html'">About</button>
-</div>
-
-<!-- Controls -->
-<div class="container controls">
-  <textarea id="playerInput" placeholder="Enter player names, separated by commas or new lines"></textarea>
-  <select id="platformSelect">
-    <option value="steam">Steam</option>
-    <option value="xbox">Xbox</option>
-    <option value="psn">PlayStation</option>
-  </select>
-
-  <div class="control-buttons">
-    <button id="checkBtn">Check Ban</button>
-    <button id="clearBtn">Clear Results</button>
-    <label><input type="checkbox" id="darkModeToggle"> Dark Mode 🌙</label>
+  <!-- ✅ Navigation buttons (no Home on index) -->
+  <div class="nav-links">
+    <a href="watchlist.html"><button>Watchlist</button></a>
+    <a href="updates.html"><button>Updates / About Me</button></a>
   </div>
-</div>
 
-<!-- Suggestions Dropdown -->
-<div id="suggestions"></div>
+  <!-- Ban Checker -->
+  <div class="container">
+    <h2>Ban Checker</h2>
+    <textarea id="playerInput" placeholder="Enter player names, separated by commas"></textarea>
+    <div class="control-buttons">
+      <button onclick="checkBan()">Check</button>
+      <button class="secondary-btn" onclick="clearResults()">Clear</button>
+      <label><input type="checkbox" id="darkModeToggle"> Dark Mode</label>
+    </div>
+    <div id="results"></div>
+  </div>
 
-<!-- Loading/Results -->
-<div class="container results-container" id="results"></div>
+  <!-- Clan Checker with tooltip -->
+  <div class="container clan-checker">
+    <h2>
+      Clan Checker
+      <span class="tooltip">ℹ
+        <span class="tooltip-text">
+          Enter up to 2 player names separated by a comma.<br>
+          This will check their ban status together and display with a "Clan Mode" badge.
+        </span>
+      </span>
+    </h2>
+    <textarea id="clanInput" placeholder="Enter up to 2 player names..."></textarea>
+    <div class="control-buttons">
+      <button onclick="checkClan()">Check Clan</button>
+      <button class="secondary-btn" onclick="clearClanResults()">Clear</button>
+    </div>
+    <div id="clanResults"></div>
+  </div>
 
-<script src="js/main.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const playerInput = document.getElementById("playerInput");
-  const checkBtn = document.getElementById("checkBtn");
-  const clearBtn = document.getElementById("clearBtn");
-  const darkToggle = document.getElementById("darkModeToggle");
-
-  // Auto dark mode based on system preference
-  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  const darkStored = localStorage.getItem("darkMode") === "true";
-  document.body.classList.toggle("dark-mode", darkStored || (!localStorage.getItem("darkMode") && prefersDark));
-  if(darkToggle) darkToggle.checked = darkStored || (!localStorage.getItem("darkMode") && prefersDark);
-
-  if(darkToggle) darkToggle.addEventListener("change", () => {
-    document.body.classList.toggle("dark-mode", darkToggle.checked);
-    localStorage.setItem("darkMode", darkToggle.checked);
-  });
-
-  // Ban checker button
-  checkBtn.addEventListener("click", () => {
-    const names = playerInput.value.trim().replace(/\n/g, ',');
-    if(names.split(",").length > 10){ alert("Maximum 10 names at a time."); return; }
-    if(names) checkBan(names, false);
-    else alert("Enter at least one player name.");
-  });
-
-  // Clear button
-  clearBtn.addEventListener("click", () => {
-    document.getElementById("results").innerHTML = "";
-    playerInput.value = "";
-  });
-
-  // Suggestions & keyboard navigation
-  playerInput.addEventListener("input", e => {
-    showSuggestions(e.target.value);
-    if(e.target.value.endsWith(",")){
-      e.target.value.split(",").map(p => p.trim()).filter(p => p).forEach(storeName);
-    }
-  });
-
-  playerInput.addEventListener("keydown", e => {
-    const items = document.getElementById("suggestions").getElementsByClassName("suggestion-item");
-    if(!items.length) return;
-    if(e.key === "ArrowDown"){ e.preventDefault(); suggestionIndex=(suggestionIndex+1)%items.length; updateActive(); }
-    else if(e.key === "ArrowUp"){ e.preventDefault(); suggestionIndex=(suggestionIndex-1+items.length)%items.length; updateActive(); }
-    else if(e.key === "Enter"){
-      if(suggestionIndex>=0){ playerInput.value=items[suggestionIndex].textContent; document.getElementById("suggestions").style.display="none"; suggestionIndex=-1; }
-      else checkBtn.click();
-    } else if(e.key === "Escape"){ document.getElementById("suggestions").style.display="none"; }
-  });
-
-  // Click outside suggestions closes
-  document.addEventListener("click", e => {
-    if(!document.getElementById("suggestions").contains(e.target) && e.target !== playerInput){
-      document.getElementById("suggestions").style.display="none";
-    }
-  });
-});
-</script>
+  <script src="js/main.js"></script>
 </body>
 </html>
