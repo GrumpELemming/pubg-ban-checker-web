@@ -1,44 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Watchlist - PUBG Ban Checker</title>
-<link rel="stylesheet" href="css/main.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watchlist - PUBG Ban Checker</title>
+  <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
+  <h1>Watchlist</h1>
 
-<h1>PUBG Watchlist</h1>
-<h2>Manage and check your watchlist</h2>
+  <!-- ✅ Navigation: Home + Updates -->
+  <div class="nav-links">
+    <a href="index.html"><button>Home</button></a>
+    <a href="updates.html"><button>Updates</button></a>
+  </div>
 
-<div class="container nav-links">
-  <button onclick="location.href='index.html'">Ban Checker</button>
-  <button onclick="location.href='updates.html'">About</button>
-</div>
+  <div class="container">
+    <h2>Your Watchlist</h2>
+    <div id="watchlistPlayersContainer" class="watchlist-container"></div>
 
-<div class="container controls" style="flex-direction:row; align-items:center; justify-content:center; gap:10px;">
-  <label><input type="checkbox" id="autoCheckWatchlist"> Auto-check watchlist on load</label>
-  <button onclick="checkAllWatchlist()">Check Watchlist</button>
-</div>
+    <!-- ✅ Auto-check toggle -->
+    <label style="margin-top:10px; display:flex; align-items:center; gap:6px;">
+      <input type="checkbox" id="autoCheckToggle">
+      Auto-check watchlist on page load
+    </label>
 
-<div class="container watchlist-container">
-  <div id="watchlistPlayersContainer"></div>
-</div>
+    <div class="control-buttons">
+      <button onclick="checkAllWatchlist()">Check All</button>
+      <button class="secondary-btn" onclick="clearWatchlist()">Clear Watchlist</button>
+      <button class="secondary-btn" onclick="clearResults()">Clear Results</button>
+    </div>
 
-<div class="container results-container" id="results"></div>
+    <!-- ✅ Status message -->
+    <p id="autoCheckMsg" style="color: var(--muted); font-size:0.9rem; margin:6px 0;"></p>
 
-<script src="js/main.js"></script>
-<script>
-window.addEventListener("DOMContentLoaded", ()=>{
-  renderWatchlist();
-  const toggle = document.getElementById("autoCheckWatchlist");
-  const autoCheck = localStorage.getItem("autoCheckWatchlist")==="true";
-  if(toggle) toggle.checked = autoCheck;
-  if(autoCheck && getWatchlist().length) checkAllWatchlist();
-  if(toggle) toggle.addEventListener("change", ()=>{
-    localStorage.setItem("autoCheckWatchlist", toggle.checked);
+    <div id="results"></div>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script>
+  window.addEventListener("DOMContentLoaded", ()=>{
+    // Restore dark mode if it was enabled
+    const darkStored = localStorage.getItem("darkMode")==="true";
+    document.body.classList.toggle("dark-mode", darkStored);
+
+    // Render saved watchlist
+    renderWatchlist();
+
+    // Setup toggle
+    const toggle = document.getElementById("autoCheckToggle");
+    const savedPref = localStorage.getItem("autoCheckWatchlist")==="true";
+    toggle.checked = savedPref;
+
+    toggle.addEventListener("change", ()=>{
+      localStorage.setItem("autoCheckWatchlist", toggle.checked);
+    });
+
+    // Auto-check if enabled
+    if (savedPref && getWatchlist().length > 0) {
+      document.getElementById("autoCheckMsg").textContent = "Auto-checking your saved watchlist...";
+      checkAllWatchlist();
+    }
   });
-});
-</script>
+  </script>
 </body>
 </html>
