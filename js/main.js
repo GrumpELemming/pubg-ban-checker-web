@@ -1,41 +1,63 @@
-// WATCHLIST
+// =======================================
+// Watchlist helpers
+// =======================================
 function getWatchlist(){ return JSON.parse(localStorage.getItem("watchlist")||"[]"); }
 function storeWatchlist(names){ localStorage.setItem("watchlist", JSON.stringify(names)); }
+
 function renderWatchlist(){
   const container=document.getElementById("watchlistPlayersContainer");
   if(!container) return;
   container.innerHTML="";
-  getWatchlist().forEach(name=>{
+  getWatchlist().forEach(entry=>{
+    const name = (typeof entry==="string") ? entry : entry.name;
+    const clan = (typeof entry==="object" && entry.clan) ? entry.clan : null;
+
     const div=document.createElement("div");
     div.className="watchlist-player";
-    div.textContent=name;
+    div.innerHTML = `<strong>${name}</strong>${clan ? ` <span class="clan">[${clan}]</span>` : ""}`;
+
     const btn=document.createElement("button");
     btn.textContent="Remove";
     btn.onclick=()=>{ removeFromWatchlist(name); };
     div.appendChild(btn);
+
     container.appendChild(div);
   });
 }
-function addToWatchlist(name){
+
+function addToWatchlist(name, clan=null){
   if(!name) return;
-  let names=[name,...getWatchlist()];
-  names=[...new Set(names)].slice(0,50);
-  storeWatchlist(names);
+  const newEntry = clan ? { name, clan } : name;
+  const existing = getWatchlist();
+  const byName = n => (typeof n==="string" ? n : n.name);
+  const merged = [newEntry, ...existing]
+    .reduce((acc, item) => acc.some(x => byName(x)===byName(item)) ? acc : [...acc, item], []);
+  storeWatchlist(merged.slice(0,50));
   renderWatchlist();
 }
+
 function removeFromWatchlist(name){
-  let names=getWatchlist().filter(n=>n!==name);
+  const byName = n => (typeof n==="string" ? n : n.name);
+  const names=getWatchlist().filter(n=> byName(n)!==name);
   storeWatchlist(names);
   renderWatchlist();
 }
 function clearWatchlist(){ storeWatchlist([]); renderWatchlist(); }
+
 function checkAllWatchlist(){
-  const names = getWatchlist();
-  if(names.length) checkBan(names.join(","), true);
-  else document.getElementById("results").innerHTML="<p>No players in watchlist.</p>";
+  const entries = getWatchlist();
+  const resultsDiv=document.getElementById("results");
+  if(!entries.length){
+    if(resultsDiv) resultsDiv.innerHTML="<p>No players in watchlist.</p>";
+    return;
+  }
+  const names = entries.map(e => typeof e==="string" ? e : e.name);
+  checkBan(names.join(","), true);
 }
 
-// DARK MODE
+// =======================================
+// Dark Mode
+// =======================================
 const darkToggle=document.getElementById("darkModeToggle");
 if(darkToggle){
   darkToggle.addEventListener("change",()=>{ 
@@ -49,7 +71,9 @@ window.addEventListener("DOMContentLoaded",()=>{
   if(darkToggle) darkToggle.checked=darkStored;
 });
 
-// SUGGESTIONS
+// =======================================
+// Suggestions
+// =======================================
 const playerInput=document.getElementById("playerInput");
 let suggestionIndex=-1; let currentSuggestions=[]; const MAX_SUGGESTIONS=50;
 function getStoredNames(){ return JSON.parse(localStorage.getItem("searchedPlayers")||"[]"); }
@@ -83,14 +107,27 @@ if(playerInput){
     else if(e.key==="ArrowUp"){ e.preventDefault(); suggestionIndex=(suggestionIndex-1+items.length)%items.length; updateActive(); }
     else if(e.key==="Enter"){ 
       if(suggestionIndex>=0){ playerInput.value=items[suggestionIndex].textContent; document.getElementById("suggestions").style.display="none"; suggestionIndex=-1; }
-      else checkBan();
     } else if(e.key==="Escape"){ document.getElementById("suggestions").style.display="none"; }
   });
 }
 function updateActive(){ const items=document.getElementById("suggestions").getElementsByClassName("suggestion-item"); Array.from(items).forEach((el,i)=>el.classList.toggle("suggestion-active",i===suggestionIndex)); }
 
-// BAN CHECK
-function getStatusClass(status){ switch(status){ case "Not banned": return "not-banned"; case "Temporarily banned": return "temp-banned"; case "Permanently banned": return "perm-banned"; default: return "unknown"; } }
+// =======================================
+// Helpers
+// =======================================
+function getStatusClass(status){
+  switch(status){
+    case "Not banned": return "not-banned";
+    case "Temporarily banned": return "temp-banned";
+    case "Permanently banned": return "perm-banned";
+    default: return "unknown";
+  }
+}
+const ROW_IN = "rowIn 280ms cubic-bezier(.2,.8,.2,1) both";
+
+// =======================================
+// Ban Checker (Main, ban-only)
+// =======================================
 async function checkBan(namesInput, fromWatchlist=false){
   const input=namesInput || (playerInput?playerInput.value.trim():"");
   const platform=document.getElementById("platformSelect")?.value || "steam";
@@ -106,24 +143,111 @@ async function checkBan(namesInput, fromWatchlist=false){
     if(data.results && data.results.length){
       const groupDiv=document.createElement("div"); groupDiv.className="group-result";
       data.results.forEach((item,i)=>{
-        const row=document.createElement("div"); row.className="player-row "+getStatusClass(item.banStatus);
-        row.style.animationDelay=`${i*0.1}s`; 
-        row.innerHTML=`<strong>${item.player}:</strong> <span class="status">${item.banStatus}</span>`;
-        if(getWatchlist().includes(item.player)) row.classList.add("highlight");
-        if(!fromWatchlist && !getWatchlist().includes(item.player)){
-          const btn=document.createElement("button"); btn.textContent="Add to Watchlist"; 
-          btn.onclick=()=>{ addToWatchlist(item.player); btn.disabled=true; btn.textContent="Added"; };
+        const row=document.createElement("div");
+        row.className = "player-row " + getStatusClass(item.banStatus) + " result-appear";
+
+        // Inline combined animations
+        if (row.classList.contains("temp-banned")) {
+          row.style.animation = `${ROW_IN}, pulse 2s infinite`;
+          row.style.animationDelay = `${i*0.06}s, 0s`;
+        } else if (row.classList.contains("perm-banned")) {
+          row.style.animation = `${ROW_IN}, pulse 1.5s infinite`;
+          row.style.animationDelay = `${i*0.06}s, 0s`;
+        } else {
+          row.style.animation = ROW_IN;
+          row.style.animationDelay = `${i*0.06}s`;
+        }
+
+        row.innerHTML = `<strong>${item.player}</strong> <span class="status">${item.banStatus}</span>`;
+
+        const inWatchlist = getWatchlist().some(w => (typeof w==="string" ? w : w.name) === item.player);
+        if(!fromWatchlist && !inWatchlist){
+          const btn = document.createElement("button");
+          btn.textContent = "Add to Watchlist";
+          btn.onclick = () => {
+            addToWatchlist(item.player);
+            btn.disabled = true;
+            btn.textContent = "Added";
+          };
           row.appendChild(btn);
         }
         groupDiv.appendChild(row);
       });
       resultsDiv.appendChild(groupDiv);
-    } else resultsDiv.innerHTML="No results found.";
-  } catch(err){ resultsDiv.innerHTML=`<p class='unknown'>Error fetching results: ${err}</p>`; }
+    } else {
+      resultsDiv.innerHTML="No results found.";
+    }
+  } catch(err){
+    resultsDiv.innerHTML=`<p class='unknown'>Error fetching results: ${err}</p>`;
+  }
 }
 
-// CLEAR
-function clearResults(){ const r=document.getElementById("results"); if(r) r.innerHTML=""; if(playerInput) playerInput.value=""; }
+function clearResults(){
+  const r=document.getElementById("results"); 
+  if(r) r.innerHTML="";
+  if(playerInput) playerInput.value="";
+}
 
-// WATCHLIST RENDER
+// =======================================
+// Temporary Clan Checker (Ban + Clan)
+// =======================================
+async function checkClan(){
+  const input = document.getElementById("clanInput")?.value.trim();
+  if(!input) return alert("Enter at least one player name.");
+  const names = input.split(",").map(n=>n.trim()).filter(n=>n);
+  if(names.length > 2) return alert("Clan checker is limited to 2 names.");
+
+  const resultsDiv = document.getElementById("clanResults");
+  if(!resultsDiv) return;
+  resultsDiv.innerHTML = "<p class='loading'>Checking… please wait</p>";
+
+  try {
+    const response = await fetch(
+      `https://pubg-ban-checker-backend.onrender.com/check-ban-clan?player=${encodeURIComponent(names.join(","))}&platform=steam`
+    );
+    const data = await response.json();
+    resultsDiv.innerHTML = "";
+
+    if(data.results){
+      data.results.forEach((item,i)=>{
+        const row = document.createElement("div");
+        row.className = "player-row " + getStatusClass(item.banStatus) + " result-appear";
+
+        if (row.classList.contains("temp-banned")) {
+          row.style.animation = `${ROW_IN}, pulse 2s infinite`;
+          row.style.animationDelay = `${i*0.06}s, 0s`;
+        } else if (row.classList.contains("perm-banned")) {
+          row.style.animation = `${ROW_IN}, pulse 1.5s infinite`;
+          row.style.animationDelay = `${i*0.06}s, 0s`;
+        } else {
+          row.style.animation = ROW_IN;
+          row.style.animationDelay = `${i*0.06}s`;
+        }
+
+        row.innerHTML = `
+          <strong>${item.player}</strong>
+          ${item.clan ? ` <span class="clan">[${item.clan}]</span>` : ""}
+          <span class="status">${item.banStatus}</span>
+          <span class="clan-badge shimmer">Clan Mode</span>
+        `;
+        resultsDiv.appendChild(row);
+      });
+    } else {
+      resultsDiv.innerHTML = "No results found.";
+    }
+  } catch(err){
+    resultsDiv.innerHTML = `<p class='unknown'>Error fetching results: ${err}</p>`;
+  }
+}
+
+function clearClanResults(){
+  const el = document.getElementById("clanResults");
+  if (el) el.innerHTML = "";
+  const input = document.getElementById("clanInput");
+  if (input) input.value = "";
+}
+
+// =======================================
+// Init
+// =======================================
 window.addEventListener("DOMContentLoaded", ()=>{ renderWatchlist(); });
