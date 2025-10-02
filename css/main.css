@@ -1,5 +1,5 @@
 /* -------------------------------------------------------
-   PUBG Ban Checker - main.css (v1.5.3 Hybrid + Tooltip)
+   PUBG Ban Checker - main.css (v1.6.3 Final Polish)
    ------------------------------------------------------- */
 
 :root {
@@ -35,10 +35,38 @@ h1 { font-size: 2.2rem; margin: 40px 0 8px; text-align: center; color: var(--acc
 h2 { font-size: 1rem; font-weight: 500; margin: 0 0 18px; color: #ffe680; text-align: center; opacity: .95; }
 
 /* Containers */
-.container { width: min(92vw, 760px); background: var(--card); border-radius: 14px; padding: 18px; box-shadow: var(--shadow); backdrop-filter: blur(6px); margin: 10px 0; }
+.container {
+  width: min(92vw, 760px);
+  background: var(--card);
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(6px);
+  margin: 10px 0;
+}
 .nav-links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 .controls { display: flex; flex-direction: column; gap: 12px; }
+
+/* Watchlist container */
 .results-container, .watchlist-container { display: flex; flex-direction: column; gap: 10px; }
+.watchlist-container {
+  margin-top: 20px;
+  margin-bottom: 25px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Results block */
+.results-block {
+  margin-top: 25px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+#results {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
 /* Nav buttons */
 .nav-links a button {
@@ -55,22 +83,45 @@ h2 { font-size: 1rem; font-weight: 500; margin: 0 0 18px; color: #ffe680; text-a
 .nav-links a button:active { transform: scale(0.97); }
 
 /* Inputs & Buttons */
-textarea#playerInput, textarea#clanInput { width: 100%; min-height: 110px; resize: vertical; border: 1px solid transparent; border-radius: 10px; padding: 10px 12px; font-size: 1rem; color: #111; outline: none; }
-select, button { border: none; outline: none; border-radius: 10px; font-size: 1rem; padding: 10px 12px; }
+textarea#playerInput, textarea#clanInput {
+  width: 100%; min-height: 110px; resize: vertical;
+  border: 1px solid transparent; border-radius: 10px;
+  padding: 10px 12px; font-size: 1rem; color: #111; outline: none;
+}
+select, button {
+  border: none; outline: none; border-radius: 10px; font-size: 1rem; padding: 10px 12px;
+}
 button { background: #ff4757; color: #fff; font-weight: 700; cursor: pointer; min-width: 120px; }
 button.secondary-btn { background: #6c757d; }
 button.secondary-btn:hover { background: #5a6268; }
 
+/* Added-to-watchlist state */
+button.added-btn {
+  background: #6c757d;
+  cursor: default;
+  opacity: 0.8;
+  box-shadow: none;
+  transform: none;
+}
+
 /* Suggestions */
-#suggestions { position: absolute; z-index: 1000; display: none; background: #fff; color: #222; border-radius: 10px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,.25); max-height: 220px; overflow-y: auto; }
+#suggestions {
+  position: absolute; z-index: 1000; display: none;
+  background: #fff; color: #222; border-radius: 10px; overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0,0,0,.25); max-height: 220px; overflow-y: auto;
+}
 .suggestion-item { padding: 8px 10px; cursor: pointer; transition: background .15s; border-bottom: 1px solid #efefef; }
 .suggestion-item:last-child { border-bottom: none; }
 .suggestion-item:hover, .suggestion-active { background: #f2f2f2; }
 
-/* Player/Watchlist Rows */
-.group-result { display: flex; flex-direction: column; gap: 8px; }
-.player-row, .watchlist-player { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border-radius: 12px; background: rgba(255,255,255,0.12); box-shadow: 0 2px 10px rgba(0,0,0,.25); transition: transform .15s ease, box-shadow .2s ease, background .25s ease; }
-.player-row:hover, .watchlist-player:hover { transform: scale(1.02); box-shadow: 0 0 12px rgba(255,221,89,0.6); }
+/* Results/Player Rows */
+.player-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 12px 14px; border-radius: 12px; background: rgba(255,255,255,0.12);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+  transition: transform .15s ease, box-shadow .2s ease, background .25s ease;
+}
+.player-row:hover { transform: scale(1.02); box-shadow: 0 0 12px rgba(255,221,89,0.6); }
 
 /* Status Classes */
 .not-banned { background: linear-gradient(90deg, rgba(40,167,69,.75), rgba(46,204,113,.75)); color: #fff; }
@@ -78,109 +129,155 @@ button.secondary-btn:hover { background: #5a6268; }
 .perm-banned { background: linear-gradient(90deg, rgba(220,53,69,.85), rgba(231,76,60,.85)); color: #fff; animation: pulse 1.5s infinite; }
 .unknown { background: linear-gradient(90deg, rgba(108,117,125,.75), rgba(149,165,166,.75)); color: #fff; }
 
-/* Strong Pulse */
+/* Pulse */
 @keyframes pulse {
   0% { box-shadow: 0 0 5px rgba(255,0,0,0.3); transform: scale(1); }
   50% { box-shadow: 0 0 20px rgba(255,0,0,0.7); transform: scale(1.02); }
   100% { box-shadow: 0 0 5px rgba(255,0,0,0.3); transform: scale(1); }
 }
 
-/* Tooltip */
-.tooltip {
-  position: relative;
-  cursor: pointer;
-  margin-left: 8px;
-  background: #ffcc00;
-  color: #111;
-  font-weight: bold;
-  border-radius: 50%;
-  display: inline-flex;
+/* ======================
+   Platform Buttons
+   ====================== */
+.platform-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+.platform-btn {
+  width: 46px;
+  height: 46px;
+  background: rgba(255,255,255,0.10);
+  border-radius: 12px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
-  font-size: 12px;
-  line-height: 1;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .2s ease, background .2s ease;
+  border: 1px solid transparent;
+  position: relative;
 }
-.tooltip:hover { background: #ffd633; }
+.platform-btn .platform-icon { width: 24px; height: 24px; }
 
-.tooltip .tooltip-text {
-  visibility: hidden;
-  width: 240px;
+/* Active states */
+.platform-btn.active.steam { background: #1b2838; border-color: #1b2838; box-shadow: 0 0 14px #1b2838; }
+.platform-btn.active.xbox { background: #107C10; border-color: #107C10; box-shadow: 0 0 14px #107C10; }
+.platform-btn.active.psn { background: #003791; border-color: #003791; box-shadow: 0 0 14px #003791; }
+.platform-btn.active.kakao { background: #FEE500; border-color: #FEE500; box-shadow: 0 0 14px #FEE500; color: #000; }
+
+/* Tooltip for platform buttons */
+.platform-btn::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 115%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
   background: #333;
   color: #fff;
-  text-align: left;
+  font-size: 0.75rem;
+  padding: 6px 10px;
   border-radius: 6px;
-  padding: 8px;
-  position: absolute;
-  z-index: 1;
-  bottom: 125%;
-  left: 50%;
-  transform: translateX(-50%) translateY(-4px);
+  white-space: nowrap;
   opacity: 0;
+  pointer-events: none;
   transition: opacity 0.25s ease, transform 0.25s ease;
-  font-size: 0.8rem;
+  z-index: 10;
 }
-.tooltip:hover .tooltip-text {
-  visibility: visible;
+.platform-btn:hover::after {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
-.tooltip .tooltip-text::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border-width: 6px;
-  border-style: solid;
-  border-color: #333 transparent transparent transparent;
+
+/* Fade-out effect */
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-/* Animations */
-.result-appear { animation: rowIn 280ms cubic-bezier(.2,.8,.2,1) both; }
-@keyframes rowIn { 0% { opacity: 0; transform: translateY(8px) scale(.985); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
-.result-appear .status { animation: statusPop 380ms cubic-bezier(.2,.8,.2,1) both; }
-@keyframes statusPop { 0% { transform: scale(.96); } 60% { transform: scale(1.03); } 100% { transform: scale(1); } }
+/* Unified Watchlist Rows */
+.watchlist-player {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 12px 14px; border-radius: 12px;
+  background: rgba(255,255,255,0.12);
+  margin-bottom: 10px;
+  transition: transform .15s ease, opacity .3s ease;
+}
+.watchlist-player:hover { transform: scale(1.02); }
+.watchlist-player.neutral { background: rgba(255,255,255,0.12); }
+.watchlist-player.not-banned { background: linear-gradient(90deg, rgba(40,167,69,.75), rgba(46,204,113,.75)); color: #fff; }
+.watchlist-player.temp-banned { background: linear-gradient(90deg, rgba(255,193,7,.85), rgba(255,205,57,.85)); color: #111; animation: pulse 2s infinite; }
+.watchlist-player.perm-banned { background: linear-gradient(90deg, rgba(220,53,69,.85), rgba(231,76,60,.85)); color: #fff; animation: pulse 1.5s infinite; }
+.watchlist-player.unknown { background: linear-gradient(90deg, rgba(108,117,125,.75), rgba(149,165,166,.75)); color: #fff; }
 
-/* Social buttons - distinct styling */
+.actions { display: flex; gap: 8px; }
+.check-btn { background: #ff4757; color: #fff; font-weight: 700; border-radius: 8px; padding: 6px 12px; }
+.check-btn:hover { background: #ff5f6d; }
+.clear-btn { background: #6c757d; color: #fff; border-radius: 8px; padding: 6px 12px; }
+.clear-btn:hover { background: #5a6268; }
+.remove-btn { background: #333; color: #fff; border-radius: 8px; padding: 6px 12px; }
+.remove-btn:hover { background: #444; }
+
+/* ======================
+   Social Buttons (icon-only)
+   ====================== */
 .social-buttons {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 10px;
+  gap: 12px;
+  margin-top: 15px;
 }
-
-.social-buttons button {
-  font-weight: bold;
-  padding: 8px 20px;
-  border-radius: 25px / 50%;
-  border: none;
+.social-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  color: white;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform .15s ease, box-shadow .2s ease;
+  position: relative;
 }
+.social-btn img { width: 24px; height: 24px; }
 
-.social-buttons button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+/* Tooltip */
+.social-btn::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 115%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: #333;
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 6px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
 }
-
-.social-buttons button:active {
-  transform: scale(0.98);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+.social-btn:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
+.social-btn:hover { transform: scale(1.1); }
 
-/* Platform colors */
-.social-buttons .youtube   { background-color: #FF0000; }
-.social-buttons .x         { background-color: #1DA1F2; }
-.social-buttons .instagram { background: linear-gradient(45deg,#feda75,#d62976,#962fbf,#4f5bd5); }
-.social-buttons .tiktok    { background-color: #69C9D0; color: #000; }
-.social-buttons .twitch    { background-color: #9146FF; }
+/* Brand Colors */
+.social-btn.youtube   { background: #FF0000; }
+.social-btn.x         { background: #1DA1F2; }
+.social-btn.instagram { background: linear-gradient(45deg,#feda75,#d62976,#962fbf,#4f5bd5); }
+.social-btn.tiktok    { background: #69C9D0; }
+.social-btn.twitch    { background: #9146FF; }
 
-
-/* Dark mode */
-body.dark-mode { background: linear-gradient(135deg,#181818,#3a3a3a); color: #eee; }
-body.dark-mode .container { background: rgba(255,255,255,0.08); }
+/* ======================
+   Dark Mode
+   ====================== */
+body.dark-mode {
+  background: linear-gradient(135deg,#181818,#3a3a3a);
+  color: #eee;
+}
+body.dark-mode .container {
+  background: rgba(255,255,255,0.08);
+}
