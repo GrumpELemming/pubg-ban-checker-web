@@ -1,5 +1,5 @@
 /* -------------------------------------------------------
-   PUBG Ban Checker - main.css (v1.6.3 Final Polish)
+   PUBG Ban Checker - main.css (v1.6 Final with Tooltip Shimmer)
    ------------------------------------------------------- */
 
 :root {
@@ -104,29 +104,54 @@ button.added-btn {
   transform: none;
 }
 
-/* Suggestions */
-#suggestions {
-  position: absolute; z-index: 1000; display: none;
-  background: #fff; color: #222; border-radius: 10px; overflow: hidden;
-  box-shadow: 0 10px 20px rgba(0,0,0,.25); max-height: 220px; overflow-y: auto;
-}
-.suggestion-item { padding: 8px 10px; cursor: pointer; transition: background .15s; border-bottom: 1px solid #efefef; }
-.suggestion-item:last-child { border-bottom: none; }
-.suggestion-item:hover, .suggestion-active { background: #f2f2f2; }
-
 /* Results/Player Rows */
-.player-row {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  padding: 12px 14px; border-radius: 12px; background: rgba(255,255,255,0.12);
+.player-row, .watchlist-player {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.12);
   box-shadow: 0 2px 10px rgba(0,0,0,0.25);
   transition: transform .15s ease, box-shadow .2s ease, background .25s ease;
+  opacity: 0;
+  animation: fadeUpRow 0.5s forwards;
 }
-.player-row:hover { transform: scale(1.02); box-shadow: 0 0 12px rgba(255,221,89,0.6); }
+.player-row:hover, .watchlist-player:hover { transform: scale(1.02); }
+
+/* Row stagger delays (limit 10) */
+.player-row:nth-child(1), .watchlist-player:nth-child(1) { animation-delay: 0.05s; }
+.player-row:nth-child(2), .watchlist-player:nth-child(2) { animation-delay: 0.10s; }
+.player-row:nth-child(3), .watchlist-player:nth-child(3) { animation-delay: 0.15s; }
+.player-row:nth-child(4), .watchlist-player:nth-child(4) { animation-delay: 0.20s; }
+.player-row:nth-child(5), .watchlist-player:nth-child(5) { animation-delay: 0.25s; }
+.player-row:nth-child(6), .watchlist-player:nth-child(6) { animation-delay: 0.30s; }
+.player-row:nth-child(7), .watchlist-player:nth-child(7) { animation-delay: 0.35s; }
+.player-row:nth-child(8), .watchlist-player:nth-child(8) { animation-delay: 0.40s; }
+.player-row:nth-child(9), .watchlist-player:nth-child(9) { animation-delay: 0.45s; }
+.player-row:nth-child(10), .watchlist-player:nth-child(10) { animation-delay: 0.50s; }
+
+/* FadeUpRow Animation */
+@keyframes fadeUpRow {
+  from { opacity: 0; transform: translateY(8px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
 
 /* Status Classes */
 .not-banned { background: linear-gradient(90deg, rgba(40,167,69,.75), rgba(46,204,113,.75)); color: #fff; }
-.temp-banned { background: linear-gradient(90deg, rgba(255,193,7,.85), rgba(255,205,57,.85)); color: #111; animation: pulse 2s infinite; }
-.perm-banned { background: linear-gradient(90deg, rgba(220,53,69,.85), rgba(231,76,60,.85)); color: #fff; animation: pulse 1.5s infinite; }
+.temp-banned { 
+  background: linear-gradient(90deg, rgba(255,193,7,.85), rgba(255,205,57,.85)); 
+  color: #111; 
+  animation: pulse 2s infinite; 
+  opacity: 1 !important;
+}
+.perm-banned { 
+  background: linear-gradient(90deg, rgba(220,53,69,.85), rgba(231,76,60,.85)); 
+  color: #fff; 
+  animation: pulse 1.5s infinite; 
+  opacity: 1 !important;
+}
 .unknown { background: linear-gradient(90deg, rgba(108,117,125,.75), rgba(149,165,166,.75)); color: #fff; }
 
 /* Pulse */
@@ -157,8 +182,16 @@ button.added-btn {
   transition: transform .15s ease, box-shadow .2s ease, background .2s ease;
   border: 1px solid transparent;
   position: relative;
+  opacity: 0;
+  animation: fadeUp 0.4s forwards;
 }
 .platform-btn .platform-icon { width: 24px; height: 24px; }
+
+/* Platform Button Stagger Animation */
+.platform-row .platform-btn:nth-child(1) { animation-delay: 0.1s; }
+.platform-row .platform-btn:nth-child(2) { animation-delay: 0.2s; }
+.platform-row .platform-btn:nth-child(3) { animation-delay: 0.3s; }
+.platform-row .platform-btn:nth-child(4) { animation-delay: 0.4s; }
 
 /* Active states */
 .platform-btn.active.steam { background: #1b2838; border-color: #1b2838; box-shadow: 0 0 14px #1b2838; }
@@ -166,15 +199,13 @@ button.added-btn {
 .platform-btn.active.psn { background: #003791; border-color: #003791; box-shadow: 0 0 14px #003791; }
 .platform-btn.active.kakao { background: #FEE500; border-color: #FEE500; box-shadow: 0 0 14px #FEE500; color: #000; }
 
-/* Tooltip for platform buttons */
+/* Tooltip with shimmer effect */
 .platform-btn::after {
   content: attr(data-tooltip);
   position: absolute;
   bottom: 115%;
   left: 50%;
   transform: translateX(-50%) translateY(10px);
-  background: #333;
-  color: #fff;
   font-size: 0.75rem;
   padding: 6px 10px;
   border-radius: 6px;
@@ -183,6 +214,13 @@ button.added-btn {
   pointer-events: none;
   transition: opacity 0.25s ease, transform 0.25s ease;
   z-index: 10;
+
+  /* Shimmer text */
+  background: linear-gradient(90deg, #ffdd59, #fff, #ffdd59);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerMove 2s infinite linear;
 }
 .platform-btn:hover::after {
   opacity: 1;
@@ -190,33 +228,7 @@ button.added-btn {
 }
 
 /* Fade-out effect */
-.fade-out {
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-/* Unified Watchlist Rows */
-.watchlist-player {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  padding: 12px 14px; border-radius: 12px;
-  background: rgba(255,255,255,0.12);
-  margin-bottom: 10px;
-  transition: transform .15s ease, opacity .3s ease;
-}
-.watchlist-player:hover { transform: scale(1.02); }
-.watchlist-player.neutral { background: rgba(255,255,255,0.12); }
-.watchlist-player.not-banned { background: linear-gradient(90deg, rgba(40,167,69,.75), rgba(46,204,113,.75)); color: #fff; }
-.watchlist-player.temp-banned { background: linear-gradient(90deg, rgba(255,193,7,.85), rgba(255,205,57,.85)); color: #111; animation: pulse 2s infinite; }
-.watchlist-player.perm-banned { background: linear-gradient(90deg, rgba(220,53,69,.85), rgba(231,76,60,.85)); color: #fff; animation: pulse 1.5s infinite; }
-.watchlist-player.unknown { background: linear-gradient(90deg, rgba(108,117,125,.75), rgba(149,165,166,.75)); color: #fff; }
-
-.actions { display: flex; gap: 8px; }
-.check-btn { background: #ff4757; color: #fff; font-weight: 700; border-radius: 8px; padding: 6px 12px; }
-.check-btn:hover { background: #ff5f6d; }
-.clear-btn { background: #6c757d; color: #fff; border-radius: 8px; padding: 6px 12px; }
-.clear-btn:hover { background: #5a6268; }
-.remove-btn { background: #333; color: #fff; border-radius: 8px; padding: 6px 12px; }
-.remove-btn:hover { background: #444; }
+.fade-out { opacity: 0; transition: opacity 0.3s ease; }
 
 /* ======================
    Social Buttons (icon-only)
@@ -238,6 +250,8 @@ button.added-btn {
   cursor: pointer;
   transition: transform .15s ease, box-shadow .2s ease;
   position: relative;
+  opacity: 0;
+  animation: fadeUp 0.6s forwards;
 }
 .social-btn img { width: 24px; height: 24px; }
 
@@ -265,11 +279,30 @@ button.added-btn {
 .social-btn:hover { transform: scale(1.1); }
 
 /* Brand Colors */
-.social-btn.youtube   { background: #FF0000; }
-.social-btn.x         { background: #1DA1F2; }
-.social-btn.instagram { background: linear-gradient(45deg,#feda75,#d62976,#962fbf,#4f5bd5); }
-.social-btn.tiktok    { background: #69C9D0; }
-.social-btn.twitch    { background: #9146FF; }
+.social-btn.youtube   { background: #FF0000; animation-delay: 0.1s; }
+.social-btn.x         { background: #1DA1F2; animation-delay: 0.2s; }
+.social-btn.instagram { background: linear-gradient(45deg,#feda75,#d62976,#962fbf,#4f5bd5); animation-delay: 0.3s; }
+.social-btn.tiktok    { background: #69C9D0; animation-delay: 0.4s; }
+.social-btn.twitch    { background: #9146FF; animation-delay: 0.5s; }
+
+/* Hover Glows */
+.social-btn.youtube:hover   { box-shadow: 0 0 12px #FF0000; }
+.social-btn.x:hover         { box-shadow: 0 0 12px #1DA1F2; }
+.social-btn.instagram:hover { box-shadow: 0 0 12px #d62976; }
+.social-btn.tiktok:hover    { box-shadow: 0 0 12px #69C9D0; }
+.social-btn.twitch:hover    { box-shadow: 0 0 12px #9146FF; }
+
+/* Shared shimmer animation */
+@keyframes shimmerMove {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* FadeUp Animation */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
 
 /* ======================
    Dark Mode
