@@ -5,49 +5,58 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PUBG Ban Checker</title>
   <link rel="stylesheet" href="css/main.css">
+  <script defer src="js/main.js"></script>
 </head>
 <body>
   <h1>PUBG Ban Checker</h1>
 
-  <!-- ✅ Navigation buttons (no Home on index) -->
+  <!-- Navigation -->
   <div class="nav-links">
     <a href="watchlist.html"><button>Watchlist</button></a>
-    <a href="updates.html"><button>Updates / About Me</button></a>
+    <a href="updates.html"><button>About</button></a>
+  </div>
+
+  <!-- Platform Selector -->
+  <div class="container platform-box">
+    <h2>Select Platform</h2>
+    <div id="platformRowIndex" class="platform-row">
+      <div class="platform-btn" data-platform="steam" data-tooltip="Steam">
+        <img src="img/steam.svg" alt="Steam" class="platform-icon">
+      </div>
+      <div class="platform-btn" data-platform="xbox" data-tooltip="Xbox">
+        <img src="img/xbox.svg" alt="Xbox" class="platform-icon">
+      </div>
+      <div class="platform-btn" data-platform="psn" data-tooltip="PSN">
+        <img src="img/psn.svg" alt="PSN" class="platform-icon">
+      </div>
+      <div class="platform-btn" data-platform="kakao" data-tooltip="Kakao">
+        <img src="img/kakao.svg" alt="Kakao" class="platform-icon">
+      </div>
+    </div>
+    <input type="hidden" id="platformSelect" value="steam">
   </div>
 
   <!-- Ban Checker -->
   <div class="container">
-    <h2>Ban Checker(console currently broken sorry)</h2>
-    <textarea id="playerInput" placeholder="Enter player names, separated by commas"></textarea>
+    <h2>Ban Checker</h2>
+    <textarea id="playerInput" placeholder="Enter player names, separated by commas or new lines"></textarea>
     <div class="control-buttons">
-      <button onclick="checkBan()">Check</button>
-      <button class="secondary-btn" onclick="clearResults()">Clear</button>
+      <button id="checkBanBtn">Check</button>
+      <button id="clearResultsBtn" class="secondary-btn">Clear</button>
       <label><input type="checkbox" id="darkModeToggle"> Dark Mode</label>
     </div>
-    <div id="results"></div>
+    <div id="results"><p class="muted">No results yet.</p></div>
   </div>
 
-  <!-- Clan Checker with tooltip -->
-  <div class="container clan-checker">
-    <h2>
-      Clan Checker
-      <span class="tooltip">ℹ
-        <span class="tooltip-text">
-          Enter up to 2 player names separated by a comma.<br>
-          This will check their ban status together and display with a "Clan Mode" badge.
-        </span>
-      </span>
-    </h2>
-    <textarea id="clanInput" placeholder="Enter up to 2 player names..."></textarea>
+  <!-- Clan Checker -->
+  <div class="container">
+    <h2>Clan Checker</h2>
+    <textarea id="clanInput" placeholder="Enter up to 2 names"></textarea>
     <div class="control-buttons">
-      <button onclick="checkClan()">Check Clan</button>
-      <button class="secondary-btn" onclick="clearClanResults()">Clear</button>
+      <button id="checkClanBtn">Check</button>
+      <button id="clearClanBtn" class="secondary-btn">Clear</button>
     </div>
-    <div id="clanResults"></div>
+    <div id="clanResults"><p class="muted">No results yet.</p></div>
   </div>
-
-  <script src="js/main.js"></script>
 </body>
 </html>
-
-
