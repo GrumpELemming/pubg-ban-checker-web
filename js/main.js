@@ -1,5 +1,5 @@
 /* -------------------------------------------------------
-   PUBG Ban Checker - main.js (v1.6.2 Watchlist Fade Fix)
+   PUBG Ban Checker - main.js (v1.6 Final)
    ------------------------------------------------------- */
 
 /* ======================
@@ -35,8 +35,7 @@ async function checkBan(playerString) {
           "player-row " +
           (status === "Not banned" ? "not-banned" :
            status === "Temporarily banned" ? "temp-banned" :
-           status === "Permanently banned" ? "perm-banned" : "unknown") +
-          " result-appear";
+           status === "Permanently banned" ? "perm-banned" : "unknown");
         row.style.animationDelay = `${i * 0.06}s`;
         row.innerHTML = `<strong>${item.player}</strong>${
           item.clan ? ` <span class="clan">[${item.clan}]</span>` : ""
@@ -110,8 +109,7 @@ async function checkClan() {
           "player-row " +
           (status === "Not banned" ? "not-banned" :
            status === "Temporarily banned" ? "temp-banned" :
-           status === "Permanently banned" ? "perm-banned" : "unknown") +
-          " result-appear";
+           status === "Permanently banned" ? "perm-banned" : "unknown");
         row.style.animationDelay = `${i * 0.06}s`;
         row.innerHTML = `<strong>${item.player}</strong>${
           item.clan ? ` <span class="clan">[${item.clan}]</span>` : ""
@@ -161,6 +159,10 @@ async function checkSinglePlayer(playerName, rowElement, platform) {
       rowElement.querySelector(".clear-btn").onclick = () => renderWatchlist();
       rowElement.querySelector(".remove-btn").onclick = () =>
         removeFromWatchlist(result.player, platform);
+
+      // 🔑 Apply fadeUpRow animation for smooth re-entry
+      rowElement.style.opacity = "0";
+      rowElement.style.animation = "fadeUpRow 0.5s forwards";
     }
   } catch (err) {
     rowElement.className = "watchlist-player unknown";
@@ -175,6 +177,10 @@ async function checkSinglePlayer(playerName, rowElement, platform) {
     rowElement.querySelector(".clear-btn").onclick = () => renderWatchlist();
     rowElement.querySelector(".remove-btn").onclick = () =>
       removeFromWatchlist(playerName, platform);
+
+    // 🔑 Ensure error rows also fade back in
+    rowElement.style.opacity = "0";
+    rowElement.style.animation = "fadeUpRow 0.5s forwards";
   }
 }
 
@@ -301,7 +307,7 @@ function setActivePlatform(p) {
   if (wlContainer) {
     wlContainer.classList.add("fade-out");
     setTimeout(() => {
-      renderWatchlist(); // ✅ reloads from localStorage instead of wiping
+      renderWatchlist();
       wlContainer.classList.remove("fade-out");
     }, 300);
   }
