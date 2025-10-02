@@ -5,63 +5,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Watchlist - PUBG Ban Checker</title>
   <link rel="stylesheet" href="css/main.css">
+  <script defer src="js/main.js"></script>
 </head>
 <body>
   <h1>Watchlist</h1>
 
-  <!-- ✅ Navigation: Home + Updates -->
+  <!-- Navigation -->
   <div class="nav-links">
     <a href="index.html"><button>Home</button></a>
-    <a href="updates.html"><button>Updates</button></a>
+    <a href="updates.html"><button>About</button></a>
   </div>
 
+  <!-- Platform Selector -->
+  <div class="container platform-box">
+    <h2>Select Platform</h2>
+    <div id="platformRowWatchlist" class="platform-row">
+      <div class="platform-btn" data-platform="steam" data-tooltip="Steam">
+        <img src="img/steam.svg" alt="Steam" class="platform-icon">
+      </div>
+      <div class="platform-btn" data-platform="xbox" data-tooltip="Xbox">
+        <img src="img/xbox.svg" alt="Xbox" class="platform-icon">
+      </div>
+      <div class="platform-btn" data-platform="psn" data-tooltip="PSN">
+        <img src="img/psn.svg" alt="PSN" class="platform-icon">
+      </div>
+      <div class="platform-btn" data-platform="kakao" data-tooltip="Kakao">
+        <img src="img/kakao.svg" alt="Kakao" class="platform-icon">
+      </div>
+    </div>
+    <input type="hidden" id="platformSelect" value="steam">
+  </div>
+
+  <!-- Watchlist -->
   <div class="container">
     <h2>Your Watchlist</h2>
     <div id="watchlistPlayersContainer" class="watchlist-container"></div>
 
-    <!-- ✅ Auto-check toggle -->
-    <label style="margin-top:10px; display:flex; align-items:center; gap:6px;">
-      <input type="checkbox" id="autoCheckToggle">
-      Auto-check watchlist on page load
-    </label>
-
+    <!-- Control buttons -->
     <div class="control-buttons">
-      <button onclick="checkAllWatchlist()">Check All</button>
-      <button class="secondary-btn" onclick="clearWatchlist()">Clear Watchlist</button>
-      <button class="secondary-btn" onclick="clearResults()">Clear Results</button>
+      <button id="checkAllWatchlistBtn">Check All</button>
+      <button id="clearWatchlistBtn" class="secondary-btn">Clear Watchlist</button>
     </div>
-
-    <!-- ✅ Status message -->
-    <p id="autoCheckMsg" style="color: var(--muted); font-size:0.9rem; margin:6px 0;"></p>
-
-    <div id="results"></div>
   </div>
-
-  <script src="js/main.js"></script>
-  <script>
-  window.addEventListener("DOMContentLoaded", ()=>{
-    // Restore dark mode if it was enabled
-    const darkStored = localStorage.getItem("darkMode")==="true";
-    document.body.classList.toggle("dark-mode", darkStored);
-
-    // Render saved watchlist
-    renderWatchlist();
-
-    // Setup toggle
-    const toggle = document.getElementById("autoCheckToggle");
-    const savedPref = localStorage.getItem("autoCheckWatchlist")==="true";
-    toggle.checked = savedPref;
-
-    toggle.addEventListener("change", ()=>{
-      localStorage.setItem("autoCheckWatchlist", toggle.checked);
-    });
-
-    // Auto-check if enabled
-    if (savedPref && getWatchlist().length > 0) {
-      document.getElementById("autoCheckMsg").textContent = "Auto-checking your saved watchlist...";
-      checkAllWatchlist();
-    }
-  });
-  </script>
 </body>
 </html>
