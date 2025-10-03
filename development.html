@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>dev</title>
+  <title>PUBG Secret Resolver</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -37,84 +37,65 @@
       font-weight: bold;
     }
     button:hover { background: #e6b800; }
-    pre {
-      text-align: left;
-      background: #000;
+    .result {
+      margin-top: 10px;
       padding: 10px;
+      background: #000;
       border-radius: 5px;
-      white-space: pre-wrap;
-      word-wrap: break-word;
+      text-align: left;
     }
-    #tool { display: none; }
+    .error { color: #ff4444; }
+    .copy-btn {
+      background: #444;
+      color: #fff;
+      font-size: 12px;
+      padding: 4px 8px;
+      margin-left: 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .copy-btn:hover { background: #666; }
   </style>
 </head>
 <body>
-  <h1>dev</h1>
+  <h1>PUBG Secret Resolver</h1>
 
-  <!-- Password prompt -->
-  <div id="login" class="box">
-    <h2>Enter Access Key</h2>
-    <input id="keyInput" type="password" placeholder="Secret key">
-    <button onclick="unlock()">Unlock</button>
-    <p id="loginMsg" style="color:red;"></p>
+  <div class="box">
+    <h2>Resolve by Name</h2>
+    <input id="nameInput" placeholder="Enter current PUBG name">
+    <button onclick="resolveByName()">Get Account ID</button>
+    <div id="nameResult" class="result"></div>
   </div>
 
-  <!-- Tool -->
-  <div id="tool">
-    <div class="box">
-      <h2>Resolve by Name</h2>
-      <input id="nameInput" placeholder="Enter current PUBG name">
-      <button onclick="resolveByName()">Get Account ID</button>
-      <pre id="nameResult"></pre>
-    </div>
-
-    <div class="box">
-      <h2>Resolve by Account ID</h2>
-      <input id="idInput" placeholder="Enter PUBG Account ID">
-      <button onclick="resolveById()">Get Current Name</button>
-      <pre id="idResult"></pre>
-    </div>
+  <div class="box">
+    <h2>Resolve by Account ID</h2>
+    <input id="idInput" placeholder="Enter PUBG Account ID">
+    <button onclick="resolveById()">Get Current Name</button>
+    <div id="idResult" class="result"></div>
   </div>
 
   <script>
-    // 🔗 Your backend base URL on Render
-    const BASE_URL = "https://pubg-ban-checker-backend.onrender.com";
+    // 🔗 Backend URL
+    const BASE_URL = "https://your-app.onrender.com";
 
     let SECRET_KEY = "";
 
-    // Helper: show tool
+    // Show tool
     function showTool() {
-      document.getElementById("login").style.display = "none";
-      document.getElementById("tool").style.display = "block";
+      document.getElementById("login")?.remove();
+      document.getElementById("tool")?.style.display = "block";
     }
 
-    // Unlock function
-    function unlock() {
-      const inputKey = document.getElementById("keyInput").value.trim();
-      if (!inputKey) {
-        document.getElementById("loginMsg").textContent = "Please enter a key.";
-        return;
-      }
-      SECRET_KEY = inputKey;
-      sessionStorage.setItem("resolverKey", SECRET_KEY); // store for this session
-      showTool();
-    }
-
-    // Auto-check on load
+    // Check key from URL/session
     (function init() {
-      // Try URL key first
       const params = new URLSearchParams(window.location.search);
       const urlKey = params.get("key");
-
-      // If present in URL, save and unlock
       if (urlKey) {
         SECRET_KEY = urlKey;
         sessionStorage.setItem("resolverKey", SECRET_KEY);
         showTool();
         return;
       }
-
-      // If already stored in session, auto-unlock
       const storedKey = sessionStorage.getItem("resolverKey");
       if (storedKey) {
         SECRET_KEY = storedKey;
@@ -122,16 +103,36 @@
       }
     })();
 
-    // API calls
+    // Copy to clipboard
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Copied to clipboard: " + text);
+      });
+    }
+
+    function formatResult(containerId, data) {
+      const el = document.getElementById(containerId);
+      if (data.error) {
+        el.innerHTML = `<p class="error">Error: ${data.error}</p>`;
+      } else {
+        el.innerHTML = `
+          <p><strong>Player:</strong> ${data.currentName}</p>
+          <p><strong>Account ID:</strong> ${data.accountId}
+             <button class="copy-btn" onclick="copyToClipboard('${data.accountId}')">Copy</button>
+          </p>
+        `;
+      }
+    }
+
     async function resolveByName() {
       const name = document.getElementById("nameInput").value.trim();
       if (!name) return alert("Please enter a name");
       try {
         const res = await fetch(`${BASE_URL}/api/resolve-by-name?key=${SECRET_KEY}&name=${encodeURIComponent(name)}`);
         const data = await res.json();
-        document.getElementById("nameResult").textContent = JSON.stringify(data, null, 2);
+        formatResult("nameResult", data);
       } catch (err) {
-        document.getElementById("nameResult").textContent = "Error: " + err;
+        document.getElementById("nameResult").innerHTML = `<p class="error">Error: ${err}</p>`;
       }
     }
 
@@ -141,9 +142,9 @@
       try {
         const res = await fetch(`${BASE_URL}/api/resolve-by-id?key=${SECRET_KEY}&id=${encodeURIComponent(id)}`);
         const data = await res.json();
-        document.getElementById("idResult").textContent = JSON.stringify(data, null, 2);
+        formatResult("idResult", data);
       } catch (err) {
-        document.getElementById("idResult").textContent = "Error: " + err;
+        document.getElementById("idResult").innerHTML = `<p class="error">Error: ${err}</p>`;
       }
     }
   </script>
