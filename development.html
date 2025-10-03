@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>dev</title>
+  <title>Dev</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -43,6 +43,7 @@
       background: #000;
       border-radius: 5px;
       text-align: left;
+      position: relative;
     }
     .error { color: #ff4444; }
     .copy-btn {
@@ -55,10 +56,16 @@
       cursor: pointer;
     }
     .copy-btn:hover { background: #666; }
+    .copied {
+      color: #4caf50;
+      font-size: 12px;
+      margin-left: 10px;
+      display: none;
+    }
   </style>
 </head>
 <body>
-  <h1>dev</h1>
+  <h1>Dev</h1>
 
   <div class="box">
     <h2>Resolve by Name</h2>
@@ -80,50 +87,60 @@
 
     let SECRET_KEY = "";
 
-    // Show tool
-    function showTool() {
-      document.getElementById("login")?.remove();
-      document.getElementById("tool")?.style.display = "block";
-    }
-
-    // Check key from URL/session
+    // Init: try URL key or session storage
     (function init() {
       const params = new URLSearchParams(window.location.search);
       const urlKey = params.get("key");
       if (urlKey) {
         SECRET_KEY = urlKey;
         sessionStorage.setItem("resolverKey", SECRET_KEY);
-        showTool();
         return;
       }
       const storedKey = sessionStorage.getItem("resolverKey");
       if (storedKey) {
         SECRET_KEY = storedKey;
-        showTool();
       }
     })();
 
-    // Copy to clipboard
-    function copyToClipboard(text) {
+    // Copy to clipboard + show message
+    function copyToClipboard(text, id) {
       navigator.clipboard.writeText(text).then(() => {
-        alert("Copied to clipboard: " + text);
+        const msg = document.getElementById(id);
+        msg.style.display = "inline";
+        setTimeout(() => {
+          msg.style.display = "none";
+        }, 2000);
       });
     }
 
+    // Format result output
     function formatResult(containerId, data) {
       const el = document.getElementById(containerId);
+
+      // Error from API
       if (data.error) {
         el.innerHTML = `<p class="error">Error: ${data.error}</p>`;
-      } else {
+        return;
+      }
+
+      // Clean output
+      if (data.currentName && data.accountId) {
+        const copyId = containerId + "-copied";
         el.innerHTML = `
           <p><strong>Player:</strong> ${data.currentName}</p>
           <p><strong>Account ID:</strong> ${data.accountId}
-             <button class="copy-btn" onclick="copyToClipboard('${data.accountId}')">Copy</button>
+             <button class="copy-btn" onclick="copyToClipboard('${data.accountId}', '${copyId}')">Copy</button>
+             <span id="${copyId}" class="copied">✔ Copied!</span>
           </p>
         `;
+        return;
       }
+
+      // Fallback to raw JSON
+      el.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
     }
 
+    // Resolve by Name
     async function resolveByName() {
       const name = document.getElementById("nameInput").value.trim();
       if (!name) return alert("Please enter a name");
@@ -136,6 +153,7 @@
       }
     }
 
+    // Resolve by ID
     async function resolveById() {
       const id = document.getElementById("idInput").value.trim();
       if (!id) return alert("Please enter an account ID");
