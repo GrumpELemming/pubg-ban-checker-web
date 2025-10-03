@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PUBG Secret Resolver</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #eee;
+      text-align: center;
+      padding: 30px;
+    }
+    h1 { color: #ffcc00; }
+    .box {
+      background: #1e1e1e;
+      padding: 20px;
+      margin: 20px auto;
+      border-radius: 10px;
+      width: 400px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px;
+      width: 80%;
+      border: none;
+      border-radius: 5px;
+    }
+    input {
+      background: #2a2a2a;
+      color: #f5f5f5;
+    }
+    button {
+      background: #ffcc00;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover { background: #e6b800; }
+    pre {
+      text-align: left;
+      background: #000;
+      padding: 10px;
+      border-radius: 5px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    #tool { display: none; }
+  </style>
+</head>
+<body>
+  <h1>PUBG Secret Resolver</h1>
+
+  <!-- Password prompt -->
+  <div id="login" class="box">
+    <h2>Enter Access Key</h2>
+    <input id="keyInput" type="password" placeholder="Secret key">
+    <button onclick="unlock()">Unlock</button>
+    <p id="loginMsg" style="color:red;"></p>
+  </div>
+
+  <!-- Tool -->
+  <div id="tool">
+    <div class="box">
+      <h2>Resolve by Name</h2>
+      <input id="nameInput" placeholder="Enter current PUBG name">
+      <button onclick="resolveByName()">Get Account ID</button>
+      <pre id="nameResult"></pre>
+    </div>
+
+    <div class="box">
+      <h2>Resolve by Account ID</h2>
+      <input id="idInput" placeholder="Enter PUBG Account ID">
+      <button onclick="resolveById()">Get Current Name</button>
+      <pre id="idResult"></pre>
+    </div>
+  </div>
+
+  <script>
+    // 🔗 Your backend base URL on Render
+    const BASE_URL = "https://your-app.onrender.com";
+
+    let SECRET_KEY = "";
+
+    // Helper: show tool
+    function showTool() {
+      document.getElementById("login").style.display = "none";
+      document.getElementById("tool").style.display = "block";
+    }
+
+    // Unlock function
+    function unlock() {
+      const inputKey = document.getElementById("keyInput").value.trim();
+      if (!inputKey) {
+        document.getElementById("loginMsg").textContent = "Please enter a key.";
+        return;
+      }
+      SECRET_KEY = inputKey;
+      sessionStorage.setItem("resolverKey", SECRET_KEY); // store for this session
+      showTool();
+    }
+
+    // Auto-check on load
+    (function init() {
+      // Try URL key first
+      const params = new URLSearchParams(window.location.search);
+      const urlKey = params.get("key");
+
+      // If present in URL, save and unlock
+      if (urlKey) {
+        SECRET_KEY = urlKey;
+        sessionStorage.setItem("resolverKey", SECRET_KEY);
+        showTool();
+        return;
+      }
+
+      // If already stored in session, auto-unlock
+      const storedKey = sessionStorage.getItem("resolverKey");
+      if (storedKey) {
+        SECRET_KEY = storedKey;
+        showTool();
+      }
+    })();
+
+    // API calls
+    async function resolveByName() {
+      const name = document.getElementById("nameInput").value.trim();
+      if (!name) return alert("Please enter a name");
+      try {
+        const res = await fetch(`${BASE_URL}/api/resolve-by-name?key=${SECRET_KEY}&name=${encodeURIComponent(name)}`);
+        const data = await res.json();
+        document.getElementById("nameResult").textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        document.getElementById("nameResult").textContent = "Error: " + err;
+      }
+    }
+
+    async function resolveById() {
+      const id = document.getElementById("idInput").value.trim();
+      if (!id) return alert("Please enter an account ID");
+      try {
+        const res = await fetch(`${BASE_URL}/api/resolve-by-id?key=${SECRET_KEY}&id=${encodeURIComponent(id)}`);
+        const data = await res.json();
+        document.getElementById("idResult").textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        document.getElementById("idResult").textContent = "Error: " + err;
+      }
+    }
+  </script>
+</body>
+</html>
