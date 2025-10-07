@@ -58,5 +58,45 @@
     </div>
     <div id="clanResults"><p class="muted">No results yet.</p></div>
   </div>
+
+  <!-- Secure request limiter -->
+  <script>
+    const checkBanBtn = document.getElementById("checkBanBtn");
+    const checkClanBtn = document.getElementById("checkClanBtn");
+
+    async function handleLimitedClick(button, callback) {
+      if (button.disabled) return;
+      button.disabled = true;
+      const originalText = button.textContent;
+      button.textContent = "Checking...";
+      button.classList.add("disabled");
+      try {
+        await callback();
+      } finally {
+        button.textContent = originalText;
+        button.disabled = false;
+        button.classList.remove("disabled");
+      }
+    }
+
+    if (checkBanBtn) {
+      checkBanBtn.addEventListener("click", () =>
+        handleLimitedClick(checkBanBtn, async () => {
+          // Call your existing check logic here
+          if (typeof window.checkBan === "function") await window.checkBan();
+          else await new Promise(r => setTimeout(r, 1000)); // fallback demo
+        })
+      );
+    }
+
+    if (checkClanBtn) {
+      checkClanBtn.addEventListener("click", () =>
+        handleLimitedClick(checkClanBtn, async () => {
+          if (typeof window.checkClan === "function") await window.checkClan();
+          else await new Promise(r => setTimeout(r, 1000));
+        })
+      );
+    }
+  </script>
 </body>
 </html>
