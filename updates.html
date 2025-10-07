@@ -7,52 +7,55 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header>
-    <nav class="navbar">
-      <a href="index.html" class="nav-button">Home</a>
-      <a href="watchlist.html" class="nav-button">Watchlist</a>
-      <a href="games.html" class="nav-button">Games</a>
-      <a href="updates.html" class="nav-button active">Updates</a>
-      <a href="about.html" class="nav-button">About</a>
-    </nav>
-  </header>
+  <div class="container">
+    <header class="header">
+      <h1 class="site-title">PUBG Ban Checker</h1>
+      <nav class="nav">
+        <a href="index.html" class="nav-button">Home</a>
+        <a href="watchlist.html" class="nav-button">Watchlist</a>
+        <a href="games.html" class="nav-button">Games</a>
+        <a href="updates.html" class="nav-button active">Updates</a>
+        <a href="about.html" class="nav-button">About</a>
+      </nav>
+    </header>
 
-  <main class="content">
-    <section class="updates-section">
-      <h1>Version Updates</h1>
+    <main class="main-content">
+      <section class="updates">
+        <h2 class="section-title">Version History</h2>
 
-      <article class="update-entry">
-        <h2>v1.7 – Upcoming Features</h2>
-        <ul>
-          <li>UI refinements and new button animations.</li>
-          <li>Added a dedicated Games section (see new tab).</li>
-          <li>Improved watchlist UX and transition smoothness.</li>
-        </ul>
-      </article>
+        <div class="update-card">
+          <h3>v1.7 — Work in Progress</h3>
+          <ul>
+            <li>Added a new <strong>Games</strong> section to the navigation bar.</li>
+            <li>Created the dedicated <strong>Games</strong> page with Red13 access.</li>
+            <li>Minor UI polish and internal cleanup.</li>
+          </ul>
+        </div>
 
-      <article class="update-entry">
-        <h2>v1.6 – Stable Final</h2>
-        <ul>
-          <li>Multi-platform support: Steam, Xbox, PSN, Kakao.</li>
-          <li>Watchlist system with auto-check and per-platform storage.</li>
-          <li>Dark mode toggle and shimmer effects synced with ban pulses.</li>
-          <li>Animated About/Updates pages with expand and bounce transitions.</li>
-        </ul>
-      </article>
+        <div class="update-card">
+          <h3>v1.6 — Stable Final</h3>
+          <ul>
+            <li>Hybrid animation setup with fade, pulse, and shimmer.</li>
+            <li>Watchlist per-platform with add/remove and auto-check toggle.</li>
+            <li>Multi-platform support (Steam, Xbox, PSN, Kakao).</li>
+            <li>About/Updates page version history with animated expand/collapse.</li>
+          </ul>
+        </div>
 
-      <article class="update-entry">
-        <h2>v1.5 – Major Polish</h2>
-        <ul>
-          <li>Redesigned layout and smoother navigation.</li>
-          <li>Improved social buttons and theming with PUBG Yellow accents.</li>
-          <li>Refined tooltip timing and hover response.</li>
-        </ul>
-      </article>
+        <div class="update-card">
+          <h3>v1.5 — UI Polish</h3>
+          <ul>
+            <li>Added dark mode toggle and PUBG yellow accent theme.</li>
+            <li>Improved tooltip design and transitions.</li>
+            <li>Updated social link styling and layout consistency.</li>
+          </ul>
+        </div>
+      </section>
+    </main>
 
-      <p class="footer-note">
-        All versions © 2025 Grump E Lemming. Built with ❤️ using React & Tailwind.
-      </p>
-    </section>
-  </main>
+    <footer class="footer">
+      <p>© 2025 Grump E Lemming — All Rights Reserved</p>
+    </footer>
+  </div>
 </body>
 </html>
