@@ -362,3 +362,87 @@ if (darkToggle) {
   darkToggle.checked = localStorage.getItem("darkMode") === "true";
   document.body.classList.toggle("dark-mode", darkToggle.checked);
 }
+// ===== Secure Request Limiter =====
+
+// Universal limiter helper
+async function withLimiter(button, callback) {
+  if (!button || button.disabled) return; // prevent spam
+  button.disabled = true;
+  const original = button.textContent;
+  button.textContent = "Checking...";
+  button.classList.add("disabled");
+
+  try {
+    await callback(); // run the real check logic here
+  } catch (err) {
+    console.error("Check failed:", err);
+  } finally {
+    // Add a short cooldown to avoid re-click spam
+    setTimeout(() => {
+      button.disabled = false;
+      button.textContent = original;
+      button.classList.remove("disabled");
+    }, 800);
+  }
+}
+
+// Wrap main check buttons
+const banBtn = document.getElementById("checkBanBtn");
+const clanBtn = document.getElementById("checkClanBtn");
+const watchAllBtn = document.getElementById("checkAllWatchlistBtn");
+
+// Wrap individual player check buttons (watchlist items)
+function attachPlayerCheckLimiters() {
+  const playerButtons = document.querySelectorAll(".watchlist-check-btn");
+  playerButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      withLimiter(btn, async () => {
+        if (typeof window.checkPlayer === "function") {
+          await window.checkPlayer(btn.dataset.player);
+        } else {
+          await new Promise(r => setTimeout(r, 1200)); // demo delay
+        }
+      });
+    });
+  });
+}
+
+if (banBtn) {
+  banBtn.addEventListener("click", () =>
+    withLimiter(banBtn, async () => {
+      if (typeof window.checkBan === "function") {
+        await window.checkBan();
+      } else {
+        await new Promise(r => setTimeout(r, 1200));
+      }
+    })
+  );
+}
+
+if (clanBtn) {
+  clanBtn.addEventListener("click", () =>
+    withLimiter(clanBtn, async () => {
+      if (typeof window.checkClan === "function") {
+        await window.checkClan();
+      } else {
+        await new Promise(r => setTimeout(r, 1200));
+      }
+    })
+  );
+}
+
+if (watchAllBtn) {
+  watchAllBtn.addEventListener("click", () =>
+    withLimiter(watchAllBtn, async () => {
+      if (typeof window.checkAllWatchlist === "function") {
+        await window.checkAllWatchlist();
+      } else {
+        await new Promise(r => setTimeout(r, 2000));
+      }
+    })
+  );
+}
+
+// Reattach limiters whenever the watchlist updates dynamically
+document.addEventListener("watchlistUpdated", attachPlayerCheckLimiters);
+
