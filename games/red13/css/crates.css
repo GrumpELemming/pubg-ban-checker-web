@@ -1,0 +1,64 @@
+#crates {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background: url("../assets/crate_bg.png") center/cover no-repeat;
+  z-index: 20;
+  transition: opacity 0.3s ease;
+}
+
+#crates.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.crate-img {
+  width: 200px;
+  height: 200px;
+  opacity: 0;
+  transform: translateY(-300px);
+  transition: transform 0.8s ease, opacity 0.3s ease;
+}
+
+.crate-img.drop {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reward-card {
+  margin-top: 20px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: rgba(15, 20, 28, 0.9);
+  border: 1px solid rgba(255, 230, 128, 0.3);
+  text-align: center;
+  color: #ffe680;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.reward-card.show {
+  opacity: 1;
+}
+
+.reward-quote {
+  color: #ccc;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.crate-ui {
+  margin-top: 40px;
+  font-size: 14px;
+  color: #e6e6e6;
+  opacity: 0.8;
+}
+
+#fx {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
