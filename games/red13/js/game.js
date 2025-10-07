@@ -7,7 +7,7 @@
   const MAX_HP = 100, START_HP = 75;
   const PHASE_LEN_MS = 280 * 50;
   const DMG_INTERVAL_MS = 28 * 50;
-  const DMG_BY_PHASE = [0,1,1,2,4,6,8,10,12];
+  const DMG_BY_PHASE = [0,1,1,2,3,4,5,6,8,10,12];
 
   const RED = {
     zones: [], nextSpawnAt: 0, baseInterval: 2200, minInterval: 700,
@@ -591,3 +591,4 @@ function drawPlayer(now) {
   window.gameLoop=loop;
   window.gameUpdate=update;
 })();
+
