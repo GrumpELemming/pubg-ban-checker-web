@@ -4,182 +4,192 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Red13 – The Life Of A Blue Zone Runner</title>
-<style>
-  html,body{height:100%;margin:0;background:#0b0c10;color:#e6e6e6;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif}
-  .wrap{display:grid;place-items:center;height:100%;gap:12px}
-  canvas{background:#111318;image-rendering:pixelated;border:1px solid #2b2f36}
-  .hint{opacity:.7;font-size:14px}
 
-  .overlay{position:fixed;inset:0;display:grid;place-items:center;z-index:10;transition:opacity .25s ease}
-  .hidden{opacity:0;pointer-events:none}
-
-  .intro-layer{position:relative;width:100%;height:100%;background:radial-gradient(1200px 800px at 50% 60%,rgba(0,0,0,.35),rgba(0,0,0,.92));display:grid;place-items:center;overflow:hidden}
-  .intro-img{max-width:min(92vw,1400px);max-height:88vh;object-fit:contain;filter:drop-shadow(0 18px 40px rgba(0,0,0,.45));animation:imgIn .6s ease-out both}
-  @keyframes imgIn{from{transform:scale(1.02);opacity:0}to{transform:scale(1);opacity:1}}
-
-  .intro-text{position:absolute;inset:auto 0 15vh 0;display:grid;gap:10px;justify-items:center;padding:0 24px}
-  .line{background:linear-gradient(90deg,#ffffff 0%,#ff6666 40%,#ffffff 80%);background-size:300% 100%;
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-    animation:fadeLine .8s ease-out forwards,sweepRed 10s linear infinite,flare 10s ease-in-out infinite;
-    font-size:clamp(16px,2.1vw,26px);text-align:center;max-width:min(90vw,900px);
-    opacity:0;transform:translateY(6px);text-wrap:balance}
-  .line.l2{animation-delay:.55s,.55s,.55s}
-  .line.l3{animation-delay:1.05s,1.05s,1.05s}
-  .line.l4{animation-delay:1.55s,1.55s,1.55s}
-  @keyframes fadeLine{to{opacity:1;transform:translateY(0)}}
-  @keyframes sweepRed{0%{background-position:-150% 0}100%{background-position:150% 0}}
-  @keyframes flare{0%,100%{filter:brightness(1)}45%,55%{filter:brightness(1.8)}}
-  .press-enter{margin-top:22px;font-size:clamp(14px,1.7vw,20px);letter-spacing:.2px;opacity:0;color:#fff;
-    animation:fadeBlink 1.1s ease-out 2.05s forwards,blink 1.8s ease-in-out 3.2s infinite alternate}
-  @keyframes fadeBlink{to{opacity:1}} @keyframes blink{from{opacity:.95}to{opacity:.55}}
-
-  .panel{max-width:760px;padding:40px 50px;background:#111318;border:1px solid #2b2f36;border-radius:12px;box-shadow:0 0 40px rgba(0,0,0,.6)}
-  h2{margin:0 0 10px;font-size:34px;color:#ffe680}
-  p{margin:8px 0;line-height:1.5}
-  .small{opacity:.75;font-size:14px}
-  .menu-lines p{margin:6px 0}
-  .statline{margin-top:12px;font-size:15px}
-</style>
+<!-- Base styles -->
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/ui.css">
 </head>
 <body>
-<div class="wrap">
-  <canvas id="game" width="1080" height="740"></canvas>
-  <div class="hint">WASD move • I spawn test drop • R restart • M menu</div>
-</div>
+  <img id="crateImg" src="assets/weaponcrate.png" alt="crate" style="display:none">
 
-<div id="intro" class="overlay">
-  <div class="intro-layer">
-    <img class="intro-img" src="intro.png" alt="RED13 poster">
-    <div class="intro-text">
-      <div class="line l1"><strong>Red13 lives where others fear to tread — deep inside the blue zone.</strong></div>
-      <div class="line l2">He runs endlessly, dodging sweaty try-hards and deadly bombardments.</div>
-      <div class="line l3">From afar, his love Rapture guides him, sending medical drops from the sky.</div>
-      <div class="line l4">But the ruthless Sergei Kalimnick has other plans — the red zones never stop&nbsp;falling.</div>
-      <div class="press-enter">Press <strong>Enter</strong> to continue</div>
+  <!-- GAME WRAP -->
+  <div class="wrap">
+    <canvas id="game" width="1080" height="740"></canvas>
+  </div>
+
+  <!-- INTRO -->
+  <div id="intro" class="overlay">
+    <div class="intro-layer">
+      <img class="intro-img" src="assets/intro.png" alt="RED13 poster">
+      <div class="intro-text">
+        <div class="line l1"><strong>Red13 lives where others fear to tread — deep inside the blue zone.</strong></div>
+        <div class="line l2">He runs endlessly, dodging sweaty try-hards and deadly bombardments.</div>
+        <div class="line l3">From afar, his love Rapture guides him, sending medical drops from the sky.</div>
+        <div class="line l4">But the ruthless Sergei Kalimnick has other plans — the red zones never stop falling.</div>
+        <div class="press-enter clickable">Click to continue</div>
+      </div>
     </div>
   </div>
-</div>
 
+<!-- MENU — Red Zone OPS -->
 <div id="menu" class="overlay hidden">
-  <div class="panel">
-    <h2>Main Menu</h2>
-    <div class="menu-lines">
-      <p>Press <strong>Enter</strong> to go Blue Zone Running</p>
-      <p>Press <strong>C</strong> to buy crates <span class="small">(coming later)</span></p>
+  <div class="ops-shell">
+    <div class="ops-title">RED13 — BLUE ZONE RUNNER</div>
+
+    <div class="ops-panel">
+      <button id="btnStart" class="ops-btn primary">▶ Start Run</button>
+      <button id="btnCrates" class="ops-btn accent">🎁 Open Crates</button>
+
+      <div class="ops-row">
+        <button id="btnHow" class="ops-btn ghost">📘 How To Play</button>
+        <button id="btnAbout" class="ops-btn ghost">❓ About</button>
+      </div>
+
+      <!--
+      <div class="ops-stats">
+        BP: <span id="menuBP">0</span> • GCOIN: <span id="menuGC">0</span>
+      </div>
+      -->
+    </div> <!-- end ops-panel -->
+  </div> <!-- end ops-shell -->
+</div> <!-- end menu -->
+
+
+  <!-- CRATES — cinematic room -->
+  <div id="crates" class="hidden">
+    <div class="ops-bg"></div>
+    <canvas id="fx"></canvas>
+
+    <div class="crate-hud">
+      <div class="hud-pill gc">GCoin: <span id="crHudGC">0</span></div>
+      <div class="hud-pill bp">BP: <span id="crHudBP">0</span></div>
     </div>
-    <p class="statline">BP: <span id="menuBP">0</span> • GCOIN: <span id="menuGC">0</span></p>
+
+    <div id="rewardCard" class="reward-card">
+      <div id="rewardName" class="reward-name"></div>
+      <div id="rewardQuote" class="reward-quote"></div>
+    </div>
+
+    <div class="crate-buttons">
+      <button id="btnBackOps" class="ops-btn ghost">← Back to OPS</button>
+    </div>
+  </div>
+<!-- HOW TO PLAY -->
+<div id="how" class="overlay hidden">
+  <div class="panel">
+    <h2>How To Play</h2>
+    <p>
+      Help <strong>Red13</strong> in his endless endeavour to obtain the elusive
+      <strong>Pillar</strong> skins by surviving as long as possible in the blue zone.
+      Avoid the <strong>red zones</strong> launched by the evil
+      <strong>Sergei Kalimnick</strong> and collect <strong>heals</strong> and
+      <strong>GCoin</strong> drops sent by <strong>Rapture’s drones</strong>.
+    </p>
+
+    <p><strong>Controls:</strong><br>
+      <span style="color:#58a6ff;">WASD</span> or
+      <span style="color:#58a6ff;">Arrow Keys</span> to move
+    </p>
+
+    <p><strong>Item Types:</strong></p>
+    <ul style="list-style:none;padding:0;text-align:left;line-height:1.6em;">
+      <li><span style="background:#7bdcb5;padding:3px 8px;border-radius:4px;">B</span> — Bandage (+10 HP to 75%)</li>
+      <li><span style="background:#58a6ff;padding:3px 8px;border-radius:4px;">F</span> — First Aid Kit (restore to 75%)</li>
+      <li><span style="background:#ffd166;padding:3px 8px;border-radius:4px;">M</span> — Med Kit (full heal to 100%)</li>
+      <li><span style="background:#b380ff;padding:3px 8px;border-radius:4px;">G</span> — GCoin (+1 for Crates)</li>
+    </ul>
+
+    <button id="btnBackFromHow" class="ops-btn ghost">← Back to OPS</button>
   </div>
 </div>
 
-<div id="crates" class="overlay hidden">
+<!-- ABOUT -->
+<div id="about" class="overlay hidden">
   <div class="panel">
-    <h2>Crates</h2>
-    <p>Coming soon…</p>
-    <p class="small">Press <strong>Enter</strong> to return to the menu</p>
+    <h2>About</h2>
+    <p>
+      <strong>Red13 — The Life of a Blue Zone Runner</strong><br>
+      A PUBG-inspired endless survival game created by
+      <strong>Grump E Lemming</strong> & <strong>ChatGPT</strong>.
+    </p>
+    <button id="btnBackFromAbout" class="ops-btn ghost">← Back to OPS</button>
   </div>
 </div>
+
+<!-- SCRIPTS -->
+<script src="js/utils.js"></script>
+<script src="js/crates.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/game.js"></script>
+<script src="js/main.js"></script>
 
 <script>
-(() => {
-  const COLS=54,ROWS=34,CELL=20,HUD_H=40,CANVAS_W=COLS*CELL,CANVAS_H=HUD_H+ROWS*CELL;
-  const MAX_HP=100,START_HP=75,PHASE_LEN_MS=280*50,DMG_BY_PHASE=[0,1,1,2,4,6,8,10,12],DMG_INTERVAL_MS=28*50;
-  const RED={zones:[],nextSpawnAt:0,baseInterval:2200,minInterval:700,lifeMin:2300,lifeMax:5200,lastDamageAt:0,damageEvery:220,baseDamage:3};
-  const COLORS={bg:"#111318",hud:"#0b0c10",grid:"#191c23",playerBody:"#ff4040",playerHead:"#ff7373",playerFeet:"#b82020",
-    text:"#e6e6e6",item:"#7bdcb5",itemF:"#58a6ff",itemM:"#ffd166",itemG:"#b380ff",hp:"#e85d75",ph:"#8bd3dd",bp:"#a5f08b",gc:"#ffb86b"};
+  window.addEventListener("DOMContentLoaded", () => {
+    const intro  = document.getElementById('intro');
+    const menu   = document.getElementById('menu');
+    const crates = document.getElementById('crates');
+    const how    = document.getElementById('how');
+    const about  = document.getElementById('about');
 
-  const canvas=document.getElementById("game"),ctx=canvas.getContext("2d");
-  const $intro=document.getElementById("intro"),$menu=document.getElementById("menu"),$crates=document.getElementById("crates");
-  const $bp=document.getElementById("menuBP"),$gc=document.getElementById("menuGC");
-  let screen="intro";function setScreen(n){screen=n;$intro.classList.toggle("hidden",n!=="intro");$menu.classList.toggle("hidden",n!=="menu");$crates.classList.toggle("hidden",n!=="crates");}
+    // Intro → Menu
+    intro.addEventListener('click', () => {
+      intro.classList.add('hidden');
+      menu.classList.remove('hidden');
+    });
 
-  let totalBP=0,totalGC=0;function updateMenuStats(){$bp.textContent=totalBP;$gc.textContent=totalGC;}
+    // Start + Crates
+    document.getElementById('btnStart').addEventListener('click', () => menu.classList.add('hidden'));
+    document.getElementById('btnCrates').addEventListener('click', () => {
+      menu.classList.add('hidden');
+      crates.classList.remove('hidden');
+    });
 
-  let state;function reset(full=true){const carryBP=full?0:totalBP,carryGC=full?0:totalGC;
-    state={px:Math.floor(COLS/2),py:Math.floor(ROWS/2),hp:START_HP,phase:1,bp:carryBP,gcoin:carryGC,dir:"down",
-      items:[],itemCap:7,_nextItemAt:0,nextPhaseAt:performance.now()+PHASE_LEN_MS,nextDmgAt:performance.now()+DMG_INTERVAL_MS,
-      keys:new Set(),dead:false,_moveAcc:0,_bpAcc:0,lastFrame:performance.now(),_deathAt:null};RED.zones.length=0;RED.nextSpawnAt=performance.now()+900;updateMenuStats();}
-  reset();
+    // Back from Crates
+    document.getElementById('btnBackOps').addEventListener('click', () => {
+      crates.classList.add('hidden');
+      menu.classList.remove('hidden');
+      const crateImg = document.getElementById('crateImg');
+      if (crateImg) crateImg.style.opacity = "0";
+    });
 
-  const keymap={w:"w",a:"a",s:"s",d:"d",ArrowUp:"w",ArrowLeft:"a",ArrowDown:"s",ArrowRight:"d",i:"i",I:"i",r:"r",R:"r",c:"c",C:"c",m:"m",M:"m"};
-  window.addEventListener("keydown",e=>{
-    if(screen==="intro"&&e.key==="Enter"){e.preventDefault();setScreen("menu");return;}
-    if(screen==="menu"){if(e.key==="Enter"){e.preventDefault();startGame();return;}if(e.key==="c"||e.key==="C"){e.preventDefault();setScreen("crates");return;}}
-    if(screen==="crates"&&e.key==="Enter"){e.preventDefault();setScreen("menu");return;}
-    if(screen!=="game")return;const k=keymap[e.key];if(!k)return;
-    if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].includes(e.key))e.preventDefault();
-    if(k==="r"){reset(false);return;}if(k==="m"){totalBP=state.bp;totalGC=state.gcoin;updateMenuStats();reset(false);setScreen("menu");return;}
-    if(k==="i"){spawnItemNow(performance.now());return;}state.keys.add(k);});
-  window.addEventListener("keyup",e=>{const k=keymap[e.key];if(k&&screen==="game")state.keys.delete(k);});
+    // How To Play + About
+    const btnHow = document.getElementById('btnHow');
+    const btnAbout = document.getElementById('btnAbout');
+    const btnBackFromHow = document.getElementById('btnBackFromHow');
+    const btnBackFromAbout = document.getElementById('btnBackFromAbout');
 
-  function startGame(){reset(false);setScreen("game");}
+    if (btnHow) btnHow.addEventListener('click', () => {
+      menu.classList.add('hidden');
+      how.classList.remove('hidden');
+    });
 
-  const inBounds=(x,y)=>x>=0&&x<COLS-1&&y>=0&&y<ROWS-1,phaseDamage=p=>DMG_BY_PHASE[Math.min(p,DMG_BY_PHASE.length-1)],
-    clamp=(v,min,max)=>Math.max(min,Math.min(max,v)),easeOutCubic=t=>1-Math.pow(1-t,3),
-    rgba=(hex,a)=>`rgba(${parseInt(hex.slice(1,3),16)},${parseInt(hex.slice(3,5),16)},${parseInt(hex.slice(5,7),16)},${a})`;
+    if (btnAbout) btnAbout.addEventListener('click', () => {
+      menu.classList.add('hidden');
+      about.classList.remove('hidden');
+    });
 
-  function spawnItemNow(now){if(state.items.length>=state.itemCap)return;
-    const x=1+Math.floor(Math.random()*(COLS-2)),y=1+Math.floor(Math.random()*(ROWS-2)),r=Math.random();
-    const type=r<.4?"B":r<.7?"F":r<.9?"M":"G",cx=x*CELL+CELL/2,cy=HUD_H+y*CELL+CELL/2,fallDur=550+Math.random()*150;
-    state.items.push({x,y,type,falling:true,born:now,landTime:now+fallDur,targetX:cx,targetY:cy,px:cx,py:-CELL});}
-  function scheduleItems(now){if(!state._nextItemAt)state._nextItemAt=now+1300;if(now>=state._nextItemAt){spawnItemNow(now);state._nextItemAt=now+1200+Math.random()*900;}}
-  function updateFallingItems(now){for(const it of state.items){if(!it.falling)continue;const t=clamp((now-it.born)/(it.landTime-it.born),0,1),k=easeOutCubic(t);
-    it.px=it.targetX;it.py=-CELL+(it.targetY+CELL)*k;if(t>=1){it.falling=false;it.px=it.targetX;it.py=it.targetY;}}}
-  function drawItem(it){const f=it.type==="B"?COLORS.item:it.type==="F"?COLORS.itemF:it.type==="M"?COLORS.itemM:COLORS.itemG;
-    if(it.falling){for(let i=4;i>=1;i--){const gy=it.py-i*14,a=.06*i;ctx.fillStyle=rgba(f,a);ctx.fillRect(it.px-CELL/2+3,gy-CELL/2+3,CELL-6,CELL-6);}
-      ctx.fillStyle=rgba(f,.78);ctx.fillRect(it.px-CELL/2+3,it.py-CELL/2+3,CELL-6,CELL-6);ctx.fillStyle="#0b0c10";ctx.font="bold 12px monospace";ctx.fillText(it.type,it.px-7,it.py+4);}
-    else{const x=it.x*CELL,y=it.y*CELL;ctx.fillStyle=f;ctx.fillRect(x+3,y+3,CELL-6,CELL-6);ctx.fillStyle="#0b0c10";ctx.font="bold 12px monospace";ctx.fillText(it.type,x+7,y+14);}}
+    if (btnBackFromHow) btnBackFromHow.addEventListener('click', () => {
+      how.classList.add('hidden');
+      menu.classList.remove('hidden');
+    });
 
-  function spawnRedZones(now){const pf=Math.max(.45,1-(state.phase-1)*.12),intv=Math.max(RED.minInterval,RED.baseInterval*pf);
-    if(now<RED.nextSpawnAt)return;RED.nextSpawnAt=now+intv;
-    const type=Math.random()<.7?"solid":"ring",cx=(2+Math.floor(Math.random()*(COLS-4)))*CELL+CELL/2,cy=(2+Math.floor(Math.random()*(ROWS-4)))*CELL+CELL/2,
-      r= CELL*3+Math.random()*(CELL*7),life=RED.lifeMin+Math.random()*(RED.lifeMax-RED.lifeMin);
-    RED.zones.push({type,cx,cy,r,rInner:type==="ring"?r*.55:0,born:now,life,pulse:Math.random()<.5});
-    if(RED.zones.length>64)RED.zones.splice(0,RED.zones.length-64);}
-  function radiusAt(z,now){if(!z.pulse)return{outer:z.r,inner:z.rInner||0};const t=(now-z.born)/z.life,w=Math.sin(t*Math.PI*4)*.15;
-    return{outer:z.r*(1+w),inner:(z.rInner||0)*(1+w)};}
-  function damageFromRedZones(now){if(now-RED.lastDamageAt<RED.damageEvery)return;const px=state.px*CELL+CELL,py=state.py*CELL+CELL;let hit=0;
-    for(const z of RED.zones){const{outer,inner}=radiusAt(z,now),d=Math.hypot(px-z.cx,py-z.cy);if(z.type==="solid"&&d<=outer)hit++;else if(z.type==="ring"&&d>=inner&&d<=outer)hit++;}
-    if(hit){const dmg=Math.min(15,Math.ceil((RED.baseDamage+(state.phase-1)*.5)*hit));state.hp=Math.max(0,state.hp-dmg);RED.lastDamageAt=now;}}  
+    if (btnBackFromAbout) btnBackFromAbout.addEventListener('click', () => {
+      about.classList.add('hidden');
+      menu.classList.remove('hidden');
+    });
+  });
+</script>
+<script>
+  // Disable zoom (Ctrl + scroll / Ctrl + + / Ctrl + - / Ctrl + 0)
+  window.addEventListener('wheel', e => {
+    if (e.ctrlKey) e.preventDefault();
+  }, { passive: false });
 
-  function update(dt,now){if(screen!=="game"||state.dead)return;const mv=120;state._moveAcc+=dt;while(state._moveAcc>=mv){state._moveAcc-=mv;let nx=state.px,ny=state.py;
-      if(state.keys.has("w")){ny--;state.dir="up";}if(state.keys.has("s")){ny++;state.dir="down";}if(state.keys.has("a")){nx--;state.dir="left";}if(state.keys.has("d")){nx++;state.dir="right";}
-      if(inBounds(nx,ny)){state.px=nx;state.py=ny;}}
-    scheduleItems(now);updateFallingItems(now);
-    for(let i=state.items.length-1;i>=0;i--){const it=state.items[i];if(it.falling)continue;
-      if(it.x>=state.px-1&&it.x<=state.px+1&&it.y>=state.py-1&&it.y<=state.py+1){
-        if(it.type==="B"){if(state.hp<75)state.hp=Math.min(75,state.hp+10);state.bp+=5;}
-        if(it.type==="F"){if(state.hp<75)state.hp=75;state.bp+=10;}
-        if(it.type==="M"){state.hp=MAX_HP;state.bp+=20;}
-        if(it.type==="G"){state.gcoin+=1;}totalBP=state.bp;totalGC=state.gcoin;state.items.splice(i,1);}}
-    if(now>=state.nextDmgAt){state.hp-=phaseDamage(state.phase);state.nextDmgAt+=DMG_INTERVAL_MS;if(state.hp<0)state.hp=0;}
-    if(now>=state.nextPhaseAt){state.phase++;state.nextPhaseAt+=PHASE_LEN_MS;}
-    spawnRedZones(now);RED.zones=RED.zones.filter(z=>(now-z.born)<=z.life);damageFromRedZones(now);
-    state._bpAcc+=dt;while(state._bpAcc>=50){state.bp+=1;totalBP=state.bp;state._bpAcc-=50;}
-    if(state.hp<=0)state.dead=true;}
-
-  function drawGrid(){ctx.fillStyle=COLORS.bg;ctx.fillRect(0,0,CANVAS_W,CANVAS_H);ctx.save();ctx.translate(0,HUD_H);ctx.fillStyle=COLORS.grid;
-    for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++)ctx.fillRect(x*CELL+1,y*CELL+1,CELL-2,CELL-2);ctx.restore();}
-  function drawHUD(now){ctx.fillStyle=COLORS.hud;ctx.fillRect(0,0,CANVAS_W,HUD_H);ctx.fillStyle=COLORS.text;ctx.font="14px monospace";
-    const remain=Math.max(0,state.nextPhaseAt-now);ctx.fillText(`HP:${state.hp}`,10,15);ctx.fillText(`BP:${state.bp}`,270,15);
-    ctx.fillText(`PH:${state.phase}`,360,15);ctx.fillText(`GC:${state.gcoin}`,430,15);ctx.fillText(`Next:${(remain/1000).toFixed(1)}s`,520,15);
-    const barW=180,barH=10,x0=70,y0=18;ctx.fillStyle="#2b2f36";ctx.fillRect(x0,y0,barW,barH);ctx.fillStyle=COLORS.hp;ctx.fillRect(x0,y0,barW*(state.hp/MAX_HP),barH);}
-  function drawRedZones(now){ctx.save();ctx.translate(0,HUD_H);for(const z of RED.zones){const a=(now-z.born)/z.life,{outer,inner}=radiusAt(z,now);
-      const alpha=.2+.25*(1-a);ctx.beginPath();if(z.type==="solid"){ctx.arc(z.cx,z.cy,outer,0,Math.PI*2);ctx.fillStyle=`rgba(228,61,61,${alpha})`;ctx.fill();}
-      else{ctx.arc(z.cx,z.cy,outer,0,Math.PI*2);ctx.arc(z.cx,z.cy,inner,0,Math.PI*2,true);ctx.fillStyle=`rgba(228,61,61,${alpha})`;ctx.fill("evenodd");}}ctx.restore();}
-  function drawItems(){ctx.save();ctx.translate(0,HUD_H);for(const it of state.items)drawItem(it);ctx.restore();}
-  function drawPlayer(){const px=state.px*CELL,py=state.py*CELL;ctx.fillStyle=COLORS.playerBody;ctx.fillRect(px+CELL*.2,py+CELL*.6,CELL*1.6,CELL*1.4);
-    ctx.fillStyle=COLORS.playerFeet;ctx.fillRect(px+CELL*.25,py+CELL*1.9,CELL*1.5,CELL*.3);let hx=px+CELL*.6,hy=py+CELL*.1;
-    switch(state.dir){case"up":hy=py-CELL*.35;break;case"down":hy=py+CELL*.9;break;case"left":hx=px-CELL*.45;hy=py+CELL*.55;break;case"right":hx=px+CELL*1.15;hy=py+CELL*.55;break;}
-    ctx.fillStyle=COLORS.playerHead;ctx.fillRect(hx,hy,CELL*.8,CELL*.8);}
-  function drawDeathScreen(){ctx.fillStyle="rgba(0,0,0,.65)";ctx.fillRect(0,0,CANVAS_W,CANVAS_H);
-    ctx.fillStyle=COLORS.text;ctx.font="bold 28px system-ui,sans-serif";ctx.fillText("GAME OVER",CANVAS_W/2-90,CANVAS_H/2-10);
-    ctx.font="14px monospace";ctx.fillText("Press R to restart or M for menu",CANVAS_W/2-125,CANVAS_H/2+18);}
-
-  function loop(now){const dt=Math.min(50,now-(state.lastFrame||now));state.lastFrame=now;
-    if(screen==="game"){update(dt,now);drawGrid();drawHUD(now);drawRedZones(now);drawItems();ctx.save();ctx.translate(0,HUD_H);drawPlayer();ctx.restore();
-      if(state.dead)drawDeathScreen();}requestAnimationFrame(loop);}
-  requestAnimationFrame(t=>{state.lastFrame=t;loop(t);});
-})();
+  window.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && ['+', '-', '=', '0'].includes(e.key)) {
+      e.preventDefault();
+    }
+  });
 </script>
 </body>
 </html>
