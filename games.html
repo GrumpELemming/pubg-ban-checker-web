@@ -3,21 +3,71 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Games - Ban Checker</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>PUBG Ban Checker – Games</title>
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    h1 {
+      margin-top: 20px !important;
+    }
+
+    .about-credit {
+      text-align: center;
+      margin: 10px 0 20px 0;
+      font-size: 1rem;
+      color: var(--muted);
+      opacity: 0;
+      animation: fadeUp 0.8s forwards;
+      animation-delay: 0.2s;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
-  <header class="navbar">
-    <a href="index.html" class="nav-button">Home</a>
-    <a href="watchlist.html" class="nav-button">Watchlist</a>
-    <a href="updates.html" class="nav-button">Updates</a>
-    <a href="about.html" class="nav-button">About</a>
-  </header>
+  <div class="container">
+    <h1>PUBG Ban Checker – Games</h1>
+    <div class="nav-links">
+      <a href="index.html"><button>Home</button></a>
+      <a href="watchlist.html"><button>Watchlist</button></a>
+      <a href="updates.html"><button>Updates</button></a>
+      <a href="about.html"><button>About</button></a>
+    </div>
+  </div>
 
-  <main class="content" style="text-align:center; margin-top:2rem;">
-    <h1>Games</h1>
-    <a href="red13/index.html" target="_blank" class="nav-button">Red13</a>
-  </main>
+  <div class="container">
+    <h2>Available Games</h2>
+    <p class="about-credit">Select a game below to explore related tools and experiences.</p>
+
+    <div style="text-align:center; margin-top:20px;">
+      <a href="red13/index.html" target="_blank">
+        <button class="secondary-btn" style="min-width:180px;">Play Red13</button>
+      </a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2>About</h2>
+    <p class="about-credit">Created by <strong class="shimmer">Grump E Lemming</strong></p>
+    <div class="social-buttons">
+      <a href="https://www.youtube.com/@grumpelemming" target="_blank" class="social-btn youtube" data-tooltip="YouTube">
+        <img src="img/youtube.svg" alt="YouTube">
+      </a>
+      <a href="https://twitter.com/grumpelemming" target="_blank" class="social-btn x" data-tooltip="X (Twitter)">
+        <img src="img/x.svg" alt="X (Twitter)">
+      </a>
+      <a href="https://www.instagram.com/grumpelemming" target="_blank" class="social-btn instagram" data-tooltip="Instagram">
+        <img src="img/instagram.svg" alt="Instagram">
+      </a>
+      <a href="https://www.tiktok.com/@grumpelemming" target="_blank" class="social-btn tiktok" data-tooltip="TikTok">
+        <img src="img/tiktok.svg" alt="TikTok">
+      </a>
+      <a href="https://www.twitch.tv/grumpelemming" target="_blank" class="social-btn twitch" data-tooltip="Twitch">
+        <img src="img/twitch.svg" alt="Twitch">
+      </a>
+    </div>
+  </div>
 </body>
 </html>
-
