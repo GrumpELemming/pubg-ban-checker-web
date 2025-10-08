@@ -7,7 +7,7 @@
   const MAX_HP = 100, START_HP = 75;
   const PHASE_LEN_MS = 280 * 50;
   const DMG_INTERVAL_MS = 28 * 50;
-  const DMG_BY_PHASE = [0,1,1,2,3,4,5,6,8,10,12];
+  const DMG_BY_PHASE = [0,1,1,2,4,6,6,7,8,10,12];
 
   const RED = {
     zones: [], nextSpawnAt: 0, baseInterval: 2200, minInterval: 700,
@@ -145,7 +145,7 @@ window.addEventListener("keydown", e => {
   function showTryHardAlert(){
     const alert=document.createElement("div");
     alert.id="tryHardAlert";
-    alert.textContent="Sweaty Try-Hard in Blue Zone Alert!";
+    alert.textContent="HACKER DETECTED IN BLUE ZONE HACKER DETECTED IN BLUE ZONE";
     Object.assign(alert.style,{
       position:"fixed",top:"0",left:"0",width:"100%",padding:"16px 0",
       background:"linear-gradient(90deg,#ff4d4d,#ffd64d)",
@@ -203,7 +203,7 @@ window.addEventListener("keydown", e => {
         state.dead=true;
         stopGame();
         hideTryHardAlert();
-        showGameOverPopup("Sweaty Try-Hard got you!");
+        showGameOverPopup("Oh No The Cheater Got You");
         saveStats(state.bp,state.gcoin);
         return;
       }
@@ -507,13 +507,14 @@ function drawPlayer(now) {
     RED.zones=RED.zones.filter(z=>(now-z.born)<=z.life);
     damageFromRedZones(now);
 
-    // === Sweaty Try-Hard Trigger ===
-    if(!tryHardPhaseTriggered && state.phase>=10 && state.phase<=12){
-      if(Math.random()<0.01){ // random chance per frame
-        spawnTryHard(now);
-        tryHardPhaseTriggered=true;
-      }
-    }
+   // === Sweaty Try-Hard Trigger (once per phase from 10+) ===
+if(!tryHardActive && state.phase >= 10) {
+  if(!tryHardPhaseTriggered || state.phase > tryHardPhaseTriggered) {
+    spawnTryHard(now);
+    tryHardPhaseTriggered = state.phase; // remember last phase triggered
+  }
+}
+
 
     updateTryHard(now,dt);
 
@@ -591,4 +592,5 @@ function drawPlayer(now) {
   window.gameLoop=loop;
   window.gameUpdate=update;
 })();
+
 
