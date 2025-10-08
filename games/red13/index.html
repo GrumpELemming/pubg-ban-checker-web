@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self';">
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Red13 – The Life Of A Blue Zone Runner</title>
 
@@ -123,73 +124,6 @@
 <script src="js/game.js"></script>
 <script src="js/main.js"></script>
 
-<script>
-  window.addEventListener("DOMContentLoaded", () => {
-    const intro  = document.getElementById('intro');
-    const menu   = document.getElementById('menu');
-    const crates = document.getElementById('crates');
-    const how    = document.getElementById('how');
-    const about  = document.getElementById('about');
-
-    // Intro → Menu
-    intro.addEventListener('click', () => {
-      intro.classList.add('hidden');
-      menu.classList.remove('hidden');
-    });
-
-    // Start + Crates
-    document.getElementById('btnStart').addEventListener('click', () => menu.classList.add('hidden'));
-    document.getElementById('btnCrates').addEventListener('click', () => {
-      menu.classList.add('hidden');
-      crates.classList.remove('hidden');
-    });
-
-    // Back from Crates
-    document.getElementById('btnBackOps').addEventListener('click', () => {
-      crates.classList.add('hidden');
-      menu.classList.remove('hidden');
-      const crateImg = document.getElementById('crateImg');
-      if (crateImg) crateImg.style.opacity = "0";
-    });
-
-    // How To Play + About
-    const btnHow = document.getElementById('btnHow');
-    const btnAbout = document.getElementById('btnAbout');
-    const btnBackFromHow = document.getElementById('btnBackFromHow');
-    const btnBackFromAbout = document.getElementById('btnBackFromAbout');
-
-    if (btnHow) btnHow.addEventListener('click', () => {
-      menu.classList.add('hidden');
-      how.classList.remove('hidden');
-    });
-
-    if (btnAbout) btnAbout.addEventListener('click', () => {
-      menu.classList.add('hidden');
-      about.classList.remove('hidden');
-    });
-
-    if (btnBackFromHow) btnBackFromHow.addEventListener('click', () => {
-      how.classList.add('hidden');
-      menu.classList.remove('hidden');
-    });
-
-    if (btnBackFromAbout) btnBackFromAbout.addEventListener('click', () => {
-      about.classList.add('hidden');
-      menu.classList.remove('hidden');
-    });
-  });
-</script>
-<script>
-  // Disable zoom (Ctrl + scroll / Ctrl + + / Ctrl + - / Ctrl + 0)
-  window.addEventListener('wheel', e => {
-    if (e.ctrlKey) e.preventDefault();
-  }, { passive: false });
-
-  window.addEventListener('keydown', e => {
-    if ((e.ctrlKey || e.metaKey) && ['+', '-', '=', '0'].includes(e.key)) {
-      e.preventDefault();
-    }
-  });
-</script>
+  <script defer src="js/bootstrap.js"></script>
 </body>
 </html>
