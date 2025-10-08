@@ -2,6 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self';
+    style-src 'self';
+    img-src 'self' data:;
+    font-src 'self';
+    connect-src https://pubg-ban-checker-backend.onrender.com;
+    frame-ancestors 'none';
+    base-uri 'self';
+  ">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PUBG Ban Checker</title>
   <link rel="stylesheet" href="css/main.css">
@@ -11,92 +21,53 @@
   <h1>PUBG Ban Checker</h1>
 
   <!-- Navigation -->
-  <div class="nav-links">
-    <a href="watchlist.html"><button>Watchlist</button></a>
-    <a href="updates.html"><button>About</button></a>
-  </div>
+  <nav class="nav-links">
+    <a href="watchlist.html"><button type="button">Watchlist</button></a>
+    <a href="updates.html"><button type="button">About</button></a>
+    <a href="games.html"><button type="button">Games</button></a>
+  </nav>
 
   <!-- Platform Selector -->
-  <div class="container platform-box">
+  <section class="container platform-box">
     <h2>Select Platform</h2>
-    <div id="platformRowIndex" class="platform-row">
-      <div class="platform-btn" data-platform="steam" data-tooltip="Steam">
+    <div id="platformRowIndex" class="platform-row" role="group" aria-label="Platform selection">
+      <button class="platform-btn" data-platform="steam" aria-label="Steam">
         <img src="img/steam.svg" alt="Steam" class="platform-icon">
-      </div>
-      <div class="platform-btn" data-platform="xbox" data-tooltip="Xbox">
+      </button>
+      <button class="platform-btn" data-platform="xbox" aria-label="Xbox">
         <img src="img/xbox.svg" alt="Xbox" class="platform-icon">
-      </div>
-      <div class="platform-btn" data-platform="psn" data-tooltip="PSN">
+      </button>
+      <button class="platform-btn" data-platform="psn" aria-label="PSN">
         <img src="img/psn.svg" alt="PSN" class="platform-icon">
-      </div>
-      <div class="platform-btn" data-platform="kakao" data-tooltip="Kakao">
+      </button>
+      <button class="platform-btn" data-platform="kakao" aria-label="Kakao">
         <img src="img/kakao.svg" alt="Kakao" class="platform-icon">
-      </div>
+      </button>
     </div>
     <input type="hidden" id="platformSelect" value="steam">
-  </div>
+  </section>
 
   <!-- Ban Checker -->
-  <div class="container">
+  <section class="container">
     <h2>Ban Checker</h2>
     <textarea id="playerInput" placeholder="Enter player names, separated by commas or new lines"></textarea>
     <div class="control-buttons">
-      <button id="checkBanBtn">Check</button>
-      <button id="clearResultsBtn" class="secondary-btn">Clear</button>
+      <button id="checkBanBtn" type="button">Check</button>
+      <button id="clearResultsBtn" class="secondary-btn" type="button">Clear</button>
       <label><input type="checkbox" id="darkModeToggle"> Dark Mode</label>
     </div>
     <div id="results"><p class="muted">No results yet.</p></div>
-  </div>
+  </section>
 
   <!-- Clan Checker -->
-  <div class="container">
+  <section class="container">
     <h2>Clan Checker</h2>
     <textarea id="clanInput" placeholder="Enter up to 2 names"></textarea>
     <div class="control-buttons">
-      <button id="checkClanBtn">Check</button>
-      <button id="clearClanBtn" class="secondary-btn">Clear</button>
+      <button id="checkClanBtn" type="button">Check</button>
+      <button id="clearClanBtn" class="secondary-btn" type="button">Clear</button>
     </div>
     <div id="clanResults"><p class="muted">No results yet.</p></div>
-  </div>
-
-  <!-- Secure request limiter -->
-  <script>
-    const checkBanBtn = document.getElementById("checkBanBtn");
-    const checkClanBtn = document.getElementById("checkClanBtn");
-
-    async function handleLimitedClick(button, callback) {
-      if (button.disabled) return;
-      button.disabled = true;
-      const originalText = button.textContent;
-      button.textContent = "Checking...";
-      button.classList.add("disabled");
-      try {
-        await callback();
-      } finally {
-        button.textContent = originalText;
-        button.disabled = false;
-        button.classList.remove("disabled");
-      }
-    }
-
-    if (checkBanBtn) {
-      checkBanBtn.addEventListener("click", () =>
-        handleLimitedClick(checkBanBtn, async () => {
-          // Call your existing check logic here
-          if (typeof window.checkBan === "function") await window.checkBan();
-          else await new Promise(r => setTimeout(r, 1000)); // fallback demo
-        })
-      );
-    }
-
-    if (checkClanBtn) {
-      checkClanBtn.addEventListener("click", () =>
-        handleLimitedClick(checkClanBtn, async () => {
-          if (typeof window.checkClan === "function") await window.checkClan();
-          else await new Promise(r => setTimeout(r, 1000));
-        })
-      );
-    }
-  </script>
+  </section>
 </body>
 </html>

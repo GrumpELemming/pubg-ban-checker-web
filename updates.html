@@ -2,148 +2,36 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self';
+    style-src 'self';
+    img-src 'self' data:;
+    font-src 'self';
+    connect-src https://pubg-ban-checker-backend.onrender.com;
+    frame-ancestors 'none';
+    base-uri 'self';
+  ">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PUBG Ban Checker – Updates</title>
   <link rel="stylesheet" href="css/main.css">
-  <style>
-    /* Reduce space above page title */
-    h1 {
-      margin-top: 20px !important;
-    }
-
-    /* Center the credit text */
-    .about-credit {
-      text-align: center;
-      margin: 10px 0 20px 0;
-      font-size: 1rem;
-      color: var(--muted);
-      opacity: 0;
-      animation: fadeUp 0.8s forwards;
-      animation-delay: 0.2s;
-    }
-
-    /* Shimmer effect synced with temp-ban pulse (2s loop) */
-    .shimmer {
-      position: relative;
-      display: inline-block;
-      background: linear-gradient(90deg, #ffdd59, #fff, #ffdd59);
-      background-size: 200% 100%;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: shimmerMove 2s infinite linear;
-    }
-
-    /* Shimmer hover effect for history toggle button */
-    #toggleHistory {
-      position: relative;
-      overflow: hidden;
-    }
-    #toggleHistory:hover {
-      background: linear-gradient(90deg, #ffdd59, #fff, #ffdd59);
-      background-size: 200% 100%;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: shimmerMove 2s infinite linear;
-    }
-
-    /* Smooth text fade with pop */
-    #toggleHistory span {
-      display: inline-block;
-      opacity: 1;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-    #toggleHistory span.fade-out {
-      opacity: 0;
-      transform: scale(0.9);
-    }
-    #toggleHistory span.fade-in {
-      opacity: 1;
-      transform: scale(1.05);
-    }
-
-    /* History container */
-    #history {
-      opacity: 0;
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.7s cubic-bezier(0.25, 1, 0.5, 1.2), opacity 0.5s ease;
-    }
-    #history.visible {
-      opacity: 1;
-      max-height: 2000px;
-    }
-
-    /* Entries staggered */
-    #history h3, #history p {
-      opacity: 0;
-      transform: translateY(8px);
-    }
-    #history.visible h3,
-    #history.visible p {
-      transform: translateY(0);
-      opacity: 1;
-      transition: opacity 0.5s ease, transform 0.5s ease;
-    }
-
-    /* Expand stagger delays */
-    #history.visible h3:nth-of-type(1) { transition-delay: 0.1s; }
-    #history.visible p:nth-of-type(1) { transition-delay: 0.2s; }
-    #history.visible p:nth-of-type(2) { transition-delay: 0.3s; }
-    #history.visible p:nth-of-type(3) { transition-delay: 0.4s; }
-    #history.visible p:nth-of-type(4) { transition-delay: 0.5s; }
-    #history.visible p:nth-of-type(5) { transition-delay: 0.6s; }
-    #history.visible h3:nth-of-type(2) { transition-delay: 0.7s; }
-    #history.visible p:nth-of-type(6) { transition-delay: 0.8s; }
-    #history.visible p:nth-of-type(7) { transition-delay: 0.9s; }
-    #history.visible p:nth-of-type(8) { transition-delay: 1.0s; }
-    #history.visible p:nth-of-type(9) { transition-delay: 1.1s; }
-    #history.visible p:nth-of-type(10) { transition-delay: 1.2s; }
-
-    /* Collapse reverse stagger (faster + downward slide) */
-    #history.collapsing h3,
-    #history.collapsing p {
-      opacity: 0;
-      transform: translateY(20px); /* downward slide */
-      transition: opacity 0.25s ease, transform 0.25s ease;
-    }
-    #history.collapsing p:nth-of-type(10) { transition-delay: 0.05s; }
-    #history.collapsing p:nth-of-type(9)  { transition-delay: 0.1s; }
-    #history.collapsing p:nth-of-type(8)  { transition-delay: 0.15s; }
-    #history.collapsing p:nth-of-type(7)  { transition-delay: 0.2s; }
-    #history.collapsing p:nth-of-type(6)  { transition-delay: 0.25s; }
-    #history.collapsing h3:nth-of-type(2) { transition-delay: 0.3s; }
-    #history.collapsing p:nth-of-type(5)  { transition-delay: 0.35s; }
-    #history.collapsing p:nth-of-type(4)  { transition-delay: 0.4s; }
-    #history.collapsing p:nth-of-type(3)  { transition-delay: 0.45s; }
-    #history.collapsing p:nth-of-type(2)  { transition-delay: 0.5s; }
-    #history.collapsing p:nth-of-type(1)  { transition-delay: 0.55s; }
-    #history.collapsing h3:nth-of-type(1) { transition-delay: 0.6s; }
-
-    @keyframes shimmerMove {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+  <script defer src="js/updates.js"></script>
 </head>
 <body>
   <div class="container">
-    <h1>PUBG Ban Checker – Updates</h1>
+    <h1 class="compact-title">PUBG Ban Checker – Updates</h1>
     <div class="nav-links">
-      <a href="index.html"><button>Home</button></a>
-      <a href="watchlist.html"><button>Watchlist</button></a>
-      <a href="games.html"><button>Games</button></a>
+      <a href="index.html"><button type="button">Home</button></a>
+      <a href="watchlist.html"><button type="button">Watchlist</button></a>
+      <a href="games.html"><button type="button">Games</button></a>
     </div>
   </div>
 
   <!-- Latest Release -->
   <div class="container">
-    <h2>Latest Release – v1.6 Stable Final</h2>
+    <h2>Latest Release – v1.6.1 </h2>
     <ul>
+      <li> Security fixes - Thanks LOLhpO!</li>
       <li>Platform buttons redesigned → icons, tooltips, brand colors with glow.</li>
       <li>Social buttons polished → hover glow + fade-in animation.</li>
       <li>Watchlist improvements → per-platform fix, “Check All” now staggers results, no disappearing rows.</li>
@@ -152,15 +40,13 @@
       <li>Consistent Dark Mode across all pages.</li>
     </ul>
 
-    <!-- Toggle Button centered -->
-    <div style="text-align:center; margin-top:15px;">
-      <button id="toggleHistory" class="secondary-btn">
+    <div class="centered" style="margin-top:15px;">
+      <button id="toggleHistory" class="secondary-btn" type="button">
         <span>Show Full Version History</span>
       </button>
     </div>
 
-    <!-- Hidden History -->
-    <div id="history">
+    <div id="history" class="history">
       <h3>Pre-Web / EXE Era</h3>
       <p><strong>v0.00 – v0.05:</strong> Early EXE builds, Steam only, API inside code, not shareable.</p>
       <p><strong>v0.6:</strong> First EXE supporting all platforms (API embedded, insecure).</p>
@@ -180,62 +66,3 @@
   <!-- Socials -->
   <div class="container">
     <h2>About</h2>
-    <p class="about-credit">Created by <strong class="shimmer">Grump E Lemming</strong></p>
-    <div class="social-buttons">
-      <a href="https://www.youtube.com/@grumpelemming" target="_blank" class="social-btn youtube" data-tooltip="YouTube">
-        <img src="img/youtube.svg" alt="YouTube">
-      </a>
-      <a href="https://twitter.com/grumpelemming" target="_blank" class="social-btn x" data-tooltip="X (Twitter)">
-        <img src="img/x.svg" alt="X (Twitter)">
-      </a>
-      <a href="https://www.instagram.com/grumpelemming" target="_blank" class="social-btn instagram" data-tooltip="Instagram">
-        <img src="img/instagram.svg" alt="Instagram">
-      </a>
-      <a href="https://www.tiktok.com/@grumpelemming" target="_blank" class="social-btn tiktok" data-tooltip="TikTok">
-        <img src="img/tiktok.svg" alt="TikTok">
-      </a>
-      <a href="https://www.twitch.tv/grumpelemming" target="_blank" class="social-btn twitch" data-tooltip="Twitch">
-        <img src="img/twitch.svg" alt="Twitch">
-      </a>
-    </div>
-  </div>
-
-  <script>
-    const toggleBtn = document.getElementById("toggleHistory");
-    const toggleText = toggleBtn.querySelector("span");
-    const historyDiv = document.getElementById("history");
-
-    toggleBtn.addEventListener("click", () => {
-      if (historyDiv.classList.contains("visible")) {
-        // collapse with bounce
-        historyDiv.classList.remove("visible");
-        historyDiv.classList.add("collapsing");
-        toggleText.classList.add("fade-out");
-        setTimeout(() => {
-          toggleText.textContent = "Show Full Version History";
-          toggleText.classList.remove("fade-out");
-          toggleText.classList.add("fade-in");
-          setTimeout(() => toggleText.classList.remove("fade-in"), 300);
-        }, 300);
-        setTimeout(() => {
-          historyDiv.classList.remove("collapsing");
-          historyDiv.style.maxHeight = "0";
-          historyDiv.style.opacity = "0";
-        }, 800);
-      } else {
-        // expand normal speed
-        historyDiv.style.maxHeight = "2000px";
-        historyDiv.style.opacity = "1";
-        historyDiv.classList.add("visible");
-        toggleText.classList.add("fade-out");
-        setTimeout(() => {
-          toggleText.textContent = "Hide Full Version History";
-          toggleText.classList.remove("fade-out");
-          toggleText.classList.add("fade-in");
-          setTimeout(() => toggleText.classList.remove("fade-in"), 300);
-        }, 300);
-      }
-    });
-  </script>
-</body>
-</html>

@@ -1,5 +1,5 @@
 /* -------------------------------------------------------
-   PUBG Ban Checker - main.css (v1.6 Final with Tooltip Shimmer)
+   PUBG Ban Checker - main.css (v1.6 Secure Bundle)
    ------------------------------------------------------- */
 
 :root {
@@ -33,6 +33,7 @@ body {
 /* Headings */
 h1 { font-size: 2.2rem; margin: 40px 0 8px; text-align: center; color: var(--accent); }
 h2 { font-size: 1rem; font-weight: 500; margin: 0 0 18px; color: #ffe680; text-align: center; opacity: .95; }
+.compact-title { margin-top: 20px !important; }
 
 /* Containers */
 .container {
@@ -45,7 +46,9 @@ h2 { font-size: 1rem; font-weight: 500; margin: 0 0 18px; color: #ffe680; text-a
   margin: 10px 0;
 }
 .nav-links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-.controls { display: flex; flex-direction: column; gap: 12px; }
+.controls, .control-buttons { display: flex; flex-direction: column; gap: 12px; }
+.centered { text-align: center; }
+.muted { color: var(--muted); }
 
 /* Watchlist container */
 .results-container, .watchlist-container { display: flex; flex-direction: column; gap: 10px; }
@@ -94,15 +97,7 @@ select, button {
 button { background: #ff4757; color: #fff; font-weight: 700; cursor: pointer; min-width: 120px; }
 button.secondary-btn { background: #6c757d; }
 button.secondary-btn:hover { background: #5a6268; }
-
-/* Added-to-watchlist state */
-button.added-btn {
-  background: #6c757d;
-  cursor: default;
-  opacity: 0.8;
-  box-shadow: none;
-  transform: none;
-}
+button.added-btn { background: #6c757d; cursor: default; opacity: 0.8; box-shadow: none; transform: none; }
 
 /* Results/Player Rows */
 .player-row, .watchlist-player {
@@ -140,16 +135,16 @@ button.added-btn {
 
 /* Status Classes */
 .not-banned { background: linear-gradient(90deg, rgba(40,167,69,.75), rgba(46,204,113,.75)); color: #fff; }
-.temp-banned { 
-  background: linear-gradient(90deg, rgba(255,193,7,.85), rgba(255,205,57,.85)); 
-  color: #111; 
-  animation: pulse 2s infinite; 
+.temp-banned {
+  background: linear-gradient(90deg, rgba(255,193,7,.85), rgba(255,205,57,.85));
+  color: #111;
+  animation: pulse 2s infinite;
   opacity: 1 !important;
 }
-.perm-banned { 
-  background: linear-gradient(90deg, rgba(220,53,69,.85), rgba(231,76,60,.85)); 
-  color: #fff; 
-  animation: pulse 1.5s infinite; 
+.perm-banned {
+  background: linear-gradient(90deg, rgba(220,53,69,.85), rgba(231,76,60,.85));
+  color: #fff;
+  animation: pulse 1.5s infinite;
   opacity: 1 !important;
 }
 .unknown { background: linear-gradient(90deg, rgba(108,117,125,.75), rgba(149,165,166,.75)); color: #fff; }
@@ -215,17 +210,13 @@ button.added-btn {
   transition: opacity 0.25s ease, transform 0.25s ease;
   z-index: 10;
 
-  /* Shimmer text */
   background: linear-gradient(90deg, #ffdd59, #fff, #ffdd59);
   background-size: 200% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: shimmerMove 2s infinite linear;
 }
-.platform-btn:hover::after {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
+.platform-btn:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
 
 /* Fade-out effect */
 .fade-out { opacity: 0; transition: opacity 0.3s ease; }
@@ -272,10 +263,7 @@ button.added-btn {
   pointer-events: none;
   transition: opacity 0.25s ease, transform 0.25s ease;
 }
-.social-btn:hover::after {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
+.social-btn:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
 .social-btn:hover { transform: scale(1.1); }
 
 /* Brand Colors */
@@ -307,10 +295,74 @@ button.added-btn {
 /* ======================
    Dark Mode
    ====================== */
-body.dark-mode {
-  background: linear-gradient(135deg,#181818,#3a3a3a);
-  color: #eee;
+body.dark-mode { background: linear-gradient(135deg,#181818,#3a3a3a); color: #eee; }
+body.dark-mode .container { background: rgba(255,255,255,0.08); }
+
+/* ======================
+   Updates Page Extras
+   ====================== */
+.about-credit {
+  text-align: center;
+  margin: 10px 0 20px 0;
+  font-size: 1rem;
+  color: var(--muted);
+  opacity: 0;
+  animation: fadeUp 0.8s forwards;
+  animation-delay: 0.2s;
 }
-body.dark-mode .container {
-  background: rgba(255,255,255,0.08);
+.shimmer {
+  position: relative;
+  display: inline-block;
+  background: linear-gradient(90deg, #ffdd59, #fff, #ffdd59);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerMove 2s infinite linear;
 }
+.history {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.7s cubic-bezier(0.25, 1, 0.5, 1.2), opacity 0.5s ease;
+}
+.history.visible { opacity: 1; max-height: 2000px; }
+#toggleHistory span { display: inline-block; opacity: 1; transition: opacity 0.3s ease, transform 0.3s ease; }
+#toggleHistory span.fade-out { opacity: 0; transform: scale(0.9); }
+#toggleHistory span.fade-in { opacity: 1; transform: scale(1.05); }
+
+/* Collapse reverse stagger */
+.history.collapsing h3, .history.collapsing p {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* ======================
+   Development Page Styles
+   ====================== */
+.box-dev {
+  background: #1e1e1e;
+  padding: 20px;
+  margin: 20px auto;
+  border-radius: 10px;
+  width: 400px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  text-align: center;
+}
+.result-dev {
+  margin-top: 10px;
+  padding: 10px;
+  background: #000;
+  border-radius: 5px;
+  text-align: left;
+  position: relative;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.hidden { display: none; }
+.error-text { color: #ff4444; }
+.copy-btn {
+  background: #444; color: #fff; font-size: 12px; padding: 4px 8px; margin-left: 8px; border-radius: 4px; cursor: pointer;
+}
+.copy-btn:hover { background: #666; }
+.copied { color: #4caf50; font-size: 12px; margin-left: 10px; display: none; }
