@@ -1,3 +1,5 @@
+// duplicate-load guard
+if(window.__MAIN_LOADED__){console.warn('MAIN loaded twice')}else{window.__MAIN_LOADED__=true;
 // js/main.js — Final: Title→Menu on Enter, OPS buttons fully functional
 (() => {
   // ===== Screens =====
@@ -71,3 +73,5 @@
   // ===== Expose for debugging =====
   window.debugScreens = screens;
 })();
+
+}// end guard

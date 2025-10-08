@@ -10,3 +10,14 @@
   };
   BZR.utils = { clamp, easeOutCubic, rgba };
 })();
+
+
+/* === Safe DOM helpers (idempotent) === */
+(function(){
+  if (window.__BZR_SAFE_DOM__) return;
+  window.__BZR_SAFE_DOM__ = true;
+  window.safeStripTags = function(input){ if(input==null) return ""; return String(input).replace(/<[^>]*>/g,''); };
+  window.safeSetText = function(el, text){ if(!el) return; el.textContent = text==null ? "" : String(text); };
+  window.safeSetHTML = function(el, htmlLike){ if(!el) return; el.replaceChildren(document.createTextNode(window.safeStripTags(htmlLike))); };
+  window.safeAppendText = function(parent, text){ if(!parent) return; parent.appendChild(document.createTextNode(text==null?'':String(text))); };
+})();

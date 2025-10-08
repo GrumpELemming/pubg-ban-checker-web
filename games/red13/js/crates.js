@@ -1,3 +1,5 @@
+// duplicate-load guard
+if(window.__CRATES_LOADED__){console.warn('CRATES loaded twice')}else{window.__CRATES_LOADED__=true;
 window.addEventListener('DOMContentLoaded', () => {
 /*******************************************************
  * Red13 – Crate System (v0.99 Stable)
@@ -81,12 +83,12 @@ window.addEventListener('DOMContentLoaded', () => {
     const el = document.createElement("div");
     el.className = "crate-card";
     el.id = id;
-    el.innerHTML = `
+    safeSetHTML(el, `
       <div class="crate-row">
         <div class="crate-thumb"><img src="assets/${img}" alt="${label}"></div>
         <div><div class="crate-name">${label}</div>
         <div class="crate-cost"><span class="cost-good">${cost}</span></div></div>
-      </div>`;
+      </div>`);
     el.addEventListener("click", () => buyCrate(type));
     return el;
   };
@@ -174,3 +176,5 @@ window.addEventListener('DOMContentLoaded', () => {
   refreshCrateHUD();
 })();
 });
+
+}// end guard

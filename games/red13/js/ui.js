@@ -1,3 +1,5 @@
+// duplicate-load guard
+if(window.__UI_LOADED__){console.warn('UI loaded twice')}else{window.__UI_LOADED__=true;
 /* =======================================================
    Red13 — Crate Screen Layout (v0.95 Stable, visible fix)
    ======================================================= */
@@ -101,3 +103,5 @@
   z-index: 60;
   transition: top 0.2s ease;
 }
+
+}// end guard

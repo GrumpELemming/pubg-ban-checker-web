@@ -1,3 +1,5 @@
+// duplicate-load guard
+if(window.__GAME_LOADED__){console.warn('GAME loaded twice')}else{window.__GAME_LOADED__=true;
 // js/game.js — v1.1 Sweaty Try-Hard Update (Full Build)
 (() => {
   // ====== Config ======
@@ -545,12 +547,12 @@ if(!tryHardActive && state.phase >= 10) {
     if(!popup){
       popup=document.createElement("div");
       popup.id="gameOverPopup";
-      popup.innerHTML=`
+      safeSetHTML(popup, `
         <div class="popup-inner">
           <h2 id="goText"></h2>
           <button id="btnPlayAgain" class="ops-btn primary">Play Again</button>
           <button id="btnMenu" class="ops-btn accent">Back to Menu</button>
-        </div>`;
+        </div>`);
       document.body.appendChild(popup);
       const style=document.createElement("style");
       style.textContent=`
@@ -594,3 +596,5 @@ if(!tryHardActive && state.phase >= 10) {
 })();
 
 
+
+}// end guard
