@@ -5,6 +5,14 @@
 /* ======================
    Ban Checker (Index)
    ====================== */
+/* ===== Prevent duplicate script execution ===== */
+if (window.__BAN_CHECKER_LOADED__) {
+  console.warn("main.js already loaded — skipping duplicate.");
+} else {
+  window.__BAN_CHECKER_LOADED__ = true;
+
+/* ===== Everything below is your main.js code ===== */
+
 async function checkBan(playerString) {
   const inputElement = document.getElementById("playerInput");
   const players = playerString || (inputElement ? inputElement.value.trim() : "");
@@ -331,7 +339,6 @@ function setupPlatformRow(rid, hid) {
     b.addEventListener("click", () => setActivePlatform(p));
   });
 }
-
 /* ======================
    Init
    ====================== */
@@ -342,13 +349,14 @@ window.addEventListener("DOMContentLoaded", () => {
     setupPlatformRow("platformRowWatchlist", "platformSelect");
   if (document.getElementById("watchlistPlayersContainer")) renderWatchlist();
 
-  document.getElementById("checkBanBtn")?.addEventListener("click", () => checkBan());
+  // 🧹 Removed direct checkBan binding to avoid double trigger
   document.getElementById("clearResultsBtn")?.addEventListener("click", () => clearResults());
   document.getElementById("checkClanBtn")?.addEventListener("click", () => checkClan());
   document.getElementById("clearClanBtn")?.addEventListener("click", () => clearClanResults());
   document.getElementById("checkAllWatchlistBtn")?.addEventListener("click", () => checkAllWatchlist());
   document.getElementById("clearWatchlistBtn")?.addEventListener("click", () => clearWatchlist());
 });
+
 
 /* ======================
    Dark Mode
@@ -445,4 +453,7 @@ if (watchAllBtn) {
 
 // Reattach limiters whenever the watchlist updates dynamically
 document.addEventListener("watchlistUpdated", attachPlayerCheckLimiters);
+} // end duplicate protection block
+   
+
 
