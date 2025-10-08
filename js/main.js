@@ -1,18 +1,17 @@
 /* -------------------------------------------------------
-   PUBG Ban Checker - main.js (v1.6 Final)
+   PUBG Ban Checker - main.js (v1.6 Secure)
    ------------------------------------------------------- */
+
+function createElem(tag, text, cls) {
+  const el = document.createElement(tag);
+  if (cls) el.className = cls;
+  if (text !== undefined && text !== null) el.textContent = text;
+  return el;
+}
 
 /* ======================
    Ban Checker (Index)
    ====================== */
-/* ===== Prevent duplicate script execution ===== */
-if (window.__BAN_CHECKER_LOADED__) {
-  console.warn("main.js already loaded — skipping duplicate.");
-} else {
-  window.__BAN_CHECKER_LOADED__ = true;
-
-/* ===== Everything below is your main.js code ===== */
-
 async function checkBan(playerString) {
   const inputElement = document.getElementById("playerInput");
   const players = playerString || (inputElement ? inputElement.value.trim() : "");
@@ -23,7 +22,9 @@ async function checkBan(playerString) {
 
   const platform = getActivePlatform();
   const resultsDiv = document.getElementById("results");
-  if (resultsDiv) resultsDiv.innerHTML = "<p class='loading'>Checking… please wait</p>";
+  if (resultsDiv) {
+    resultsDiv.replaceChildren(createElem("p", "Checking… please wait", "loading"));
+  }
 
   try {
     const response = await fetch(
@@ -33,24 +34,32 @@ async function checkBan(playerString) {
     );
     const data = await response.json();
     if (!resultsDiv) return;
-    resultsDiv.innerHTML = "";
+    resultsDiv.replaceChildren();
 
     if (data.results) {
       data.results.forEach((item, i) => {
         const status = item.banStatus || "Unknown";
-        const row = document.createElement("div");
-        row.className =
-          "player-row " +
-          (status === "Not banned" ? "not-banned" :
-           status === "Temporarily banned" ? "temp-banned" :
-           status === "Permanently banned" ? "perm-banned" : "unknown");
+        const row = createElem("div", null, "player-row");
+        const statusClass =
+          status === "Not banned" ? "not-banned" :
+          status === "Temporarily banned" ? "temp-banned" :
+          status === "Permanently banned" ? "perm-banned" : "unknown";
+        row.classList.add(statusClass);
         row.style.animationDelay = `${i * 0.06}s`;
-        row.innerHTML = `<strong>${item.player}</strong>${
-          item.clan ? ` <span class="clan">[${item.clan}]</span>` : ""
-        }<span class="status">${status}</span>`;
 
-        // ✅ Add to Watchlist button
-        const wlBtn = document.createElement("button");
+        const strong = createElem("strong", item.player);
+        row.appendChild(strong);
+
+        if (item.clan) {
+          const clan = createElem("span", `[${item.clan}]`, "clan");
+          row.appendChild(document.createTextNode(" "));
+          row.appendChild(clan);
+        }
+
+        const spanStatus = createElem("span", status, "status");
+        row.appendChild(spanStatus);
+
+        const wlBtn = createElem("button", "Add to Watchlist");
         const existing = getWatchlist(platform).some(
           x => (typeof x === "string" ? x : x.name) === item.player
         );
@@ -60,32 +69,36 @@ async function checkBan(playerString) {
           wlBtn.disabled = true;
           wlBtn.classList.add("added-btn");
         } else {
-          wlBtn.textContent = "Add to Watchlist";
-          wlBtn.onclick = () => {
+          wlBtn.addEventListener("click", () => {
             addToWatchlist(item.player, item.clan || null, platform);
             wlBtn.textContent = "Added";
             wlBtn.disabled = true;
             wlBtn.classList.add("added-btn");
-          };
+          });
         }
 
         row.appendChild(wlBtn);
         resultsDiv.appendChild(row);
       });
     } else {
-      resultsDiv.innerHTML = "No results found.";
+      resultsDiv.replaceChildren(createElem("p", "No results found.", "muted"));
     }
   } catch (err) {
-    if (resultsDiv) resultsDiv.innerHTML = `<p class='unknown'>Error: ${err}</p>`;
+    if (resultsDiv) {
+      const p = createElem("p", `Error: ${err}`, "unknown");
+      resultsDiv.replaceChildren(p);
+    }
   }
 }
+
 function clearResults() {
   const resultsDiv = document.getElementById("results");
-  if (resultsDiv) resultsDiv.innerHTML = "<p class='muted'>No results yet.</p>";
+  if (resultsDiv)
+    resultsDiv.replaceChildren(createElem("p", "No results yet.", "muted"));
 }
 
 /* ======================
-   Clan Checker (Index)
+   Clan Checker
    ====================== */
 async function checkClan() {
   const clanInput = document.getElementById("clanInput");
@@ -96,7 +109,8 @@ async function checkClan() {
   if (names.length > 2) return alert("Clan checker is limited to 2 names.");
 
   const resultsDiv = document.getElementById("clanResults");
-  if (resultsDiv) resultsDiv.innerHTML = "<p class='loading'>Checking… please wait</p>";
+  if (resultsDiv)
+    resultsDiv.replaceChildren(createElem("p", "Checking… please wait", "loading"));
 
   const platform = getActivePlatform();
   try {
@@ -107,37 +121,51 @@ async function checkClan() {
     );
     const data = await response.json();
     if (!resultsDiv) return;
-    resultsDiv.innerHTML = "";
+    resultsDiv.replaceChildren();
 
     if (data.results) {
       data.results.forEach((item, i) => {
         const status = item.banStatus || "Unknown";
-        const row = document.createElement("div");
-        row.className =
-          "player-row " +
-          (status === "Not banned" ? "not-banned" :
-           status === "Temporarily banned" ? "temp-banned" :
-           status === "Permanently banned" ? "perm-banned" : "unknown");
+        const row = createElem("div", null, "player-row");
+        const statusClass =
+          status === "Not banned" ? "not-banned" :
+          status === "Temporarily banned" ? "temp-banned" :
+          status === "Permanently banned" ? "perm-banned" : "unknown";
+        row.classList.add(statusClass);
         row.style.animationDelay = `${i * 0.06}s`;
-        row.innerHTML = `<strong>${item.player}</strong>${
-          item.clan ? ` <span class="clan">[${item.clan}]</span>` : ""
-        }<span class="status">${status}</span><span class="clan-badge shimmer">Clan Mode</span>`;
+
+        const strong = createElem("strong", item.player);
+        row.appendChild(strong);
+
+        if (item.clan) {
+          const clan = createElem("span", `[${item.clan}]`, "clan");
+          row.appendChild(document.createTextNode(" "));
+          row.appendChild(clan);
+        }
+
+        const spanStatus = createElem("span", status, "status");
+        const clanBadge = createElem("span", "Clan Mode", "clan-badge shimmer");
+        row.appendChild(spanStatus);
+        row.appendChild(clanBadge);
         resultsDiv.appendChild(row);
       });
     } else {
-      resultsDiv.innerHTML = "No results found.";
+      resultsDiv.replaceChildren(createElem("p", "No results found.", "muted"));
     }
   } catch (err) {
-    if (resultsDiv) resultsDiv.innerHTML = `<p class='unknown'>Error: ${err}</p>`;
+    if (resultsDiv)
+      resultsDiv.replaceChildren(createElem("p", `Error: ${err}`, "unknown"));
   }
 }
+
 function clearClanResults() {
   const resultsDiv = document.getElementById("clanResults");
-  if (resultsDiv) resultsDiv.innerHTML = "<p class='muted'>No results yet.</p>";
+  if (resultsDiv)
+    resultsDiv.replaceChildren(createElem("p", "No results yet.", "muted"));
 }
 
 /* ======================
-   Watchlist (Unified Rows)
+   Watchlist
    ====================== */
 async function checkSinglePlayer(playerName, rowElement, platform) {
   if (!playerName) return;
@@ -151,42 +179,45 @@ async function checkSinglePlayer(playerName, rowElement, platform) {
     const result = data.results && data.results[0];
     if (result) {
       const status = result.banStatus || "Unknown";
-      rowElement.className =
-        "watchlist-player " +
-        (status === "Not banned" ? "not-banned" :
-         status === "Temporarily banned" ? "temp-banned" :
-         status === "Permanently banned" ? "perm-banned" : "unknown");
-      rowElement.innerHTML = `
-        <strong>${result.player}</strong>
-        <span class="status">${status}</span>
-        <div class="actions">
-          <button class="secondary-btn clear-btn">Clear</button>
-          <button class="secondary-btn remove-btn">Remove</button>
-        </div>
-      `;
-      rowElement.querySelector(".clear-btn").onclick = () => renderWatchlist();
-      rowElement.querySelector(".remove-btn").onclick = () =>
-        removeFromWatchlist(result.player, platform);
+      const cls =
+        status === "Not banned" ? "not-banned" :
+        status === "Temporarily banned" ? "temp-banned" :
+        status === "Permanently banned" ? "perm-banned" : "unknown";
+      rowElement.className = `watchlist-player ${cls}`;
 
-      // 🔑 Apply fadeUpRow animation for smooth re-entry
+      rowElement.replaceChildren(
+        createElem("strong", result.player),
+        createElem("span", status, "status")
+      );
+
+      const actions = createElem("div", null, "actions");
+      const clearBtn = createElem("button", "Clear", "secondary-btn clear-btn");
+      const removeBtn = createElem("button", "Remove", "secondary-btn remove-btn");
+      clearBtn.addEventListener("click", () => renderWatchlist());
+      removeBtn.addEventListener("click", () =>
+        removeFromWatchlist(result.player, platform)
+      );
+      actions.append(clearBtn, removeBtn);
+      rowElement.appendChild(actions);
+
       rowElement.style.opacity = "0";
       rowElement.style.animation = "fadeUpRow 0.5s forwards";
     }
   } catch (err) {
     rowElement.className = "watchlist-player unknown";
-    rowElement.innerHTML = `
-      <strong>${playerName}</strong>
-      <span class="status">Error</span>
-      <div class="actions">
-        <button class="secondary-btn clear-btn">Clear</button>
-        <button class="secondary-btn remove-btn">Remove</button>
-      </div>
-    `;
-    rowElement.querySelector(".clear-btn").onclick = () => renderWatchlist();
-    rowElement.querySelector(".remove-btn").onclick = () =>
-      removeFromWatchlist(playerName, platform);
-
-    // 🔑 Ensure error rows also fade back in
+    rowElement.replaceChildren(
+      createElem("strong", playerName),
+      createElem("span", "Error", "status")
+    );
+    const actions = createElem("div", null, "actions");
+    const clearBtn = createElem("button", "Clear", "secondary-btn clear-btn");
+    const removeBtn = createElem("button", "Remove", "secondary-btn remove-btn");
+    clearBtn.addEventListener("click", () => renderWatchlist());
+    removeBtn.addEventListener("click", () =>
+      removeFromWatchlist(playerName, platform)
+    );
+    actions.append(clearBtn, removeBtn);
+    rowElement.appendChild(actions);
     rowElement.style.opacity = "0";
     rowElement.style.animation = "fadeUpRow 0.5s forwards";
   }
@@ -198,27 +229,26 @@ window.renderWatchlist = () => {
   const platform = getActivePlatform();
   const list = getWatchlist(platform);
 
-  container.innerHTML = "";
+  container.replaceChildren();
   if (!list.length) {
-    container.innerHTML = '<p class="muted">No players in this platform watchlist yet.</p>';
+    container.replaceChildren(
+      createElem("p", "No players in this platform watchlist yet.", "muted")
+    );
     return;
   }
 
   list.forEach(entry => {
     const playerName = typeof entry === "string" ? entry : entry.name;
-    const row = document.createElement("div");
-    row.className = "watchlist-player neutral";
-    row.innerHTML = `
-      <strong>${playerName}</strong>
-      <div class="actions">
-        <button class="check-btn">Check</button>
-        <button class="secondary-btn remove-btn">Remove</button>
-      </div>
-    `;
-    row.querySelector(".check-btn").onclick = () =>
-      checkSinglePlayer(playerName, row, platform);
-    row.querySelector(".remove-btn").onclick = () =>
-      removeFromWatchlist(playerName, platform);
+    const row = createElem("div", null, "watchlist-player neutral");
+
+    const strong = createElem("strong", playerName);
+    const actions = createElem("div", null, "actions");
+    const checkBtn = createElem("button", "Check", "check-btn");
+    const removeBtn = createElem("button", "Remove", "secondary-btn remove-btn");
+    checkBtn.addEventListener("click", () => checkSinglePlayer(playerName, row, platform));
+    removeBtn.addEventListener("click", () => removeFromWatchlist(playerName, platform));
+    actions.append(checkBtn, removeBtn);
+    row.append(strong, actions);
     container.appendChild(row);
   });
 };
@@ -292,12 +322,11 @@ function setActivePlatform(p) {
     });
   });
 
-  // ✅ Fade clear results, clan, and watchlist properly
   const results = document.getElementById("results");
   if (results) {
     results.classList.add("fade-out");
     setTimeout(() => {
-      results.innerHTML = "<p class='muted'>No results yet.</p>";
+      results.replaceChildren(createElem("p", "No results yet.", "muted"));
       results.classList.remove("fade-out");
     }, 300);
   }
@@ -306,7 +335,7 @@ function setActivePlatform(p) {
   if (clanResults) {
     clanResults.classList.add("fade-out");
     setTimeout(() => {
-      clanResults.innerHTML = "<p class='muted'>No results yet.</p>";
+      clanResults.replaceChildren(createElem("p", "No results yet.", "muted"));
       clanResults.classList.remove("fade-out");
     }, 300);
   }
@@ -320,7 +349,6 @@ function setActivePlatform(p) {
     }, 300);
   }
 
-  // ✅ Clear input fields on index
   const playerInput = document.getElementById("playerInput");
   if (playerInput) playerInput.value = "";
   const clanInput = document.getElementById("clanInput");
@@ -339,6 +367,7 @@ function setupPlatformRow(rid, hid) {
     b.addEventListener("click", () => setActivePlatform(p));
   });
 }
+
 /* ======================
    Init
    ====================== */
@@ -349,14 +378,13 @@ window.addEventListener("DOMContentLoaded", () => {
     setupPlatformRow("platformRowWatchlist", "platformSelect");
   if (document.getElementById("watchlistPlayersContainer")) renderWatchlist();
 
-  // 🧹 Removed direct checkBan binding to avoid double trigger
+  document.getElementById("checkBanBtn")?.addEventListener("click", () => checkBan());
   document.getElementById("clearResultsBtn")?.addEventListener("click", () => clearResults());
   document.getElementById("checkClanBtn")?.addEventListener("click", () => checkClan());
   document.getElementById("clearClanBtn")?.addEventListener("click", () => clearClanResults());
   document.getElementById("checkAllWatchlistBtn")?.addEventListener("click", () => checkAllWatchlist());
   document.getElementById("clearWatchlistBtn")?.addEventListener("click", () => clearWatchlist());
 });
-
 
 /* ======================
    Dark Mode
@@ -370,22 +398,19 @@ if (darkToggle) {
   darkToggle.checked = localStorage.getItem("darkMode") === "true";
   document.body.classList.toggle("dark-mode", darkToggle.checked);
 }
-// ===== Secure Request Limiter =====
 
-// Universal limiter helper
+/* ======================
+   Secure Request Limiter
+   ====================== */
 async function withLimiter(button, callback) {
-  if (!button || button.disabled) return; // prevent spam
+  if (!button || button.disabled) return;
   button.disabled = true;
   const original = button.textContent;
   button.textContent = "Checking...";
   button.classList.add("disabled");
-
-  try {
-    await callback(); // run the real check logic here
-  } catch (err) {
-    console.error("Check failed:", err);
-  } finally {
-    // Add a short cooldown to avoid re-click spam
+  try { await callback(); }
+  catch (err) { console.error("Check failed:", err); }
+  finally {
     setTimeout(() => {
       button.disabled = false;
       button.textContent = original;
@@ -393,67 +418,3 @@ async function withLimiter(button, callback) {
     }, 800);
   }
 }
-
-// Wrap main check buttons
-const banBtn = document.getElementById("checkBanBtn");
-const clanBtn = document.getElementById("checkClanBtn");
-const watchAllBtn = document.getElementById("checkAllWatchlistBtn");
-
-// Wrap individual player check buttons (watchlist items)
-function attachPlayerCheckLimiters() {
-  const playerButtons = document.querySelectorAll(".watchlist-check-btn");
-  playerButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      withLimiter(btn, async () => {
-        if (typeof window.checkPlayer === "function") {
-          await window.checkPlayer(btn.dataset.player);
-        } else {
-          await new Promise(r => setTimeout(r, 1200)); // demo delay
-        }
-      });
-    });
-  });
-}
-
-if (banBtn) {
-  banBtn.addEventListener("click", () =>
-    withLimiter(banBtn, async () => {
-      if (typeof window.checkBan === "function") {
-        await window.checkBan();
-      } else {
-        await new Promise(r => setTimeout(r, 1200));
-      }
-    })
-  );
-}
-
-if (clanBtn) {
-  clanBtn.addEventListener("click", () =>
-    withLimiter(clanBtn, async () => {
-      if (typeof window.checkClan === "function") {
-        await window.checkClan();
-      } else {
-        await new Promise(r => setTimeout(r, 1200));
-      }
-    })
-  );
-}
-
-if (watchAllBtn) {
-  watchAllBtn.addEventListener("click", () =>
-    withLimiter(watchAllBtn, async () => {
-      if (typeof window.checkAllWatchlist === "function") {
-        await window.checkAllWatchlist();
-      } else {
-        await new Promise(r => setTimeout(r, 2000));
-      }
-    })
-  );
-}
-
-// Reattach limiters whenever the watchlist updates dynamically
-document.addEventListener("watchlistUpdated", attachPlayerCheckLimiters);
-} // end duplicate protection block
-   
-
-
