@@ -2,49 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self';
+    style-src 'self';
+    img-src 'self' data:;
+    font-src 'self';
+    connect-src https://pubg-ban-checker-backend.onrender.com;
+    frame-ancestors 'none';
+    base-uri 'self';
+  ">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PUBG Ban Checker – Games</title>
   <link rel="stylesheet" href="css/main.css">
-  <style>
-    h1 {
-      margin-top: 20px !important;
-    }
-
-    .about-credit {
-      text-align: center;
-      margin: 10px 0 20px 0;
-      font-size: 1rem;
-      color: var(--muted);
-      opacity: 0;
-      animation: fadeUp 0.8s forwards;
-      animation-delay: 0.2s;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
 </head>
 <body>
   <div class="container">
-    <h1>PUBG Ban Checker – Games</h1>
+    <h1 class="compact-title">PUBG Ban Checker – Games</h1>
     <div class="nav-links">
-      <a href="index.html"><button>Home</button></a>
-      <a href="watchlist.html"><button>Watchlist</button></a>
-      <a href="updates.html"><button>About</button></a>
+      <a href="index.html"><button type="button">Home</button></a>
+      <a href="watchlist.html"><button type="button">Watchlist</button></a>
+      <a href="updates.html"><button type="button">About</button></a>
     </div>
   </div>
 
   <div class="container">
     <h2>PUBG Inspired Games</h2>
-    <p class="about-credit">Here are some games PUBG Inspired games that i created</p>
+    <p class="about-credit">Here are some PUBG Inspired games that I created</p>
 
-    <div style="text-align:center; margin-top:20px;">
-      <a href="games/red13/index.html" target="_blank">
-        <button class="secondary-btn" style="min-width:180px;">Red13 - Life Of A Bluezone Runner</button>
+    <div class="centered" style="margin-top:20px;">
+      <a href="games/red13/index.html" target="_blank" rel="noopener noreferrer">
+        <button class="secondary-btn" type="button" style="min-width:180px;">Red13 - Life Of A Bluezone Runner</button>
       </a>
-      <p>Red13: The Life of a Blue Zone Runner is a fan-made web game inspired by the intensity and atmosphere of PUBG’s blue zone mechanic. This project is not affiliated with or endorsed by PUBG or Krafton</p>
+      <p>Red13: The Life of a Blue Zone Runner is a fan-made web game inspired by the intensity and atmosphere of PUBG’s blue zone mechanic. This project is not affiliated with or endorsed by PUBG or Krafton.</p>
     </div>
   </div>
 
@@ -52,22 +42,13 @@
     <h2>About</h2>
     <p class="about-credit">Created by <strong class="shimmer">Grump E Lemming</strong></p>
     <div class="social-buttons">
-      <a href="https://www.youtube.com/@grumpelemming" target="_blank" class="social-btn youtube" data-tooltip="YouTube">
+      <a href="https://www.youtube.com/@grumpelemming" target="_blank" rel="noopener noreferrer" class="social-btn youtube" data-tooltip="YouTube">
         <img src="img/youtube.svg" alt="YouTube">
       </a>
-      <a href="https://twitter.com/grumpelemming" target="_blank" class="social-btn x" data-tooltip="X (Twitter)">
+      <a href="https://twitter.com/grumpelemming" target="_blank" rel="noopener noreferrer" class="social-btn x" data-tooltip="X (Twitter)">
         <img src="img/x.svg" alt="X (Twitter)">
       </a>
-      <a href="https://www.instagram.com/grumpelemming" target="_blank" class="social-btn instagram" data-tooltip="Instagram">
+      <a href="https://www.instagram.com/grumpelemming" target="_blank" rel="noopener noreferrer" class="social-btn instagram" data-tooltip="Instagram">
         <img src="img/instagram.svg" alt="Instagram">
       </a>
-      <a href="https://www.tiktok.com/@grumpelemming" target="_blank" class="social-btn tiktok" data-tooltip="TikTok">
-        <img src="img/tiktok.svg" alt="TikTok">
-      </a>
-      <a href="https://www.twitch.tv/grumpelemming" target="_blank" class="social-btn twitch" data-tooltip="Twitch">
-        <img src="img/twitch.svg" alt="Twitch">
-      </a>
-    </div>
-  </div>
-</body>
-</html>
+      <a href="https://www.tiktok.com/@grumpelemmin
