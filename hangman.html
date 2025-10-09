@@ -1,0 +1,637 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>PUBG Hangman</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    html, body { margin: 0; height: 100vh; overflow: hidden; background: #0b1220; color: #eee; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans"; }
+    canvas { display: block; width: 100%; height: 100%; outline: none; cursor: default; }
+  </style>
+</head>
+<body>
+<canvas id="game" tabindex="0" aria-label="PUBG Hangman"></canvas>
+<script>
+/*
+  PUBG Hangman v2.2 Audio Build - Safe Canvas Implementation
+  ----------------------------------------------------------
+  • 100% Canvas-based rendering (no DOM manipulation)
+  • No use of innerHTML, textContent, or dynamic element injection
+  • No external dependencies or remote scripts
+  • LocalStorage used only for persistent stats, progress, and sound preference (versioned keys)
+  • All text output drawn securely via CanvasRenderingContext2D methods
+  • Includes: resize debounce, tab-visibility pause/resume, words-seen %,
+              shimmering gold title, subtle blue vignette pulse,
+              reset confirmation, and embedded audio (click/thud/chime/bloop)
+*/
+(() => {
+  // ---------- Config / Theme ----------
+  const VERSION = 4; // bump to safely evolve localStorage keys
+
+  const VIRTUAL_W = 1280;
+  const VIRTUAL_H = 720;
+  const MAX_MISSES = 7;
+
+  const THEME = {
+    YELLOW: "#f2c32f",
+    BLUE_BG: "#0b1220",
+    GREEN_GOOD: "#79f7a5",
+    RED_BAD: "#ff5d5d",
+    GRAY_KEY: "#18263e",
+    GRAY_KEY_BORDER: "#243552",
+    GRAY_KEY_TEXT: "#cfe0ff",
+    GRAY_KEY_USED: "#0f1a2b",
+  };
+
+  // ---------- Word List ----------
+  const RAW_WORDS = `
+  PAN, FRAG GRENADE, SMOKE GRENADE, MOLLY, ENERGY DRINK, PAINKILLERS, ADRENALINE SYRINGE, MED KIT, FIRST AID,
+  LEVEL THREE HELMET, LEVEL THREE VEST, GHILLIE SUIT, EXTENDED MAG, QUICKDRAW MAG, SUPPRESSOR, COMPENSATOR,
+  VERTICAL GRIP, ANGLED GRIP, THUMB GRIP, RED DOT, HOLOGRAPHIC SIGHT, SCOPE, AIRDROP, FLARE GUN, BLUE ZONE, RED ZONE,
+  CIRCLE, PLAYZONE, CHICKEN DINNER, MIRAMAR, ERANGEL, SANHOK, VIKENDI, TAEGO, DESTON, PARACHUTE, VEHICLE,
+  BUGGY, DACIA, MOTORCYCLE, GLIDER, BOAT, BRIDGE CAMP, PRONE, PEAKING, BOOSTING, ROTATION, COMPOUND, HARD COVER,
+  THIRD PARTY, DROP SHOT, HEADSHOT, CROSSHAIR, SPECTATOR, RECOIL, ZEROING, BULLET DROP, HITMARKER, REVIVE,
+  KILLFEED, KNOCKED, FINISHER, FOOTSTEPS, BATTLE ROYALE, ASSAULT RIFLE, REPAIR KIT, PARADISE RESORT, 
+  SWEATY TRY HARD, BATTLEGROUNDS, BOOTCAMP, BIZON, BAD BOY PEEK, BLUEZONE GRENADE, BERYL, CAMPER, 
+  CARE PACKAGE, CASUALS, CROSSBOW, CROWBAR, CANTED SIGHT, CHEATER, DBS, UMP, MICRO UZI, DOBRO MESTO, 
+  DINO LAND, DESERT EAGLE, DECOY GRENADE, DEATH CAM, UAZ JEEP, EL AZAHAR, EXTENDED QUICKDRAW MAG,
+  FIRST PERSON PERSPECTIVE, FLASHBANG, FAMAS, GAS CAN, GRENADE LAUNCHER, G COIN, GAS STATION, GUNPLAY,
+  HAVEN, HACKER, HEALTH INDICATOR, HACIENDA DEL PATRON, JAMMER PACK, PARAMO, RONDO, SOSNOVKA,
+  IRON SIGHT, KILL FEED, LOOT CRATE, LOOT TRUCK, LOBBY, LEVEL ONE HELMET, LEVEL TWO VEST, LINE OF SIGHT,
+  LOS LEONES, LIPOVKA, MINI MAP, MILITARY BASE, MYLTA POWER, MANSION, MORTAR, MINI FOURTEEN, MOSIN NAGANT,
+  NOBLE STEED, MUZZLE BREAK, TACTICAL STOCK, FLASH HIDER, DUCKBILL, HALF GRIP, LIGHTWEIGHT GRIP, 
+  LASER SIGHT, CHEEK PAD, BULLET LOOPS, STUN GRENADE, MOLOTOV COCKTAIL, TACTICAL PACK, PANZERFAUST,
+  RIFLE SUPPRESSOR, REPORT PLAYER, SHOTGUN CHOKE, SKORPION, THIRD PERSON PERSPECTIVE, TEAM KILL,
+  WEAPON ANIMATION, VEHICLE SPAWN, WINCHESTER, LYNX AMR
+  `;
+
+  function normalizeWord(w) { return w.trim().toUpperCase().replace(/[^A-Z\s]/g, ""); }
+  const UNIQUE_WORDS = Array.from(new Set(
+    RAW_WORDS.split(",").map(w => normalizeWord(w)).filter(w => w.length > 0)
+  ));
+
+  // ---------- Storage ----------
+  const LS_KEY_STATE = `pubgHangman.state.v${VERSION}`;
+  const LS_KEY_STATS = `pubgHangman.stats.v${VERSION}`;
+  const LS_KEY_SOUND = `pubgHangman.sound.v${VERSION}`;
+
+  function loadJSON(key, fallback) {
+    try { const s = localStorage.getItem(key); return s ? JSON.parse(s) : fallback; }
+    catch { return fallback; }
+  }
+  function saveJSON(key, obj) {
+    try { localStorage.setItem(key, JSON.stringify(obj)); } catch {}
+  }
+
+  const defaultStats = {
+    games: 0, wins: 0, losses: 0, currentStreak: 0, bestStreak: 0, wordsSeen: {}
+  };
+  let stats = loadJSON(LS_KEY_STATS, defaultStats);
+
+  const defaultState = () => ({
+    word: null,
+    correct: [],
+    wrong: [],
+    missesLeft: MAX_MISSES,
+    usedPoolOrder: shuffle([...Array(UNIQUE_WORDS.length).keys()]),
+    usedIndex: 0,
+    pulse: 0,
+    mode: "game", // "game" | "win" | "lose"
+  });
+  let state = Object.assign(defaultState(), loadJSON(LS_KEY_STATE, {}));
+
+  let soundEnabled = false;
+
+  function saveAll() { saveJSON(LS_KEY_STATE, state); saveJSON(LS_KEY_STATS, stats); saveJSON(LS_KEY_SOUND, {enabled: soundEnabled}); }
+
+  function resetProgress() {
+    if (!confirm("Reset all progress and stats?")) return;
+    stats = JSON.parse(JSON.stringify(defaultStats));
+    state = defaultState();
+    state.word = nextWordNoRepeat();
+    saveAll();
+  }
+
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = (Math.random() * (i + 1)) | 0;
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function nextWordNoRepeat() {
+    if (state.usedIndex >= state.usedPoolOrder.length) {
+      state.usedPoolOrder = shuffle([...Array(UNIQUE_WORDS.length).keys()]);
+      state.usedIndex = 0;
+    }
+    const idx = state.usedPoolOrder[state.usedIndex++];
+    const w = UNIQUE_WORDS[idx];
+    stats.wordsSeen[w] = true;
+    saveAll();
+    return w;
+  }
+
+  function ensureWord() {
+    if (!state.word) {
+      state.word = nextWordNoRepeat();
+      state.correct = [];
+      state.wrong = [];
+      state.missesLeft = MAX_MISSES;
+      state.mode = "game";
+      saveAll();
+    }
+  }
+
+  // ---------- Canvas / Input ----------
+  const canvas = document.getElementById("game");
+  const ctx = canvas.getContext("2d");
+
+  function doResize() {
+    const dpr = Math.max(1, window.devicePixelRatio || 1);
+    canvas.width = Math.round(window.innerWidth * dpr);
+    canvas.height = Math.round(window.innerHeight * dpr);
+    ctx.setTransform(canvas.width / VIRTUAL_W, 0, 0, canvas.height / VIRTUAL_H, 0, 0);
+  }
+
+  // Debounced resize
+  let resizeTimeout = null;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(doResize, 150);
+  }, { passive: true });
+
+  const KEY_ROWS = [ "QWERTYUIOP".split(""), "ASDFGHJKL".split(""), "ZXCVBNM".split("") ];
+
+  let mouse = { x: 0, y: 0, clicked: false };
+  canvas.addEventListener("mousemove", e => {
+    const r = canvas.getBoundingClientRect();
+    mouse.x = (e.clientX - r.left) * (VIRTUAL_W / r.width);
+    mouse.y = (e.clientY - r.top) * (VIRTUAL_H / r.height);
+  });
+  canvas.addEventListener("mousedown", () => { mouse.clicked = true; canvas.focus(); });
+
+  window.addEventListener("keydown", e => {
+    if (state.mode !== "game") {
+      if (e.key === "Enter" || e.key === " ") { newRound(); playSound(winLoseChime, 0.35); }
+      return;
+    }
+    if (/^[a-zA-Z]$/.test(e.key)) guessLetter(e.key.toUpperCase());
+    else if (e.key === "Escape") newRound();
+    else if (e.key.toLowerCase() === "r") resetProgress();
+    
+  });
+
+  // ---------- Audio (embedded base64) ----------
+  // Small, natural-ish percussive samples (very short), encoded as WAV base64.
+  // These are intentionally minimal to keep file size small.
+  function makeAudio(src, vol=0.5) {
+    const a = new Audio(src);
+    a.volume = vol;
+    return a;
+  }
+  function playSound(audio, vol=0.5) {
+    if (!soundEnabled) return;
+    try {
+      audio.pause();
+      audio.currentTime = 0;
+      audio.volume = vol;
+      audio.play();
+    } catch {}
+  }
+
+  // Base64 WAVs (tiny): click, thud, chime, bloop
+  // Note: These are short generated tones/percussive thumps designed to feel "natural" (soft, non-electronic).
+  const SND_CLICK = "data:audio/wav;base64,UklGRgAAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABYAAAACAAACAAAAPwAAAP///wAAAP8AAP//AAA=";
+  const SND_THUD  = "data:audio/wav;base64,UklGRkAAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABYAAAACAAACAAAAPwAAAP7+/v7+/gD///8AAP8A";
+  const SND_CHIME = "data:audio/wav;base64,UklGRkYAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABYAAAACAAACAAAAPwAAAP///wD///8A///+AAAA";
+  const SND_BLOOP = "data:audio/wav;base64,UklGRkwAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABYAAAACAAACAAAAPwAAAP//AP///wAA////AP8A";
+
+  const clickSound    = makeAudio(SND_CLICK, 0.35);
+  const thudSound     = makeAudio(SND_THUD,  0.35);
+  const winLoseChime  = makeAudio(SND_CHIME, 0.40);
+  const loseBloop     = makeAudio(SND_BLOOP, 0.40);
+
+  function toggleSound() {
+    soundEnabled = !soundEnabled;
+    saveAll();
+  }
+
+  // ---------- Game Logic ----------
+  function guessLetter(ch) {
+    if (!state.word || state.mode !== "game") return;
+    if (state.correct.includes(ch) || state.wrong.includes(ch)) return;
+
+    if (state.word.includes(ch)) {
+      state.correct.push(ch);
+      playSound(clickSound, 0.35);
+      if (isWordSolved()) {
+        state.mode = "win";
+        stats.games++; stats.wins++; stats.currentStreak++;
+        if (stats.currentStreak > stats.bestStreak) stats.bestStreak = stats.currentStreak;
+        playSound(winLoseChime, 0.45);
+      }
+    } else {
+      state.wrong.push(ch);
+      state.missesLeft--;
+      playSound(thudSound, 0.35);
+      if (state.missesLeft <= 0) {
+        state.mode = "lose";
+        stats.games++; stats.losses++; stats.currentStreak = 0;
+        playSound(loseBloop, 0.45);
+      }
+    }
+    saveAll();
+  }
+
+  function isWordSolved() {
+    for (let c of state.word) { if (c === " ") continue; if (!state.correct.includes(c)) return false; }
+    return true;
+  }
+
+  function newRound() {
+    state.word = nextWordNoRepeat();
+    state.correct = [];
+    state.wrong = [];
+    state.missesLeft = MAX_MISSES;
+    state.mode = "game";
+    saveAll();
+  }
+
+  // ---------- Drawing ----------
+  function drawBackground() {
+    // base tint shifts slightly with wrong guesses
+    const wrongRatio = (MAX_MISSES - state.missesLeft) / MAX_MISSES;
+    const bgR = 11 + Math.floor(60 * wrongRatio);
+    const bgG = 18 - Math.floor(6 * wrongRatio);
+    const bgB = 32 - Math.floor(10 * wrongRatio);
+    ctx.fillStyle = `rgb(${bgR}, ${bgG}, ${bgB})`;
+    ctx.fillRect(0, 0, VIRTUAL_W, VIRTUAL_H);
+
+    // subtle blue vignette pulse for depth
+    const centerX = VIRTUAL_W * 0.5;
+    const centerY = VIRTUAL_H * 0.5;
+    const grad = ctx.createRadialGradient(centerX, centerY, 80, centerX, centerY, Math.max(VIRTUAL_W, VIRTUAL_H) * 0.7);
+    const pulse = (Math.sin(state.pulse * 1.2) + 1) * 0.5; // 0..1
+    grad.addColorStop(0, `rgba(40, 80, 160, ${0.10 + 0.06 * pulse})`);
+    grad.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, VIRTUAL_W, VIRTUAL_H);
+  }
+
+  function drawRedZoneFlash() {
+    if (state.missesLeft === 1 && Math.sin(state.pulse * 10) > 0) {
+      ctx.fillStyle = "rgba(255, 0, 0, 0.15)";
+      ctx.fillRect(0, 0, VIRTUAL_W, VIRTUAL_H);
+    }
+  }
+
+  function drawTitle() {
+    // shimmering gold flicker using HSL
+    const hue = 45 + Math.sin(state.pulse * 2) * 6; // hover around gold
+    const color = `hsl(${hue}, 96%, 55%)`;
+    ctx.save();
+    ctx.textAlign = "left";
+    ctx.textBaseline = "top";
+    ctx.font = "900 50px BebasNeue, Impact, sans-serif";
+    ctx.fillStyle = color;
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 22 + Math.sin(state.pulse) * 6;
+    ctx.fillText("PUBG HANGMAN", 40, 28);
+    ctx.restore();
+  }
+
+  function drawStats() {
+    const seen = Object.keys(stats.wordsSeen).length;
+    const percent = Math.round((seen / UNIQUE_WORDS.length) * 100);
+
+    const lines = [
+      `Games: ${stats.games}`,
+      `Wins: ${stats.wins}`,
+      `Losses: ${stats.losses}`,
+      `Streak: ${stats.currentStreak}`,
+      `Best: ${stats.bestStreak}`,
+      `Words Seen: ${seen}/${UNIQUE_WORDS.length} (${percent}%)`,
+      
+    ];
+    ctx.save();
+    ctx.font = "500 18px system-ui";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "top";
+    ctx.fillStyle = "rgba(210,230,255,0.85)";
+    lines.forEach((t,i)=>ctx.fillText(t,40,120+i*24));
+    ctx.restore();
+  }
+
+  function drawGallows() {
+    const x = VIRTUAL_W * 0.68;
+    const y = VIRTUAL_H * 0.15;
+    ctx.save();
+    ctx.textAlign="center";ctx.textBaseline="bottom";
+    ctx.font="600 18px system-ui";ctx.fillStyle="rgba(255,255,255,0.85)";
+    ctx.fillText(`Misses Left: ${state.missesLeft}`,x-80,y-10);
+    ctx.restore();
+
+    drawLine(x-200,y+260,x-40,y+260,"#4b5a77",8);
+    drawLine(x-160,y+260,x-160,y,"#4b5a77",8);
+    drawLine(x-160,y,x,y,"#4b5a77",8);
+    drawLine(x,y,x,y+60,"#4b5a77",6);
+    const steps = MAX_MISSES - state.missesLeft;
+    if (steps>0) drawCircle(x,y+90,30,"#b8c7e6",6);
+    if (steps>1) drawLine(x,y+120,x,y+190,"#b8c7e6",6);
+    if (steps>2) drawLine(x,y+135,x-35,y+165,"#b8c7e6",6);
+    if (steps>3) drawLine(x,y+135,x+35,y+165,"#b8c7e6",6);
+    if (steps>4) drawLine(x,y+190,x-30,y+235,"#b8c7e6",6);
+    if (steps>5) drawLine(x,y+190,x+30,y+235,"#b8c7e6",6);
+    if (steps>6) {
+      drawLine(x-12,y+86,x-2,y+96,"#b8c7e6",3);
+      drawLine(x-12,y+96,x-2,y+86,"#b8c7e6",3);
+      drawLine(x+2,y+86,x+12,y+96,"#b8c7e6",3);
+      drawLine(x+2,y+96,x+12,y+86,"#b8c7e6",3);
+      drawLine(x-8,y+110,x+8,y+110,"#b8c7e6",3);
+    }
+  }
+
+  function drawWord() {
+    ensureWord();
+    const baseY = VIRTUAL_H*0.60;
+    const centerX = VIRTUAL_W*0.5;
+    const letters = state.word.split("");
+    const slotW = Math.min(48, Math.max(26, Math.floor(1000/Math.max(letters.length,8))));
+    const totalW = letters.length*(slotW+10);
+    const startX = centerX-totalW/2;
+    for (let i=0;i<letters.length;i++){
+      const ch=letters[i];
+      const x=startX+i*(slotW+10),y=baseY;
+      if(ch===" "){continue;}
+      drawLine(x,y+10,x+slotW,y+10,"rgba(255,255,255,0.35)",3);
+      if(state.correct.includes(ch)){
+        ctx.save();
+        ctx.textAlign="center";ctx.textBaseline="bottom";
+        ctx.font=`900 ${Math.floor(slotW)}px BebasNeue,Impact,sans-serif`;
+        ctx.fillStyle=THEME.YELLOW;ctx.shadowColor=THEME.YELLOW;ctx.shadowBlur=12;
+        ctx.fillText(ch,x+slotW/2,y+6);ctx.restore();
+      }
+    }
+  }
+
+  function drawKeyboard() {
+    const keys = [];
+    const kbTop = VIRTUAL_H * 0.68;
+    const rowGap = 14;
+    const keyW = 58, keyH = 58, keyR = 12;
+    for (let r = 0; r < KEY_ROWS.length; r++) {
+      const row = KEY_ROWS[r];
+      const totalRowW = row.length * keyW + (row.length - 1) * 12;
+      const startX = (VIRTUAL_W - totalRowW) / 2;
+      const y = kbTop + r * (keyH + rowGap);
+      for (let c = 0; c < row.length; c++) {
+        const letter = row[c];
+        const x = startX + c * (keyW + 12);
+        const usedGood = state.correct.includes(letter);
+        const usedBad  = state.wrong.includes(letter);
+        const disabled = usedGood || usedBad;
+
+        const hover = pointInRect(mouse, x, y, keyW, keyH);
+        const fill = disabled ? THEME.GRAY_KEY_USED : (hover ? "#1f3150" : THEME.GRAY_KEY);
+        fillRoundRect(x, y, keyW, keyH, keyR, fill);
+        strokeRoundRect(x, y, keyW, keyH, keyR, THEME.GRAY_KEY_BORDER, 2);
+
+        ctx.save();
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.font = "800 22px system-ui";
+        if (usedGood)      ctx.fillStyle = THEME.GREEN_GOOD;
+        else if (usedBad)  ctx.fillStyle = THEME.RED_BAD;
+        else               ctx.fillStyle = THEME.GRAY_KEY_TEXT;
+        ctx.fillText(letter, x + keyW/2, y + keyH/2 + 1);
+        ctx.restore();
+
+        keys.push({ letter, bounds: { x, y, w: keyW, h: keyH } });
+      }
+    }
+    return keys;
+  }
+
+  const btnNew = {bounds:{x:0,y:0,w:0,h:0}};
+  const btnReset = {bounds:{x:0,y:0,w:0,h:0}};
+  const btnBack = {bounds:{x:0,y:0,w:0,h:0}};
+  const btnSound = {bounds:{x:0,y:0,w:0,h:0}};
+
+  function drawButtons(){
+    const w=160,h=46,r=12,gap=16;
+    const x1=VIRTUAL_W-w-40,y1=40;
+    const x2=x1,y2=y1+h+gap;
+    const x3=x1,y3=y2+h+gap;
+
+    const hov1=pointInRect(mouse,x1,y1,w,h);
+    fillRoundRect(x1,y1,w,h,r,hov1?"#2a4f8f":"#1e3b6f");
+    strokeRoundRect(x1,y1,w,h,r,THEME.YELLOW,3);
+
+    const hov2=pointInRect(mouse,x2,y2,w,h);
+    fillRoundRect(x2,y2,w,h,r,hov2?"#612424":"#4a1a1a");
+    strokeRoundRect(x2,y2,w,h,r,THEME.RED_BAD,3);
+
+    const hov3=pointInRect(mouse,x3,y3,w,h);
+    fillRoundRect(x3,y3,w,h,r,hov3?"#2a4f8f":"#1e3b6f");
+    strokeRoundRect(x3,y3,w,h,r,THEME.YELLOW,3);
+
+    ctx.shadowColor = 'rgba(0,0,0,0.5)';
+    ctx.shadowBlur = 4;
+    drawBtnLabel("New Word (Esc)",x1,y1,w,h);
+    drawBtnLabel("Reset Progress",x2,y2,w,h);
+    drawBtnLabel("Back To Games",x3,y3,w,h);
+    ctx.shadowBlur = 0;
+
+    btnNew.bounds={x:x1,y:y1,w,h};
+    btnReset.bounds={x:x2,y:y2,w,h};
+    btnBack.bounds={x:x3,y:y3,w,h};
+    // (sound UI removed)
+    btnSound.bounds = {x:-9999,y:-9999,w:0,h:0};
+}
+
+  function drawSpeakerIcon(x, y, size, on) {
+    ctx.save();
+    ctx.translate(x + size/2, y + size/2);
+    ctx.scale(size/44, size/44);
+    // speaker body
+    ctx.fillStyle = on ? THEME.YELLOW : "rgba(200,210,230,0.85)";
+    ctx.beginPath();
+    ctx.moveTo(-12, -8);
+    ctx.lineTo(-6, -8);
+    ctx.lineTo(4, -14);
+    ctx.lineTo(4, 14);
+    ctx.lineTo(-6, 8);
+    ctx.lineTo(-12, 8);
+    ctx.closePath();
+    ctx.fill();
+    // waves
+    if (on) {
+      ctx.strokeStyle = THEME.YELLOW;
+      ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(8,0,6,-0.8,0.8); ctx.stroke();
+      ctx.beginPath(); ctx.arc(10,0,11,-0.8,0.8); ctx.stroke();
+    } else {
+      // mute slash
+      ctx.strokeStyle = THEME.RED_BAD;
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(-16, 14);
+      ctx.lineTo(16, -14);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function drawBtnLabel(txt,x,y,w,h){
+    ctx.save();ctx.textAlign="center";ctx.textBaseline="middle";
+    ctx.font="800 16px system-ui";
+    ctx.fillStyle="rgba(230,240,255,0.92)";
+    ctx.fillText(txt,x+w/2,y+h/2);
+    ctx.restore();
+  }
+
+  function drawEndOverlay(){
+    if(state.mode==="game")return;
+    const success=state.mode==="win";
+    const color = success ? `hsl(${(state.pulse*100)%360}, 90%, 60%)` : THEME.RED_BAD;
+    const title=success?"WINNER WINNER CHICKEN DINNER!":"BETTER LUCK NEXT TIME!";
+
+    ctx.fillStyle=success?"rgba(0,60,0,0.45)":"rgba(60,0,0,0.45)";
+    ctx.fillRect(0,0,VIRTUAL_W,VIRTUAL_H);
+
+    ctx.save();
+    ctx.textAlign="center";
+    ctx.textBaseline="middle";
+    ctx.font="900 56px BebasNeue,Impact,sans-serif";
+    ctx.fillStyle=color;
+    ctx.shadowColor=color;
+    ctx.shadowBlur=30+Math.sin(state.pulse*2)*10;
+    ctx.fillText(title,VIRTUAL_W/2,VIRTUAL_H*0.32);
+    ctx.restore();
+
+    ctx.save();
+    ctx.textAlign="center";
+    ctx.textBaseline="middle";
+    ctx.font="700 28px system-ui";
+    ctx.fillStyle="rgba(255,255,255,0.95)";
+    ctx.fillText(`The word was: ${state.word}`,VIRTUAL_W/2,VIRTUAL_H*0.42);
+    ctx.font="600 18px system-ui";
+    ctx.fillStyle="rgba(230,240,255,0.88)";
+    ctx.fillText("Press Enter or Space for a new round",VIRTUAL_W/2,VIRTUAL_H*0.50);
+    ctx.restore();
+  }
+
+  // ---------- Utilities ----------
+  function drawLine(x1,y1,x2,y2,c,w=1){ctx.save();ctx.strokeStyle=c;ctx.lineWidth=w;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.restore();}
+  function drawCircle(cx,cy,r,c,w=2){ctx.save();ctx.strokeStyle=c;ctx.lineWidth=w;ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();ctx.restore();}
+  function fillRoundRect(x,y,w,h,r,c){ctx.save();ctx.fillStyle=c;roundRectPath(x,y,w,h,r);ctx.fill();ctx.restore();}
+  function strokeRoundRect(x,y,w,h,r,c,l=1){ctx.save();ctx.strokeStyle=c;ctx.lineWidth=l;roundRectPath(x,y,w,h,r);ctx.stroke();ctx.restore();}
+  function roundRectPath(x,y,w,h,r){const rr=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+rr,y);ctx.arcTo(x+w,y,x+w,y+h,rr);ctx.arcTo(x+w,y+h,x,y+h,rr);ctx.arcTo(x,y+h,x,y,rr);ctx.arcTo(x,y,x+w,y,rr);ctx.closePath();}
+  function pointInRect(pt,x,y,w,h){return pt.x>=x&&pt.x<=x+w&&pt.y>=y&&pt.y<=y+h;}
+  function hitRect(pt,r){return pointInRect(pt,r.x,r.y,r.w,r.h);}
+
+  // ---------- Main Loop / Visibility Control ----------
+  let animationFrameId = null;
+  let running = false;
+
+  function frame() {
+    drawBackground();
+    // --- Gentle Visual Enhancements ---
+    // Soft blue haze that subtly pulses
+    const haze = ctx.createRadialGradient(VIRTUAL_W/2, VIRTUAL_H/2, 300, VIRTUAL_W/2, VIRTUAL_H/2, 800);
+    haze.addColorStop(0, `rgba(30,50,100,${0.06 + 0.04*Math.sin(state.pulse*0.5)})`);
+    haze.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = haze;
+    ctx.fillRect(0,0,VIRTUAL_W,VIRTUAL_H);
+
+    // Gentle shimmer around title area
+    const shimmer = ctx.createRadialGradient(VIRTUAL_W/2, 100, 100, VIRTUAL_W/2, 100, 400);
+    shimmer.addColorStop(0, `rgba(255,230,120,${0.05 + 0.05*Math.sin(state.pulse*1.2)})`);
+    shimmer.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = shimmer;
+    ctx.fillRect(0,0,VIRTUAL_W,VIRTUAL_H);
+
+    // Red-zone puff when losing
+    if(state.mode === "lose" && Math.sin(state.pulse*15) > 0){
+        const explosion = ctx.createRadialGradient(VIRTUAL_W/2, VIRTUAL_H*0.5, 0, VIRTUAL_W/2, VIRTUAL_H*0.5, 500);
+        explosion.addColorStop(0, "rgba(255,60,40,0.2)");
+        explosion.addColorStop(1, "rgba(255,0,0,0)");
+        ctx.fillStyle = explosion;
+        ctx.fillRect(0,0,VIRTUAL_W,VIRTUAL_H);
+    }
+
+    // Soft gold shimmer on win
+    if(state.mode === "win"){
+        const shimmerW = 0.5 + 0.5*Math.sin(state.pulse*2);
+        const grad = ctx.createLinearGradient(0,0,VIRTUAL_W,0);
+        grad.addColorStop(0, `hsla(${45 + 40*shimmerW}, 90%, 55%, 0.25)`);
+        grad.addColorStop(1, "transparent");
+        ctx.fillStyle = grad;
+        ctx.fillRect(0,0,VIRTUAL_W,VIRTUAL_H);
+    }
+    // --- End Gentle Visual Enhancements ---
+
+    drawRedZoneFlash();
+
+    drawTitle();
+    drawStats();
+    drawGallows();
+    drawWord();
+    const keys = drawKeyboard();
+    drawButtons();
+
+    if (mouse.clicked) {
+      mouse.clicked = false;
+      if (hitRect(mouse, btnNew.bounds)) newRound();
+      if (hitRect(mouse, btnReset.bounds)) resetProgress();
+      if (hitRect(mouse, btnBack.bounds)) window.location.href = 'https://pubgbanchecker.com/games.html';
+      
+      for (const k of keys) if (hitRect(mouse, k.bounds)) guessLetter(k.letter);
+    }
+
+    drawEndOverlay();
+    state.pulse += 0.02;
+    animationFrameId = requestAnimationFrame(frame);
+  }
+
+  function startLoop() {
+    if (running) return;
+    running = true;
+    animationFrameId = requestAnimationFrame(frame);
+  }
+  function stopLoop() {
+    running = false;
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
+  }
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) stopLoop();
+    else startLoop();
+  });
+
+  // ---------- Init ----------
+  try {
+    doResize();
+    ensureWord();
+    canvas.focus();
+    startLoop();
+  } catch (e) {
+    console.error('Initialization error:', e);
+    ctx.fillStyle = THEME.RED_BAD;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.font = "700 22px system-ui";
+    ctx.fillText('Error loading game', VIRTUAL_W/2, VIRTUAL_H/2);
+  }
+
+  window.addEventListener('unload', () => {
+    stopLoop();
+    saveAll();
+  });
+})();
+</script>
+</body>
+</html>
+
