@@ -109,9 +109,7 @@
     if(state.phase<8){ state.banner="phase"; state.bannerT=0; setTimeout(()=>startPhase(state.phase+1),900); }
     else { state.mode="winner"; state.banner="winner"; state.bannerT=0; }
   }
-
-// HELLO lolhp0 // TEST / DEBUG: skip to next phase (internal-safe version)
-
+  
   function heal(a){ state.hp=Math.min(100,state.hp+a); state.hpFlash="heal"; }
   function damage(a){ state.hp=Math.max(0,state.hp-a); state.hpFlash="hurt"; if(state.hp<=0){ state.mode="knocked"; state.banner="knocked"; state.bannerT=0; } }
 
