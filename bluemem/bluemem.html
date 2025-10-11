@@ -109,7 +109,7 @@
     else { state.mode="winner"; state.banner="winner"; state.bannerT=0; }
   }
 
-// HELLO lolhp0 // TEST / DEBUG: skip to next phase (internal-safe version)
+// HELLO lolhp0 now kindly fuck off //
 
   function heal(a){ state.hp=Math.min(100,state.hp+a); state.hpFlash="heal"; }
   function damage(a){ state.hp=Math.max(0,state.hp-a); state.hpFlash="hurt"; if(state.hp<=0){ state.mode="knocked"; state.banner="knocked"; state.bannerT=0; } }
