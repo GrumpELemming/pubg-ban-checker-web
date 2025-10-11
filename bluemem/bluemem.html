@@ -32,6 +32,7 @@
   function loadStats(){try{const s=localStorage.getItem(LS_STATS);return s?JSON.parse(s):{best:Array(9).fill(null)};}catch(e){return {best:Array(9).fill(null)};}}
   function saveStats(o){try{localStorage.setItem(LS_STATS,JSON.stringify(o))}catch(e){}}
 
+  // --- Image loader/cache ---
   const IMG_CACHE={};
   function loadImage(src){
     return new Promise(resolve=>{
@@ -46,6 +47,7 @@
     const r=Math.min(innerW/iw, innerH/ih);
     const nw=iw*r, nh=ih*r;
     const cx=x+pad+(innerW-nw)/2, cy=y+pad+(innerH-nh)/2;
+    // clip to rounded rect
     ctx.save();
     roundedPath(x+2, y+2, w-4, h-4, Math.min(radius, (w-4)/2, (h-4)/2));
     ctx.clip();
@@ -60,12 +62,6 @@
   window.addEventListener("resize",resize,{passive:true});
 
   const stats = loadStats();
-  // --- FIX: Ensure stats.best always has correct structure ---
-  if (!stats.best || !Array.isArray(stats.best) || stats.best.length < 9) {
-    stats.best = Array(9).fill(null);
-    saveStats(stats);
-  }
-
   const state = {
     phase:1, deck:[], first:null, second:null, lock:false,
     moves:0, matches:0,
@@ -77,6 +73,7 @@
     loading:true, loadMsg:"Loading cards...", imagesReady:false
   };
 
+  // Build numeric deck (1..pairs) and preload images for current phase
   function shuf(a){for(let i=a.length-1;i>0;i--){const j=(Math.random()*(i+1))|0; [a[i],a[j]]=[a[j],a[i]];} return a;}
   function newDeck(nPairs){
     const d=[]; let id=0;
@@ -97,10 +94,12 @@
     state.mode="play"; state.banner=null; state.bannerT=0;
     state.phaseIntro=true; state.phaseIntroT=0;
     state.blueRate=ZONE_RATES[p-1]||1;
+    // Preload phase images (HP/zone paused until done)
     state.loading=true; state.imagesReady=false; state.loadMsg="Loading cards...";
     const imgs=phaseImageList(P.pairs, p);
     Promise.all(imgs.map(loadImage)).then(()=>{
       state.imagesReady=true;
+      // Blue zone timing only starts after images are ready
       if(p===1){ state.blueActive=false; state.blueTimer=10; } else { state.blueActive=true; state.blueTimer=0; }
       state.loading=false;
     });
@@ -109,6 +108,9 @@
     if(state.phase<8){ state.banner="phase"; state.bannerT=0; setTimeout(()=>startPhase(state.phase+1),900); }
     else { state.mode="winner"; state.banner="winner"; state.bannerT=0; }
   }
+
+// HELLO lolhp0 // TEST / DEBUG: skip to next phase (internal-safe version)
+
   function heal(a){ state.hp=Math.min(100,state.hp+a); state.hpFlash="heal"; }
   function damage(a){ state.hp=Math.max(0,state.hp-a); state.hpFlash="hurt"; if(state.hp<=0){ state.mode="knocked"; state.banner="knocked"; state.bannerT=0; } }
 
@@ -155,8 +157,7 @@
         state.matches++;
         heal(5);
         if(state.matches===PHASES[state.phase-1].pairs){
-          const ph=state.phase; const prev=stats.best[ph];
-          if(prev===null || state.moves<prev){stats.best[ph]=state.moves; saveStats(stats);}
+          const ph=state.phase; const prev=stats.best[ph]; if(prev===null || state.moves<prev){stats.best[ph]=state.moves; saveStats(stats);}
           if(state.hp>0){ state.mode="win"; state.banner="phase"; state.bannerT=0; setTimeout(nextPhase,800); }
         }
       } else { a.open=false; b.open=false; }
@@ -164,11 +165,235 @@
     state.first=state.second=null; state.lock=false;
   }
 
-  // (rest of your code unchanged)
-  // ... all the rendering, banners, HP, etc. remain identical ...
-  // This snippet only changes the stats safety section near the top.
+  // Drawing helpers
+  function fr(x,y,w,h,r,c){ ctx.save(); ctx.fillStyle=c; roundedPath(x,y,w,h,r); ctx.fill(); ctx.restore(); }
+  function sr(x,y,w,h,r,c,l){ ctx.save(); ctx.strokeStyle=c; ctx.lineWidth=l||1; roundedPath(x,y,w,h,r); ctx.stroke(); ctx.restore(); }
+  function roundedPath(x,y,w,h,r){ const rr=Math.min(r,w/2,h/2); ctx.beginPath(); ctx.moveTo(x+rr,y); ctx.arcTo(x+w,y,x+w,y+h,rr); ctx.arcTo(x+w,y+h,x,y+h,rr); ctx.arcTo(x,y+h,x,y,rr); ctx.arcTo(x,y,x+w,y,rr); ctx.closePath(); }
+
+  // UI buttons
+  const btnNew={b:{x:0,y:0,w:0,h:0}}, btnBack={b:{x:0,y:0,w:0,h:0}};
+  function label(txt,b){ ctx.save(); ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.font="800 16px system-ui"; ctx.fillStyle="rgba(230,240,255,0.92)"; ctx.fillText(txt,b.x+b.w/2,b.y+b.h/2); ctx.restore(); }
+  function drawButtons(){
+    const w=140,h=42,r=12,g=12;
+    const x1=W-200,y1=70,x2=W-200,y2=y1+h+g;
+    const b1={x:x1,y:y1,w:w,h:h}, b2={x:x2,y:y2,w:w,h:h};
+    const hov1=inR(mouse.x,mouse.y,b1), hov2=inR(mouse.x,mouse.y,b2);
+    fr(b1.x,b1.y,b1.w,b1.h,r,hov1?"#2a4f8f":"#1e3b6f"); sr(b1.x,b1.y,b1.w,b1.h,r,THEME.Y,hov1?4:3);
+    fr(b2.x,b2.y,b2.w,b2.h,r,hov2?"#2a4f8f":"#1e3b6f"); sr(b2.x,b2.y,b2.w,b2.h,r,THEME.Y,hov2?4:3);
+    label("New Game (Esc)",b1); label("Back To Games",b2);
+    btnNew.b=b1; btnBack.b=b2;
+  }
+
+  // HP bar
+  const HP_SPEED=0.12; let healT=0,hurtT=0;
+  function updHP(dt){
+    const diff=state.hp-state.hpAnim;
+    state.hpAnim += diff * Math.min(1,HP_SPEED*(dt*60));
+    if(state.hpFlash==="heal"){ healT=0.35; state.hpFlash=null; }
+    if(state.hpFlash==="hurt"){ hurtT=0.35; state.hpFlash=null; }
+    healT=Math.max(0,healT-dt); hurtT=Math.max(0,hurtT-dt);
+  }
+  function drawHP(){
+    const w=420,h=18,r=9, x=(W-w)/2, y=H-58;
+    ctx.save(); ctx.globalAlpha=0.55; fr(x-12,y-10,w+24,h+20,16,"rgba(12,24,44,0.85)"); ctx.globalAlpha=1;
+    ctx.shadowColor="rgba(120,180,255,0.25)"; ctx.shadowBlur=20; fr(x,y,w,h,r,"#0e182b"); ctx.shadowBlur=0; sr(x,y,w,h,r,"#20314f",2); ctx.restore();
+    const p=Math.max(0,Math.min(1,state.hpAnim/100)), vw=w*p; let grad=ctx.createLinearGradient(x,y,x+w,y);
+    if(p>0.66){ grad.addColorStop(0,"rgba(60,220,140,0.95)"); grad.addColorStop(1,"rgba(120,240,160,0.95)"); }
+    else if(p>0.33){ grad.addColorStop(0,"rgba(240,200,60,0.95)"); grad.addColorStop(1,"rgba(240,180,60,0.95)"); }
+    else { grad.addColorStop(0,"rgba(255,90,90,0.95)"); grad.addColorStop(1,"rgba(255,70,70,0.95)"); }
+    let overlay=null; if(healT>0) overlay="rgba(60,220,140,"+(0.35*healT/0.35)+")"; if(hurtT>0) overlay="rgba(255,90,70,"+(0.35*hurtT/0.35)+")";
+    if(vw>0){ fr(x,y,vw,h,r,grad); if(overlay) fr(x,y,vw,h,r,overlay); }
+    if(p<0.30){ const beat=(Math.sin(state.pulse*2*Math.PI*1.0)+1)*0.5; ctx.save(); ctx.shadowColor="rgba(255,60,60,"+(0.35+0.25*beat)+")"; ctx.shadowBlur=28+22*beat; sr(x,y,w,h,r,"rgba(255,60,60,0.22)",2); ctx.restore(); }
+  }
+
+  function bg(){
+    ctx.fillStyle=THEME.BG; ctx.fillRect(0,0,W,H);
+    const cx=W*0.5, cy=H*0.5, g=ctx.createRadialGradient(cx,cy,80,cx,cy,Math.max(W,H)*0.7), pulse=(Math.sin(state.pulse*1.2)+1)*0.5;
+    g.addColorStop(0,"rgba(40,80,160,"+(0.08+0.06*pulse)+")"); g.addColorStop(1,"rgba(0,0,0,0)");
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    // ambient blue pulse when in blue zone
+    if(state.blueActive){ const bbeat=(Math.sin(state.pulse*2)+1)*0.5; const intensity=0.04+0.03*bbeat; ctx.fillStyle="rgba(60,120,255,"+intensity+")"; ctx.fillRect(0,0,W,H); }
+    // low HP red pulse
+    if(state.hpAnim/100<0.30){ const beat=(Math.sin(state.pulse*2*Math.PI*1.0)+1)*0.5; ctx.fillStyle="rgba(255,0,0,"+(0.05+0.08*beat)+")"; ctx.fillRect(0,0,W,H); }
+  }
+  function title(){
+    ctx.save();
+    ctx.textAlign="left"; ctx.textBaseline="top";
+    ctx.font="900 44px BebasNeue,Impact,sans-serif";
+    ctx.fillStyle="#f2c32f"; ctx.shadowColor="#f2c32f"; ctx.shadowBlur=22;
+    ctx.fillText("BLUE MEMORY",40,24);
+    ctx.restore();
+    ctx.save(); ctx.textAlign="left"; ctx.textBaseline="top"; ctx.font="700 20px system-ui"; ctx.fillStyle="rgba(230,240,255,0.9)"; ctx.fillText(PHASES[state.phase-1].label,40,70); ctx.restore();
+  }
+  function statsDraw(){
+    const lines=["Moves (this phase): "+state.moves, "Matches: "+state.matches+"/"+PHASES[state.phase-1].pairs];
+    ctx.save(); ctx.font="500 18px system-ui"; ctx.textAlign="left"; ctx.textBaseline="top"; ctx.fillStyle="rgba(210,230,255,0.85)"; lines.forEach((t,i)=>ctx.fillText(t,40,98+i*22)); ctx.restore();
+  }
+  function bestPanel(){
+    const x=W-260,y0=220,lh=22;
+    ctx.save();
+    ctx.textAlign="left"; ctx.textBaseline="top";
+    ctx.font="700 18px system-ui"; ctx.fillStyle="rgba(210,230,255,0.9)";
+    ctx.fillText("Best Time", x, y0-28);
+    ctx.font="500 16px system-ui"; ctx.fillStyle="rgba(210,230,255,0.85)";
+    for(let p=1;p<=8;p++){ const v=stats.best[p]===null?"—":stats.best[p]; ctx.fillText("Best Time Phase "+p+" : "+v, x, y0+(p-1)*lh); }
+    ctx.restore();
+  }
+
+  function grid(dt){
+    const L=layout();
+    for(let i=0;i<state.deck.length;i++){
+      const c=state.deck[i], b=L[i], hov=inR(mouse.x,mouse.y,b);
+      const target=(c.open||c.matched)?1:0, spd=0.12;
+      // flip progress
+      c.flip+=Math.sign(target-c.flip)*Math.min(Math.abs(target-c.flip),spd*(dt*60));
+      const t=Math.max(0,Math.min(1,c.flip));
+      const squeeze=Math.abs(Math.cos(Math.PI*t));
+      const r=14, baseW=b.w, baseH=b.h;
+      const cw=baseW*squeeze, ch=baseH;
+      const cx=b.x+(baseW-cw)/2, cy=b.y;
+
+      // Card body (inner shadow for depth)
+      ctx.save();
+      roundedPath(cx,cy,cw,ch,r);
+      ctx.fillStyle=THEME.CARD;
+      ctx.fill();
+      ctx.shadowColor="rgba(0,0,0,0.45)";
+      ctx.shadowBlur=18;
+      ctx.shadowOffsetY=6;
+      ctx.strokeStyle=THEME.EDGE; ctx.lineWidth=2;
+      ctx.stroke();
+      ctx.restore();
+
+      // Glow on hover or when front showing
+      if(hov || t>0.5){
+        ctx.save();
+        ctx.shadowColor=THEME.Y; ctx.shadowBlur=12+(t>0.5?8:0);
+        sr(cx,cy,cw,ch,r,"rgba(242,195,47,0.45)",2);
+        ctx.restore();
+      }
+
+      // Decide which face to draw inside the same transform so the back "sticks"
+      const isFront = t>=0.5;
+      if(!isFront){
+        // BACK SIDE (attached to flip)
+        const back=IMG_CACHE["card-back.png"];
+        drawImageContain(back, cx, cy, cw, ch, 6, r);
+      }else{
+        // FRONT SIDE (phase + idx)
+        const key="P"+state.phase+"-C"+c.idx+".png";
+        const frontImg=IMG_CACHE[key];
+        if(!drawImageContain(frontImg, cx, cy, cw, ch, 6, r)){
+          // fallback rectangle if missing
+          fr(cx+6, cy+6, cw-12, ch-12, 10, "rgba(255,255,255,0.06)");
+        }
+      }
+    }
+  }
+
+  function banners(){
+    // Phase 1 warning countdown (only after images loaded)
+    if(!state.loading && state.mode==="play" && state.phase===1 && !state.blueActive && state.blueTimer>0){
+      const secs=Math.ceil(state.blueTimer);
+      ctx.save(); ctx.fillStyle="rgba(30,60,120,0.25)"; ctx.fillRect(0,0,W,H);
+      ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.font="900 44px BebasNeue,Impact,sans-serif";
+      ctx.fillStyle=THEME.Y; ctx.fillText("BLUE ZONE STARTS IN "+secs+" s", W/2, H*0.14);
+      ctx.font="600 18px system-ui"; ctx.fillStyle="rgba(230,240,255,0.95)";
+      ctx.fillText("Match pairs to HEAL through the zone.", W/2, H*0.87);
+      ctx.restore();
+    }
+    // Phase intro transition (phase 2+ only)
+    if(!state.loading && state.mode==="play" && state.phaseIntro && state.phase>=2){
+      const t=state.phaseIntroT; const alpha=Math.max(0,1-t/2.0); const glow=18+Math.sin(state.pulse*2)*6;
+      ctx.save(); ctx.globalAlpha=alpha*0.6; ctx.fillStyle="rgba(242,195,47,0.12)"; ctx.fillRect(0,0,W,H); ctx.globalAlpha=1;
+      ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.font="900 50px BebasNeue,Impact,sans-serif"; ctx.fillStyle=THEME.Y; ctx.shadowColor=THEME.Y; ctx.shadowBlur=glow;
+      ctx.fillText("PHASE "+state.phase+" - Blue Zone Intensifying", W/2, H*0.15);
+      ctx.restore();
+    }
+    // Loading overlay
+    if(state.loading){
+      ctx.save();
+      ctx.fillStyle="rgba(0,0,0,0.6)"; ctx.fillRect(0,0,W,H);
+      ctx.textAlign="center"; ctx.textBaseline="middle";
+      ctx.font="900 36px BebasNeue,Impact,sans-serif"; ctx.fillStyle=THEME.Y;
+      ctx.fillText(state.loadMsg, W/2, H*0.40);
+      ctx.font="600 18px system-ui"; ctx.fillStyle="rgba(230,240,255,0.95)";
+      ctx.fillText("Preparing card images for this phase...", W/2, H*0.46);
+      ctx.restore();
+    }
+    // Phase survive banner
+    if(state.banner==="phase"){
+      const t=state.bannerT||0; const a=Math.min(1,t/0.2); ctx.fillStyle="rgba(242,195,47,"+(0.10*a)+")"; ctx.fillRect(0,0,W,H);
+      const radius=80+520*Math.min(1,t/1.0); ctx.save(); ctx.strokeStyle="rgba(242,195,47,"+(0.25*(1-Math.min(1,t)))+")"; ctx.lineWidth=6; ctx.beginPath(); ctx.arc(W/2,H*0.38,radius,0,Math.PI*2); ctx.stroke(); ctx.restore();
+      ctx.save(); ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.font="900 54px BebasNeue,Impact,sans-serif"; ctx.fillStyle=THEME.Y; ctx.fillText("PHASE SURVIVED!", W/2, H*0.38); ctx.restore();
+    } else if(state.mode==="winner"){
+      const hue=(state.pulse*100)%360; const color="hsl("+hue+",90%,60%)";
+      ctx.save(); ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.font="900 56px BebasNeue,Impact,sans-serif"; ctx.fillStyle=color; ctx.shadowColor=color; ctx.shadowBlur=30+Math.sin(state.pulse*2)*10;
+      ctx.fillText("WINNER WINNER CHICKEN DINNER!", W/2, H*0.32);
+      ctx.font="600 20px system-ui"; ctx.shadowBlur=0; ctx.fillStyle="rgba(230,240,255,0.95)"; ctx.fillText("Press Enter/Space to restart", W/2, H*0.40); ctx.restore();
+    } else if(state.mode==="knocked"){
+      const beat=(Math.sin(state.pulse*2*Math.PI*1.0)+1)*0.5; ctx.fillStyle="rgba(20,40,80,"+(0.25+0.15*beat)+")"; ctx.fillRect(0,0,W,H);
+      ctx.save(); ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.font="900 44px BebasNeue,Impact,sans-serif"; ctx.fillStyle="#b3d1ff";
+      let deathMsg="YOU DIED TO THE BLUEZONE";
+      switch(state.phase){
+        case 1: deathMsg="The Force Is Strong In This One"; break;
+        case 2: deathMsg="You Died in the Bluezone"; break;
+        case 3: deathMsg="Shroud Sprayed You With an AKM"; break;
+        case 4: deathMsg="You Died to the Bluezone - and Now Reddit Hates You"; break;
+        case 5: deathMsg="WackyJacky101 Killed You and Posted a How-To Video Guide"; break;
+        case 6: deathMsg="Shneefuchs Killed You With an SMG and Hates Himself For It"; break;
+        case 7: deathMsg="You Died to a Sliding, Wiggling, BadBoy Peeking Try-Hard"; break;
+        case 8: deathMsg="TGLTN Was Waiting at the Edge of the Bluezone"; break;
+      }
+      // simple wrapped center
+      ctx.save();
+      ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillStyle="#b3d1ff"; ctx.font="900 44px BebasNeue,Impact,sans-serif";
+      const maxW=Math.min(W-200, 1000); const words=deathMsg.split(" "); const lines=[]; let line=""; for(let i=0;i<words.length;i++){const w=words[i]; const test=line?line+" "+w:w; if(ctx.measureText(test).width>maxW){ if(line) lines.push(line); line=w; } else line=test;} if(line) lines.push(line);
+      const lh=48; let y=H*0.37-(lines.length*lh)/2+lh/2; for(let i=0;i<lines.length;i++){ ctx.fillText(lines[i], W/2, y); y+=lh; }
+      ctx.restore();
+      ctx.font="600 20px system-ui"; ctx.fillStyle="rgba(220,235,255,0.95)";
+      ctx.fillText("Press Enter/Space to try again (Phase 1)", W/2, H*0.46);
+      ctx.restore();
+    }
+  }
+
+  function shade(hex,k){const c=hex.replace("#",""),r=parseInt(c.substr(0,2),16),g=parseInt(c.substr(2,2),16),b=parseInt(c.substr(4,2),16);const rr=Math.min(255,Math.round(r*k)),gg=Math.min(255,Math.round(g*k)),bb=Math.min(255,Math.round(b*k));return "#"+rr.toString(16).padStart(2,"0")+gg.toString(16).padStart(2,"0")+bb.toString(16).padStart(2,"0")}
+
+  // Main loop
+  let last=performance.now(), raf=null;
+  function frame(now){
+    const dt=Math.min(0.1,(now-last)/1000); last=now;
+    updHP(dt);
+
+    // Blue Zone (do not tick while loading)
+    if(!state.loading && state.mode==="play"){
+      if(state.phaseIntro){ state.phaseIntroT+=dt; if(state.phaseIntroT>=2) state.phaseIntro=false; }
+      if(!state.blueActive){
+        if(state.blueTimer>0){ state.blueTimer=Math.max(0,state.blueTimer-dt); if(state.blueTimer===0) state.blueActive=true; }
+      }
+      if(state.blueActive){ damage(state.blueRate*dt); }
+    }
+
+    bg(); title(); statsDraw(); bestPanel(); grid(dt); drawButtons(); banners(); drawHP();
+
+    if(mouse.clicked){
+      mouse.clicked=false;
+      if(inR(mouse.x,mouse.y,btnNew.b)) { state.hp=100; state.hpAnim=100; startPhase(1); }
+      else if(inR(mouse.x,mouse.y,btnBack.b)) window.location.href='https://pubgbanchecker.com/games.html';
+      else if(!state.loading && state.mode==="play"){ const i=cardAt(mouse.x,mouse.y); if(i!==-1) onClick(i); }
+    }
+
+    if(state.banner) state.bannerT+=dt;
+    state.pulse += 0.02*(dt*60);
+    raf=requestAnimationFrame(frame);
+  }
+
+  document.addEventListener("visibilitychange",()=>{ if(document.hidden){ if(raf) cancelAnimationFrame(raf); raf=null; } else if(!raf){ last=performance.now(); raf=requestAnimationFrame(frame);} });
+  window.addEventListener("unload",()=>{ if(raf) cancelAnimationFrame(raf); });
+
+  function start(){ resize(); startPhase(1); canvas.focus(); raf=requestAnimationFrame(frame); }
+  try{ start(); }catch(e){ console.error(e); ctx.setTransform(1,0,0,1,0,0); ctx.fillStyle=THEME.RED; ctx.font="600 20px system-ui"; ctx.textAlign="center"; ctx.fillText("Init error", (canvas.width||W)/2, (canvas.height||H)/2); }
 })();
 </script>
-
 </body>
 </html>
