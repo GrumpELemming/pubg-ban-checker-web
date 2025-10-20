@@ -95,16 +95,23 @@ function spawnBullet(sx,sy,tx,ty){
 
 // ===== Medkits (Heals) =====
 function spawnMed(x){
+  // Randomly scatter medkits across the screen width
+  const spawnX = x ?? (Math.random() < 0.5
+    ? 40 + Math.random() * (W - 80)
+    : Math.max(40, Math.min(W - 40, (state.player?.x || W/2) + (Math.random() * 400 - 200)))
+  );
+
   state.meds.push({
-    x:Math.max(30, Math.min(W-30, (x ?? (30+Math.random()*(W-60))))),
-    y:-20,
-    vy:0.8 + Math.random()*0.3,
-    r:14,
-    heal:25,
-    swayT:Math.random()*Math.PI*2,
-    alpha:0,
+    x: spawnX,
+    y: -20,
+    vy: 0.8 + Math.random() * 0.3,
+    r: 18,                 // larger radius
+    heal: 25,
+    swayT: Math.random() * Math.PI * 2,
+    alpha: 0,
   });
 }
+
 
 // ===== Utils =====
 const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
@@ -372,7 +379,7 @@ function updateBullets(dt){
       const dmg = 8 + Math.min(12, Math.floor(state.phase*0.9));
       p.hp = Math.max(0, p.hp - dmg);
       p.invuln = 350;
-      if(Math.random()<0.8) spawnMed(p.x + (Math.random()*40-20));
+      if(Math.random() < 0.5) spawnMed(); // 50% chance, random position
       state.bullets.splice(i,1);
       continue;
     }
