@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>SCHNEEFUCHS HATES SMGS — PNG Edition</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    /* === Menu Buttons & Best Time Styling === */
+    .menuButton {
+      display: block;
+      margin: 12px auto;
+      padding: 10px 22px;
+      font-family: 'BebasNeue', sans-serif;
+      font-size: 22px;
+      background: #111;
+      color: #ffcc00;
+      border: 2px solid #ffcc00;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .menuButton:hover {
+      background: #ffcc00;
+      color: #000;
+    }
+    .best-time {
+      margin-top: 8px;
+      color: #9fe8ff;
+      font-family: 'BebasNeue', sans-serif;
+      font-size: 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="wrap"><canvas id="game" width="1280" height="720"></canvas></div>
+
+  <!-- TITLE SCREEN -->
+  <div id="titleScreen" class="overlay">
+    <img id="titleImg" src="title.png" alt="SCHNEEFUCHS HATES SMGS Title">
+    <div id="titleHint">Click or press Enter</div>
+  </div>
+
+  <!-- MAIN MENU -->
+  <div id="intro" class="overlay hidden">
+    <div class="panel">
+      <h1>🦊 SCHNEEFUCHS HATES SMGS</h1>
+      <p class="muted">
+        Floating SMGs drift across the field and spray bullets. Survive. Grab med kits to heal.
+      </p>
+      <div class="keys muted">
+        Move: <b>WASD</b>/<b>Arrows</b> · Dash: <b>Shift</b> · Start: <b>Enter</b>
+      </div>
+
+      <!-- Buttons -->
+      <div class="btns">
+        <button id="startBtn" class="menuButton">Start Game</button>
+        <button id="backBtn" class="menuButton" onclick="window.location.href='https://pubgbanchecker.com/games.html'">Back to Games</button>
+      </div>
+
+      <!-- Best Time -->
+      <div id="bestTimeDisplay" class="best-time"></div>
+    </div>
+  </div>
+
+  <!-- GAME OVER SCREEN -->
+  <div id="gameover" class="overlay hidden">
+    <div class="panel">
+      <h1>💀 RUN ENDED</h1>
+      <p class="muted" id="finalStats">You reached Phase 1 and survived 00:00.</p>
+      <div class="btns">
+        <button id="restartBtn" class="menuButton">Restart</button>
+        <button id="backMenuBtn" class="menuButton">Back to Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
+
