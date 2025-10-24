@@ -1,73 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self';
-    script-src 'self';
-    style-src 'self';
-    img-src 'self' data:;
-    font-src 'self';
-    connect-src https://pubg-ban-checker-backend.onrender.com;
-    frame-ancestors 'none';
-    base-uri 'self';
-  ">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PUBG Ban Checker</title>
-  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/main.css" />
   <script defer src="js/main.js"></script>
 </head>
 <body>
   <h1>PUBG Ban Checker</h1>
 
-  <!-- Navigation -->
   <nav class="nav-links">
-    <a href="watchlist.html"><button type="button">Watchlist</button></a>
-    <a href="updates.html"><button type="button">About</button></a>
-    <a href="games.html"><button type="button">Games</button></a>
+    <a href="watchlist.html"><button>Watchlist</button></a>
+    <a href="updates.html"><button>About</button></a>
   </nav>
 
-  <!-- Platform Selector -->
+<!-- =======================================================
+     Platform Selection (with shimmer + active label)
+     ======================================================= -->
   <section class="container platform-box">
     <h2>Select Platform</h2>
-    <div id="platformRowIndex" class="platform-row" role="group" aria-label="Platform selection">
-      <button class="platform-btn" data-platform="steam" aria-label="Steam">
-        <img src="img/steam.svg" alt="Steam" class="platform-icon">
+
+    <div id="platformRowIndex" class="platform-row" role="group">
+      <button class="platform-btn steam" data-platform="steam" data-tooltip="Steam">
+        <img src="img/steam.svg" alt="Steam" class="platform-icon" />
       </button>
-      <button class="platform-btn" data-platform="xbox" aria-label="Xbox">
-        <img src="img/xbox.svg" alt="Xbox" class="platform-icon">
+      <button class="platform-btn xbox" data-platform="xbox" data-tooltip="Xbox">
+        <img src="img/xbox.svg" alt="Xbox" class="platform-icon" />
       </button>
-      <button class="platform-btn" data-platform="psn" aria-label="PSN">
-        <img src="img/psn.svg" alt="PSN" class="platform-icon">
+      <button class="platform-btn psn" data-platform="psn" data-tooltip="PlayStation Network">
+        <img src="img/psn.svg" alt="PSN" class="platform-icon" />
       </button>
-      <button class="platform-btn" data-platform="kakao" aria-label="Kakao">
-        <img src="img/kakao.svg" alt="Kakao" class="platform-icon">
+      <button class="platform-btn kakao" data-platform="kakao" data-tooltip="Kakao">
+        <img src="img/kakao.svg" alt="Kakao" class="platform-icon" />
       </button>
     </div>
-    <input type="hidden" id="platformSelect" value="steam">
+
+    <!-- Active platform label -->
+    <p id="activePlatformLabel" class="active-platform-label">
+      Currently searching: <strong>Steam</strong>
+    </p>
+
+    <input type="hidden" id="platformSelect" value="steam" />
   </section>
 
-  <!-- Ban Checker -->
+
+  <!-- Ban & Clan Checker -->
   <section class="container">
-    <h2>Ban Checker</h2>
-    <textarea id="playerInput" placeholder="Enter player names, separated by commas or new lines"></textarea>
+    <h2>Ban & Clan Checker</h2>
+
+    <textarea
+      id="playerInput"
+      placeholder="Enter player names, separated by commas or new lines (max 10 per check)"
+    ></textarea>
+
     <div class="control-buttons">
       <button id="checkBanBtn" type="button">Check</button>
       <button id="clearResultsBtn" class="secondary-btn" type="button">Clear</button>
-      <label><input type="checkbox" id="darkModeToggle"> Dark Mode</label>
+      <label><input type="checkbox" id="darkModeToggle" /> Dark Mode</label>
     </div>
+
     <div id="results"><p class="muted">No results yet.</p></div>
   </section>
 
-  <!-- Clan Checker -->
+  <!-- Search by Account ID -->
   <section class="container">
-    <h2>Clan Checker</h2>
-    <textarea id="clanInput" placeholder="Enter up to 2 names"></textarea>
+    <h2>Search by Account ID</h2>
+    <input id="accountIdInput" class="text-input" placeholder="Enter PUBG Account ID" />
+
     <div class="control-buttons">
-      <button id="checkClanBtn" type="button">Check</button>
-      <button id="clearClanBtn" class="secondary-btn" type="button">Clear</button>
+      <button id="lookupIdBtn" type="button">Lookup ID</button>
+      <button id="clearIdBtn" class="secondary-btn" type="button">Clear</button>
     </div>
-    <div id="clanResults"><p class="muted">No results yet.</p></div>
+
+    <div id="idLookupResults"><p class="muted">No results yet.</p></div>
   </section>
+
+  <!-- click limiter -->
+  <script>
+    const checkBanBtn = document.getElementById("checkBanBtn");
+    const lookupIdBtn = document.getElementById("lookupIdBtn");
+
+    async function handleLimitedClick(button, callback) {
+      if (button.disabled) return;
+      button.disabled = true;
+      const originalText = button.textContent;
+      button.textContent = "Checking...";
+      button.classList.add("disabled");
+      try {
+        await callback();
+      } finally {
+        button.textContent = originalText;
+        button.disabled = false;
+        button.classList.remove("disabled");
+      }
+    }
+
+    if (checkBanBtn) {
+      checkBanBtn.addEventListener("click", () =>
+        handleLimitedClick(checkBanBtn, async () => {
+          if (typeof window.checkBan === "function") await window.checkBan();
+        })
+      );
+    }
+
+    if (lookupIdBtn) {
+      lookupIdBtn.addEventListener("click", () =>
+        handleLimitedClick(lookupIdBtn, async () => {
+          if (typeof window.lookupById === "function") await window.lookupById();
+        })
+      );
+    }
+  </script>
 </body>
 </html>
