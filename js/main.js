@@ -1,420 +1,332 @@
 /* -------------------------------------------------------
-   PUBG Ban Checker - main.js (v1.6 Secure)
+   PUBG Ban Checker
+   main.js
+   v1.9 Final - Clan + ID + Ban Label + New Resolver
    ------------------------------------------------------- */
+(() => {
+  const BASE_URL = "https://pubg-ban-checker-backend.onrender.com";
 
-function createElem(tag, text, cls) {
-  const el = document.createElement(tag);
-  if (cls) el.className = cls;
-  if (text !== undefined && text !== null) el.textContent = text;
-  return el;
-}
+  // Helpers / constants
+  const LS_PLATFORM = "selectedPlatform";
+  const LS_DARK = "darkMode";
+  const LS_WATCHLIST_PREFIX = "watchlist_";
 
-/* ======================
-   Ban Checker (Index)
-   ====================== */
-async function checkBan(playerString) {
-  const inputElement = document.getElementById("playerInput");
-  const players = playerString || (inputElement ? inputElement.value.trim() : "");
-  if (!players) return alert("Enter at least one player name.");
-
-  const names = players.split(/[\r\n,]+/).map(n => n.trim()).filter(Boolean);
-  if (!names.length) return alert("No valid player names entered.");
-
-  const platform = getActivePlatform();
-  const resultsDiv = document.getElementById("results");
-  if (resultsDiv) {
-    resultsDiv.replaceChildren(createElem("p", "Checking… please wait", "loading"));
+  function escapeHtml(s = "") {
+    return s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[c]));
   }
 
-  try {
-    const response = await fetch(
-      `https://pubg-ban-checker-backend.onrender.com/check-ban?player=${encodeURIComponent(
-        names.join(",")
-      )}&platform=${platform}`
-    );
-    const data = await response.json();
-    if (!resultsDiv) return;
-    resultsDiv.replaceChildren();
+/* -------------------------------------------------------
+   Platform setup (with shimmer + auto-clear + input reset)
+   ------------------------------------------------------- */
+function getPlatform() {
+  return localStorage.getItem(LS_PLATFORM) || "steam";
+}
 
-    if (data.results) {
-      data.results.forEach((item, i) => {
-        const status = item.banStatus || "Unknown";
-        const row = createElem("div", null, "player-row");
-        const statusClass =
-          status === "Not banned" ? "not-banned" :
-          status === "Temporarily banned" ? "temp-banned" :
-          status === "Permanently banned" ? "perm-banned" : "unknown";
-        row.classList.add(statusClass);
-        row.style.animationDelay = `${i * 0.06}s`;
+function setPlatform(p) {
+  localStorage.setItem(LS_PLATFORM, p);
+  document.getElementById("platformSelect").value = p;
+  highlightPlatform(p);
+  shimmerPlatformRow();
 
-        const strong = createElem("strong", item.player);
-        row.appendChild(strong);
+  // Clear results & ID lookup on switch
+  const results = document.getElementById("results");
+  if (results) {
+    results.innerHTML = "<p class='muted'>No results yet.</p>";
+  }
+  const idResults = document.getElementById("idLookupResults");
+  if (idResults) {
+    idResults.innerHTML = "<p class='muted'>No results yet.</p>";
+  }
 
-        if (item.clan) {
-          const clan = createElem("span", `[${item.clan}]`, "clan");
-          row.appendChild(document.createTextNode(" "));
-          row.appendChild(clan);
-        }
+  // Clear player input box
+  const input = document.getElementById("playerInput");
+  if (input) {
+    input.value = "";
+  }
+}
 
-        const spanStatus = createElem("span", status, "status");
-        row.appendChild(spanStatus);
+function highlightPlatform(p) {
+  document.querySelectorAll(".platform-btn").forEach(b =>
+    b.classList.toggle("active", b.dataset.platform === p)
+  );
+}
 
-        const wlBtn = createElem("button", "Add to Watchlist");
-        const existing = getWatchlist(platform).some(
-          x => (typeof x === "string" ? x : x.name) === item.player
-        );
+function shimmerPlatformRow() {
+  const row = document.getElementById("platformRowIndex");
+  if (!row) return;
+  row.classList.add("shimmer");
+  setTimeout(() => row.classList.remove("shimmer"), 600);
+}
 
-        if (existing) {
-          wlBtn.textContent = "Added";
-          wlBtn.disabled = true;
-          wlBtn.classList.add("added-btn");
+function setupPlatforms() {
+  const p = getPlatform();
+  highlightPlatform(p);
+
+  // click on Steam / Xbox / PSN / Kakao buttons
+  document.querySelectorAll(".platform-btn").forEach(b =>
+    b.addEventListener("click", () => setPlatform(b.dataset.platform))
+  );
+
+  // Wait until DOM + checkBan are ready before wiring Enter key
+  window.addEventListener("load", () => {
+    const input = document.getElementById("playerInput");
+    if (!input) return;
+
+    input.addEventListener("keydown", async e => {
+      // allow Shift+Enter for new line, Enter alone to submit
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        if (typeof window.checkBan === "function") {
+          await window.checkBan();
+          input.value = ""; // clear AFTER results are shown
         } else {
-          wlBtn.addEventListener("click", () => {
-            addToWatchlist(item.player, item.clan || null, platform);
-            wlBtn.textContent = "Added";
-            wlBtn.disabled = true;
-            wlBtn.classList.add("added-btn");
-          });
+          console.warn("checkBan not ready yet");
         }
+      }
+    });
+  });
+}
 
-        row.appendChild(wlBtn);
-        resultsDiv.appendChild(row);
+
+
+  // ---------- Dark mode ----------
+  function initDark() {
+    const dark = localStorage.getItem(LS_DARK) === "true";
+    document.body.classList.toggle("dark-mode", dark);
+    const toggle = document.getElementById("darkModeToggle");
+    if (toggle) {
+      toggle.checked = dark;
+      toggle.addEventListener("change", () => {
+        localStorage.setItem(LS_DARK, toggle.checked ? "true" : "false");
+        document.body.classList.toggle("dark-mode", toggle.checked);
       });
-    } else {
-      resultsDiv.replaceChildren(createElem("p", "No results found.", "muted"));
-    }
-  } catch (err) {
-    if (resultsDiv) {
-      const p = createElem("p", `Error: ${err}`, "unknown");
-      resultsDiv.replaceChildren(p);
     }
   }
-}
 
-function clearResults() {
-  const resultsDiv = document.getElementById("results");
-  if (resultsDiv)
-    resultsDiv.replaceChildren(createElem("p", "No results yet.", "muted"));
-}
-
-/* ======================
-   Clan Checker
-   ====================== */
-async function checkClan() {
-  const clanInput = document.getElementById("clanInput");
-  const input = clanInput ? clanInput.value.trim() : "";
-  if (!input) return alert("Enter at least one player name.");
-
-  const names = input.split(/[\r\n,]+/).map(n => n.trim()).filter(Boolean);
-  if (names.length > 2) return alert("Clan checker is limited to 2 names.");
-
-  const resultsDiv = document.getElementById("clanResults");
-  if (resultsDiv)
-    resultsDiv.replaceChildren(createElem("p", "Checking… please wait", "loading"));
-
-  const platform = getActivePlatform();
-  try {
-    const response = await fetch(
-      `https://pubg-ban-checker-backend.onrender.com/check-ban-clan?player=${encodeURIComponent(
-        names.join(",")
-      )}&platform=${platform}`
-    );
-    const data = await response.json();
-    if (!resultsDiv) return;
-    resultsDiv.replaceChildren();
-
-    if (data.results) {
-      data.results.forEach((item, i) => {
-        const status = item.banStatus || "Unknown";
-        const row = createElem("div", null, "player-row");
-        const statusClass =
-          status === "Not banned" ? "not-banned" :
-          status === "Temporarily banned" ? "temp-banned" :
-          status === "Permanently banned" ? "perm-banned" : "unknown";
-        row.classList.add(statusClass);
-        row.style.animationDelay = `${i * 0.06}s`;
-
-        const strong = createElem("strong", item.player);
-        row.appendChild(strong);
-
-        if (item.clan) {
-          const clan = createElem("span", `[${item.clan}]`, "clan");
-          row.appendChild(document.createTextNode(" "));
-          row.appendChild(clan);
-        }
-
-        const spanStatus = createElem("span", status, "status");
-        const clanBadge = createElem("span", "Clan Mode", "clan-badge shimmer");
-        row.appendChild(spanStatus);
-        row.appendChild(clanBadge);
-        resultsDiv.appendChild(row);
+  // ---------- Watchlist ----------
+  function getWatchlistKey(p) {
+    return LS_WATCHLIST_PREFIX + p;
+  }
+  function getWatchlist(p) {
+    try {
+      return JSON.parse(localStorage.getItem(getWatchlistKey(p)) || "[]");
+    } catch {
+      return [];
+    }
+  }
+  function saveWatchlist(p, arr) {
+    localStorage.setItem(getWatchlistKey(p), JSON.stringify(arr));
+  }
+  function addWatchlist(name, id, clan, p, status) {
+    if (!id) return;
+    const list = getWatchlist(p);
+    if (!list.some(e => e.accountId === id)) {
+      list.push({
+        accountId: id,
+        lastKnownName: name,
+        clan: clan || "None",
+        lastStatus: status || "Unknown"
       });
+      saveWatchlist(p, list);
+    }
+  }
+
+  // ---------- Backend calls ----------
+  async function getBanStatus(platform, playerName) {
+    const url = `${BASE_URL}/check-ban-clan?platform=${encodeURIComponent(platform)}&player=${encodeURIComponent(
+      playerName
+    )}`;
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.error)
+        return { player: playerName, accountId: "", clan: "", statusText: data.error };
+
+      const result = (data.results || []).find(
+        r => r.player.toLowerCase() === playerName.toLowerCase()
+      );
+      if (!result)
+        return { player: playerName, accountId: "", clan: "", statusText: "Unknown" };
+
+      return {
+        player: result.player,
+        accountId: result.accountId || "",
+        clan: result.clan || "",
+        statusText: result.banStatus || "Unknown"
+      };
+    } catch (err) {
+      return { player: playerName, accountId: "", clan: "", statusText: String(err) };
+    }
+  }
+
+  async function resolveById(id, platform) {
+    try {
+      const res = await fetch(
+        `${BASE_URL}/resolve?platform=${encodeURIComponent(platform)}&id=${encodeURIComponent(id)}`
+      );
+      return await res.json();
+    } catch (err) {
+      return { error: String(err) };
+    }
+  }
+
+  // ---------- UI builders ----------
+  function buildRow({ player, accountId, clan, statusText }) {
+    const row = document.createElement("div");
+    row.className = "player-row";
+
+    const t = (statusText || "").toLowerCase();
+    let label = "Unknown";
+    if (t.includes("perm")) {
+      row.classList.add("perm-banned");
+      label = "Permanently Banned";
+    } else if (t.includes("temp")) {
+      row.classList.add("temp-banned");
+      label = "Temporarily Banned";
+    } else if (t.includes("not")) {
+      row.classList.add("not-banned");
+      label = "Not Banned";
     } else {
-      resultsDiv.replaceChildren(createElem("p", "No results found.", "muted"));
+      row.classList.add("unknown");
     }
-  } catch (err) {
-    if (resultsDiv)
-      resultsDiv.replaceChildren(createElem("p", `Error: ${err}`, "unknown"));
+
+    const info = document.createElement("div");
+    info.innerHTML = `
+      <strong>${escapeHtml(player)}</strong><br>
+      ID: ${escapeHtml(accountId || "unknown")}<br>
+      Clan: ${escapeHtml(clan || "none")}<br>
+      Status: <span class="ban-label">${escapeHtml(label)}</span>
+    `;
+
+    const add = document.createElement("button");
+    add.textContent = "Add to Watchlist";
+    add.addEventListener("click", () => {
+      addWatchlist(player, accountId, clan, getPlatform(), label);
+      add.textContent = "Added";
+      add.disabled = true;
+      add.classList.add("added-btn");
+    });
+
+    row.append(info, add);
+    return row;
   }
-}
 
-function clearClanResults() {
-  const resultsDiv = document.getElementById("clanResults");
-  if (resultsDiv)
-    resultsDiv.replaceChildren(createElem("p", "No results yet.", "muted"));
-}
-
-/* ======================
-   Watchlist
-   ====================== */
-async function checkSinglePlayer(playerName, rowElement, platform) {
-  if (!playerName) return;
-  try {
-    const response = await fetch(
-      `https://pubg-ban-checker-backend.onrender.com/check-ban?player=${encodeURIComponent(
-        playerName
-      )}&platform=${platform}`
-    );
-    const data = await response.json();
-    const result = data.results && data.results[0];
-    if (result) {
-      const status = result.banStatus || "Unknown";
-      const cls =
-        status === "Not banned" ? "not-banned" :
-        status === "Temporarily banned" ? "temp-banned" :
-        status === "Permanently banned" ? "perm-banned" : "unknown";
-      rowElement.className = `watchlist-player ${cls}`;
-
-      rowElement.replaceChildren(
-        createElem("strong", result.player),
-        createElem("span", status, "status")
-      );
-
-      const actions = createElem("div", null, "actions");
-      const clearBtn = createElem("button", "Clear", "secondary-btn clear-btn");
-      const removeBtn = createElem("button", "Remove", "secondary-btn remove-btn");
-      clearBtn.addEventListener("click", () => renderWatchlist());
-      removeBtn.addEventListener("click", () =>
-        removeFromWatchlist(result.player, platform)
-      );
-      actions.append(clearBtn, removeBtn);
-      rowElement.appendChild(actions);
-
-      rowElement.style.opacity = "0";
-      rowElement.style.animation = "fadeUpRow 0.5s forwards";
+  // ---------- Ban checker flow ----------
+  async function checkBan() {
+    const results = document.getElementById("results");
+    const names = document
+      .getElementById("playerInput")
+      .value.split(/[\n,]+/)
+      .map(x => x.trim())
+      .filter(Boolean)
+      .slice(0, 10);
+    if (!names.length) {
+      results.innerHTML = "<p class='muted'>Please enter names.</p>";
+      return;
     }
-  } catch (err) {
-    rowElement.className = "watchlist-player unknown";
-    rowElement.replaceChildren(
-      createElem("strong", playerName),
-      createElem("span", "Error", "status")
-    );
-    const actions = createElem("div", null, "actions");
-    const clearBtn = createElem("button", "Clear", "secondary-btn clear-btn");
-    const removeBtn = createElem("button", "Remove", "secondary-btn remove-btn");
-    clearBtn.addEventListener("click", () => renderWatchlist());
-    removeBtn.addEventListener("click", () =>
-      removeFromWatchlist(playerName, platform)
-    );
-    actions.append(clearBtn, removeBtn);
-    rowElement.appendChild(actions);
-    rowElement.style.opacity = "0";
-    rowElement.style.animation = "fadeUpRow 0.5s forwards";
+
+    const p = getPlatform();
+    results.innerHTML = "";
+
+    for (const n of names) {
+      const loading = buildRow({
+        player: n,
+        accountId: "...",
+        clan: "...",
+        statusText: "Checking..."
+      });
+      results.append(loading);
+
+      const data = await getBanStatus(p, n);
+
+      const final = buildRow(data);
+      results.replaceChild(final, loading);
+    }
   }
-}
+  window.checkBan = checkBan;
 
-window.renderWatchlist = () => {
-  const container = document.getElementById("watchlistPlayersContainer");
-  if (!container) return;
-  const platform = getActivePlatform();
-  const list = getWatchlist(platform);
+/* -------------------------------------------------------
+   ID Lookup (fully working + clan + ban + error handling)
+   ------------------------------------------------------- */
+async function lookupById() {
+  const input = document.getElementById("accountIdInput");
+  const out = document.getElementById("idLookupResults");
+  const id = input.value.trim();
+  const platform = getPlatform();
 
-  container.replaceChildren();
-  if (!list.length) {
-    container.replaceChildren(
-      createElem("p", "No players in this platform watchlist yet.", "muted")
-    );
+  if (!id) {
+    out.innerHTML = "<p class='muted'>Enter an ID.</p>";
     return;
   }
 
-  list.forEach(entry => {
-    const playerName = typeof entry === "string" ? entry : entry.name;
-    const row = createElem("div", null, "watchlist-player neutral");
+  out.innerHTML = "<p class='muted'>Looking up...</p>";
 
-    const strong = createElem("strong", playerName);
-    const actions = createElem("div", null, "actions");
-    const checkBtn = createElem("button", "Check", "check-btn");
-    const removeBtn = createElem("button", "Remove", "secondary-btn remove-btn");
-    checkBtn.addEventListener("click", () => checkSinglePlayer(playerName, row, platform));
-    removeBtn.addEventListener("click", () => removeFromWatchlist(playerName, platform));
-    actions.append(checkBtn, removeBtn);
-    row.append(strong, actions);
-    container.appendChild(row);
-  });
-};
+  try {
+    // Step 1: Resolve ID → current name
+    const res = await fetch(
+      `${BASE_URL}/resolve?platform=${encodeURIComponent(platform)}&id=${encodeURIComponent(id)}`
+    );
+    const resolved = await res.json();
 
-/* Watchlist storage helpers */
-const KEY = p => `watchlist_${p}`;
-(function () {
-  const old = localStorage.getItem("watchlist");
-  if (old && !localStorage.getItem(KEY("steam"))) {
-    localStorage.setItem(KEY("steam"), old);
-    localStorage.removeItem("watchlist");
+    if (resolved.error || !resolved.currentName) {
+      out.innerHTML = `<p class='muted'>Unable to resolve ID. ${escapeHtml(resolved.error || "")}</p>`;
+      return;
+    }
+
+    const playerName = resolved.currentName;
+    const accountId = resolved.accountId || id;
+
+    // Step 2: Get ban + clan info
+    const banRes = await fetch(
+      `${BASE_URL}/check-ban-clan?platform=${encodeURIComponent(platform)}&player=${encodeURIComponent(playerName)}`
+    );
+    const banData = await banRes.json();
+
+    let clan = "Unknown";
+    let statusText = "Unknown";
+
+    if (banData.results && banData.results.length > 0) {
+      const r = banData.results.find(
+        e => e.player.toLowerCase() === playerName.toLowerCase()
+      ) || banData.results[0];
+      clan = r.clan || "None";
+      statusText = r.banStatus || "Unknown";
+    }
+
+    // Step 3: Build result row
+    const final = {
+      player: playerName,
+      accountId,
+      clan,
+      statusText,
+    };
+
+    const row = buildRow(final, platform, false);
+    out.innerHTML = "";
+    out.append(row);
+
+  } catch (err) {
+    console.error("lookupById error:", err);
+    out.innerHTML = `<p class='muted'>Error fetching data: ${escapeHtml(String(err))}</p>`;
   }
+}
+window.lookupById = lookupById;
+
+
+
+  // ---------- Init ----------
+  document.addEventListener("DOMContentLoaded", () => {
+    setupPlatforms();
+    initDark();
+
+    document.getElementById("clearResultsBtn").onclick = () => {
+      document.getElementById("results").innerHTML = "<p class='muted'>No results yet.</p>";
+    };
+
+    document.getElementById("clearIdBtn").onclick = () => {
+      document.getElementById("accountIdInput").value = "";
+      document.getElementById("idLookupResults").innerHTML =
+        "<p class='muted'>No results yet.</p>";
+    };
+  });
 })();
-window.getWatchlist = (p = getActivePlatform()) =>
-  JSON.parse(localStorage.getItem(KEY(p)) || "[]");
-window.storeWatchlist = (n, p = getActivePlatform()) =>
-  localStorage.setItem(KEY(p), JSON.stringify(n));
-window.addToWatchlist = (n, c = null, p = getActivePlatform()) => {
-  if (!n) return;
-  const e = getWatchlist(p);
-  const b = x => (typeof x === "string" ? x : x.name);
-  const merged = [c ? { name: n, clan: c } : n, ...e].reduce(
-    (a, i) => (a.some(x => b(x) === b(i)) ? a : [...a, i]),
-    []
-  );
-  storeWatchlist(merged.slice(0, 50), p);
-  renderWatchlist();
-};
-window.removeFromWatchlist = (n, p = getActivePlatform()) => {
-  const b = x => (typeof x === "string" ? x : x.name);
-  storeWatchlist(getWatchlist(p).filter(x => b(x) !== n), p);
-  renderWatchlist();
-};
-window.clearWatchlist = () => {
-  storeWatchlist([], getActivePlatform());
-  renderWatchlist();
-};
-window.checkAllWatchlist = () => {
-  const platform = getActivePlatform();
-  const container = document.getElementById("watchlistPlayersContainer");
-  if (!container) return;
-  const rows = container.querySelectorAll(".watchlist-player.neutral");
-
-  rows.forEach((row, i) => {
-    const name = row.querySelector("strong").textContent;
-    setTimeout(() => {
-      checkSinglePlayer(name, row, platform);
-    }, i * 300);
-  });
-};
-
-/* ======================
-   Platform Selector
-   ====================== */
-function getActivePlatform() {
-  const h = document.getElementById("platformSelect");
-  return (h && h.value) || localStorage.getItem("activePlatform") || "steam";
-}
-function setActivePlatform(p) {
-  const h = document.getElementById("platformSelect");
-  if (h) h.value = p;
-  localStorage.setItem("activePlatform", p);
-
-  document.querySelectorAll(".platform-row").forEach(r => {
-    r.querySelectorAll(".platform-btn").forEach(b => {
-      const isActive = b.dataset.platform === p;
-      b.classList.toggle("active", isActive);
-      b.classList.remove("steam", "xbox", "psn", "kakao");
-      if (isActive) b.classList.add(p);
-      b.setAttribute("aria-selected", isActive ? "true" : "false");
-    });
-  });
-
-  const results = document.getElementById("results");
-  if (results) {
-    results.classList.add("fade-out");
-    setTimeout(() => {
-      results.replaceChildren(createElem("p", "No results yet.", "muted"));
-      results.classList.remove("fade-out");
-    }, 300);
-  }
-
-  const clanResults = document.getElementById("clanResults");
-  if (clanResults) {
-    clanResults.classList.add("fade-out");
-    setTimeout(() => {
-      clanResults.replaceChildren(createElem("p", "No results yet.", "muted"));
-      clanResults.classList.remove("fade-out");
-    }, 300);
-  }
-
-  const wlContainer = document.getElementById("watchlistPlayersContainer");
-  if (wlContainer) {
-    wlContainer.classList.add("fade-out");
-    setTimeout(() => {
-      renderWatchlist();
-      wlContainer.classList.remove("fade-out");
-    }, 300);
-  }
-
-  const playerInput = document.getElementById("playerInput");
-  if (playerInput) playerInput.value = "";
-  const clanInput = document.getElementById("clanInput");
-  if (clanInput) clanInput.value = "";
-}
-function setupPlatformRow(rid, hid) {
-  const r = document.getElementById(rid);
-  const h = document.getElementById(hid);
-  if (!r || !h) return;
-  const last = localStorage.getItem("activePlatform") || "steam";
-  h.value = h.value || last;
-  r.querySelectorAll(".platform-btn").forEach(b => {
-    const p = b.dataset.platform;
-    b.classList.toggle("active", p === h.value);
-    b.setAttribute("aria-selected", p === h.value ? "true" : "false");
-    b.addEventListener("click", () => setActivePlatform(p));
-  });
-}
-
-/* ======================
-   Init
-   ====================== */
-window.addEventListener("DOMContentLoaded", () => {
-  if (document.getElementById("platformRowIndex"))
-    setupPlatformRow("platformRowIndex", "platformSelect");
-  if (document.getElementById("platformRowWatchlist"))
-    setupPlatformRow("platformRowWatchlist", "platformSelect");
-  if (document.getElementById("watchlistPlayersContainer")) renderWatchlist();
-
-  document.getElementById("checkBanBtn")?.addEventListener("click", () => checkBan());
-  document.getElementById("clearResultsBtn")?.addEventListener("click", () => clearResults());
-  document.getElementById("checkClanBtn")?.addEventListener("click", () => checkClan());
-  document.getElementById("clearClanBtn")?.addEventListener("click", () => clearClanResults());
-  document.getElementById("checkAllWatchlistBtn")?.addEventListener("click", () => checkAllWatchlist());
-  document.getElementById("clearWatchlistBtn")?.addEventListener("click", () => clearWatchlist());
-});
-
-/* ======================
-   Dark Mode
-   ====================== */
-const darkToggle = document.getElementById("darkModeToggle");
-if (darkToggle) {
-  darkToggle.addEventListener("change", () => {
-    document.body.classList.toggle("dark-mode", darkToggle.checked);
-    localStorage.setItem("darkMode", darkToggle.checked);
-  });
-  darkToggle.checked = localStorage.getItem("darkMode") === "true";
-  document.body.classList.toggle("dark-mode", darkToggle.checked);
-}
-
-/* ======================
-   Secure Request Limiter
-   ====================== */
-async function withLimiter(button, callback) {
-  if (!button || button.disabled) return;
-  button.disabled = true;
-  const original = button.textContent;
-  button.textContent = "Checking...";
-  button.classList.add("disabled");
-  try { await callback(); }
-  catch (err) { console.error("Check failed:", err); }
-  finally {
-    setTimeout(() => {
-      button.disabled = false;
-      button.textContent = original;
-      button.classList.remove("disabled");
-    }, 800);
-  }
-}
