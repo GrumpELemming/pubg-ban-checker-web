@@ -169,22 +169,19 @@
   }
 
   // Drawing helpers
-  function fr(x,y,w,h,r,c){ ctx.save(); ctx.fillStyle=c; roundedPath(x,y,w,h,r); ctx.fill(); ctx.restore(); }
-  function sr(x,y,w,h,r,c,l){ ctx.save(); ctx.strokeStyle=c; ctx.lineWidth=l||1; roundedPath(x,y,w,h,r); ctx.stroke(); ctx.restore(); }
-  function roundedPath(x,y,w,h,r){ const rr=Math.min(r,w/2,h/2); ctx.beginPath(); ctx.moveTo(x+rr,y); ctx.arcTo(x+w,y,x+w,y+h,rr); ctx.arcTo(x+w,y+h,x,y+h,rr); ctx.arcTo(x,y+h,x,y,rr); ctx.arcTo(x,y,x+w,y,rr); ctx.closePath(); }
-
-  // UI buttons
-  const btnNew={b:{x:0,y:0,w:0,h:0}}, btnBack={b:{x:0,y:0,w:0,h:0}};
-  function label(txt,b){ ctx.save(); ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.font="800 16px system-ui"; ctx.fillStyle="rgba(230,240,255,0.92)"; ctx.fillText(txt,b.x+b.w/2,b.y+b.h/2); ctx.restore(); }
-  function drawButtons(){
-    const w=140,h=42,r=12,g=12;
-    const x1=W-200,y1=70,x2=W-200,y2=y1+h+g;
-    const b1={x:x1,y:y1,w:w,h:h}, b2={x:x2,y:y2,w:w,h:h};
-    const hov1=inR(mouse.x,mouse.y,b1), hov2=inR(mouse.x,mouse.y,b2);
-    fr(b1.x,b1.y,b1.w,b1.h,r,hov1?"#2a4f8f":"#1e3b6f"); sr(b1.x,b1.y,b1.w,b1.h,r,THEME.Y,hov1?4:3);
-    fr(b2.x,b2.y,b2.w,b2.h,r,hov2?"#2a4f8f":"#1e3b6f"); sr(b2.x,b2.y,b2.w,b2.h,r,THEME.Y,hov2?4:3);
-    label("New Game (Esc)",b1); label("Back To Games",b2);
-    btnNew.b=b1; btnBack.b=b2;
+   function roundedPath(x,y,w,h,r){
+    const x2=x+w, y2=y+h;
+    const left=Math.min(x,x2), right=Math.max(x,x2);
+    const top=Math.min(y,y2), bottom=Math.max(y,y2);
+    const width=right-left, height=bottom-top;
+    const rr=Math.max(0,Math.min(Math.abs(r),width/2,height/2));
+    ctx.beginPath();
+    ctx.moveTo(left+rr,top);
+    ctx.arcTo(right,top,right,bottom,rr);
+    ctx.arcTo(right,bottom,left,bottom,rr);
+    ctx.arcTo(left,bottom,left,top,rr);
+    ctx.arcTo(left,top,right,top,rr);
+    ctx.closePath();
   }
 
   // HP bar
