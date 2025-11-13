@@ -45,12 +45,16 @@
     if(!img){ return false; }
     const iw=img.naturalWidth, ih=img.naturalHeight; if(!iw||!ih) return false;
     const innerW=w-pad*2, innerH=h-pad*2;
+    if(innerW<=0 || innerH<=0) return false;
     const r=Math.min(innerW/iw, innerH/ih);
     const nw=iw*r, nh=ih*r;
     const cx=x+pad+(innerW-nw)/2, cy=y+pad+(innerH-nh)/2;
+    const clipW=w-4, clipH=h-4;
+    if(clipW<=0 || clipH<=0) return false;
+    const clipRadius=Math.max(0, Math.min(radius, clipW/2, clipH/2));
     // clip to rounded rect
     ctx.save();
-    roundedPath(x+2, y+2, w-4, h-4, Math.min(radius, (w-4)/2, (h-4)/2));
+    roundedPath(x+2, y+2, clipW, clipH, clipRadius);
     ctx.clip();
     try{ ctx.drawImage(img, cx, cy, nw, nh); }catch(e){ ctx.restore(); return false; }
     ctx.restore();
