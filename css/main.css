@@ -146,13 +146,18 @@ button.added-btn {
   animation: pulse 2s infinite; 
   opacity: 1 !important;
 }
-.perm-banned { 
-  background: linear-gradient(90deg, rgba(220,53,69,.85), rgba(231,76,60,.85)); 
-  color: #fff; 
-  animation: pulse 1.5s infinite; 
-  opacity: 1 !important;
+.perm-banned {
+  background: linear-gradient(90deg, rgba(220,53,69,.85), rgba(231,76,60,.85));
+  color: #fff;
+  animation: pulse 1.5s infinite;
 }
 .unknown { background: linear-gradient(90deg, rgba(108,117,125,.75), rgba(149,165,166,.75)); color: #fff; }
+.status-detail {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: #fff;
+  opacity: 0.9;
+}
 
 /* Pulse */
 @keyframes pulse {
