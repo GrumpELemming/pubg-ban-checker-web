@@ -1,158 +1,104 @@
 /* -------------------------------------------------------
    PUBG Ban Checker
    main.js
-   v1.9 Final - Clan + ID + Ban Label + New Resolver
+   v2.0 - Rebuilt main page checker + ID lookup + platform + dark mode
    ------------------------------------------------------- */
 (() => {
   const BASE_URL = "https://pubg-ban-checker-backend.onrender.com";
 
-  // Helpers / constants
-   const LS_PLATFORM = "selectedPlatform";
+  // LocalStorage keys
+  const LS_PLATFORM = "selectedPlatform";
   const LS_DARK = "darkMode";
   const LS_WATCHLIST_PREFIX = "watchlist_";
 
   const MAX_RATE_LIMIT_ATTEMPTS = 3;
   const INITIAL_RETRY_DELAY = 700;
 
+  // ---------- Helpers ----------
   function wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  function escapeHtml(s = "") {
-    return s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[c]));
+  function escapeHtml(str) {
+    return String(str ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
   }
 
-  async function handleLimitedClick(button, callback, busyText = "Checking...") {
-    if (!button || button.disabled) return;
-    button.disabled = true;
-    const originalText = button.textContent;
-    button.textContent = busyText;
-    button.classList.add("disabled");
-    try {
-      await callback();
-    } finally {
-      button.textContent = originalText;
-      button.disabled = false;
-      button.classList.remove("disabled");
-    }
-  }
-/* -------------------------------------------------------
-   Platform setup (with shimmer + auto-clear + input reset)
-   ------------------------------------------------------- */
-function getPlatform() {
-  return localStorage.getItem(LS_PLATFORM) || "steam";
-}
+  function getPlatform() {
+    const hidden = document.getElementById("platformSelect");
+    if (hidden && hidden.value) return hidden.value;
 
-function setPlatform(p) {
-  localStorage.setItem(LS_PLATFORM, p);
-  document.getElementById("platformSelect").value = p;
-  highlightPlatform(p);
-  shimmerPlatformRow();
-
-  // Clear results & ID lookup on switch
-  const results = document.getElementById("results");
-  if (results) {
-    results.innerHTML = "<p class='muted'>No results yet.</p>";
-  }
-  const idResults = document.getElementById("idLookupResults");
-  if (idResults) {
-    idResults.innerHTML = "<p class='muted'>No results yet.</p>";
+    const saved = localStorage.getItem(LS_PLATFORM);
+    return saved || "steam";
   }
 
-  // Clear player input box
-  const input = document.getElementById("playerInput");
-  if (input) {
-    input.value = "";
+  function setPlatform(platform) {
+    const hidden = document.getElementById("platformSelect");
+    if (hidden) hidden.value = platform;
+    localStorage.setItem(LS_PLATFORM, platform);
   }
-}
 
-function highlightPlatform(p) {
-  document.querySelectorAll(".platform-btn").forEach(b =>
-    b.classList.toggle("active", b.dataset.platform === p)
-  );
-}
+  function applyPlatformToButtons(rowId, labelId) {
+    const row = document.getElementById(rowId);
+    if (!row) return;
 
-function shimmerPlatformRow() {
-  const row = document.getElementById("platformRowIndex");
-  if (!row) return;
-  row.classList.add("shimmer");
-  setTimeout(() => row.classList.remove("shimmer"), 600);
-}
+    const buttons = Array.from(row.querySelectorAll(".platform-btn"));
+    const labelEl = labelId ? document.getElementById(labelId) : null;
 
-function setupPlatforms() {
-  const p = getPlatform();
-  highlightPlatform(p);
-
-  // click on Steam / Xbox / PSN / Kakao buttons
-  document.querySelectorAll(".platform-btn").forEach(b =>
-    b.addEventListener("click", () => setPlatform(b.dataset.platform))
-  );
-
-  // Wait until DOM + checkBan are ready before wiring Enter key
-  window.addEventListener("load", () => {
-    const input = document.getElementById("playerInput");
-    if (!input) return;
-
-    input.addEventListener("keydown", async e => {
-      // allow Shift+Enter for new line, Enter alone to submit
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        await checkBan();
-        input.value = ""; // clear AFTER results are shown
+    const current = getPlatform();
+    buttons.forEach(btn => {
+      const p = btn.getAttribute("data-platform");
+      if (p === current) {
+        btn.classList.add("active");
+      } else {
+        btn.classList.remove("active");
       }
+
+      btn.addEventListener("click", () => {
+        const platform = btn.getAttribute("data-platform");
+        if (!platform) return;
+
+        // shimmer row
+        row.classList.add("shimmer");
+        setTimeout(() => row.classList.remove("shimmer"), 450);
+
+        // set active
+        buttons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        // persist + hidden input
+        setPlatform(platform);
+
+        // label update
+        if (labelEl) {
+          const pretty =
+            platform === "psn"
+              ? "PSN"
+              : platform.charAt(0).toUpperCase() + platform.slice(1);
+          labelEl.innerHTML = `Currently searching: <strong>${escapeHtml(pretty)}</strong>`;
+        }
+      });
     });
-  });
-}
 
-
-
-  // ---------- Dark mode ----------
-  function initDark() {
-    const dark = localStorage.getItem(LS_DARK) === "true";
-    document.body.classList.toggle("dark-mode", dark);
-    const toggle = document.getElementById("darkModeToggle");
-    if (toggle) {
-      toggle.checked = dark;
-      toggle.addEventListener("change", () => {
-        localStorage.setItem(LS_DARK, toggle.checked ? "true" : "false");
-        document.body.classList.toggle("dark-mode", toggle.checked);
-      });
-    }
-  }
-
-  // ---------- Watchlist ----------
-  function getWatchlistKey(p) {
-    return LS_WATCHLIST_PREFIX + p;
-  }
-  function getWatchlist(p) {
-    try {
-      return JSON.parse(localStorage.getItem(getWatchlistKey(p)) || "[]");
-    } catch {
-      return [];
-    }
-  }
-  function saveWatchlist(p, arr) {
-    localStorage.setItem(getWatchlistKey(p), JSON.stringify(arr));
-  }
-  function addWatchlist(name, id, clan, p, status) {
-    if (!id) return;
-    const list = getWatchlist(p);
-    if (!list.some(e => e.accountId === id)) {
-      list.push({
-        accountId: id,
-        lastKnownName: name,
-        clan: clan || "None",
-        lastStatus: status || "Unknown"
-      });
-      saveWatchlist(p, list);
+    // initial label text
+    if (labelEl) {
+      const cp = getPlatform();
+      const pretty =
+        cp === "psn" ? "PSN" : cp.charAt(0).toUpperCase() + cp.slice(1);
+      labelEl.innerHTML = `Currently searching: <strong>${escapeHtml(pretty)}</strong>`;
     }
   }
 
   // ---------- Backend calls ----------
   async function getBanStatus(platform, playerName) {
-    const url = `${BASE_URL}/check-ban-clan?platform=${encodeURIComponent(platform)}&player=${encodeURIComponent(
-      playerName
-    )}`;
+    const url = `${BASE_URL}/check-ban-clan?platform=${encodeURIComponent(
+      platform
+    )}&player=${encodeURIComponent(playerName)}`;
+
     let attempt = 0;
     let delayMs = INITIAL_RETRY_DELAY;
 
@@ -167,7 +113,8 @@ function setupPlatforms() {
               player: playerName,
               accountId: "",
               clan: "",
-              statusText: "Rate limited by backend. Please wait a moment and try again."
+              statusText:
+                "Rate limited by backend. Please wait a moment and try again."
             };
           }
           await wait(delayMs);
@@ -181,50 +128,71 @@ function setupPlatforms() {
             player: playerName,
             accountId: "",
             clan: "",
-            statusText: message || `Request failed with status ${res.status}`
+            statusText:
+              message || `Request failed with status ${res.status}`
           };
         }
 
         const data = await res.json();
-        if (data.error)
-          return { player: playerName, accountId: "", clan: "", statusText: data.error };
 
-        const result = (data.results || []).find(
-          r => r.player.toLowerCase() === playerName.toLowerCase()
-        );
-        if (!result)
-          return { player: playerName, accountId: "", clan: "", statusText: "Unknown" };
+        let accountId = "";
+        let clan = "";
+        let statusText = "Unknown";
+
+        if (data && Array.isArray(data.results) && data.results.length) {
+          const match =
+            data.results.find(
+              e =>
+                typeof e.player === "string" &&
+                e.player.toLowerCase() === playerName.toLowerCase()
+            ) || data.results[0];
+
+          accountId =
+            match.accountId || match.id || match.account_id || "";
+          clan = match.clan || match.clanName || "";
+          statusText =
+            match.statusText ||
+            match.status ||
+            match.banStatus ||
+            "Unknown";
+        }
 
         return {
-          player: result.player,
-          accountId: result.accountId || "",
-          clan: result.clan || "",
-          statusText: result.banStatus || "Unknown"
+          player: playerName,
+          accountId,
+          clan,
+          statusText
         };
       } catch (err) {
         attempt += 1;
         if (attempt >= MAX_RATE_LIMIT_ATTEMPTS) {
-          return { player: playerName, accountId: "", clan: "", statusText: String(err) };
+          return {
+            player: playerName,
+            accountId: "",
+            clan: "",
+            statusText:
+              "Error contacting backend. Please try again later."
+          };
         }
         await wait(delayMs);
         delayMs *= 1.6;
       }
     }
 
-    return { player: playerName, accountId: "", clan: "", statusText: "Unknown" };
-  }
-        await wait(delayMs);
-        delayMs *= 1.6;
-      }
-    }
-
-    return { player: playerName, accountId: "", clan: "", statusText: "Unknown" };
+    return {
+      player: playerName,
+      accountId: "",
+      clan: "",
+      statusText: "Unknown"
+    };
   }
 
   async function resolveById(id, platform) {
     try {
       const res = await fetch(
-        `${BASE_URL}/resolve?platform=${encodeURIComponent(platform)}&id=${encodeURIComponent(id)}`
+        `${BASE_URL}/resolve?platform=${encodeURIComponent(
+          platform
+        )}&id=${encodeURIComponent(id)}`
       );
       return await res.json();
     } catch (err) {
@@ -232,13 +200,61 @@ function setupPlatforms() {
     }
   }
 
+  // ---------- Watchlist helpers ----------
+  function getWatchlistKey(platform) {
+    return `${LS_WATCHLIST_PREFIX}${platform}`;
+  }
+
+  function getWatchlist(platform) {
+    try {
+      const raw = localStorage.getItem(getWatchlistKey(platform));
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveWatchlist(platform, arr) {
+    try {
+      localStorage.setItem(
+        getWatchlistKey(platform),
+        JSON.stringify(arr || [])
+      );
+    } catch {
+      // ignore quota errors
+    }
+  }
+
+  function addWatchlist(player, accountId, clan, platformLabel) {
+    const platform = getPlatform();
+    const list = getWatchlist(platform);
+
+    const existing = list.find(
+      x =>
+        x.player.toLowerCase() === player.toLowerCase() &&
+        (x.accountId || "") === (accountId || "")
+    );
+    if (existing) return;
+
+    list.push({
+      player,
+      accountId: accountId || "",
+      clan: clan || "",
+      platform,
+      statusLabel: platformLabel || ""
+    });
+
+    saveWatchlist(platform, list);
+  }
+
   // ---------- UI builders ----------
   function buildRow({ player, accountId, clan, statusText }) {
     const row = document.createElement("div");
     row.className = "player-row";
 
-   const t = (statusText || "").toLowerCase();
+    const t = (statusText || "").toLowerCase();
     let label = "Unknown";
+
     if (t.includes("perm")) {
       row.classList.add("perm-banned");
       label = "Permanently Banned";
@@ -248,12 +264,20 @@ function setupPlatforms() {
     } else if (t.includes("not")) {
       row.classList.add("not-banned");
       label = "Not Banned";
+    } else if (t.includes("unknown")) {
+      row.classList.add("unknown");
+      label = "Unknown";
+    } else if (t.includes("error")) {
+      row.classList.add("unknown");
+      label = "Error";
     } else {
       row.classList.add("unknown");
     }
 
     const hasDetail =
-      statusText && statusText.toLowerCase() !== label.toLowerCase() && label === "Unknown";
+      statusText &&
+      statusText.toLowerCase() !== label.toLowerCase() &&
+      label !== "Unknown";
 
     const info = document.createElement("div");
     info.innerHTML = `
@@ -268,11 +292,10 @@ function setupPlatforms() {
       }
     `;
 
-
     const add = document.createElement("button");
     add.textContent = "Add to Watchlist";
     add.addEventListener("click", () => {
-      addWatchlist(player, accountId, clan, getPlatform(), label);
+      addWatchlist(player, accountId, clan, label);
       add.textContent = "Added";
       add.disabled = true;
       add.classList.add("added-btn");
@@ -285,135 +308,179 @@ function setupPlatforms() {
   // ---------- Ban checker flow ----------
   async function checkBan() {
     const results = document.getElementById("results");
-    const names = document
-      .getElementById("playerInput")
-      .value.split(/[\n,]+/)
+    if (!results) return;
+
+    const inputEl = document.getElementById("playerInput");
+    const names = (inputEl?.value || "")
+      .split(/[\n,]+/)
       .map(x => x.trim())
       .filter(Boolean)
       .slice(0, 10);
+
     if (!names.length) {
       results.innerHTML = "<p class='muted'>Please enter names.</p>";
       return;
     }
 
-    const p = getPlatform();
+    const platform = getPlatform();
     results.innerHTML = "";
 
     for (const n of names) {
-      const loading = buildRow({
+      const loadingRow = buildRow({
         player: n,
         accountId: "...",
         clan: "...",
         statusText: "Checking..."
       });
-      results.append(loading);
+      results.append(loadingRow);
 
-      const data = await getBanStatus(p, n);
-
-      const final = buildRow(data);
-      results.replaceChild(final, loading);
+      const data = await getBanStatus(platform, n);
+      const finalRow = buildRow(data);
+      results.replaceChild(finalRow, loadingRow);
     }
   }
 
-/* -------------------------------------------------------
-   ID Lookup (fully working + clan + ban + error handling)
-   ------------------------------------------------------- */
-async function lookupById() {␊
-  const input = document.getElementById("accountIdInput");
-  const out = document.getElementById("idLookupResults");
-  const id = input.value.trim();
-  const platform = getPlatform();
+  // ---------- ID lookup ----------
+  async function lookupById() {
+    const input = document.getElementById("accountIdInput");
+    const out = document.getElementById("idLookupResults");
+    if (!input || !out) return;
 
-  if (!id) {
-    out.innerHTML = "<p class='muted'>Enter an ID.</p>";
-    return;
-  }
+    const id = input.value.trim();
+    const platform = getPlatform();
 
-  out.innerHTML = "<p class='muted'>Looking up...</p>";
-
-  try {
-    // Step 1: Resolve ID → current name
-    const res = await fetch(
-      `${BASE_URL}/resolve?platform=${encodeURIComponent(platform)}&id=${encodeURIComponent(id)}`
-    );
-    const resolved = await res.json();
-
-    if (resolved.error || !resolved.currentName) {
-      out.innerHTML = `<p class='muted'>Unable to resolve ID. ${escapeHtml(resolved.error || "")}</p>`;
+    if (!id) {
+      out.innerHTML = "<p class='muted'>Enter an ID.</p>";
       return;
     }
 
-    const playerName = resolved.currentName;
-    const accountId = resolved.accountId || id;
+    out.innerHTML = "<p class='muted'>Looking up...</p>";
 
-    // Step 2: Get ban + clan info
-    const banRes = await fetch(
-      `${BASE_URL}/check-ban-clan?platform=${encodeURIComponent(platform)}&player=${encodeURIComponent(playerName)}`
-    );
-    const banData = await banRes.json();
+    try {
+      const resolved = await resolveById(id, platform);
 
-    let clan = "Unknown";
-    let statusText = "Unknown";
+      if (resolved.error) {
+        out.innerHTML = `<p class='muted'>${escapeHtml(
+          resolved.error
+        )}</p>`;
+        return;
+      }
 
-    if (banData.results && banData.results.length > 0) {
-      const r = banData.results.find(
-        e => e.player.toLowerCase() === playerName.toLowerCase()
-      ) || banData.results[0];
-      clan = r.clan || "None";
-      statusText = r.banStatus || "Unknown";
+      const name =
+        resolved.name ||
+        resolved.player ||
+        resolved.nickname ||
+        "";
+
+      if (!name) {
+        out.innerHTML =
+          "<p class='muted'>Could not resolve that ID on this platform.</p>";
+        return;
+      }
+
+      const banData = await getBanStatus(platform, name);
+      // Prefer the ID the user entered over backend one if present
+      const row = buildRow({
+        ...banData,
+        accountId: banData.accountId || id
+      });
+
+      out.innerHTML = "";
+      out.append(row);
+    } catch (err) {
+      out.innerHTML = `<p class='muted'>${escapeHtml(
+        "Lookup failed: " + err
+      )}</p>`;
+    }
+  }
+
+  // ---------- Dark mode ----------
+  function applyInitialDarkMode() {
+    const body = document.body;
+    const toggle = document.getElementById("darkModeToggle");
+    const stored = localStorage.getItem(LS_DARK);
+
+    const enabled = stored === "true";
+    if (enabled) {
+      body.classList.add("dark-mode");
+      if (toggle) toggle.checked = true;
     }
 
-    // Step 3: Build result row
-    const final = {
-      player: playerName,
-      accountId,
-      clan,
-      statusText,
-    };
-
-    const row = buildRow(final, platform, false);
-    out.innerHTML = "";
-    out.append(row);
-
-  } catch (err) {
-    console.error("lookupById error:", err);
-    out.innerHTML = `<p class='muted'>Error fetching data: ${escapeHtml(String(err))}</p>`;
+    if (toggle) {
+      toggle.addEventListener("change", () => {
+        const on = !!toggle.checked;
+        if (on) {
+          body.classList.add("dark-mode");
+        } else {
+          body.classList.remove("dark-mode");
+        }
+        localStorage.setItem(LS_DARK, String(on));
+      });
+    }
   }
-}
+
+  // ---------- Click limiting ----------
+  function handleLimitedClick(btn, fn) {
+    if (!btn || btn.disabled) return;
+    btn.disabled = true;
+    btn.classList.add("fade-out");
+    Promise.resolve()
+      .then(fn)
+      .finally(() => {
+        btn.disabled = false;
+        btn.classList.remove("fade-out");
+      });
+  }
+
   // ---------- Init ----------
   document.addEventListener("DOMContentLoaded", () => {
-    setupPlatforms();
-    initDark();
+    // Platform row on index page
+    applyPlatformToButtons("platformRowIndex", "activePlatformLabel");
+
+    // Ensure hidden platform input matches stored platform
+    const hidden = document.getElementById("platformSelect");
+    if (hidden) {
+      hidden.value = getPlatform();
+    }
+
+    applyInitialDarkMode();
 
     const clearResultsBtn = document.getElementById("clearResultsBtn");
     if (clearResultsBtn) {
       clearResultsBtn.addEventListener("click", () => {
         const results = document.getElementById("results");
-        if (results) results.innerHTML = "<p class='muted'>No results yet.</p>";
+        if (results) {
+          results.innerHTML = "<p class='muted'>No results yet.</p>";
+        }
       });
     }
 
     const clearIdBtn = document.getElementById("clearIdBtn");
     if (clearIdBtn) {
       clearIdBtn.addEventListener("click", () => {
-        const idInput = document.getElementById("accountIdInput");
-        if (idInput) idInput.value = "";
-        const idResults = document.getElementById("idLookupResults");
-        if (idResults) idResults.innerHTML = "<p class='muted'>No results yet.</p>";
+        const out = document.getElementById("idLookupResults");
+        const input = document.getElementById("accountIdInput");
+        if (out) {
+          out.innerHTML = "<p class='muted'>No results yet.</p>";
+        }
+        if (input) {
+          input.value = "";
+        }
       });
     }
 
     const checkBanBtn = document.getElementById("checkBanBtn");
     if (checkBanBtn) {
-      checkBanBtn.addEventListener("click", () => handleLimitedClick(checkBanBtn, () => checkBan()));
+      checkBanBtn.addEventListener("click", () =>
+        handleLimitedClick(checkBanBtn, () => checkBan())
+      );
     }
 
     const lookupIdBtn = document.getElementById("lookupIdBtn");
     if (lookupIdBtn) {
-      lookupIdBtn.addEventListener("click", () => handleLimitedClick(lookupIdBtn, () => lookupById()));
+      lookupIdBtn.addEventListener("click", () =>
+        handleLimitedClick(lookupIdBtn, () => lookupById())
+      );
     }
   });
 })();
-
-
-
