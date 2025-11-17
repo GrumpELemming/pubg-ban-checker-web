@@ -255,24 +255,30 @@
     const t = (statusText || "").toLowerCase();
     let label = "Unknown";
 
-    if (t.includes("perm")) {
-      row.classList.add("perm-banned");
-      label = "Permanently Banned";
-    } else if (t.includes("temp")) {
-      row.classList.add("temp-banned");
-      label = "Temporarily Banned";
-    } else if (t.includes("not")) {
-      row.classList.add("not-banned");
-      label = "Not Banned";
-    } else if (t.includes("unknown")) {
-      row.classList.add("unknown");
-      label = "Unknown";
-    } else if (t.includes("error")) {
-      row.classList.add("unknown");
-      label = "Error";
-    } else {
-      row.classList.add("unknown");
-    }
+if (t.includes("perm")) {
+  row.classList.add("perm-banned");
+  label = "Permanently Banned";
+} else if (t.includes("banned") && !t.includes("temp")) {
+  // backend might send "PermanentBan" etc
+  row.classList.add("perm-banned");
+  label = "Permanently Banned";
+} else if (t.includes("temp")) {
+  row.classList.add("temp-banned");
+  label = "Temporarily Banned";
+} else if (t.includes("innocent") || t.includes("not banned") || t === "not banned") {
+  row.classList.add("not-banned");
+  label = "Not Banned";
+} else if (t.includes("unknown")) {
+  row.classList.add("unknown");
+  label = "Unknown";
+} else if (t.includes("error")) {
+  row.classList.add("unknown");
+  label = "Error";
+} else {
+  row.classList.add("unknown");
+  label = escapeHtml(statusText);
+}
+
 
     const hasDetail =
       statusText &&
@@ -484,3 +490,4 @@
     }
   });
 })();
+
