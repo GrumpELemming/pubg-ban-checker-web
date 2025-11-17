@@ -7,7 +7,7 @@
   const BASE_URL = "https://pubg-ban-checker-backend.onrender.com";
 
   // Helpers / constants
-  const LS_PLATFORM = "selectedPlatform";
+   const LS_PLATFORM = "selectedPlatform";
   const LS_DARK = "darkMode";
   const LS_WATCHLIST_PREFIX = "watchlist_";
 
@@ -18,6 +18,24 @@
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
+  function escapeHtml(s = "") {
+    return s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[c]));
+  }
+
+  async function handleLimitedClick(button, callback, busyText = "Checking...") {
+    if (!button || button.disabled) return;
+    button.disabled = true;
+    const originalText = button.textContent;
+    button.textContent = busyText;
+    button.classList.add("disabled");
+    try {
+      await callback();
+    } finally {
+      button.textContent = originalText;
+      button.disabled = false;
+      button.classList.remove("disabled");
+    }
+  }
 /* -------------------------------------------------------
    Platform setup (with shimmer + auto-clear + input reset)
    ------------------------------------------------------- */
@@ -79,12 +97,8 @@ function setupPlatforms() {
       // allow Shift+Enter for new line, Enter alone to submit
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
-        if (typeof window.checkBan === "function") {
-          await window.checkBan();
-          input.value = ""; // clear AFTER results are shown
-        } else {
-          console.warn("checkBan not ready yet");
-        }
+        await checkBan();
+        input.value = ""; // clear AFTER results are shown
       }
     });
   });
@@ -192,6 +206,13 @@ function setupPlatforms() {
         if (attempt >= MAX_RATE_LIMIT_ATTEMPTS) {
           return { player: playerName, accountId: "", clan: "", statusText: String(err) };
         }
+        await wait(delayMs);
+        delayMs *= 1.6;
+      }
+    }
+
+    return { player: playerName, accountId: "", clan: "", statusText: "Unknown" };
+  }
         await wait(delayMs);
         delayMs *= 1.6;
       }
@@ -380,4 +401,5 @@ window.lookupById = lookupById;
     };
   });
 })();
+
 
