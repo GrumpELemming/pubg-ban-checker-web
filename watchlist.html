@@ -15,9 +15,9 @@
     <a href="updates.html"><button>About</button></a>
   </nav>
 
-<!-- =======================================================
-     Platform Selection (Watchlist Page - mirrored style)
-     ======================================================= -->
+  <!-- =======================================================
+       Platform Selection (Watchlist Page - mirrored style)
+       ======================================================= -->
   <section class="container platform-box">
     <h2>Select Platform</h2>
 
@@ -44,16 +44,27 @@
     <input type="hidden" id="platformSelect" value="steam" />
   </section>
 
-
   <!-- Watchlist Section -->
   <section class="container">
     <div class="control-buttons">
       <button id="refreshAllBtn">🔄 Refresh All</button>
       <button id="clearWatchlistBtn" class="secondary-btn">🗑 Clear All</button>
+
+      <label>
+        Status:
+        <select id="statusFilter">
+          <option value="all">All</option>
+          <option value="perm">Perm banned</option>
+          <option value="temp">Temp banned</option>
+          <option value="ok">Not banned</option>
+          <option value="unknown">Unknown / Error</option>
+        </select>
+      </label>
+
       <label><input type="checkbox" id="darkModeToggle" /> Dark Mode</label>
     </div>
 
-    <div id="watchlistContainer">
+    <div id="watchlistContainer" class="watchlist-container">
       <p class="muted">No players in your watchlist yet.</p>
     </div>
   </section>
