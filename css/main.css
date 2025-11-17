@@ -1,5 +1,5 @@
 /* -------------------------------------------------------
-   PUBG Ban Checker - main.css (v1.7 Final - PUBG Yellow Shimmer)
+   PUBG Ban Checker - main.css (v1.7.1 Final - PermBan Fix)
    ------------------------------------------------------- */
 
 :root {
@@ -47,7 +47,7 @@ h2 { font-size: 1rem; font-weight: 500; margin: 0 0 18px; color: #ffe680; text-a
 .nav-links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 .controls { display: flex; flex-direction: column; gap: 12px; }
 
-/* Watchlist container */
+/* Watchlist + Results containers */
 .results-container, .watchlist-container { display: flex; flex-direction: column; gap: 10px; }
 .watchlist-container {
   margin-top: 20px;
@@ -56,7 +56,6 @@ h2 { font-size: 1rem; font-weight: 500; margin: 0 0 18px; color: #ffe680; text-a
   border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-/* Results block */
 .results-block {
   margin-top: 25px;
   padding-top: 15px;
@@ -68,34 +67,33 @@ h2 { font-size: 1rem; font-weight: 500; margin: 0 0 18px; color: #ffe680; text-a
   gap: 10px;
 }
 
-/* Nav buttons */
-.nav-links a button {
-  background: #ff4757;
-  color: #fff;
-  font-weight: bold;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 16px;
-  cursor: pointer;
-  transition: transform .18s ease, box-shadow .18s ease;
-}
-.nav-links a button:hover { transform: scale(1.05); box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
-.nav-links a button:active { transform: scale(0.97); }
-
-/* Inputs & Buttons */
-textarea#playerInput, textarea#clanInput {
+/* Input + Buttons */
+textarea#playerInput {
   width: 100%; min-height: 110px; resize: vertical;
   border: 1px solid transparent; border-radius: 10px;
   padding: 10px 12px; font-size: 1rem; color: #111; outline: none;
 }
-select, button {
-  border: none; outline: none; border-radius: 10px; font-size: 1rem; padding: 10px 12px;
+
+button {
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  padding: 10px 12px;
+  background: #ff4757;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  min-width: 120px;
+  transition: transform .18s ease, box-shadow .18s ease;
 }
-button { background: #ff4757; color: #fff; font-weight: 700; cursor: pointer; min-width: 120px; }
+button:hover { transform: scale(1.04); box-shadow: 0px 4px 14px rgba(0,0,0,0.25); }
+button:active { transform: scale(0.97); }
+
 button.secondary-btn { background: #6c757d; }
 button.secondary-btn:hover { background: #5a6268; }
 
-/* Added-to-watchlist state */
+/* Added-to-watchlist */
 button.added-btn {
   background: #6c757d;
   cursor: default;
@@ -104,7 +102,7 @@ button.added-btn {
   transform: none;
 }
 
-/* Results/Player Rows */
+/* Player Row */
 .player-row, .watchlist-player {
   display: flex;
   align-items: center;
@@ -114,13 +112,13 @@ button.added-btn {
   border-radius: 12px;
   background: rgba(255,255,255,0.12);
   box-shadow: 0 2px 10px rgba(0,0,0,0.25);
-  transition: transform .15s ease, box-shadow .2s ease, background .25s ease;
+  transform-origin: center;
   opacity: 0;
   animation: fadeUpRow 0.5s forwards;
 }
 .player-row:hover, .watchlist-player:hover { transform: scale(1.02); }
 
-/* Row stagger delays (limit 10) */
+/* Row stagger delays */
 .player-row:nth-child(1), .watchlist-player:nth-child(1) { animation-delay: 0.05s; }
 .player-row:nth-child(2), .watchlist-player:nth-child(2) { animation-delay: 0.10s; }
 .player-row:nth-child(3), .watchlist-player:nth-child(3) { animation-delay: 0.15s; }
@@ -132,33 +130,46 @@ button.added-btn {
 .player-row:nth-child(9), .watchlist-player:nth-child(9) { animation-delay: 0.45s; }
 .player-row:nth-child(10), .watchlist-player:nth-child(10) { animation-delay: 0.50s; }
 
-/* FadeUpRow Animation */
+/* FadeUpRow */
 @keyframes fadeUpRow {
   from { opacity: 0; transform: translateY(8px) scale(0.97); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* Status Classes */
-.not-banned { background: linear-gradient(90deg, rgba(40,167,69,.75), rgba(46,204,113,.75)); color: #fff; }
-.temp-banned { 
-  background: linear-gradient(90deg, rgba(255,193,7,.85), rgba(255,205,57,.85)); 
-  color: #111; 
-  animation: pulse 2s infinite; 
-  opacity: 1 !important;
+/* ----- STATUS STYLES ----- */
+
+/* NOT BANNED */
+.not-banned {
+  background: linear-gradient(90deg, rgba(40,167,69,.75), rgba(46,204,113,.75));
+  color: #fff;
 }
+
+/* TEMP BAN */
+.temp-banned {
+  background: linear-gradient(90deg, rgba(255,193,7,.85), rgba(255,205,57,.85));
+  color: #111;
+  animation: fadeUpRow 0.5s forwards, pulse 2s infinite;
+}
+
+/* PERMANENT BAN */
 .perm-banned {
   background: linear-gradient(90deg, rgba(220,53,69,.85), rgba(231,76,60,.85));
   color: #fff;
-  animation: pulse 1.5s infinite;
+  animation: fadeUpRow 0.5s forwards, pulse 1.5s infinite;
 }
-.unknown { background: linear-gradient(90deg, rgba(108,117,125,.75), rgba(149,165,166,.75)); color: #fff; }
+
+/* UNKNOWN */
+.unknown {
+  background: linear-gradient(90deg, rgba(108,117,125,.75), rgba(149,165,166,.75));
+  color: #fff;
+}
+
 .status-detail {
   margin-top: 6px;
   font-size: 0.85rem;
   color: #fff;
   opacity: 0.9;
 }
-
 
 /* Pulse */
 @keyframes pulse {
@@ -167,15 +178,12 @@ button.added-btn {
   100% { box-shadow: 0 0 5px rgba(255,0,0,0.3); transform: scale(1); }
 }
 
-/* ======================
-   Platform Buttons
-   ====================== */
+/* ----- Platform Buttons ----- */
 .platform-row {
   display: flex;
   justify-content: center;
   gap: 12px;
   margin-top: 10px;
-  position: relative;
   overflow: hidden;
 }
 .platform-btn {
@@ -187,17 +195,14 @@ button.added-btn {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform .15s ease, box-shadow .2s ease, background .2s ease;
-  border: 1px solid transparent;
   position: relative;
+  transition: transform .15s ease, box-shadow .2s ease;
+  border: 1px solid transparent;
   opacity: 0;
   animation: fadeUp 0.4s forwards;
 }
 .platform-btn .platform-icon { width: 24px; height: 24px; }
 
-/* -------------------------------------------------------
-   Active platform label (below platform buttons)
-   ------------------------------------------------------- */
 .active-platform-label {
   text-align: center;
   font-size: 0.9rem;
@@ -206,7 +211,6 @@ button.added-btn {
   opacity: 0.9;
   transition: opacity 0.25s ease, transform 0.25s ease;
 }
-
 .active-platform-label strong {
   color: var(--accent);
   text-transform: uppercase;
@@ -219,36 +223,30 @@ button.added-btn {
   100% { opacity: 0.9; transform: scale(1); }
 }
 
-
-/* Platform Button Stagger Animation */
 .platform-row .platform-btn:nth-child(1) { animation-delay: 0.1s; }
 .platform-row .platform-btn:nth-child(2) { animation-delay: 0.2s; }
 .platform-row .platform-btn:nth-child(3) { animation-delay: 0.3s; }
 .platform-row .platform-btn:nth-child(4) { animation-delay: 0.4s; }
 
-/* Active states */
+/* Active buttons */
 .platform-btn.active.steam { background: #1b2838; border-color: #1b2838; box-shadow: 0 0 14px #1b2838; }
 .platform-btn.active.xbox { background: #107C10; border-color: #107C10; box-shadow: 0 0 14px #107C10; }
 .platform-btn.active.psn { background: #003791; border-color: #003791; box-shadow: 0 0 14px #003791; }
 .platform-btn.active.kakao { background: #FEE500; border-color: #FEE500; box-shadow: 0 0 14px #FEE500; color: #000; }
 
-/* Tooltip with shimmer effect */
+/* Tooltip shimmer */
 .platform-btn::after {
   content: attr(data-tooltip);
   position: absolute;
   bottom: 115%;
   left: 50%;
-  transform: translateX(-50%) translateY(10px);
   font-size: 0.75rem;
   padding: 6px 10px;
-  border-radius: 6px;
   white-space: nowrap;
+  transform: translateX(-50%) translateY(10px);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.25s ease, transform 0.25s ease;
-  z-index: 10;
-
-  /* Shimmer text */
   background: linear-gradient(90deg, #ffdd59, #fff, #ffdd59);
   background-size: 200% 100%;
   -webkit-background-clip: text;
@@ -260,11 +258,7 @@ button.added-btn {
   transform: translateX(-50%) translateY(0);
 }
 
-/* PUBG Yellow shimmer for platform switching (per button) */
-.platform-row.shimmer .platform-btn {
-  position: relative;
-  overflow: hidden;
-}
+/* Shimmer effect when switching */
 .platform-row.shimmer .platform-btn::before {
   content: "";
   position: absolute;
@@ -281,26 +275,20 @@ button.added-btn {
   animation: shimmerButton 0.6s ease-out;
   pointer-events: none;
   border-radius: 12px;
-  z-index: 1;
 }
 @keyframes shimmerButton {
   from { left: -100%; }
   to { left: 100%; }
 }
 
-
-
-/* Fade-out effect */
 .fade-out { opacity: 0; transition: opacity 0.3s ease; }
 
-/* ======================
-   Social Buttons (icon-only)
-   ====================== */
+/* Social buttons */
 .social-buttons {
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
   gap: 12px;
+  flex-wrap: wrap;
   margin-top: 15px;
 }
 .social-btn {
@@ -308,144 +296,40 @@ button.added-btn {
   height: 46px;
   border-radius: 12px;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   cursor: pointer;
-  transition: transform .15s ease, box-shadow .2s ease;
-  position: relative;
   opacity: 0;
   animation: fadeUp 0.6s forwards;
+  transition: transform .15s ease, box-shadow .2s ease;
 }
-.social-btn img { width: 24px; height: 24px; }
 
-/* Tooltip */
-.social-btn::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: 115%;
-  left: 50%;
-  transform: translateX(-50%) translateY(10px);
-  background: #333;
-  color: #fff;
-  font-size: 0.75rem;
-  padding: 6px 10px;
-  border-radius: 6px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s ease, transform 0.25s ease;
-}
-.social-btn:hover::after {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-.social-btn:hover { transform: scale(1.1); }
-
-/* Brand Colors */
-.social-btn.youtube   { background: #FF0000; animation-delay: 0.1s; }
-.social-btn.x         { background: #1DA1F2; animation-delay: 0.2s; }
-.social-btn.instagram { background: linear-gradient(45deg,#feda75,#d62976,#962fbf,#4f5bd5); animation-delay: 0.3s; }
-.social-btn.tiktok    { background: #69C9D0; animation-delay: 0.4s; }
-.social-btn.twitch    { background: #9146FF; animation-delay: 0.5s; }
-
-/* Hover Glows */
-.social-btn.youtube:hover   { box-shadow: 0 0 12px #FF0000; }
-.social-btn.x:hover         { box-shadow: 0 0 12px #1DA1F2; }
-.social-btn.instagram:hover { box-shadow: 0 0 12px #d62976; }
-.social-btn.tiktok:hover    { box-shadow: 0 0 12px #69C9D0; }
-.social-btn.twitch:hover    { box-shadow: 0 0 12px #9146FF; }
-
-/* Shared shimmer animation */
 @keyframes shimmerMove {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
-
-/* FadeUp Animation */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(12px) scale(0.95); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-.ban-label {
-  font-weight: 600;
-  color: #fff;
-}
+/* Ban label colours */
+.ban-label { font-weight: 600; color: #fff; }
 .player-row.not-banned .ban-label { color: #6f6; }
 .player-row.temp-banned .ban-label { color: #ffb347; }
 .player-row.perm-banned .ban-label { color: #ff4d4d; }
 .player-row.unknown .ban-label { color: #ccc; }
 
-.player-row.cached {
-  background-color: rgba(200,200,200,0.05);
-  border-left: 3px solid #888;
-}
-.player-row.cached .ban-label {
-  color: #aaa;
-  font-style: italic;
-}
-.watchlist-buttons {
-  display: flex;
-  gap: 6px;
-  margin-top: 5px;
+.muted {
+  color: var(--muted);
+  font-size: 0.9rem;
 }
 
-/* ======================
-   Dark Mode
-   ====================== */
+/* Dark mode */
 body.dark-mode {
   background: linear-gradient(135deg,#181818,#3a3a3a);
   color: #eee;
 }
 body.dark-mode .container {
   background: rgba(255,255,255,0.08);
-}
-
-/* -------------------------------------------------------
-   Name Change Alert
-   ------------------------------------------------------- */
-.name-change-alert {
-  color: var(--accent);
-  font-size: 0.9rem;
-  margin-bottom: 6px;
-  text-align: left;
-  animation: fadeInOut 5s ease forwards;
-}
-
-@keyframes fadeInOut {
-  0% { opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { opacity: 0; }
-}
-
-/* Utility text */
-.muted {
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-/* Generic text input */
-.text-input {
-  width: 100%;
-  border-radius: 10px;
-  border: 1px solid transparent;
-  padding: 10px 12px;
-  font-size: 1rem;
-  outline: none;
-}
-
-/* Control button row */
-.control-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
-  margin-top: 10px;
-}
-.control-buttons label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.9rem;
 }
