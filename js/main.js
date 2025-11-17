@@ -1,7 +1,7 @@
 /* -------------------------------------------------------
    PUBG Ban Checker
    main.js
-   v2.0 - Rebuilt main page checker + ID lookup + platform + dark mode
+   v2.2 - Strict Status Matching
    ------------------------------------------------------- */
 (() => {
   const BASE_URL = "https://pubg-ban-checker-backend.onrender.com";
@@ -220,9 +220,7 @@
         getWatchlistKey(platform),
         JSON.stringify(arr || [])
       );
-    } catch {
-      // ignore quota errors
-    }
+    } catch {}
   }
 
   function addWatchlist(player, accountId, clan, platformLabel) {
@@ -241,10 +239,25 @@
       accountId: accountId || "",
       clan: clan || "",
       platform,
-      statusLabel: platformLabel || ""
+      statusLabel: platformLabel || "",
+      lastChecked: Date.now()
     });
 
     saveWatchlist(platform, list);
+  }
+
+  // ---------- STRICT BAN STATUS MATCHING ----------
+  function classifyStatus(statusText) {
+    const raw = (statusText || "").trim().toLowerCase();
+
+    if (raw === "not banned") return "not";
+    if (raw === "temporarily banned") return "temp";
+    if (raw === "permanently banned") return "perm";
+    if (raw === "player not found") return "unknown";
+    if (raw.includes("rate limit")) return "unknown";
+    if (raw.includes("error")) return "unknown";
+
+    return "unknown";
   }
 
   // ---------- UI builders ----------
@@ -252,38 +265,27 @@
     const row = document.createElement("div");
     row.className = "player-row";
 
-    const t = (statusText || "").toLowerCase();
-    let label = "Unknown";
+    const status = classifyStatus(statusText);
 
-if (t.includes("perm")) {
-  row.classList.add("perm-banned");
-  label = "Permanently Banned";
-} else if (t.includes("banned") && !t.includes("temp")) {
-  // backend might send "PermanentBan" etc
-  row.classList.add("perm-banned");
-  label = "Permanently Banned";
-} else if (t.includes("temp")) {
-  row.classList.add("temp-banned");
-  label = "Temporarily Banned";
-} else if (t.includes("innocent") || t.includes("not banned") || t === "not banned") {
-  row.classList.add("not-banned");
-  label = "Not Banned";
-} else if (t.includes("unknown")) {
-  row.classList.add("unknown");
-  label = "Unknown";
-} else if (t.includes("error")) {
-  row.classList.add("unknown");
-  label = "Error";
-} else {
-  row.classList.add("unknown");
-  label = escapeHtml(statusText);
-}
+    // apply classes
+    if (status === "perm") row.classList.add("perm-banned");
+    else if (status === "temp") row.classList.add("temp-banned");
+    else if (status === "not") row.classList.add("not-banned");
+    else row.classList.add("unknown");
 
+    const label =
+      status === "perm"
+        ? "Permanently Banned"
+        : status === "temp"
+        ? "Temporarily Banned"
+        : status === "not"
+        ? "Not Banned"
+        : "Unknown";
 
-    const hasDetail =
+    const showDetail =
       statusText &&
-      statusText.toLowerCase() !== label.toLowerCase() &&
-      label !== "Unknown";
+      statusText.trim().toLowerCase() !== label.toLowerCase() &&
+      status !== "unknown";
 
     const info = document.createElement("div");
     info.innerHTML = `
@@ -292,26 +294,26 @@ if (t.includes("perm")) {
       Clan: ${escapeHtml(clan || "none")}<br>
       Status: <span class="ban-label">${escapeHtml(label)}</span>
       ${
-        hasDetail
+        showDetail
           ? `<div class="status-detail">${escapeHtml(statusText)}</div>`
           : ""
       }
     `;
 
-    const add = document.createElement("button");
-    add.textContent = "Add to Watchlist";
-    add.addEventListener("click", () => {
+    const addBtn = document.createElement("button");
+    addBtn.textContent = "Add to Watchlist";
+    addBtn.addEventListener("click", () => {
       addWatchlist(player, accountId, clan, label);
-      add.textContent = "Added";
-      add.disabled = true;
-      add.classList.add("added-btn");
+      addBtn.textContent = "Added";
+      addBtn.disabled = true;
+      addBtn.classList.add("added-btn");
     });
 
-    row.append(info, add);
+    row.append(info, addBtn);
     return row;
   }
 
-  // ---------- Ban checker flow ----------
+  // ---------- Main Checker Flow ----------
   async function checkBan() {
     const results = document.getElementById("results");
     if (!results) return;
@@ -366,18 +368,11 @@ if (t.includes("perm")) {
       const resolved = await resolveById(id, platform);
 
       if (resolved.error) {
-        out.innerHTML = `<p class='muted'>${escapeHtml(
-          resolved.error
-        )}</p>`;
+        out.innerHTML = `<p class='muted'>${escapeHtml(resolved.error)}</p>`;
         return;
       }
 
-      const name =
-        resolved.name ||
-        resolved.player ||
-        resolved.nickname ||
-        "";
-
+      const name = resolved.currentName || resolved.name;
       if (!name) {
         out.innerHTML =
           "<p class='muted'>Could not resolve that ID on this platform.</p>";
@@ -385,7 +380,7 @@ if (t.includes("perm")) {
       }
 
       const banData = await getBanStatus(platform, name);
-      // Prefer the ID the user entered over backend one if present
+
       const row = buildRow({
         ...banData,
         accountId: banData.accountId || id
@@ -440,14 +435,11 @@ if (t.includes("perm")) {
 
   // ---------- Init ----------
   document.addEventListener("DOMContentLoaded", () => {
-    // Platform row on index page
     applyPlatformToButtons("platformRowIndex", "activePlatformLabel");
 
     // Ensure hidden platform input matches stored platform
     const hidden = document.getElementById("platformSelect");
-    if (hidden) {
-      hidden.value = getPlatform();
-    }
+    if (hidden) hidden.value = getPlatform();
 
     applyInitialDarkMode();
 
@@ -466,12 +458,8 @@ if (t.includes("perm")) {
       clearIdBtn.addEventListener("click", () => {
         const out = document.getElementById("idLookupResults");
         const input = document.getElementById("accountIdInput");
-        if (out) {
-          out.innerHTML = "<p class='muted'>No results yet.</p>";
-        }
-        if (input) {
-          input.value = "";
-        }
+        if (out) out.innerHTML = "<p class='muted'>No results yet.</p>";
+        if (input) input.value = "";
       });
     }
 
@@ -482,12 +470,11 @@ if (t.includes("perm")) {
       );
     }
 
-    const lookupIdBtn = document.getElementById("lookupIdBtn");
-    if (lookupIdBtn) {
-      lookupIdBtn.addEventListener("click", () =>
-        handleLimitedClick(lookupIdBtn, () => lookupById())
+    const lookupBtn = document.getElementById("lookupIdBtn");
+    if (lookupBtn) {
+      lookupBtn.addEventListener("click", () =>
+        handleLimitedClick(lookupBtn, () => lookupById())
       );
     }
   });
 })();
-
