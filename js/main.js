@@ -237,7 +237,7 @@ function setupPlatforms() {
     const row = document.createElement("div");
     row.className = "player-row";
 
-    const t = (statusText || "").toLowerCase();
+   const t = (statusText || "").toLowerCase();
     let label = "Unknown";
     if (t.includes("perm")) {
       row.classList.add("perm-banned");
@@ -314,12 +314,11 @@ function setupPlatforms() {
       results.replaceChild(final, loading);
     }
   }
-  window.checkBan = checkBan;
 
 /* -------------------------------------------------------
    ID Lookup (fully working + clan + ban + error handling)
    ------------------------------------------------------- */
-async function lookupById() {
+async function lookupById() {␊
   const input = document.getElementById("accountIdInput");
   const out = document.getElementById("idLookupResults");
   const id = input.value.trim();
@@ -381,25 +380,40 @@ async function lookupById() {
     out.innerHTML = `<p class='muted'>Error fetching data: ${escapeHtml(String(err))}</p>`;
   }
 }
-window.lookupById = lookupById;
-
-
-
   // ---------- Init ----------
   document.addEventListener("DOMContentLoaded", () => {
     setupPlatforms();
     initDark();
 
-    document.getElementById("clearResultsBtn").onclick = () => {
-      document.getElementById("results").innerHTML = "<p class='muted'>No results yet.</p>";
-    };
+    const clearResultsBtn = document.getElementById("clearResultsBtn");
+    if (clearResultsBtn) {
+      clearResultsBtn.addEventListener("click", () => {
+        const results = document.getElementById("results");
+        if (results) results.innerHTML = "<p class='muted'>No results yet.</p>";
+      });
+    }
 
-    document.getElementById("clearIdBtn").onclick = () => {
-      document.getElementById("accountIdInput").value = "";
-      document.getElementById("idLookupResults").innerHTML =
-        "<p class='muted'>No results yet.</p>";
-    };
+    const clearIdBtn = document.getElementById("clearIdBtn");
+    if (clearIdBtn) {
+      clearIdBtn.addEventListener("click", () => {
+        const idInput = document.getElementById("accountIdInput");
+        if (idInput) idInput.value = "";
+        const idResults = document.getElementById("idLookupResults");
+        if (idResults) idResults.innerHTML = "<p class='muted'>No results yet.</p>";
+      });
+    }
+
+    const checkBanBtn = document.getElementById("checkBanBtn");
+    if (checkBanBtn) {
+      checkBanBtn.addEventListener("click", () => handleLimitedClick(checkBanBtn, () => checkBan()));
+    }
+
+    const lookupIdBtn = document.getElementById("lookupIdBtn");
+    if (lookupIdBtn) {
+      lookupIdBtn.addEventListener("click", () => handleLimitedClick(lookupIdBtn, () => lookupById()));
+    }
   });
 })();
+
 
 
