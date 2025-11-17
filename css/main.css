@@ -1,335 +1,441 @@
 /* -------------------------------------------------------
-   PUBG Ban Checker - main.css (v1.7.1 Final - PermBan Fix)
+   PUBG Ban Checker
+   main.js (v2.1 - strict ban mapping + detail filtering)
    ------------------------------------------------------- */
+(() => {
+  const BASE_URL = "https://pubg-ban-checker-backend.onrender.com";
 
-:root {
-  --bg-start: #1c1a2b;
-  --bg-end: #7f7aa0;
-  --text: #f0f0f0;
-  --muted: #dcdcdc;
-  --card: rgba(255, 255, 255, 0.10);
-  --shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
-  --accent: #ffdd59;
-  --ok: #28a745;
-  --warn: #ffc107;
-  --bad: #dc3545;
-  --neutral: #6c757d;
-}
+  const LS_PLATFORM = "selectedPlatform";
+  const LS_DARK = "darkMode";
+  const LS_WATCHLIST_PREFIX = "watchlist_";
 
-/* Base */
-* { box-sizing: border-box; }
-html, body { height: 100%; }
-body {
-  margin: 0;
-  padding: 0;
-  background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
-  color: var(--text);
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+  const MAX_RATE_LIMIT_ATTEMPTS = 3;
+  const INITIAL_RETRY_DELAY = 700;
 
-/* Headings */
-h1 { font-size: 2.2rem; margin: 40px 0 8px; text-align: center; color: var(--accent); }
-h2 { font-size: 1rem; font-weight: 500; margin: 0 0 18px; color: #ffe680; text-align: center; opacity: .95; }
+  function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
-/* Containers */
-.container {
-  width: min(92vw, 760px);
-  background: var(--card);
-  border-radius: 14px;
-  padding: 18px;
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(6px);
-  margin: 10px 0;
-}
-.nav-links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-.controls { display: flex; flex-direction: column; gap: 12px; }
+  function escapeHtml(str) {
+    return String(str ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
 
-/* Watchlist + Results containers */
-.results-container, .watchlist-container { display: flex; flex-direction: column; gap: 10px; }
-.watchlist-container {
-  margin-top: 20px;
-  margin-bottom: 25px;
-  padding-top: 15px;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-}
+  function getPlatform() {
+    const hidden = document.getElementById("platformSelect");
+    if (hidden && hidden.value) return hidden.value;
 
-.results-block {
-  margin-top: 25px;
-  padding-top: 15px;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-}
-#results {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+    return localStorage.getItem(LS_PLATFORM) || "steam";
+  }
 
-/* Input + Buttons */
-textarea#playerInput {
-  width: 100%; min-height: 110px; resize: vertical;
-  border: 1px solid transparent; border-radius: 10px;
-  padding: 10px 12px; font-size: 1rem; color: #111; outline: none;
-}
+  function setPlatform(platform) {
+    const hidden = document.getElementById("platformSelect");
+    if (hidden) hidden.value = platform;
 
-button {
-  border: none;
-  outline: none;
-  border-radius: 10px;
-  font-size: 1rem;
-  padding: 10px 12px;
-  background: #ff4757;
-  color: #fff;
-  font-weight: 700;
-  cursor: pointer;
-  min-width: 120px;
-  transition: transform .18s ease, box-shadow .18s ease;
-}
-button:hover { transform: scale(1.04); box-shadow: 0px 4px 14px rgba(0,0,0,0.25); }
-button:active { transform: scale(0.97); }
+    localStorage.setItem(LS_PLATFORM, platform);
+  }
 
-button.secondary-btn { background: #6c757d; }
-button.secondary-btn:hover { background: #5a6268; }
+  function applyPlatformToButtons(rowId, labelId) {
+    const row = document.getElementById(rowId);
+    if (!row) return;
 
-/* Added-to-watchlist */
-button.added-btn {
-  background: #6c757d;
-  cursor: default;
-  opacity: 0.8;
-  box-shadow: none;
-  transform: none;
-}
+    const buttons = Array.from(row.querySelectorAll(".platform-btn"));
+    const labelEl = labelId ? document.getElementById(labelId) : null;
 
-/* Player Row */
-.player-row, .watchlist-player {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.12);
-  box-shadow: 0 2px 10px rgba(0,0,0,0.25);
-  transform-origin: center;
-  opacity: 0;
-  animation: fadeUpRow 0.5s forwards;
-}
-.player-row:hover, .watchlist-player:hover { transform: scale(1.02); }
+    const current = getPlatform();
+    buttons.forEach(btn => {
+      const p = btn.getAttribute("data-platform");
+      btn.classList.toggle("active", p === current);
 
-/* Row stagger delays */
-.player-row:nth-child(1), .watchlist-player:nth-child(1) { animation-delay: 0.05s; }
-.player-row:nth-child(2), .watchlist-player:nth-child(2) { animation-delay: 0.10s; }
-.player-row:nth-child(3), .watchlist-player:nth-child(3) { animation-delay: 0.15s; }
-.player-row:nth-child(4), .watchlist-player:nth-child(4) { animation-delay: 0.20s; }
-.player-row:nth-child(5), .watchlist-player:nth-child(5) { animation-delay: 0.25s; }
-.player-row:nth-child(6), .watchlist-player:nth-child(6) { animation-delay: 0.30s; }
-.player-row:nth-child(7), .watchlist-player:nth-child(7) { animation-delay: 0.35s; }
-.player-row:nth-child(8), .watchlist-player:nth-child(8) { animation-delay: 0.40s; }
-.player-row:nth-child(9), .watchlist-player:nth-child(9) { animation-delay: 0.45s; }
-.player-row:nth-child(10), .watchlist-player:nth-child(10) { animation-delay: 0.50s; }
+      btn.addEventListener("click", () => {
+        const platform = btn.getAttribute("data-platform");
+        if (!platform) return;
 
-/* FadeUpRow */
-@keyframes fadeUpRow {
-  from { opacity: 0; transform: translateY(8px) scale(0.97); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
+        row.classList.add("shimmer");
+        setTimeout(() => row.classList.remove("shimmer"), 450);
 
-/* ----- STATUS STYLES ----- */
+        buttons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
 
-/* NOT BANNED */
-.not-banned {
-  background: linear-gradient(90deg, rgba(40,167,69,.75), rgba(46,204,113,.75));
-  color: #fff;
-}
+        setPlatform(platform);
 
-/* TEMP BAN */
-.temp-banned {
-  background: linear-gradient(90deg, rgba(255,193,7,.85), rgba(255,205,57,.85));
-  color: #111;
-  animation: fadeUpRow 0.5s forwards, pulse 2s infinite;
-}
+        if (labelEl) {
+          const pretty =
+            platform === "psn"
+              ? "PSN"
+              : platform.charAt(0).toUpperCase() + platform.slice(1);
+          labelEl.innerHTML = `Currently searching: <strong>${escapeHtml(
+            pretty
+          )}</strong>`;
+        }
+      });
+    });
 
-/* PERMANENT BAN */
-.perm-banned {
-  background: linear-gradient(90deg, rgba(220,53,69,.85), rgba(231,76,60,.85));
-  color: #fff;
-  animation: fadeUpRow 0.5s forwards, pulse 1.5s infinite;
-}
+    if (labelEl) {
+      const cp = getPlatform();
+      const pretty =
+        cp === "psn" ? "PSN" : cp.charAt(0).toUpperCase() + cp.slice(1);
+      labelEl.innerHTML = `Currently searching: <strong>${escapeHtml(
+        pretty
+      )}</strong>`;
+    }
+  }
 
-/* UNKNOWN */
-.unknown {
-  background: linear-gradient(90deg, rgba(108,117,125,.75), rgba(149,165,166,.75));
-  color: #fff;
-}
+  async function getBanStatus(platform, playerName) {
+    const url = `${BASE_URL}/check-ban-clan?platform=${encodeURIComponent(
+      platform
+    )}&player=${encodeURIComponent(playerName)}`;
 
-.status-detail {
-  margin-top: 6px;
-  font-size: 0.85rem;
-  color: #fff;
-  opacity: 0.9;
-}
+    let attempt = 0;
+    let delayMs = INITIAL_RETRY_DELAY;
 
-/* Pulse */
-@keyframes pulse {
-  0% { box-shadow: 0 0 5px rgba(255,0,0,0.3); transform: scale(1); }
-  50% { box-shadow: 0 0 20px rgba(255,0,0,0.7); transform: scale(1.02); }
-  100% { box-shadow: 0 0 5px rgba(255,0,0,0.3); transform: scale(1); }
-}
+    while (attempt < MAX_RATE_LIMIT_ATTEMPTS) {
+      try {
+        const res = await fetch(url);
 
-/* ----- Platform Buttons ----- */
-.platform-row {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 10px;
-  overflow: hidden;
-}
-.platform-btn {
-  width: 46px;
-  height: 46px;
-  background: rgba(255,255,255,0.10);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  position: relative;
-  transition: transform .15s ease, box-shadow .2s ease;
-  border: 1px solid transparent;
-  opacity: 0;
-  animation: fadeUp 0.4s forwards;
-}
-.platform-btn .platform-icon { width: 24px; height: 24px; }
+        if (res.status === 429) {
+          attempt += 1;
+          if (attempt >= MAX_RATE_LIMIT_ATTEMPTS) {
+            return {
+              player: playerName,
+              accountId: "",
+              clan: "",
+              statusText:
+                "Rate limited by backend. Please wait and try again."
+            };
+          }
+          await wait(delayMs);
+          delayMs *= 1.6;
+          continue;
+        }
 
-.active-platform-label {
-  text-align: center;
-  font-size: 0.9rem;
-  margin-top: 8px;
-  color: #ffe680;
-  opacity: 0.9;
-  transition: opacity 0.25s ease, transform 0.25s ease;
-}
-.active-platform-label strong {
-  color: var(--accent);
-  text-transform: uppercase;
-  animation: platformPulse 1.4s ease-in-out;
-}
+        if (!res.ok) {
+          const message = await res.text();
+          return {
+            player: playerName,
+            accountId: "",
+            clan: "",
+            statusText:
+              message || `Request failed with status ${res.status}`
+          };
+        }
 
-@keyframes platformPulse {
-  0% { opacity: 0.6; transform: scale(0.96); }
-  50% { opacity: 1; transform: scale(1.05); }
-  100% { opacity: 0.9; transform: scale(1); }
-}
+        const data = await res.json();
+        let accountId = "";
+        let clan = "";
+        let statusText = "Unknown";
 
-.platform-row .platform-btn:nth-child(1) { animation-delay: 0.1s; }
-.platform-row .platform-btn:nth-child(2) { animation-delay: 0.2s; }
-.platform-row .platform-btn:nth-child(3) { animation-delay: 0.3s; }
-.platform-row .platform-btn:nth-child(4) { animation-delay: 0.4s; }
+        if (data && Array.isArray(data.results) && data.results.length) {
+          const match =
+            data.results.find(
+              e =>
+                typeof e.player === "string" &&
+                e.player.toLowerCase() === playerName.toLowerCase()
+            ) || data.results[0];
 
-/* Active buttons */
-.platform-btn.active.steam { background: #1b2838; border-color: #1b2838; box-shadow: 0 0 14px #1b2838; }
-.platform-btn.active.xbox { background: #107C10; border-color: #107C10; box-shadow: 0 0 14px #107C10; }
-.platform-btn.active.psn { background: #003791; border-color: #003791; box-shadow: 0 0 14px #003791; }
-.platform-btn.active.kakao { background: #FEE500; border-color: #FEE500; box-shadow: 0 0 14px #FEE500; color: #000; }
+          accountId =
+            match.accountId || match.id || match.account_id || "";
+          clan = match.clan || match.clanName || "";
 
-/* Tooltip shimmer */
-.platform-btn::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: 115%;
-  left: 50%;
-  font-size: 0.75rem;
-  padding: 6px 10px;
-  white-space: nowrap;
-  transform: translateX(-50%) translateY(10px);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s ease, transform 0.25s ease;
-  background: linear-gradient(90deg, #ffdd59, #fff, #ffdd59);
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: shimmerMove 2s infinite linear;
-}
-.platform-btn:hover::after {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
+          statusText =
+            match.statusText ||
+            match.status ||
+            match.banStatus ||
+            "Unknown";
+        }
 
-/* Shimmer effect when switching */
-.platform-row.shimmer .platform-btn::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 200%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 221, 89, 0) 0%,
-    rgba(255, 221, 89, 0.35) 50%,
-    rgba(255, 221, 89, 0) 100%
-  );
-  animation: shimmerButton 0.6s ease-out;
-  pointer-events: none;
-  border-radius: 12px;
-}
-@keyframes shimmerButton {
-  from { left: -100%; }
-  to { left: 100%; }
-}
+        return {
+          player: playerName,
+          accountId,
+          clan,
+          statusText
+        };
+      } catch (err) {
+        attempt += 1;
+        if (attempt >= MAX_RATE_LIMIT_ATTEMPTS) {
+          return {
+            player: playerName,
+            accountId: "",
+            clan: "",
+            statusText:
+              "Error contacting backend. Please try again."
+          };
+        }
+        await wait(delayMs);
+        delayMs *= 1.6;
+      }
+    }
 
-.fade-out { opacity: 0; transition: opacity 0.3s ease; }
+    return {
+      player: playerName,
+      accountId: "",
+      clan: "",
+      statusText: "Unknown"
+    };
+  }
 
-/* Social buttons */
-.social-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-top: 15px;
-}
-.social-btn {
-  width: 46px;
-  height: 46px;
-  border-radius: 12px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  opacity: 0;
-  animation: fadeUp 0.6s forwards;
-  transition: transform .15s ease, box-shadow .2s ease;
-}
+  async function resolveById(id, platform) {
+    try {
+      const res = await fetch(
+        `${BASE_URL}/resolve?platform=${encodeURIComponent(
+          platform
+        )}&id=${encodeURIComponent(id)}`
+      );
+      return await res.json();
+    } catch (err) {
+      return { error: String(err) };
+    }
+  }
 
-@keyframes shimmerMove {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px) scale(0.95); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
+  function getWatchlistKey(platform) {
+    return `${LS_WATCHLIST_PREFIX}${platform}`;
+  }
 
-/* Ban label colours */
-.ban-label { font-weight: 600; color: #fff; }
-.player-row.not-banned .ban-label { color: #6f6; }
-.player-row.temp-banned .ban-label { color: #ffb347; }
-.player-row.perm-banned .ban-label { color: #ff4d4d; }
-.player-row.unknown .ban-label { color: #ccc; }
+  function getWatchlist(platform) {
+    try {
+      return JSON.parse(localStorage.getItem(getWatchlistKey(platform))) || [];
+    } catch {
+      return [];
+    }
+  }
 
-.muted {
-  color: var(--muted);
-  font-size: 0.9rem;
-}
+  function saveWatchlist(platform, list) {
+    localStorage.setItem(getWatchlistKey(platform), JSON.stringify(list));
+  }
 
-/* Dark mode */
-body.dark-mode {
-  background: linear-gradient(135deg,#181818,#3a3a3a);
-  color: #eee;
-}
-body.dark-mode .container {
-  background: rgba(255,255,255,0.08);
-}
+  function addWatchlist(player, accountId, clan, platformLabel) {
+    const platform = getPlatform();
+    const list = getWatchlist(platform);
+
+    if (
+      list.some(
+        x =>
+          x.player.toLowerCase() === player.toLowerCase() &&
+          (x.accountId || "") === (accountId || "")
+      )
+    )
+      return;
+
+    list.push({
+      player,
+      accountId,
+      clan,
+      platform,
+      statusLabel: platformLabel
+    });
+
+    saveWatchlist(platform, list);
+  }
+
+  function buildRow({ player, accountId, clan, statusText }) {
+    const row = document.createElement("div");
+    row.className = "player-row";
+
+    let raw = (statusText || "").trim().toLowerCase();
+    let statusCode = "unknown";
+
+    if (raw === "not banned") statusCode = "not";
+    else if (raw === "temporarily banned") statusCode = "temp";
+    else if (raw === "permanently banned") statusCode = "perm";
+
+    row.classList.add(
+      statusCode === "perm"
+        ? "perm-banned"
+        : statusCode === "temp"
+        ? "temp-banned"
+        : statusCode === "not"
+        ? "not-banned"
+        : "unknown"
+    );
+
+    const label =
+      statusCode === "perm"
+        ? "Permanently Banned"
+        : statusCode === "temp"
+        ? "Temporarily Banned"
+        : statusCode === "not"
+        ? "Not Banned"
+        : "Unknown";
+
+    const standard = ["not banned", "temporarily banned", "permanently banned"];
+    const showDetail = raw && !standard.includes(raw);
+
+    const info = document.createElement("div");
+    info.innerHTML = `
+      <strong>${escapeHtml(player)}</strong><br>
+      ID: ${escapeHtml(accountId || "unknown")}<br>
+      Clan: ${escapeHtml(clan || "none")}<br>
+      Status: <span class="ban-label">${escapeHtml(label)}</span>
+      ${
+        showDetail
+          ? `<div class="status-detail">${escapeHtml(statusText)}</div>`
+          : ""
+      }
+    `;
+
+    const add = document.createElement("button");
+    add.textContent = "Add to Watchlist";
+    add.addEventListener("click", () => {
+      addWatchlist(player, accountId, clan, label);
+      add.textContent = "Added";
+      add.disabled = true;
+      add.classList.add("added-btn");
+    });
+
+    row.append(info, add);
+    return row;
+  }
+
+  async function checkBan() {
+    const results = document.getElementById("results");
+    if (!results) return;
+
+    const inputEl = document.getElementById("playerInput");
+    const names = (inputEl?.value || "")
+      .split(/[\n,]+/)
+      .map(x => x.trim())
+      .filter(Boolean)
+      .slice(0, 10);
+
+    if (!names.length) {
+      results.innerHTML = "<p class='muted'>Please enter names.</p>";
+      return;
+    }
+
+    const platform = getPlatform();
+    results.innerHTML = "";
+
+    for (const n of names) {
+      const loadingRow = buildRow({
+        player: n,
+        accountId: "...",
+        clan: "...",
+        statusText: "Checking..."
+      });
+
+      results.append(loadingRow);
+
+      const data = await getBanStatus(platform, n);
+      const finalRow = buildRow(data);
+
+      results.replaceChild(finalRow, loadingRow);
+    }
+  }
+
+  async function lookupById() {
+    const input = document.getElementById("accountIdInput");
+    const out = document.getElementById("idLookupResults");
+    if (!input || !out) return;
+
+    const id = input.value.trim();
+    if (!id) {
+      out.innerHTML = "<p class='muted'>Enter an ID.</p>";
+      return;
+    }
+
+    const platform = getPlatform();
+    out.innerHTML = "<p class='muted'>Looking up...</p>";
+
+    const resolved = await resolveById(id, platform);
+
+    if (resolved.error) {
+      out.innerHTML = `<p class='muted'>${escapeHtml(resolved.error)}</p>`;
+      return;
+    }
+
+    const name = resolved.name || resolved.player || resolved.nickname || "";
+    if (!name) {
+      out.innerHTML =
+        "<p class='muted'>Could not resolve that ID on this platform.</p>";
+      return;
+    }
+
+    const banData = await getBanStatus(platform, name);
+    const row = buildRow({
+      ...banData,
+      accountId: banData.accountId || id
+    });
+
+    out.innerHTML = "";
+    out.append(row);
+  }
+
+  function applyInitialDarkMode() {
+    const body = document.body;
+    const toggle = document.getElementById("darkModeToggle");
+    const stored = localStorage.getItem(LS_DARK);
+
+    if (stored === "true") {
+      body.classList.add("dark-mode");
+      if (toggle) toggle.checked = true;
+    }
+
+    if (toggle) {
+      toggle.addEventListener("change", () => {
+        const on = toggle.checked;
+        body.classList.toggle("dark-mode", on);
+        localStorage.setItem(LS_DARK, String(on));
+      });
+    }
+  }
+
+  function handleLimitedClick(btn, fn) {
+    if (!btn || btn.disabled) return;
+    btn.disabled = true;
+    btn.classList.add("fade-out");
+
+    Promise.resolve()
+      .then(fn)
+      .finally(() => {
+        btn.disabled = false;
+        btn.classList.remove("fade-out");
+      });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    applyPlatformToButtons("platformRowIndex", "activePlatformLabel");
+
+    const hidden = document.getElementById("platformSelect");
+    if (hidden) hidden.value = getPlatform();
+
+    applyInitialDarkMode();
+
+    const clearResultsBtn = document.getElementById("clearResultsBtn");
+    if (clearResultsBtn) {
+      clearResultsBtn.addEventListener("click", () => {
+        const results = document.getElementById("results");
+        if (results) {
+          results.innerHTML = "<p class='muted'>No results yet.</p>";
+        }
+      });
+    }
+
+    const clearIdBtn = document.getElementById("clearIdBtn");
+    if (clearIdBtn) {
+      clearIdBtn.addEventListener("click", () => {
+        const out = document.getElementById("idLookupResults");
+        const input = document.getElementById("accountIdInput");
+        if (out) out.innerHTML = "<p class='muted'>No results yet.</p>";
+        if (input) input.value = "";
+      });
+    }
+
+    const checkBanBtn = document.getElementById("checkBanBtn");
+    if (checkBanBtn) {
+      checkBanBtn.addEventListener("click", () =>
+        handleLimitedClick(checkBanBtn, () => checkBan())
+      );
+    }
+
+    const lookupIdBtn = document.getElementById("lookupIdBtn");
+    if (lookupIdBtn) {
+      lookupIdBtn.addEventListener("click", () =>
+        handleLimitedClick(lookupIdBtn, () => lookupById())
+      );
+    }
+  });
+})();
