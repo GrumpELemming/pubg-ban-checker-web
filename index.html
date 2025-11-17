@@ -75,42 +75,7 @@
 
     <div id="idLookupResults"><p class="muted">No results yet.</p></div>
   </section>
-
-  <!-- click limiter -->
-  <script>
-    const checkBanBtn = document.getElementById("checkBanBtn");
-    const lookupIdBtn = document.getElementById("lookupIdBtn");
-
-    async function handleLimitedClick(button, callback) {
-      if (button.disabled) return;
-      button.disabled = true;
-      const originalText = button.textContent;
-      button.textContent = "Checking...";
-      button.classList.add("disabled");
-      try {
-        await callback();
-      } finally {
-        button.textContent = originalText;
-        button.disabled = false;
-        button.classList.remove("disabled");
-      }
-    }
-
-    if (checkBanBtn) {
-      checkBanBtn.addEventListener("click", () =>
-        handleLimitedClick(checkBanBtn, async () => {
-          if (typeof window.checkBan === "function") await window.checkBan();
-        })
-      );
-    }
-
-    if (lookupIdBtn) {
-      lookupIdBtn.addEventListener("click", () =>
-        handleLimitedClick(lookupIdBtn, async () => {
-          if (typeof window.lookupById === "function") await window.lookupById();
-        })
-      );
-    }
   </script>
 </body>
 </html>
+
