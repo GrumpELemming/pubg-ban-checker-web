@@ -11,8 +11,11 @@
   const LS_DARK = "darkMode";
   const LS_WATCHLIST_PREFIX = "watchlist_";
 
-  function escapeHtml(s = "") {
-    return s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[c]));
+  const MAX_RATE_LIMIT_ATTEMPTS = 3;
+  const INITIAL_RETRY_DELAY = 700;
+
+  function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
 /* -------------------------------------------------------
@@ -136,27 +139,65 @@ function setupPlatforms() {
     const url = `${BASE_URL}/check-ban-clan?platform=${encodeURIComponent(platform)}&player=${encodeURIComponent(
       playerName
     )}`;
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-      if (data.error)
-        return { player: playerName, accountId: "", clan: "", statusText: data.error };
+    let attempt = 0;
+    let delayMs = INITIAL_RETRY_DELAY;
 
-      const result = (data.results || []).find(
-        r => r.player.toLowerCase() === playerName.toLowerCase()
-      );
-      if (!result)
-        return { player: playerName, accountId: "", clan: "", statusText: "Unknown" };
+    while (attempt < MAX_RATE_LIMIT_ATTEMPTS) {
+      try {
+        const res = await fetch(url);
 
-      return {
-        player: result.player,
-        accountId: result.accountId || "",
-        clan: result.clan || "",
-        statusText: result.banStatus || "Unknown"
-      };
-    } catch (err) {
-      return { player: playerName, accountId: "", clan: "", statusText: String(err) };
+        if (res.status === 429) {
+          attempt += 1;
+          if (attempt >= MAX_RATE_LIMIT_ATTEMPTS) {
+            return {
+              player: playerName,
+              accountId: "",
+              clan: "",
+              statusText: "Rate limited by backend. Please wait a moment and try again."
+            };
+          }
+          await wait(delayMs);
+          delayMs *= 1.6;
+          continue;
+        }
+
+        if (!res.ok) {
+          const message = await res.text();
+          return {
+            player: playerName,
+            accountId: "",
+            clan: "",
+            statusText: message || `Request failed with status ${res.status}`
+          };
+        }
+
+        const data = await res.json();
+        if (data.error)
+          return { player: playerName, accountId: "", clan: "", statusText: data.error };
+
+        const result = (data.results || []).find(
+          r => r.player.toLowerCase() === playerName.toLowerCase()
+        );
+        if (!result)
+          return { player: playerName, accountId: "", clan: "", statusText: "Unknown" };
+
+        return {
+          player: result.player,
+          accountId: result.accountId || "",
+          clan: result.clan || "",
+          statusText: result.banStatus || "Unknown"
+        };
+      } catch (err) {
+        attempt += 1;
+        if (attempt >= MAX_RATE_LIMIT_ATTEMPTS) {
+          return { player: playerName, accountId: "", clan: "", statusText: String(err) };
+        }
+        await wait(delayMs);
+        delayMs *= 1.6;
+      }
     }
+
+    return { player: playerName, accountId: "", clan: "", statusText: "Unknown" };
   }
 
   async function resolveById(id, platform) {
@@ -190,13 +231,22 @@ function setupPlatforms() {
       row.classList.add("unknown");
     }
 
+    const hasDetail =
+      statusText && statusText.toLowerCase() !== label.toLowerCase() && label === "Unknown";
+
     const info = document.createElement("div");
     info.innerHTML = `
       <strong>${escapeHtml(player)}</strong><br>
       ID: ${escapeHtml(accountId || "unknown")}<br>
       Clan: ${escapeHtml(clan || "none")}<br>
       Status: <span class="ban-label">${escapeHtml(label)}</span>
+      ${
+        hasDetail
+          ? `<div class="status-detail">${escapeHtml(statusText)}</div>`
+          : ""
+      }
     `;
+
 
     const add = document.createElement("button");
     add.textContent = "Add to Watchlist";
@@ -330,3 +380,4 @@ window.lookupById = lookupById;
     };
   });
 })();
+
