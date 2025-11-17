@@ -159,6 +159,7 @@ button.added-btn {
   opacity: 0.9;
 }
 
+
 /* Pulse */
 @keyframes pulse {
   0% { box-shadow: 0 0 5px rgba(255,0,0,0.3); transform: scale(1); }
