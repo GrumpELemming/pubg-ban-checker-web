@@ -135,7 +135,17 @@
           labelEl.innerHTML = `Viewing watchlist for: <strong>${escapeHtml(pretty)}</strong>`;
         }
 
-        renderWatchlist();
+        // Replace only this row to avoid full flash
+      const container = document.getElementById("watchlistContainer");
+      if (container) {
+        const rows = Array.from(container.getElementsByClassName("watchlist-player"));
+        const idx = list.findIndex(e => e.player.toLowerCase() === match.player.toLowerCase());
+        if (rows[idx]) {
+          const newRow = buildWatchlistRow(match, idx);
+          rows[idx].replaceWith(newRow);
+        }
+      }
+
       });
     });
 
@@ -269,7 +279,17 @@
     const list = getWatchlist(platform);
     list.splice(index, 1);
     saveWatchlist(platform, list);
-    renderWatchlist();
+    // Replace only this row to avoid full flash
+      const container = document.getElementById("watchlistContainer");
+      if (container) {
+        const rows = Array.from(container.getElementsByClassName("watchlist-player"));
+        const idx = list.findIndex(e => e.player.toLowerCase() === match.player.toLowerCase());
+        if (rows[idx]) {
+          const newRow = buildWatchlistRow(match, idx);
+          rows[idx].replaceWith(newRow);
+        }
+      }
+
   }
 
   // --------------------------------------------------------------------
@@ -336,7 +356,17 @@
       match.lastChecked = Date.now();
 
       saveWatchlist(platform, list);
-      renderWatchlist();
+      // Replace only this row to avoid full flash
+      const container = document.getElementById("watchlistContainer");
+      if (container) {
+        const rows = Array.from(container.getElementsByClassName("watchlist-player"));
+        const idx = list.findIndex(e => e.player.toLowerCase() === match.player.toLowerCase());
+        if (rows[idx]) {
+          const newRow = buildWatchlistRow(match, idx);
+          rows[idx].replaceWith(newRow);
+        }
+      }
+
 
     } catch (err) {
       console.error("Recheck error", err);
@@ -379,11 +409,31 @@
       clearBtn.addEventListener("click", () => {
         const p = getPlatform();
         saveWatchlist(p, []);
-        renderWatchlist();
+        // Replace only this row to avoid full flash
+      const container = document.getElementById("watchlistContainer");
+      if (container) {
+        const rows = Array.from(container.getElementsByClassName("watchlist-player"));
+        const idx = list.findIndex(e => e.player.toLowerCase() === match.player.toLowerCase());
+        if (rows[idx]) {
+          const newRow = buildWatchlistRow(match, idx);
+          rows[idx].replaceWith(newRow);
+        }
+      }
+
       });
     }
 
-    renderWatchlist();
+    // Replace only this row to avoid full flash
+      const container = document.getElementById("watchlistContainer");
+      if (container) {
+        const rows = Array.from(container.getElementsByClassName("watchlist-player"));
+        const idx = list.findIndex(e => e.player.toLowerCase() === match.player.toLowerCase());
+        if (rows[idx]) {
+          const newRow = buildWatchlistRow(match, idx);
+          rows[idx].replaceWith(newRow);
+        }
+      }
+
   });
 
 })();
