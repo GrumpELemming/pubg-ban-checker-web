@@ -1,8 +1,3 @@
-/* -------------------------------------------------------
-   PUBG Ban Checker - Watchlist
-   watchlist.js
-   Design B: compact neutral cards + status pills
-   ------------------------------------------------------- */
 (() => {
   const BASE_URL = "https://pubg-ban-checker-backend.onrender.com";
 
@@ -10,7 +5,9 @@
   const LS_DARK = "darkMode";
   const LS_WATCHLIST_PREFIX = "watchlist_";
 
-  // ---------- Helpers ----------
+  /* ------------------------------
+     Escape HTML
+  ------------------------------ */
   function escapeHtml(str) {
     return String(str ?? "")
       .replace(/&/g, "&amp;")
@@ -20,400 +17,331 @@
       .replace(/'/g, "&#39;");
   }
 
+  /* ------------------------------
+     Platform Helpers
+  ------------------------------ */
   function getPlatform() {
-    const hidden = document.getElementById("platformSelect");
-    if (hidden && hidden.value) return hidden.value;
-
-    const saved = localStorage.getItem(LS_PLATFORM);
-    return saved || "steam";
+    return document.getElementById("platformSelect").value || "steam";
   }
 
-  function setPlatform(platform) {
-    const hidden = document.getElementById("platformSelect");
-    if (hidden) hidden.value = platform;
-    localStorage.setItem(LS_PLATFORM, platform);
+  function setPlatform(p) {
+    document.getElementById("platformSelect").value = p;
+    localStorage.setItem(LS_PLATFORM, p);
   }
 
-  function applyPlatformToButtons(rowId, labelId) {
-    const row = document.getElementById(rowId);
-    if (!row) return;
-
-    const buttons = Array.from(row.querySelectorAll(".platform-btn"));
-    const labelEl = labelId ? document.getElementById(labelId) : null;
-
-    const current = getPlatform();
-    buttons.forEach(btn => {
-      const p = btn.getAttribute("data-platform");
-      if (p === current) {
-        btn.classList.add("active");
-      } else {
-        btn.classList.remove("active");
-      }
-
-      btn.addEventListener("click", () => {
-        const platform = btn.getAttribute("data-platform");
-        if (!platform) return;
-
-        row.classList.add("shimmer");
-        setTimeout(() => row.classList.remove("shimmer"), 450);
-
-        buttons.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-
-        setPlatform(platform);
-
-        if (labelEl) {
-          const pretty =
-            platform === "psn"
-              ? "PSN"
-              : platform.charAt(0).toUpperCase() + platform.slice(1);
-          labelEl.innerHTML = `Viewing watchlist for: <strong>${escapeHtml(
-            pretty
-          )}</strong>`;
-        }
-
-        // Re-render list for the newly selected platform
-        renderWatchlist();
-      });
-    });
-
-    if (labelEl) {
-      const cp = getPlatform();
-      const pretty =
-        cp === "psn" ? "PSN" : cp.charAt(0).toUpperCase() + cp.slice(1);
-      labelEl.innerHTML = `Viewing watchlist for: <strong>${escapeHtml(
-        pretty
-      )}</strong>`;
-    }
+  /* ------------------------------
+     Watchlist Storage Helpers
+  ------------------------------ */
+  function keyFor(p) {
+    return `${LS_WATCHLIST_PREFIX}${p}`;
   }
 
-  function getWatchlistKey(platform) {
-    return `${LS_WATCHLIST_PREFIX}${platform}`;
-  }
-
-  function getWatchlist(platform) {
+  function getList(p) {
     try {
-      const raw = localStorage.getItem(getWatchlistKey(platform));
-      return raw ? JSON.parse(raw) : [];
+      return JSON.parse(localStorage.getItem(keyFor(p))) || [];
     } catch {
       return [];
     }
   }
 
-  function saveWatchlist(platform, arr) {
+  function saveList(p, arr) {
     try {
-      localStorage.setItem(
-        getWatchlistKey(platform),
-        JSON.stringify(arr || [])
-      );
-    } catch {
-      // ignore quota
-    }
+      localStorage.setItem(keyFor(p), JSON.stringify(arr));
+    } catch {}
   }
 
-  function mapStatusToInfo(statusLabel) {
-    const t = (statusLabel || "").toLowerCase();
+  /* ------------------------------
+     Status Mapping
+  ------------------------------ */
+  function mapStatus(label) {
+    const t = (label || "").toLowerCase();
 
-    if (t.includes("perm")) {
-      return { code: "perm", text: "Permanently Banned" };
-    } else if (t.includes("temp")) {
-      return { code: "temp", text: "Temporarily Banned" };
-    } else if (t.includes("not")) {
-      return { code: "ok", text: "Not Banned" };
-    } else if (t.includes("error")) {
-      return { code: "unknown", text: "Error / Unknown" };
-    } else if (t.includes("player not found")) {
-      return { code: "unknown", text: "Player Not Found" };
-    }
-    return { code: "unknown", text: statusLabel || "Unknown" };
+    if (t.includes("perm")) return { code: "perm", text: "Permanently Banned" };
+    if (t.includes("temp")) return { code: "temp", text: "Temporarily Banned" };
+    if (t.includes("not")) return { code: "ok", text: "Not Banned" };
+    if (t.includes("player not found")) return { code: "unknown", text: "Player Not Found" };
+    if (t.includes("error")) return { code: "unknown", text: "Error / Unknown" };
+
+    return { code: "unknown", text: label || "Unknown" };
   }
 
-  function formatDateTime(ts) {
+  function formatDT(ts) {
     if (!ts) return "Never";
-    try {
-      const d = new Date(ts);
-      if (Number.isNaN(d.getTime())) return "Never";
-      return d.toLocaleString();
-    } catch {
-      return "Never";
-    }
+    const d = new Date(ts);
+    return isNaN(d) ? "Never" : d.toLocaleString();
   }
 
-  function applyInitialDarkMode() {
-    const body = document.body;
-    const toggle = document.getElementById("darkModeToggle");
-    const stored = localStorage.getItem(LS_DARK);
+  /* ------------------------------
+     Rename Modal
+  ------------------------------ */
+  const modal = document.getElementById("nameChangeModal");
+  const modalText = document.getElementById("nameChangeText");
+  const modalBtn = document.getElementById("closeNameChangeBtn");
 
-    const enabled = stored === "true";
-    if (enabled) {
-      body.classList.add("dark-mode");
-      if (toggle) toggle.checked = true;
-    }
+  modalBtn.addEventListener("click", () => {
+    modal.classList.add("hidden");
+  });
 
-    if (toggle) {
-      toggle.addEventListener("change", () => {
-        const on = !!toggle.checked;
-        if (on) {
-          body.classList.add("dark-mode");
-        } else {
-          body.classList.remove("dark-mode");
-        }
-        localStorage.setItem(LS_DARK, String(on));
-      });
-    }
+  function showNameChange(oldName, newName) {
+    modalText.innerHTML = `
+      Player <strong>${escapeHtml(oldName)}</strong> has changed their name to 
+      <strong>${escapeHtml(newName)}</strong>.
+    `;
+    modal.classList.remove("hidden");
   }
 
-  // ---------- DOM builders ----------
-  function buildWatchlistRow(entry, index) {
-    const platform = entry.platform || getPlatform();
-    const statusInfo = mapStatusToInfo(entry.statusLabel);
+  /* ------------------------------
+     Build Watchlist Row
+  ------------------------------ */
+  function buildRow(entry) {
+    const status = mapStatus(entry.statusLabel);
+
     const row = document.createElement("div");
     row.className = "watchlist-player";
 
-    const statusPill = document.createElement("span");
-    statusPill.className = `wl-status-pill wl-status-${statusInfo.code}`;
-    statusPill.textContent =
-      statusInfo.code === "perm"
-        ? "PERMA"
-        : statusInfo.code === "temp"
-        ? "TEMP"
-        : statusInfo.code === "ok"
-        ? "OK"
-        : "UNK";
+    const left = document.createElement("div");
+    left.className = "wl-left";
 
     const nameLine = document.createElement("div");
     nameLine.className = "wl-name-line";
+
     nameLine.innerHTML = `
-      <strong>${escapeHtml(entry.player || "unknown")}</strong>
-      <span class="wl-platform-badge">${escapeHtml(
-        platform === "psn"
+      <strong>${escapeHtml(entry.player)}</strong>
+      <span class="wl-platform-badge">${
+        entry.platform === "psn"
           ? "PSN"
-          : platform.charAt(0).toUpperCase() + platform.slice(1)
-      )}</span>
+          : entry.platform.charAt(0).toUpperCase() + entry.platform.slice(1)
+      }</span>
+      <span class="wl-status-pill wl-status-pill-${status.code}">
+        ${status.code.toUpperCase()}
+      </span>
     `;
-    nameLine.appendChild(statusPill);
 
     const meta = document.createElement("div");
     meta.className = "wl-meta";
     meta.innerHTML = `
       <span>Clan: <strong>${escapeHtml(entry.clan || "none")}</strong></span>
-      <span>Account ID: <strong>${escapeHtml(
-        entry.accountId || "unknown"
-      )}</strong></span>
-      <span>Status: ${escapeHtml(statusInfo.text)}</span>
-      <span>Last checked: ${escapeHtml(
-        formatDateTime(entry.lastChecked)
-      )}</span>
+      <span>ID: <strong>${escapeHtml(entry.accountId)}</strong></span>
+      <span>Status: ${escapeHtml(status.text)}</span>
+      <span>Last checked: ${escapeHtml(formatDT(entry.lastChecked))}</span>
     `;
 
-    const left = document.createElement("div");
-    left.className = "wl-left";
     left.append(nameLine, meta);
+
+    /* ------------------------------
+       Name History (NEW)
+    ------------------------------ */
+    if (Array.isArray(entry.previousNames) && entry.previousNames.length > 0) {
+      const hist = document.createElement("div");
+      hist.className = "wl-history";
+      hist.innerHTML =
+        `<span class="wl-history-label">Previously known as:</span> ` +
+        entry.previousNames
+          .map(n => `<span class="wl-history-name">${escapeHtml(n)}</span>`)
+          .join(", ");
+      left.append(hist);
+    }
 
     const actions = document.createElement("div");
     actions.className = "watchlist-buttons";
 
-    const recheckBtn = document.createElement("button");
-    recheckBtn.textContent = "Re-check";
-    recheckBtn.addEventListener("click", () => {
-      recheckSingle(entry.player);
-    });
+    const b1 = document.createElement("button");
+    b1.className = "wl-btn wl-btn-primary wl-btn-mini";
+    b1.textContent = "Re-check";
+    b1.onclick = () => recheckSingle(entry.player);
 
-    const removeBtn = document.createElement("button");
-    removeBtn.className = "secondary-btn";
-    removeBtn.textContent = "Remove";
-    removeBtn.addEventListener("click", () => {
-      removeFromWatchlist(index);
-    });
+    const b2 = document.createElement("button");
+    b2.className = "wl-btn wl-btn-ghost wl-btn-mini";
+    b2.textContent = "Remove";
+    b2.onclick = () => {
+      const p = getPlatform();
+      saveList(p, getList(p).filter(e => e.player !== entry.player));
+      renderList();
+    };
 
-    actions.append(recheckBtn, removeBtn);
+    actions.append(b1, b2);
+
     row.append(left, actions);
     return row;
   }
 
-  // ---------- Watchlist logic ----------
-  function getFilteredWatchlist() {
-    const platform = getPlatform();
-    const all = getWatchlist(platform);
-    const filterSelect = document.getElementById("statusFilter");
-    const filter = filterSelect ? filterSelect.value : "all";
-
-    if (filter === "all") return all;
-
-    return all.filter(entry => {
-      const code = mapStatusToInfo(entry.statusLabel).code;
-      return code === filter;
-    });
-  }
-
-  function renderWatchlist() {
+  /* ------------------------------
+     Render Watchlist
+  ------------------------------ */
+  function renderList() {
     const container = document.getElementById("watchlistContainer");
-    if (!container) return;
+    const platform = getPlatform();
+    const filter = document.getElementById("statusFilter").value;
 
-    const list = getFilteredWatchlist();
+    const all = getList(platform);
+    let list = all;
+
+    if (filter !== "all") {
+      list = all.filter(e => mapStatus(e.statusLabel).code === filter);
+    }
+
+    document.getElementById("wlCount").textContent = `${all.length} players`;
 
     container.innerHTML = "";
     if (!list.length) {
-      container.innerHTML =
-        "<p class='muted'>No players in your watchlist yet.</p>";
+      container.innerHTML = `<p class="wl-empty">No players in your watchlist yet.</p>`;
       return;
     }
 
-    list.forEach((entry, idx) => {
-      const row = buildWatchlistRow(entry, idx);
-      container.appendChild(row);
+    list.forEach(e => container.appendChild(buildRow(e)));
+  }
+
+  /* ------------------------------
+     Apply API Results (Name History + Rename Modal)
+  ------------------------------ */
+  function applyResultsToWatchlist(list, results) {
+    const now = Date.now();
+
+    // Create lookup: accountId → result
+    const mapR = new Map();
+    results.forEach(r => {
+      if (r.accountId) mapR.set(String(r.accountId), r);
     });
+
+    for (const entry of list) {
+      const result = mapR.get(String(entry.accountId));
+      if (!result) continue;
+
+      /* -------- NAME CHANGE DETECTED ------- */
+      if (result.player && result.player !== entry.player) {
+
+        // init history if missing
+        if (!Array.isArray(entry.previousNames)) {
+          entry.previousNames = [];
+        }
+
+        // add old name
+        if (!entry.previousNames.includes(entry.player)) {
+          entry.previousNames.push(entry.player);
+        }
+
+        // popup modal
+        showNameChange(entry.player, result.player);
+
+        // update actual player name
+        entry.player = result.player;
+      }
+
+      // Update other fields
+      entry.statusLabel =
+        result.banStatus || result.status || entry.statusLabel;
+      entry.clan = result.clan || entry.clan;
+      entry.lastChecked = now;
+    }
   }
 
-  function removeFromWatchlist(index) {
-    const platform = getPlatform();
-    const list = getWatchlist(platform);
-    if (index < 0 || index >= list.length) return;
-    list.splice(index, 1);
-    saveWatchlist(platform, list);
-    renderWatchlist();
-  }
-
+  /* ------------------------------
+     Recheck All
+  ------------------------------ */
   async function recheckAll() {
     const platform = getPlatform();
-    const list = getWatchlist(platform);
-    const container = document.getElementById("watchlistContainer");
+    const list = getList(platform);
 
     if (!list.length) return;
 
-    if (container) {
-      container.innerHTML =
-        "<p class='muted'>Re-checking all players...</p>";
-    }
+    const names = [...new Set(list.map(e => e.player))];
 
-    const names = list.map(e => e.player).filter(Boolean);
-    const uniqueNames = [...new Set(names)];
+    const container = document.querySelector(".wl-list-card");
+    container.classList.add("wl-container-scan");
+    setTimeout(() => container.classList.remove("wl-container-scan"), 650);
 
     try {
       const resp = await fetch(
-        `${BASE_URL}/check-ban-clan?platform=${encodeURIComponent(
-          platform
-        )}&player=${encodeURIComponent(uniqueNames.join(","))}`
+        `${BASE_URL}/check-ban-clan?platform=${platform}&player=${names.join(",")}`
       );
       const data = await resp.json();
 
-      if (!resp.ok || !Array.isArray(data.results)) {
-        if (container) {
-          container.innerHTML = `<p class='muted'>Refresh failed: ${escapeHtml(
-            data.error || `HTTP ${resp.status}`
-          )}</p>`;
-        }
-        return;
-      }
+      if (!resp.ok || !Array.isArray(data.results)) return;
 
-      const resultMap = new Map();
-      for (const r of data.results) {
-        if (!r || !r.player) continue;
-        resultMap.set(r.player.toLowerCase(), r);
-      }
-
-      const now = Date.now();
-
-      // Update each watchlist entry
-      for (const entry of list) {
-        const r = resultMap.get((entry.player || "").toLowerCase());
-        if (!r) continue;
-
-        entry.accountId = r.accountId || r.id || entry.accountId || "";
-        entry.clan = r.clan || entry.clan || "";
-        entry.statusLabel =
-          r.banStatus || r.status || r.statusText || entry.statusLabel || "";
-        entry.lastChecked = now;
-      }
-
-      saveWatchlist(platform, list);
-      renderWatchlist();
-    } catch (err) {
-      if (container) {
-        container.innerHTML = `<p class='muted'>Refresh failed: ${escapeHtml(
-          String(err)
-        )}</p>`;
-      }
-    }
+      applyResultsToWatchlist(list, data.results);
+      saveList(platform, list);
+      renderList();
+    } catch {}
   }
 
-  async function recheckSingle(playerName) {
-    if (!playerName) return;
-    const platform = getPlatform();
-    const platformList = getWatchlist(platform);
-
-    const container = document.getElementById("watchlistContainer");
-    if (container) {
-      // very quick feedback; list will re-render after
-      container.classList.add("fade-out");
-      setTimeout(() => container.classList.remove("fade-out"), 250);
-    }
+  /* ------------------------------
+     Recheck Single
+  ------------------------------ */
+  async function recheckSingle(name) {
+    const p = getPlatform();
+    const list = getList(p);
 
     try {
       const resp = await fetch(
-        `${BASE_URL}/check-ban-clan?platform=${encodeURIComponent(
-          platform
-        )}&player=${encodeURIComponent(playerName)}`
+        `${BASE_URL}/check-ban-clan?platform=${p}&player=${name}`
       );
       const data = await resp.json();
-      if (!resp.ok || !Array.isArray(data.results)) {
-        // just ignore on error
-        return;
-      }
 
-      const r = data.results[0];
-      if (!r) return;
+      if (!resp.ok || !Array.isArray(data.results)) return;
 
-      const now = Date.now();
-      const match = platformList.find(
-        e => (e.player || "").toLowerCase() === playerName.toLowerCase()
-      );
-      if (match) {
-        match.accountId = r.accountId || r.id || match.accountId || "";
-        match.clan = r.clan || match.clan || "";
-        match.statusLabel =
-          r.banStatus || r.status || r.statusText || match.statusLabel || "";
-        match.lastChecked = now;
-        saveWatchlist(platform, platformList);
-        renderWatchlist();
-      }
-    } catch (err) {
-      // swallow; the global refresh is still available
-      console.error("Re-check error:", err);
-    }
+      applyResultsToWatchlist(list, data.results);
+      saveList(p, list);
+      renderList();
+    } catch {}
   }
 
-  // ---------- Init ----------
+  /* ------------------------------
+     Platform UI Buttons
+  ------------------------------ */
+  function setupPlatformButtons() {
+    const row = document.getElementById("platformRowWatchlist");
+    const label = document.getElementById("activePlatformLabelWatchlist");
+    const buttons = [...row.querySelectorAll(".platform-btn")];
+
+    function updateUI() {
+      const p = getPlatform();
+      buttons.forEach(b => b.classList.toggle("active", b.dataset.platform === p));
+
+      const pretty = p === "psn" ? "PSN" : p.charAt(0).toUpperCase() + p.slice(1);
+      label.innerHTML = `Viewing watchlist for: <strong>${pretty}</strong>`;
+    }
+
+    updateUI();
+
+    buttons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        setPlatform(btn.dataset.platform);
+        updateUI();
+        renderList();
+      });
+    });
+  }
+
+  /* ------------------------------
+     Init
+  ------------------------------ */
   document.addEventListener("DOMContentLoaded", () => {
-    applyPlatformToButtons(
-      "platformRowWatchlist",
-      "activePlatformLabelWatchlist"
-    );
-    applyInitialDarkMode();
+    setupPlatformButtons();
 
-    const filterSelect = document.getElementById("statusFilter");
-    if (filterSelect) {
-      filterSelect.addEventListener("change", () => {
-        renderWatchlist();
-      });
+    document.getElementById("statusFilter").addEventListener("change", renderList);
+    document.getElementById("refreshAllBtn").addEventListener("click", recheckAll);
+
+    document.getElementById("clearWatchlistBtn").addEventListener("click", () => {
+      saveList(getPlatform(), []);
+      renderList();
+    });
+
+    // Dark Mode
+    const toggle = document.getElementById("darkModeToggle");
+    const stored = localStorage.getItem(LS_DARK) === "true";
+
+    if (stored) {
+      document.body.classList.add("dark-mode");
+      toggle.checked = true;
     }
 
-    const refreshAllBtn = document.getElementById("refreshAllBtn");
-    if (refreshAllBtn) {
-      refreshAllBtn.addEventListener("click", () => {
-        refreshAll();
-      });
-    }
+    toggle.addEventListener("change", () => {
+      const on = toggle.checked;
+      document.body.classList.toggle("dark-mode", on);
+      localStorage.setItem(LS_DARK, on);
+    });
 
-    const clearWatchlistBtn = document.getElementById("clearWatchlistBtn");
-    if (clearWatchlistBtn) {
-      clearWatchlistBtn.addEventListener("click", () => {
-        const platform = getPlatform();
-        saveWatchlist(platform, []);
-        renderWatchlist();
-      });
-    }
-
-    renderWatchlist();
+    renderList();
   });
+
 })();
