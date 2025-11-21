@@ -248,3 +248,39 @@ body.watchlist.dark-mode .wl-card,
 body.watchlist.dark-mode .wl-list-card {
   background: rgba(255,255,255,0.05);
 }
+/* ===== PLATFORM BUTTONS (Fix Icon Size + Layout) ===== */
+body.watchlist .platform-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+body.watchlist .platform-btn {
+  width: 46px;
+  height: 46px;
+  background: rgba(255,255,255,0.10);
+  border-radius: 12px;
+  border: 1px solid transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .2s ease;
+}
+
+body.watchlist .platform-btn .platform-icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* Active states */
+body.watchlist .platform-btn.active.steam { background: #1b2838; border-color:#1b2838; }
+body.watchlist .platform-btn.active.xbox { background: #107C10; border-color:#107C10; }
+body.watchlist .platform-btn.active.psn { background: #003791; border-color:#003791; }
+body.watchlist .platform-btn.active.kakao { background: #FEE500; border-color:#FEE500; color:#000; }
+
+/* Hover */
+body.watchlist .platform-btn:hover {
+  transform: scale(1.08);
+}
