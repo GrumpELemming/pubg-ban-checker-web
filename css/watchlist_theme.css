@@ -370,8 +370,15 @@ body.watchlist .wl-btn-mini {
 /* Platform row */
 body.watchlist .platform-row {
   display: grid;
-  grid-template-columns: repeat(4, minmax(62px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
   gap: 12px;
+  width: 100%;
+}
+
+@media (max-width: 520px) {
+  body.watchlist .platform-row {
+    grid-template-columns: repeat(auto-fit, minmax(88px, 1fr));
+  }
 }
 
 body.watchlist .platform-btn {
