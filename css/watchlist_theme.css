@@ -1,9 +1,9 @@
 /* ---------------------------------------------------------
-   PUBG Ban Checker — NEW WATCHLIST THEME (Final)
+   PUBG Ban Checker — NEW WATCHLIST THEME (Isolated + Final)
    --------------------------------------------------------- */
 
-/* GLOBAL RESETS FOR THIS PAGE ONLY */
-.wl-panel-layout {
+/* NAMESPACE EVERYTHING UNDER body.watchlist */
+body.watchlist .wl-panel-layout {
   display: flex;
   gap: 24px;
   width: min(1400px, 95vw);
@@ -12,7 +12,7 @@
 }
 
 /* LEFT PANEL */
-.wl-left-panel {
+body.watchlist .wl-left-panel {
   flex: 1;
   background: rgba(255,255,255,0.07);
   border-radius: 14px;
@@ -24,7 +24,7 @@
 }
 
 /* RIGHT PANEL */
-.wl-right-panel {
+body.watchlist .wl-right-panel {
   flex: 2;
   background: rgba(255,255,255,0.08);
   border-radius: 14px;
@@ -35,15 +35,15 @@
   flex-direction: column;
 }
 
-/* HEADER TITLE (not used inside HTML header but used inside panels) */
-.wl-header-title {
+/* TITLES */
+body.watchlist .wl-header-title {
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 14px;
   color: #ffdd59;
 }
 
-.wl-header-desc {
+body.watchlist .wl-header-desc {
   font-size: 0.95rem;
   color: #f0f0f0;
   opacity: .95;
@@ -51,8 +51,8 @@
   margin-bottom: 20px;
 }
 
-/* LEFT PANEL CARD */
-.wl-card {
+/* CARD */
+body.watchlist .wl-card {
   background: rgba(255,255,255,0.10);
   padding: 18px;
   border-radius: 12px;
@@ -60,21 +60,21 @@
   box-shadow: 0 2px 12px rgba(0,0,0,0.25);
 }
 
-.wl-card-title {
+body.watchlist .wl-card-title {
   font-size: 1.1rem;
   margin-bottom: 12px;
   color: #ffe680;
   opacity: .96;
 }
 
-.wl-card-sub {
+body.watchlist .wl-card-sub {
   margin-top: 12px;
   font-size: 0.9rem;
   color: #dcdcdc;
 }
 
 /* BUTTONS */
-.wl-btn {
+body.watchlist .wl-btn {
   border: none;
   padding: 10px 14px;
   border-radius: 10px;
@@ -84,32 +84,32 @@
   transition: 0.18s ease;
 }
 
-.wl-btn-primary {
+body.watchlist .wl-btn-primary {
   background: #ff4757;
   color: #fff;
 }
-.wl-btn-primary:hover {
+body.watchlist .wl-btn-primary:hover {
   transform: scale(1.04);
   box-shadow: 0 4px 12px rgba(0,0,0,0.25);
 }
 
-.wl-btn-ghost {
+body.watchlist .wl-btn-ghost {
   background: rgba(255,255,255,0.15);
   color: #fff;
 }
-.wl-btn-ghost:hover {
+body.watchlist .wl-btn-ghost:hover {
   background: rgba(255,255,255,0.22);
 }
 
-.wl-btn-mini {
+body.watchlist .wl-btn-mini {
   padding: 6px 10px !important;
   border-radius: 8px;
   font-size: 0.8rem;
   margin-left: 6px;
 }
 
-/* LIST WRAPPER (right panel) */
-.wl-list-card {
+/* RIGHT PANEL LIST */
+body.watchlist .wl-list-card {
   flex: 1;
   margin-top: 18px;
   padding: 18px;
@@ -119,17 +119,17 @@
   overflow-y: auto;
 }
 
-/* Count */
-.wl-count-label {
-  font-size: 0.95rem;
-  color: #f0f0f0;
-  margin-bottom: 12px;
-  opacity: 0.85;
+/* EMPTY */
+body.watchlist .wl-empty {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 1rem;
+  color: #ccc;
 }
 
-/* PLAYER ROW */
-.watchlist-player {
-  background: rgba(255,255,255,0.08);
+/* PLAYER ROW — OVERRIDES main.css */
+body.watchlist .watchlist-player {
+  background: rgba(255,255,255,0.08) !important;
   padding: 14px 16px;
   border-radius: 12px;
   margin-bottom: 10px;
@@ -139,6 +139,7 @@
   box-shadow: 0 2px 10px rgba(0,0,0,0.25);
   animation: wlFadeUp 0.4s ease forwards;
   opacity: 0;
+  transform: none !important;
 }
 
 @keyframes wlFadeUp {
@@ -147,13 +148,13 @@
 }
 
 /* NAME LINE */
-.wl-name-line {
+body.watchlist .wl-name-line {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.wl-platform-badge {
+body.watchlist .wl-platform-badge {
   background: rgba(255,255,255,0.18);
   padding: 3px 8px;
   border-radius: 8px;
@@ -163,7 +164,7 @@
 }
 
 /* META TEXT */
-.wl-meta {
+body.watchlist .wl-meta {
   font-size: 0.85rem;
   margin-top: 6px;
   color: #dcdcdc;
@@ -173,22 +174,22 @@
 }
 
 /* NAME HISTORY */
-.wl-history {
+body.watchlist .wl-history {
   margin-top: 8px;
   font-size: 0.85rem;
   opacity: .9;
   color: #ffe680;
 }
-.wl-history-label {
+body.watchlist .wl-history-label {
   font-weight: 600;
 }
-.wl-history-name {
+body.watchlist .wl-history-name {
   color: #fff;
   font-weight: 500;
 }
 
 /* STATUS PILLS */
-.wl-status-pill {
+body.watchlist .wl-status-pill {
   padding: 3px 10px;
   border-radius: 14px;
   font-size: 0.75rem;
@@ -197,30 +198,13 @@
   text-transform: uppercase;
 }
 
-.wl-status-pill-ok {
-  background: #28a745;
-}
-.wl-status-pill-temp {
-  background: #ffc107;
-  color: #111;
-}
-.wl-status-pill-perm {
-  background: #dc3545;
-}
-.wl-status-pill-unknown {
-  background: #6c757d;
-}
+body.watchlist .wl-status-pill-ok { background: #28a745; }
+body.watchlist .wl-status-pill-temp { background: #ffc107; color: #111; }
+body.watchlist .wl-status-pill-perm { background: #dc3545; }
+body.watchlist .wl-status-pill-unknown { background: #6c757d; }
 
-/* EMPTY */
-.wl-empty {
-  text-align: center;
-  margin-top: 30px;
-  font-size: 1rem;
-  color: #ccc;
-}
-
-/* SCAN FLASH (refresh all) */
-.wl-container-scan {
+/* REFRESH FLASH */
+body.watchlist .wl-container-scan {
   animation: scanFlash 0.45s;
 }
 @keyframes scanFlash {
@@ -229,11 +213,9 @@
 }
 
 /* MODAL */
-.wl-modal.hidden {
-  display: none;
-}
+body.watchlist .wl-modal.hidden { display: none; }
 
-.wl-modal {
+body.watchlist .wl-modal {
   position: fixed;
   top: 0; left: 0;
   width: 100vw; height: 100vh;
@@ -245,7 +227,7 @@
   z-index: 9999;
 }
 
-.wl-modal-content {
+body.watchlist .wl-modal-content {
   background: #1e1e2f;
   padding: 24px 30px;
   border-radius: 14px;
@@ -254,22 +236,21 @@
   text-align: center;
 }
 
-.wl-modal-content h2 {
+body.watchlist .wl-modal-content h2 {
   margin: 0 0 12px;
   color: #ffdd59;
 }
 
-#nameChangeText {
+body.watchlist #nameChangeText {
   margin: 0 0 20px;
   color: #eee;
   font-size: 0.95rem;
 }
 
 /* DARK MODE SUPPORT */
-body.dark-mode .wl-left-panel,
-body.dark-mode .wl-right-panel,
-body.dark-mode .wl-card,
-body.dark-mode .wl-list-card {
+body.watchlist.dark-mode .wl-left-panel,
+body.watchlist.dark-mode .wl-right-panel,
+body.watchlist.dark-mode .wl-card,
+body.watchlist.dark-mode .wl-list-card {
   background: rgba(255,255,255,0.05);
 }
-
