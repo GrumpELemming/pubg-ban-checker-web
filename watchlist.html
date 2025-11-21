@@ -16,92 +16,126 @@
 
 <body class="watchlist">
 
-  <!-- TOP NAV -->
-  <nav class="nav-links" style="margin-top: 25px;">
-    <a href="index.html"><button class="wl-btn wl-btn-ghost">Ban Checker</button></a>
-    <a href="updates.html"><button class="wl-btn wl-btn-ghost">About</button></a>
-    <a href="games.html"><button class="wl-btn wl-btn-ghost">Games</button></a>
-  </nav>
+  <div class="wl-backdrop" aria-hidden="true">
+    <div class="wl-backdrop-grid"></div>
+    <div class="wl-backdrop-grid wl-backdrop-grid-alt"></div>
+  </div>
+  <div class="wl-scanlines" aria-hidden="true"></div>
 
-  <!-- MAIN TWO-PANEL LAYOUT -->
-  <div class="wl-panel-layout">
+  <header class="wl-topbar">
+    <div class="wl-topbar-left">
+      <div class="wl-logo-lockup">
+        <span class="wl-logo-pill">OPS</span>
+        <div>
+          <strong>Watchlist Command</strong>
+          <small>Live ban-monitor console</small>
+        </div>
+      </div>
+      <div class="wl-system-status">
+        <span class="wl-sys-dot"></span>
+        Systems nominal
+      </div>
+    </div>
 
-    <!-- LEFT PANEL -->
-    <div class="wl-left-panel">
+    <nav class="wl-nav-links">
+      <a href="index.html">Ban Checker</a>
+      <a href="updates.html">About</a>
+      <a href="games.html">Games</a>
+    </nav>
+  </header>
 
-      <div class="wl-card">
-        <div class="wl-card-title">Platform</div>
+  <section class="wl-hud-band">
+    <div class="wl-hud-card">
+      <span class="wl-hud-label">Active platform</span>
+      <p id="activePlatformLabelWatchlist" class="wl-hud-readout">
+        Viewing watchlist for: <strong>Steam</strong>
+      </p>
+    </div>
+    <div class="wl-hud-card">
+      <span class="wl-hud-label">System status</span>
+      <p class="wl-hud-readout">Telemetry link stable</p>
+    </div>
+    <div class="wl-hud-card">
+      <span class="wl-hud-label">Last sweep</span>
+      <p class="wl-hud-readout">Awaiting refresh</p>
+    </div>
+  </section>
 
-        <div id="platformRowWatchlist" class="platform-row" role="group">
+  <main class="wl-console">
+    <section class="wl-ops-column">
+
+      <article class="wl-module">
+        <header>
+          <h2>Platform matrix</h2>
+          <span>Select the target network</span>
+        </header>
+
+        <div id="platformRowWatchlist" class="platform-row" role="group" aria-label="Platform selection buttons">
           <button class="platform-btn steam" data-platform="steam" data-tooltip="Steam">
-            <img src="img/steam.svg" class="platform-icon" />
+            <img src="img/steam.svg" class="platform-icon" alt="Steam" />
           </button>
           <button class="platform-btn xbox" data-platform="xbox" data-tooltip="Xbox">
-            <img src="img/xbox.svg" class="platform-icon" />
+            <img src="img/xbox.svg" class="platform-icon" alt="Xbox" />
           </button>
           <button class="platform-btn psn" data-platform="psn" data-tooltip="PSN">
-            <img src="img/psn.svg" class="platform-icon" />
+            <img src="img/psn.svg" class="platform-icon" alt="PSN" />
           </button>
           <button class="platform-btn kakao" data-platform="kakao" data-tooltip="Kakao">
-            <img src="img/kakao.svg" class="platform-icon" />
+            <img src="img/kakao.svg" class="platform-icon" alt="Kakao" />
           </button>
         </div>
 
-        <p id="activePlatformLabelWatchlist" class="active-platform-label" style="margin-top: 12px;">
-          Viewing watchlist for: <strong>Steam</strong>
-        </p>
-
         <input type="hidden" id="platformSelect" value="steam" />
-      </div>
+      </article>
 
-      <div class="wl-card">
-        <div class="wl-card-title">Controls</div>
+      <article class="wl-module">
+        <header>
+          <h2>Control stack</h2>
+          <span>Run sweeps &amp; tune filters</span>
+        </header>
 
-        <button id="refreshAllBtn" class="wl-btn wl-btn-primary" style="width:100%; margin-bottom:10px;">
-          Refresh All
-        </button>
+        <div class="wl-module-actions">
+          <button id="refreshAllBtn" class="wl-btn wl-btn-primary">Refresh All</button>
+          <button id="clearWatchlistBtn" class="wl-btn wl-btn-ghost">Clear All</button>
+        </div>
 
-        <button id="clearWatchlistBtn" class="wl-btn wl-btn-ghost" style="width:100%;">
-          Clear All
-        </button>
-
-        <div class="wl-card-sub">
+        <div class="wl-module-fields">
           <label>
-            Status Filter:
-            <select id="statusFilter" style="margin-left:10px;">
-              <option value="all">All</option>
+            Status filter
+            <select id="statusFilter">
+              <option value="all">All Signals</option>
               <option value="perm">Permanent Bans</option>
               <option value="temp">Temporary Bans</option>
               <option value="ok">Not Banned</option>
               <option value="unknown">Unknown / Error</option>
             </select>
           </label>
-        </div>
 
-        <div class="wl-card-sub" style="margin-top:16px;">
-          <label><input type="checkbox" id="darkModeToggle" /> Dark Mode</label>
+          <label class="wl-toggle">
+            <input type="checkbox" id="darkModeToggle" />
+            <span>Dark mode</span>
+          </label>
         </div>
+      </article>
+
+    </section>
+
+    <section class="wl-feed-column">
+      <div class="wl-feed-header">
+        <h1>Your Watchlist Feed</h1>
+        <p>
+          Monitor ban states across every platform like a command desk.
+          Use “Re-check” on any pilot when you need a fresh scan.
+        </p>
       </div>
 
-    </div>
-
-    <!-- RIGHT PANEL -->
-    <div class="wl-right-panel">
-      <h1 class="wl-header-title">Your Watchlist</h1>
-      <p class="wl-header-desc">
-        Track the ban status of PUBG players across platforms.  
-        Click “Re-check” to update an individual player.
-      </p>
-
-      <div class="wl-list-card" id="watchlistContainer">
+      <div class="wl-feed-live wl-list-card" id="watchlistContainer">
         <p class="wl-empty">No players in your watchlist yet.</p>
       </div>
-    </div>
+    </section>
+  </main>
 
-  </div>
-
-  <!-- NAME CHANGE MODAL -->
-  <div id="nameChangeModal" class="wl-modal hidden">
+  <div id="nameChangeModal" class="wl-modal hidden" role="dialog" aria-modal="true" aria-labelledby="nameChangeText">
     <div class="wl-modal-content">
       <h2>Name Change Detected</h2>
       <p id="nameChangeText">OldName → NewName</p>
