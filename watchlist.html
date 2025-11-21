@@ -4,34 +4,43 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PUBG Ban Checker – Watchlist</title>
+
+  <!-- Main site stylesheet -->
   <link rel="stylesheet" href="css/main.css" />
+
+  <!-- NEW watchlist-specific stylesheet -->
+  <link rel="stylesheet" href="css/watchlist_theme.css" />
+
   <script defer src="js/watchlist.js"></script>
 </head>
+
 <body>
+
+  <!-- Header -->
   <h1>Your Watchlist</h1>
 
-  <nav class="nav-links">
-    <a href="index.html"><button>Back to Checker</button></a>
-    <a href="updates.html"><button>About</button></a>
+  <!-- Navigation -->
+  <nav class="nav-links wl-nav">
+    <a href="index.html" class="wl-nav-btn">Ban Checker</a>
+    <a href="updates.html" class="wl-nav-btn">About</a>
+    <a href="games.html" class="wl-nav-btn">Games</a>
   </nav>
 
-  <!-- =======================================================
-       Platform Selection (Watchlist Page - mirrored style)
-       ======================================================= -->
-  <section class="container platform-box">
+  <!-- Platform Selection -->
+  <section class="wl-platform-container">
     <h2>Select Platform</h2>
 
     <div id="platformRowWatchlist" class="platform-row" role="group">
-      <button class="platform-btn steam" data-platform="steam" data-tooltip="Steam">
+      <button class="platform-btn steam" data-platform="steam">
         <img src="img/steam.svg" alt="Steam" class="platform-icon" />
       </button>
-      <button class="platform-btn xbox" data-platform="xbox" data-tooltip="Xbox">
+      <button class="platform-btn xbox" data-platform="xbox">
         <img src="img/xbox.svg" alt="Xbox" class="platform-icon" />
       </button>
-      <button class="platform-btn psn" data-platform="psn" data-tooltip="PlayStation Network">
+      <button class="platform-btn psn" data-platform="psn">
         <img src="img/psn.svg" alt="PSN" class="platform-icon" />
       </button>
-      <button class="platform-btn kakao" data-platform="kakao" data-tooltip="Kakao">
+      <button class="platform-btn kakao" data-platform="kakao">
         <img src="img/kakao.svg" alt="Kakao" class="platform-icon" />
       </button>
     </div>
@@ -40,36 +49,67 @@
     <p id="activePlatformLabelWatchlist" class="active-platform-label">
       Viewing watchlist for: <strong>Steam</strong>
     </p>
- <!-- Active platform label -->
-    <p id="activePlatformLabelWatchlist" class="active-platform-label">
-       <strong>refresh all button currently not working - please refresh one at a time</strong>
-    </p>
+
     <input type="hidden" id="platformSelect" value="steam" />
   </section>
 
-  <!-- Watchlist Section -->
-  <section class="container">
-    <div class="control-buttons">
-      <button id="refreshAllBtn">🔄 Refresh All</button>
-      <button id="clearWatchlistBtn" class="secondary-btn">🗑 Clear All</button>
+  <!-- Main Two-Panel Layout -->
+  <section class="wl-panel-layout">
 
-      <label>
-        Status:
-        <select id="statusFilter">
-          <option value="all">All</option>
-          <option value="perm">Perm banned</option>
-          <option value="temp">Temp banned</option>
-          <option value="ok">Not banned</option>
-          <option value="unknown">Unknown / Error</option>
-        </select>
-      </label>
+    <!-- LEFT PANEL -->
+    <div class="wl-left-panel">
 
-      <label><input type="checkbox" id="darkModeToggle" /> Dark Mode</label>
+      <div class="wl-card">
+        <h3 class="wl-card-title">Tools</h3>
+
+        <div class="wl-card-buttons">
+          <button id="refreshAllBtn" class="wl-btn wl-btn-primary">🔄 Refresh All</button>
+          <button id="clearWatchlistBtn" class="wl-btn wl-btn-ghost">🗑 Clear All</button>
+        </div>
+
+        <div class="wl-card-sub">
+          <label>Status filter:</label>
+          <select id="statusFilter">
+            <option value="all">All</option>
+            <option value="perm">Permanent Bans</option>
+            <option value="temp">Temporary Bans</option>
+            <option value="ok">Not Banned</option>
+            <option value="unknown">Unknown / Error</option>
+          </select>
+        </div>
+
+        <p class="wl-count">Total in watchlist: <strong id="wlCount">0 players</strong></p>
+      </div>
+
     </div>
 
-    <div id="watchlistContainer" class="watchlist-container">
-      <p class="muted">No players in your watchlist yet.</p>
+    <!-- RIGHT PANEL -->
+    <div class="wl-right-panel">
+      <div class="wl-list-card">
+        <h3 class="wl-card-title">Watchlist</h3>
+
+        <div id="watchlistContainer" class="watchlist-container">
+          <p class="wl-empty">No players in your watchlist yet.</p>
+        </div>
+
+      </div>
     </div>
+
   </section>
+
+  <!-- NAME CHANGE MODAL -->
+  <div id="nameChangeModal" class="wl-modal hidden">
+    <div class="wl-modal-content">
+      <h3>Name Changed</h3>
+      <p id="nameChangeText">Player name changed.</p>
+      <button id="closeNameChangeBtn" class="wl-btn wl-btn-primary">OK</button>
+    </div>
+  </div>
+
+  <!-- Dark Mode Toggle -->
+  <label class="wl-dark-toggle">
+    <input type="checkbox" id="darkModeToggle"> Dark Mode
+  </label>
+
 </body>
 </html>
