@@ -327,7 +327,7 @@ button.added-btn {
 }
 
 /* Perm banned */
-.player-row.perm-banned .ban-label { color: #ff4d4d; }
+.player-row.perm-banned .ban-label { color: #000; }
 
 /* Unknown */
 .player-row.unknown .ban-label { color: #ccc; }
