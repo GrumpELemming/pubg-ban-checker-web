@@ -345,3 +345,115 @@ body.dark-mode {
 body.dark-mode .container {
   background: rgba(255,255,255,0.08);
 }
+/* ============================================================
+   WATCHLIST — SCANNING READOUT CARDS (Style B: Full Data HUD)
+   ============================================================ */
+
+.scan-card {
+  position: relative;
+  background: rgba(255,255,255,0.12);
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.35);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transform-origin: center;
+  animation: fadeUpRow 0.5s forwards;
+  backdrop-filter: blur(4px);
+}
+
+.scan-card:hover {
+  transform: scale(1.015);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.4);
+}
+
+/* Sweep scan bar */
+.scanline {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 85px;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(90deg,
+    rgba(255,221,89,0) 0%,
+    rgba(255,221,89,0.35) 40%,
+    rgba(255,221,89,0.55) 60%,
+    rgba(255,221,89,0) 100%
+  );
+  filter: blur(4px);
+}
+
+.scanline.active {
+  opacity: 1;
+  animation: scanMove 3.8s linear forwards;
+}
+
+@keyframes scanMove {
+  0%   { left: -120px; }
+  100% { left: calc(100% + 120px); }
+}
+
+/* Top row — Name + Platform */
+.scan-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.scan-name {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--accent);
+}
+
+.scan-platform {
+  padding: 4px 10px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.12);
+  font-weight: 600;
+}
+
+/* HUD grid (left stats + right stats) */
+.scan-grid {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.scan-left, .scan-right {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 45%;
+}
+
+.scan-label {
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.scan-value {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Status pill re-used */
+.scan-status-pill {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* Re-check + Remove buttons */
+.scan-actions {
+  display: flex;
+  gap: 12px;
+  padding-top: 6px;
+}
