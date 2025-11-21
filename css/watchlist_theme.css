@@ -127,19 +127,7 @@ body.watchlist .wl-empty {
   color: #ccc;
 }
 
-/* ------------------------------------------
-   WATCHLIST ROW — SPECIFICITY BOOST
-   ------------------------------------------ */
-
-/*
-This is the critical override.
-main.css uses:
-  .player-row, .watchlist-player {…}
-
-So we beat it with:
-  body.watchlist div.watchlist-player
-*/
-
+/* WATCHLIST ROW — Critical override */
 body.watchlist div.watchlist-player {
   background: rgba(255,255,255,0.08);
   padding: 14px 16px;
@@ -264,7 +252,7 @@ body.watchlist #nameChangeText {
   font-size: 0.95rem;
 }
 
-/* DARK MODE OVERRIDES */
+/* DARK MODE */
 body.watchlist.dark-mode .wl-left-panel,
 body.watchlist.dark-mode .wl-right-panel,
 body.watchlist.dark-mode .wl-card,
