@@ -1,8 +1,8 @@
 /* ---------------------------------------------------------
-   PUBG Ban Checker — NEW WATCHLIST THEME (Isolated + Final)
+   PUBG Ban Checker — NEW WATCHLIST THEME (Specificity Strong)
    --------------------------------------------------------- */
 
-/* NAMESPACE EVERYTHING UNDER body.watchlist */
+/* GLOBAL: Namespace all rules under body.watchlist */
 body.watchlist .wl-panel-layout {
   display: flex;
   gap: 24px;
@@ -35,7 +35,7 @@ body.watchlist .wl-right-panel {
   flex-direction: column;
 }
 
-/* TITLES */
+/* HEADERS */
 body.watchlist .wl-header-title {
   font-size: 2rem;
   font-weight: 700;
@@ -51,7 +51,7 @@ body.watchlist .wl-header-desc {
   margin-bottom: 20px;
 }
 
-/* CARD */
+/* CARDS */
 body.watchlist .wl-card {
   background: rgba(255,255,255,0.10);
   padding: 18px;
@@ -108,7 +108,7 @@ body.watchlist .wl-btn-mini {
   margin-left: 6px;
 }
 
-/* RIGHT PANEL LIST */
+/* RIGHT PANEL LIST WRAPPER */
 body.watchlist .wl-list-card {
   flex: 1;
   margin-top: 18px;
@@ -119,7 +119,7 @@ body.watchlist .wl-list-card {
   overflow-y: auto;
 }
 
-/* EMPTY */
+/* EMPTY STATE */
 body.watchlist .wl-empty {
   text-align: center;
   margin-top: 30px;
@@ -127,9 +127,21 @@ body.watchlist .wl-empty {
   color: #ccc;
 }
 
-/* PLAYER ROW — OVERRIDES main.css */
-body.watchlist .watchlist-player {
-  background: rgba(255,255,255,0.08) !important;
+/* ------------------------------------------
+   WATCHLIST ROW — SPECIFICITY BOOST
+   ------------------------------------------ */
+
+/*
+This is the critical override.
+main.css uses:
+  .player-row, .watchlist-player {…}
+
+So we beat it with:
+  body.watchlist div.watchlist-player
+*/
+
+body.watchlist div.watchlist-player {
+  background: rgba(255,255,255,0.08);
   padding: 14px 16px;
   border-radius: 12px;
   margin-bottom: 10px;
@@ -163,7 +175,7 @@ body.watchlist .wl-platform-badge {
   color: #fff;
 }
 
-/* META TEXT */
+/* META */
 body.watchlist .wl-meta {
   font-size: 0.85rem;
   margin-top: 6px;
@@ -180,9 +192,11 @@ body.watchlist .wl-history {
   opacity: .9;
   color: #ffe680;
 }
+
 body.watchlist .wl-history-label {
   font-weight: 600;
 }
+
 body.watchlist .wl-history-name {
   color: #fff;
   font-weight: 500;
@@ -203,17 +217,20 @@ body.watchlist .wl-status-pill-temp { background: #ffc107; color: #111; }
 body.watchlist .wl-status-pill-perm { background: #dc3545; }
 body.watchlist .wl-status-pill-unknown { background: #6c757d; }
 
-/* REFRESH FLASH */
+/* REFRESH "SCAN" */
 body.watchlist .wl-container-scan {
   animation: scanFlash 0.45s;
 }
+
 @keyframes scanFlash {
   0% { background: rgba(255,255,255,0.16); }
   100% { background: rgba(255,255,255,0.10); }
 }
 
 /* MODAL */
-body.watchlist .wl-modal.hidden { display: none; }
+body.watchlist .wl-modal.hidden {
+  display: none;
+}
 
 body.watchlist .wl-modal {
   position: fixed;
@@ -247,7 +264,7 @@ body.watchlist #nameChangeText {
   font-size: 0.95rem;
 }
 
-/* DARK MODE SUPPORT */
+/* DARK MODE OVERRIDES */
 body.watchlist.dark-mode .wl-left-panel,
 body.watchlist.dark-mode .wl-right-panel,
 body.watchlist.dark-mode .wl-card,
