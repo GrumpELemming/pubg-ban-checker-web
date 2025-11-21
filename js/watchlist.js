@@ -55,96 +55,19 @@
     }
   }
 
-  function saveWatchlist(platform, arr) {
-    try {
-      localStorage.setItem(getWatchlistKey(platform), JSON.stringify(arr));
-    } catch {}
+  function saveWatchlist(platform, list);
+
+// Update only this row
+const container = document.getElementById("watchlistContainer");
+if (container) {
+  const row = container.querySelector(`.watchlist-player[data-name="${match.player.toLowerCase()}"]`);
+  if (row) {
+    const filtered = getFilteredWatchlist();
+    const idx = filtered.findIndex(e => e.player.toLowerCase() === match.player.toLowerCase());
+    const newRow = buildWatchlistRow(match, idx);
+    row.replaceWith(newRow);
   }
-
-  function formatDateTime(ts) {
-    if (!ts) return "Never";
-    try {
-      const d = new Date(ts);
-      return d.toLocaleString();
-    } catch {
-      return "Never";
-    }
-  }
-
-  function mapStatusToInfo(statusLabel) {
-    const t = (statusLabel || "").toLowerCase();
-
-    if (t.includes("perm")) return { code: "perm", text: "Permanently Banned" };
-    if (t.includes("temp")) return { code: "temp", text: "Temporarily Banned" };
-    if (t.includes("not")) return { code: "ok", text: "Not Banned" };
-    if (t.includes("player not found")) return { code: "unknown", text: "Player Not Found" };
-    if (t.includes("error")) return { code: "unknown", text: "Error / Unknown" };
-    return { code: "unknown", text: statusLabel || "Unknown" };
-  }
-
-  // --------------------------------------------------------------------
-  // Dark mode
-  // --------------------------------------------------------------------
-
-  function applyInitialDarkMode() {
-    const body = document.body;
-    const toggle = document.getElementById("darkModeToggle");
-    const stored = localStorage.getItem(LS_DARK);
-
-    const on = stored === "true";
-    if (on) {
-      body.classList.add("dark-mode");
-      if (toggle) toggle.checked = true;
-    }
-
-    if (toggle) {
-      toggle.addEventListener("change", () => {
-        const enabled = toggle.checked;
-        body.classList.toggle("dark-mode", enabled);
-        localStorage.setItem(LS_DARK, String(enabled));
-      });
-    }
-  }
-
-  // --------------------------------------------------------------------
-  // Platform selection
-  // --------------------------------------------------------------------
-
-  function applyPlatformToButtons(rowId, labelId) {
-    const row = document.getElementById(rowId);
-    if (!row) return;
-
-    const labelEl = document.getElementById(labelId);
-
-    const buttons = [...row.querySelectorAll(".platform-btn")];
-    const current = getPlatform();
-
-    buttons.forEach(btn => {
-      btn.classList.toggle("active", btn.dataset.platform === current);
-
-      btn.addEventListener("click", () => {
-        const p = btn.dataset.platform;
-        if (!p) return;
-
-        setPlatform(p);
-        buttons.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-
-        if (labelEl) {
-          const pretty = p === "psn" ? "PSN" : p.charAt(0).toUpperCase() + p.slice(1);
-          labelEl.innerHTML = `Viewing watchlist for: <strong>${escapeHtml(pretty)}</strong>`;
-        }
-
-        // Replace only this row to avoid full flash
-      const container = document.getElementById("watchlistContainer");
-      if (container) {
-        const rows = Array.from(container.getElementsByClassName("watchlist-player"));
-        const idx = list.findIndex(e => e.player.toLowerCase() === match.player.toLowerCase());
-        if (rows[idx]) {
-          const newRow = buildWatchlistRow(match, idx);
-          rows[idx].replaceWith(newRow);
-        }
-      }
+}
 
       });
     });
@@ -164,6 +87,7 @@
 
     const row = document.createElement("div");
     row.className = "watchlist-player";
+    row.dataset.name = entry.player.toLowerCase();
 
     // NAME LINE
     const nameLine = document.createElement("div");
@@ -279,16 +203,18 @@
     const list = getWatchlist(platform);
     list.splice(index, 1);
     saveWatchlist(platform, list);
-    // Replace only this row to avoid full flash
-      const container = document.getElementById("watchlistContainer");
-      if (container) {
-        const rows = Array.from(container.getElementsByClassName("watchlist-player"));
-        const idx = list.findIndex(e => e.player.toLowerCase() === match.player.toLowerCase());
-        if (rows[idx]) {
-          const newRow = buildWatchlistRow(match, idx);
-          rows[idx].replaceWith(newRow);
-        }
-      }
+
+// Update only this row
+const container = document.getElementById("watchlistContainer");
+if (container) {
+  const row = container.querySelector(`.watchlist-player[data-name="${match.player.toLowerCase()}"]`);
+  if (row) {
+    const filtered = getFilteredWatchlist();
+    const idx = filtered.findIndex(e => e.player.toLowerCase() === match.player.toLowerCase());
+    const newRow = buildWatchlistRow(match, idx);
+    row.replaceWith(newRow);
+  }
+}
 
   }
 
@@ -356,16 +282,18 @@
       match.lastChecked = Date.now();
 
       saveWatchlist(platform, list);
-      // Replace only this row to avoid full flash
-      const container = document.getElementById("watchlistContainer");
-      if (container) {
-        const rows = Array.from(container.getElementsByClassName("watchlist-player"));
-        const idx = list.findIndex(e => e.player.toLowerCase() === match.player.toLowerCase());
-        if (rows[idx]) {
-          const newRow = buildWatchlistRow(match, idx);
-          rows[idx].replaceWith(newRow);
-        }
-      }
+
+// Update only this row
+const container = document.getElementById("watchlistContainer");
+if (container) {
+  const row = container.querySelector(`.watchlist-player[data-name="${match.player.toLowerCase()}"]`);
+  if (row) {
+    const filtered = getFilteredWatchlist();
+    const idx = filtered.findIndex(e => e.player.toLowerCase() === match.player.toLowerCase());
+    const newRow = buildWatchlistRow(match, idx);
+    row.replaceWith(newRow);
+  }
+}
 
 
     } catch (err) {
@@ -408,32 +336,24 @@
     if (clearBtn) {
       clearBtn.addEventListener("click", () => {
         const p = getPlatform();
-        saveWatchlist(p, []);
-        // Replace only this row to avoid full flash
-      const container = document.getElementById("watchlistContainer");
-      if (container) {
-        const rows = Array.from(container.getElementsByClassName("watchlist-player"));
-        const idx = list.findIndex(e => e.player.toLowerCase() === match.player.toLowerCase());
-        if (rows[idx]) {
-          const newRow = buildWatchlistRow(match, idx);
-          rows[idx].replaceWith(newRow);
-        }
-      }
+        saveWatchlist(platform, list);
+
+// Update only this row
+const container = document.getElementById("watchlistContainer");
+if (container) {
+  const row = container.querySelector(`.watchlist-player[data-name="${match.player.toLowerCase()}"]`);
+  if (row) {
+    const filtered = getFilteredWatchlist();
+    const idx = filtered.findIndex(e => e.player.toLowerCase() === match.player.toLowerCase());
+    const newRow = buildWatchlistRow(match, idx);
+    row.replaceWith(newRow);
+  }
+}
 
       });
     }
 
-    // Replace only this row to avoid full flash
-      const container = document.getElementById("watchlistContainer");
-      if (container) {
-        const rows = Array.from(container.getElementsByClassName("watchlist-player"));
-        const idx = list.findIndex(e => e.player.toLowerCase() === match.player.toLowerCase());
-        if (rows[idx]) {
-          const newRow = buildWatchlistRow(match, idx);
-          rows[idx].replaceWith(newRow);
-        }
-      }
-
+    renderWatchlist();
   });
 
 })();
