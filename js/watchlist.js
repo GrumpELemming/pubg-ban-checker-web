@@ -30,16 +30,25 @@
 
   function getPlatform() {
     const hidden = document.getElementById("platformSelect");
-    if (hidden && hidden.value) return hidden.value;
 
-    const saved = localStorage.getItem(LS_PLATFORM);
-    return saved || "steam";
+    try {
+      const saved = localStorage.getItem(LS_PLATFORM);
+      if (saved) {
+        if (hidden && hidden.value !== saved) hidden.value = saved;
+        return saved;
+      }
+    } catch {}
+
+    if (hidden && hidden.value) return hidden.value;
+    return "steam";
   }
 
   function setPlatform(platform) {
-    localStorage.setItem(LS_PLATFORM, platform);
     const hidden = document.getElementById("platformSelect");
     if (hidden) hidden.value = platform;
+    try {
+      localStorage.setItem(LS_PLATFORM, platform);
+    } catch {}
   }
 
   function getWatchlistKey(platform) {
@@ -49,7 +58,33 @@
   function getWatchlist(platform) {
     try {
       const raw = localStorage.getItem(getWatchlistKey(platform));
-      return raw ? JSON.parse(raw) : [];
+      const parsed = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(parsed)) return [];
+
+      let needsSave = false;
+      const cleaned = parsed
+        .map(item => {
+          if (!item || typeof item !== "object") {
+            needsSave = true;
+            return null;
+          }
+          if (!item.platform) {
+            item.platform = platform;
+            needsSave = true;
+          }
+          if (typeof item.statusLabel !== "string") {
+            item.statusLabel = "";
+            needsSave = true;
+          }
+          return item;
+        })
+        .filter(Boolean);
+
+      if (needsSave) {
+        saveWatchlist(platform, cleaned);
+      }
+
+      return cleaned;
     } catch {
       return [];
     }
