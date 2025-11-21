@@ -8,13 +8,13 @@
   <!-- Main site styles -->
   <link rel="stylesheet" href="css/main.css" />
 
-  <!-- NEW watchlist theme styles -->
-  <link rel="stylesheet" href="css/watchlist_theme.css?v=20250209">
-
+  <!-- NEW isolated watchlist theme -->
+  <link rel="stylesheet" href="css/watchlist_theme.css?v=20250210">
+  
   <script defer src="js/watchlist.js"></script>
 </head>
 
-<body>
+<body class="watchlist">
 
   <!-- TOP NAV -->
   <nav class="nav-links" style="margin-top: 25px;">
@@ -34,21 +34,21 @@
 
         <div id="platformRowWatchlist" class="platform-row" role="group">
           <button class="platform-btn steam" data-platform="steam" data-tooltip="Steam">
-            <img src="img/steam.svg" alt="Steam" class="platform-icon" />
+            <img src="img/steam.svg" class="platform-icon" />
           </button>
           <button class="platform-btn xbox" data-platform="xbox" data-tooltip="Xbox">
-            <img src="img/xbox.svg" alt="Xbox" class="platform-icon" />
+            <img src="img/xbox.svg" class="platform-icon" />
           </button>
-          <button class="platform-btn psn" data-platform="psn" data-tooltip="PlayStation Network">
-            <img src="img/psn.svg" alt="PSN" class="platform-icon" />
+          <button class="platform-btn psn" data-platform="psn" data-tooltip="PSN">
+            <img src="img/psn.svg" class="platform-icon" />
           </button>
           <button class="platform-btn kakao" data-platform="kakao" data-tooltip="Kakao">
-            <img src="img/kakao.svg" alt="Kakao" class="platform-icon" />
+            <img src="img/kakao.svg" class="platform-icon" />
           </button>
         </div>
 
         <p id="activePlatformLabelWatchlist" class="active-platform-label" style="margin-top: 12px;">
-          do not use watchlist is broken for now <strong>Steam</strong>
+          Viewing watchlist for: <strong>Steam</strong>
         </p>
 
         <input type="hidden" id="platformSelect" value="steam" />
@@ -90,7 +90,7 @@
       <h1 class="wl-header-title">Your Watchlist</h1>
       <p class="wl-header-desc">
         Track the ban status of PUBG players across platforms.  
-        Click “Re-check” to update an individual player, or “Refresh All”.
+        Click “Re-check” to update an individual player.
       </p>
 
       <div class="wl-list-card" id="watchlistContainer">
@@ -100,7 +100,7 @@
 
   </div>
 
-  <!-- MODAL: NAME CHANGE DETECTED -->
+  <!-- NAME CHANGE MODAL -->
   <div id="nameChangeModal" class="wl-modal hidden">
     <div class="wl-modal-content">
       <h2>Name Change Detected</h2>
