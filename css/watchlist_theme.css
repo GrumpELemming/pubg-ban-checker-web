@@ -1,0 +1,275 @@
+/* ---------------------------------------------------------
+   PUBG Ban Checker — NEW WATCHLIST THEME (Final)
+   --------------------------------------------------------- */
+
+/* GLOBAL RESETS FOR THIS PAGE ONLY */
+.wl-panel-layout {
+  display: flex;
+  gap: 24px;
+  width: min(1400px, 95vw);
+  margin: 30px auto;
+  min-height: 70vh;
+}
+
+/* LEFT PANEL */
+.wl-left-panel {
+  flex: 1;
+  background: rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 20px 22px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+  display: flex;
+  flex-direction: column;
+}
+
+/* RIGHT PANEL */
+.wl-right-panel {
+  flex: 2;
+  background: rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 20px 22px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.38);
+  display: flex;
+  flex-direction: column;
+}
+
+/* HEADER TITLE (not used inside HTML header but used inside panels) */
+.wl-header-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: #ffdd59;
+}
+
+.wl-header-desc {
+  font-size: 0.95rem;
+  color: #f0f0f0;
+  opacity: .95;
+  line-height: 1.4;
+  margin-bottom: 20px;
+}
+
+/* LEFT PANEL CARD */
+.wl-card {
+  background: rgba(255,255,255,0.10);
+  padding: 18px;
+  border-radius: 12px;
+  margin-bottom: 18px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+}
+
+.wl-card-title {
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  color: #ffe680;
+  opacity: .96;
+}
+
+.wl-card-sub {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: #dcdcdc;
+}
+
+/* BUTTONS */
+.wl-btn {
+  border: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: 0.18s ease;
+}
+
+.wl-btn-primary {
+  background: #ff4757;
+  color: #fff;
+}
+.wl-btn-primary:hover {
+  transform: scale(1.04);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+.wl-btn-ghost {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+}
+.wl-btn-ghost:hover {
+  background: rgba(255,255,255,0.22);
+}
+
+.wl-btn-mini {
+  padding: 6px 10px !important;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  margin-left: 6px;
+}
+
+/* LIST WRAPPER (right panel) */
+.wl-list-card {
+  flex: 1;
+  margin-top: 18px;
+  padding: 18px;
+  background: rgba(255,255,255,0.10);
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  overflow-y: auto;
+}
+
+/* Count */
+.wl-count-label {
+  font-size: 0.95rem;
+  color: #f0f0f0;
+  margin-bottom: 12px;
+  opacity: 0.85;
+}
+
+/* PLAYER ROW */
+.watchlist-player {
+  background: rgba(255,255,255,0.08);
+  padding: 14px 16px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+  animation: wlFadeUp 0.4s ease forwards;
+  opacity: 0;
+}
+
+@keyframes wlFadeUp {
+  from { opacity: 0; transform: translateY(8px) scale(.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* NAME LINE */
+.wl-name-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wl-platform-badge {
+  background: rgba(255,255,255,0.18);
+  padding: 3px 8px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+/* META TEXT */
+.wl-meta {
+  font-size: 0.85rem;
+  margin-top: 6px;
+  color: #dcdcdc;
+  line-height: 1.3;
+  display: flex;
+  flex-direction: column;
+}
+
+/* NAME HISTORY */
+.wl-history {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  opacity: .9;
+  color: #ffe680;
+}
+.wl-history-label {
+  font-weight: 600;
+}
+.wl-history-name {
+  color: #fff;
+  font-weight: 500;
+}
+
+/* STATUS PILLS */
+.wl-status-pill {
+  padding: 3px 10px;
+  border-radius: 14px;
+  font-size: 0.75rem;
+  color: #fff;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.wl-status-pill-ok {
+  background: #28a745;
+}
+.wl-status-pill-temp {
+  background: #ffc107;
+  color: #111;
+}
+.wl-status-pill-perm {
+  background: #dc3545;
+}
+.wl-status-pill-unknown {
+  background: #6c757d;
+}
+
+/* EMPTY */
+.wl-empty {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 1rem;
+  color: #ccc;
+}
+
+/* SCAN FLASH (refresh all) */
+.wl-container-scan {
+  animation: scanFlash 0.45s;
+}
+@keyframes scanFlash {
+  0% { background: rgba(255,255,255,0.16); }
+  100% { background: rgba(255,255,255,0.10); }
+}
+
+/* MODAL */
+.wl-modal.hidden {
+  display: none;
+}
+
+.wl-modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.wl-modal-content {
+  background: #1e1e2f;
+  padding: 24px 30px;
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+  width: min(380px, 90vw);
+  text-align: center;
+}
+
+.wl-modal-content h2 {
+  margin: 0 0 12px;
+  color: #ffdd59;
+}
+
+#nameChangeText {
+  margin: 0 0 20px;
+  color: #eee;
+  font-size: 0.95rem;
+}
+
+/* DARK MODE SUPPORT */
+body.dark-mode .wl-left-panel,
+body.dark-mode .wl-right-panel,
+body.dark-mode .wl-card,
+body.dark-mode .wl-list-card {
+  background: rgba(255,255,255,0.05);
+}
+
