@@ -3,6 +3,10 @@ const toggleText = toggleBtn?.querySelector("span");
 const historyDiv = document.getElementById("history");
 
 if (toggleBtn && toggleText && historyDiv) {
+  historyDiv.classList.remove("visible", "collapsing");
+  historyDiv.style.maxHeight = "0";
+  historyDiv.style.opacity = "0";
+
   toggleBtn.addEventListener("click", () => {
     if (historyDiv.classList.contains("visible")) {
       historyDiv.classList.remove("visible");

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -13,31 +13,35 @@
     base-uri 'self';
   ">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PUBG Ban Checker – Updates</title>
- <link rel="stylesheet" href="css/updates.css">
+  <title>PUBG Ban Checker - Updates</title>
+  <link rel="stylesheet" href="css/updates.css">
   <script defer src="js/updates.js"></script>
 </head>
 <body>
-  <div class="container">
-    <h1 class="compact-title">PUBG Ban Checker – Updates</h1>
-    <div class="nav-links">
-      <a href="index.html"><button type="button">Home</button></a>
+  <div class="nav-panel">
+    <div class="nav-title">PUBG BAN CHECKER</div>
+    <div class="nav-panel-buttons">
+      <a href="index.html"><button type="button">Ban Checker</button></a>
       <a href="watchlist.html"><button type="button">Watchlist</button></a>
+      <a href="recent.html"><button type="button">Sniper Watch</button></a>
       <a href="games.html"><button type="button">Games</button></a>
     </div>
   </div>
 
+  <div class="container">
+    <h1 class="compact-title">PUBG Ban Checker - Updates</h1>
+  </div>
+
   <!-- Latest Release -->
   <div class="container">
-    <h2>Latest Release – v1.6.1 </h2>
+    <h2>LATEST RELEASE 2.0: UX OVERHAUL</h2>
     <ul>
-      <li> Security fixes - Thanks LOLhpO!</li>
-      <li>Platform buttons redesigned → icons, tooltips, brand colors with glow.</li>
-      <li>Social buttons polished → hover glow + fade-in animation.</li>
-      <li>Watchlist improvements → per-platform fix, “Check All” now staggers results, no disappearing rows.</li>
-      <li>Results polished → fade-in rows, pulse animations for bans.</li>
-      <li>Navigation cleanup → About replaces Updates, no duplicate links.</li>
-      <li>Consistent Dark Mode across all pages.</li>
+      <li>Unified the command-center HUD theme across Ban Checker, About, and Games.</li>
+      <li>Navigation and CTAs restyled for clearer hierarchy and consistent glow states.</li>
+      <li>Platform tiles refreshed with stronger hover and active feedback for each network.</li>
+      <li>Results and history panels tuned for readability in both light and dark modes.</li>
+      <li>Version history now loads collapsed for a faster overview.</li>
+      <li>New Sniper Watch page: damage-based stream-sniper detection (14-day, repeat contacts only).</li>
     </ul>
 
     <div class="centered" style="margin-top:15px;">
@@ -48,23 +52,26 @@
 
     <div id="history" class="history">
       <h3>Pre-Web / EXE Era</h3>
-      <p><strong>v0.00 – v0.05:</strong> Early EXE builds, Steam only, API inside code, not shareable.</p>
-      <p><strong>v0.6:</strong> First EXE supporting all platforms (API embedded, insecure).</p>
-      <p><strong>v0.7:</strong> Added basic colors to ban results in EXE.</p>
-      <p><strong>v0.8:</strong> Backend created and hosted on Render (API separated).</p>
-      <p><strong>v0.9:</strong> EXE community test build, Render stays awake, flagged by Windows Defender.</p>
+      <p><strong>v0.1 - v0.5:</strong> Early EXE builds limited to Steam; API was bundled in the client and not shareable.</p>
+      <p><strong>v0.6:</strong> First EXE supporting all platforms, with the API still embedded and insecure.</p>
+      <p><strong>v0.7:</strong> Introduced basic color feedback for ban results in the EXE.</p>
+      <p><strong>v0.8:</strong> Backend created and hosted on Render to separate API from the client.</p>
+      <p><strong>v0.9:</strong> Community EXE test build; Render kept warm, flagged by Windows Defender.</p>
 
       <h3>Web Era</h3>
-      <p><strong>v1.0:</strong> Pivot to GitHub website, very basic but functional.</p>
-      <p><strong>v1.2:</strong> Added timestamps in watchlist, retry button, clear all, visual polish.</p>
-      <p><strong>v1.3:</strong> Multi-platform support introduced (Steam, Xbox, PSN, Kakao). Watchlist per-platform.</p>
-      <p><strong>v1.4:</strong> Added About/Updates page and social buttons. Consistent theme polish.</p>
-      <p><strong>v1.5:</strong> UX improvements (Add to Watchlist button, auto-check option, refined storage).</p>
+      <p><strong>v1.0:</strong> Pivot to a GitHub-hosted website with a functional PC ban checker.</p>
+      <p><strong>v1.1:</strong> Multi-platform support (Steam, Xbox, PSN, Kakao) introduced.</p>
+      <p><strong>v1.2:</strong> Watchlist creation added (initially PC only).</p>
+      <p><strong>v1.2.1:</strong> Watchlist creation expanded to all platforms (Steam, Xbox, PSN, Kakao).</p>
+      <p><strong>v1.3:</strong> UX improvements across core flows.</p>
+      <p><strong>v1.4:</strong> Search by account ID added.</p>
+      <p><strong>v1.5:</strong> Security fixes delivered (thanks LOLhpO!).</p>
+      <p><strong>v1.6:</strong> Watchlist now flags when a player changes their name.</p>
     </div>
   </div>
 
   <!-- Socials -->
-   <div class="container">
+  <div class="container">
     <h2>About</h2>
     <p class="about-credit">Created by <strong class="shimmer">Grump E Lemming</strong></p>
     <div class="social-buttons">
@@ -79,3 +86,8 @@
       </a>
       <a href="https://www.tiktok.com/@grumpelemming" target="_blank" rel="noopener noreferrer" class="social-btn tiktok" data-tooltip="TikTok">
          <img src="tiktok/instagram.svg" alt="TikTok">
+      </a>
+    </div>
+  </div>
+</body>
+</html>

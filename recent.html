@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PUBG Ban Checker - Recent Encounters</title>
+  <link rel="stylesheet" href="css/recent.css?v=20250211" />
+  <script defer src="js/recent.js"></script>
+</head>
+<body class="recent">
+  <div class="recent-backdrop" aria-hidden="true">
+    <div class="recent-grid"></div>
+    <div class="recent-grid recent-grid-alt"></div>
+  </div>
+  <div class="recent-scanlines" aria-hidden="true"></div>
+
+  <div class="nav-panel">
+    <div class="nav-title">PUBG BAN CHECKER</div>
+    <div class="nav-panel-buttons">
+      <a href="index.html"><button type="button">Ban Checker</button></a>
+      <a href="watchlist.html"><button type="button">Watchlist</button></a>
+      <a href="updates.html"><button type="button">About</button></a>
+      <a href="games.html"><button type="button">Games</button></a>
+    </div>
+  </div>
+
+  <main class="recent-shell">
+    <section class="recent-search">
+      <label for="playerNameInput">Enter your PUBG username</label>
+      <div class="recent-search-row">
+        <input id="playerNameInput" type="text" placeholder="Example: BattlegroundHero" autocomplete="off" />
+        <button id="fetchEncountersBtn" type="button">Scan 14 Days</button>
+      </div>
+      <p class="helper-line" id="fetchNote">Shows only opponents who damaged you in 3+ matches over the last 14 days.</p>
+      <p class="helper-line">
+        Sniper Watch analyzes your recent matches to spotlight repeat offenders and totals the damage they’ve dealt to you, so you can prioritize who to avoid or report.
+      </p>
+    </section>
+
+    <section class="recent-card">
+      <header class="card-header">
+        <div>
+          <p class="eyebrow">Suspect roster</p>
+          <h2 id="suspectCount">0 suspects</h2>
+        </div>
+        <div class="stat-chip" id="summaryChip">No scan yet</div>
+      </header>
+      <div id="scanProgress" class="scan-progress hidden">Scanning...</div>
+      <div id="suspectGrid" class="encounter-grid">
+        <p class="empty">Run a scan to see damage-based suspects.</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
