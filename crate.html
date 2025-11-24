@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self';
+    style-src 'self';
+    img-src 'self' data:;
+    font-src 'self';
+    connect-src 'self';
+    frame-ancestors 'none';
+    base-uri 'self';
+  ">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hideout Crate Simulator - "Winter Eclipse"</title>
+  <link rel="stylesheet" href="css/crate.css">
+  <script defer src="js/crate.js"></script>
+</head>
+<body>
+  <div class="nav-panel">
+    <div class="nav-title">PUBG BAN CHECKER</div>
+    <div class="nav-panel-buttons">
+      <a href="index.html"><button type="button">Ban Checker</button></a>
+      <a href="watchlist.html"><button type="button">Watchlist</button></a>
+      <a href="recent.html"><button type="button">Sniper Watch</button></a>
+      <a href="updates.html"><button type="button">About</button></a>
+      <a href="games.html"><button type="button">Games</button></a>
+    </div>
+  </div>
+
+  <main class="layout">
+    <section class="container hero">
+      <div>
+        <p class="eyebrow">Hideout Crate Simulator</p>
+        <h1>Winter Eclipse</h1>
+        <p class="muted">
+          Spend 1800 G-Coin per 10-pack, flip each card to reveal the drop, and keep track of how much you've spent.
+        </p>
+        <div class="controls">
+          <button id="openPackBtn" type="button">Open 10 for 1800 GC</button>
+          <button id="revealAllBtn" class="secondary-btn" type="button" disabled>Flip all</button>
+          <button id="resetBtn" class="ghost-btn" type="button">Reset</button>
+        </div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <p class="label">G-Coin Spent</p>
+          <p class="value" id="gcSpent">0</p>
+        </div>
+        <div class="stat-card">
+          <p class="label">Packs Opened</p>
+          <p class="value" id="packsOpened">0</p>
+        </div>
+        <div class="stat-card">
+          <p class="label">Crates Flipped</p>
+          <p class="value" id="cratesOpened">0</p>
+        </div>
+        <div class="stat-card">
+          <p class="label">Best Hit (last pack)</p>
+          <p class="value" id="bestHit">--</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="container">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">10-Pack Reveal</p>
+          <h2>Flip each card to see what dropped.</h2>
+        </div>
+        <div class="legend">
+          <span class="pill mythic">Mythic</span>
+          <span class="pill legendary">Legendary</span>
+          <span class="pill rare">Rare</span>
+          <span class="pill uncommon">Uncommon</span>
+          <span class="pill material">Polymers</span>
+        </div>
+      </div>
+      <div id="cardsGrid" class="cards-grid">
+        <p class="muted">Open a 10-pack to start flipping.</p>
+      </div>
+    </section>
+
+    <section class="container">
+      <p class="eyebrow">Progressive weapon</p>
+      <h2>Winter Eclipse MP5K line</h2>
+      <div id="progressiveGrid" class="drop-table"></div>
+    </section>
+
+    <section class="container">
+      <p class="eyebrow">Collection</p>
+      <h2>What you've pulled</h2>
+      <div id="collectionGrid" class="drop-table"></div>
+    </section>
+  </main>
+</body>
+</html>
