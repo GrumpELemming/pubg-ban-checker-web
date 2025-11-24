@@ -27,7 +27,7 @@
     {cols:4,rows:4,pairs:8,label:"Phase 7"},
     {cols:4,rows:4,pairs:8,label:"Phase 8"}
   ];
-  const ZONE_RATES=[1,1.5,2.5,4,5.5,7,10,16]; // HP/sec
+  const ZONE_RATES=[0.6,1.0,1.4,1.9,2.5,3.3,4.2,5.5]; // HP/sec (easier pacing)
   const LS_STATS='blue.memory.stats.v21';
 
   // ---- SAFE STATS LOADING (backwards compatible) ----
@@ -111,12 +111,12 @@
   const stats = loadStats();
   const state = {
     phase:1, deck:[], first:null, second:null, lock:false,
-    moves:0, matches:0,
+    moves:0, matches:0, mistakes:0,
     hp:100, hpAnim:100, hpFlash:null,
     pulse:0, mode:"play",
     banner:null, bannerT:0,
     blueActive:false, blueTimer:0, blueRate:1,
-    phaseIntro:true, phaseIntroT:0,
+    phaseIntro:true, phaseIntroT:0, phaseStart:performance.now(), phaseTime:0,
     loading:true, loadMsg:"Loading cards...", imagesReady:false
   };
 
@@ -140,9 +140,9 @@
     const P=PHASES[p-1]||PHASES[0];
     state.phase=p; state.deck=newDeck(P.pairs);
     state.first=state.second=null; state.lock=false;
-    state.moves=0; state.matches=0;
+    state.moves=0; state.matches=0; state.mistakes=0;
     state.mode="play"; state.banner=null; state.bannerT=0;
-    state.phaseIntro=true; state.phaseIntroT=0;
+    state.phaseIntro=true; state.phaseIntroT=0; state.phaseStart=performance.now(); state.phaseTime=0;
     state.blueRate=ZONE_RATES[p-1]||1;
     // Preload phase images (HP/zone paused until done)
     state.loading=true; state.imagesReady=false; state.loadMsg="Loading cards...";
@@ -150,8 +150,8 @@
     Promise.all(imgs.map(loadImage)).then(()=>{
       state.imagesReady=true;
       // Blue zone timing only starts after images are ready
-      if(p===1){ state.blueActive=false; state.blueTimer=10; }
-      else { state.blueActive=true; state.blueTimer=0; }
+      state.blueActive=false;
+      state.blueTimer = (p===1) ? 12 : 8; // grace window before damage starts
       state.loading=false;
     });
   }
@@ -207,23 +207,33 @@
       if(a.idx===b.idx){
         a.matched=b.matched=true;
         state.matches++;
-        heal(5);
+        heal(8);
         if(state.matches===PHASES[state.phase-1].pairs){
+          state.phaseTime = (performance.now()-state.phaseStart)/1000;
           const ph=state.phase;
           const prev=(stats.best && stats.best[ph] !== undefined) ? stats.best[ph] : null;
           if(prev===null || state.moves<prev){
             stats.best[ph]=state.moves;
             saveStats(stats);
           }
+          console.log(`Phase ${ph} complete — moves: ${state.moves}, mistakes: ${state.mistakes}, time: ${fmtTime(state.phaseTime)}`);
           if(state.hp>0){
             state.mode="win"; state.banner="phase"; state.bannerT=0; setTimeout(nextPhase,800);
           }
         }
       } else {
         a.open=false; b.open=false;
+        state.mistakes++;
       }
     }
     state.first=state.second=null; state.lock=false;
+  }
+
+  function fmtTime(sec){
+    const s=Math.max(0,Math.floor(sec));
+    const m=Math.floor(s/60);
+    const rs=(s%60).toString().padStart(2,"0");
+    return m+":"+rs;
   }
 
   // Drawing helpers
@@ -346,16 +356,18 @@
     ctx.restore();
   }
   function statsDraw(){
+    const phaseElapsed = (state.mode==="play") ? (performance.now()-state.phaseStart)/1000 : state.phaseTime;
     const lines=[
       "Moves (this phase): "+state.moves,
-      "Matches: "+state.matches+"/"+PHASES[state.phase-1].pairs
+      "Matches: "+state.matches+"/"+PHASES[state.phase-1].pairs,
+      "Mistakes: "+state.mistakes,
+      "Phase time: "+fmtTime(phaseElapsed)
     ];
-    ctx.save();
-    ctx.font="500 18px system-ui";
-    ctx.textAlign="left"; ctx.textBaseline="top";
-    ctx.fillStyle="rgba(210,230,255,0.85)";
-    lines.forEach((t,i)=>ctx.fillText(t,40,98+i*22));
-    ctx.restore();
+    // Rendered stats removed (console logging instead)
+    if(state.mode==="play"){
+      const msg = `Phase ${state.phase} — moves: ${state.moves}, matches: ${state.matches}, mistakes: ${state.mistakes}, elapsed: ${fmtTime(phaseElapsed)}`;
+      console.log(msg);
+    }
   }
   function bestPanel(){
     const x=W-260,y0=220,lh=22;
