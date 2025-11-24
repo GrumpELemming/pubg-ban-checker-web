@@ -8,8 +8,8 @@
 
   // LocalStorage keys
   const LS_PLATFORM = "selectedPlatform";
-  const LS_DARK = "darkMode";
   const LS_WATCHLIST_PREFIX = "watchlist_";
+  const BAN_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
   const MAX_RATE_LIMIT_ATTEMPTS = 3;
   const INITIAL_RETRY_DELAY = 700;
@@ -102,8 +102,38 @@
     }
   }
 
+  // ---------- Cache helpers ----------
+  function makeCacheKey(platform, playerName) {
+    return `banCache_${platform}_${(playerName || "").toLowerCase()}`;
+  }
+
+  function getCachedBan(platform, playerName) {
+    try {
+      const raw = sessionStorage.getItem(makeCacheKey(platform, playerName));
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== "object") return null;
+      if (Date.now() - (parsed.ts || 0) > BAN_CACHE_TTL_MS) return null;
+      return parsed.data || null;
+    } catch {
+      return null;
+    }
+  }
+
+  function setCachedBan(platform, playerName, data) {
+    try {
+      sessionStorage.setItem(
+        makeCacheKey(platform, playerName),
+        JSON.stringify({ ts: Date.now(), data })
+      );
+    } catch {}
+  }
+
   // ---------- Backend calls ----------
   async function getBanStatus(platform, playerName) {
+    const cached = getCachedBan(platform, playerName);
+    if (cached) return cached;
+
     const url = `${BASE_URL}/check-ban-clan?platform=${encodeURIComponent(
       platform
     )}&player=${encodeURIComponent(playerName)}`;
@@ -118,13 +148,15 @@
         if (res.status === 429) {
           attempt += 1;
           if (attempt >= MAX_RATE_LIMIT_ATTEMPTS) {
-            return {
+            const rateLimited = {
               player: playerName,
               accountId: "",
               clan: "",
               statusText:
                 "Rate limited by backend. Please wait a moment and try again."
             };
+            setCachedBan(platform, playerName, rateLimited);
+            return rateLimited;
           }
           await wait(delayMs);
           delayMs *= 1.6;
@@ -133,13 +165,15 @@
 
         if (!res.ok) {
           const message = await res.text();
-          return {
+          const failure = {
             player: playerName,
             accountId: "",
             clan: "",
             statusText:
               message || `Request failed with status ${res.status}`
           };
+          setCachedBan(platform, playerName, failure);
+          return failure;
         }
 
         const data = await res.json();
@@ -166,34 +200,42 @@
             "Unknown";
         }
 
-        return {
+        const result = {
           player: playerName,
           accountId,
           clan,
           statusText
         };
+
+        setCachedBan(platform, playerName, result);
+        return result;
       } catch (err) {
         attempt += 1;
         if (attempt >= MAX_RATE_LIMIT_ATTEMPTS) {
-          return {
+          const errorResult = {
             player: playerName,
             accountId: "",
             clan: "",
             statusText:
               "Error contacting backend. Please try again later."
           };
+          setCachedBan(platform, playerName, errorResult);
+          return errorResult;
         }
         await wait(delayMs);
         delayMs *= 1.6;
       }
     }
 
-    return {
+    const result = {
       player: playerName,
       accountId: "",
       clan: "",
       statusText: "Unknown"
     };
+
+    setCachedBan(platform, playerName, result);
+    return result;
   }
 
   async function resolveById(id, platform) {
@@ -348,6 +390,18 @@
     return row;
   }
 
+  async function runWithConcurrency(items, limit, worker) {
+    const queue = [...items];
+    const runners = Array.from({ length: Math.min(limit, queue.length) }, async () => {
+      while (queue.length) {
+        const item = queue.shift();
+        await wait(100 + Math.random() * 200); // jitter to avoid burst
+        await worker(item);
+      }
+    });
+    await Promise.all(runners);
+  }
+
   // ---------- Main Checker Flow ----------
   async function checkBan() {
     const results = document.getElementById("results");
@@ -368,19 +422,34 @@
     const platform = getPlatform();
     results.innerHTML = "";
 
-    for (const n of names) {
+    const fragment = document.createDocumentFragment();
+    const rowMap = new Map();
+
+    names.forEach(n => {
       const loadingRow = buildRow({
         player: n,
         accountId: "...",
         clan: "...",
         statusText: "Checking..."
       });
-      results.append(loadingRow);
+      rowMap.set(n, loadingRow);
+      fragment.appendChild(loadingRow);
+    });
 
+    results.appendChild(fragment);
+
+    await runWithConcurrency(names, 2, async n => {
       const data = await getBanStatus(platform, n);
+      setCachedBan(platform, n, data);
+
       const finalRow = buildRow(data);
-      results.replaceChild(finalRow, loadingRow);
-    }
+      const currentRow = rowMap.get(n);
+      if (currentRow && currentRow.isConnected) {
+        results.replaceChild(finalRow, currentRow);
+      } else {
+        results.appendChild(finalRow);
+      }
+    });
   }
 
   // ---------- ID lookup ----------
@@ -431,28 +500,12 @@
   }
 
   // ---------- Dark mode ----------
-  function applyInitialDarkMode() {
-    const body = document.body;
-    const toggle = document.getElementById("darkModeToggle");
-    const stored = localStorage.getItem(LS_DARK);
-
-    const enabled = stored === "true";
-    if (enabled) {
-      body.classList.add("dark-mode");
-      if (toggle) toggle.checked = true;
-    }
-
-    if (toggle) {
-      toggle.addEventListener("change", () => {
-        const on = !!toggle.checked;
-        if (on) {
-          body.classList.add("dark-mode");
-        } else {
-          body.classList.remove("dark-mode");
-        }
-        localStorage.setItem(LS_DARK, String(on));
-      });
-    }
+  // Dark mode removed; ensure any legacy state is cleared
+  function clearLegacyDarkMode() {
+    document.body.classList.remove("dark-mode");
+    try {
+      localStorage.removeItem("darkMode");
+    } catch {}
   }
 
   // ---------- Click limiting ----------
@@ -476,7 +529,7 @@
     const hidden = document.getElementById("platformSelect");
     if (hidden) hidden.value = getPlatform();
 
-    applyInitialDarkMode();
+    clearLegacyDarkMode();
 
     const clearResultsBtn = document.getElementById("clearResultsBtn");
     if (clearResultsBtn) {

@@ -77,49 +77,51 @@ body.watchlist .wl-topbar {
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: 18px;
   background: rgba(5, 14, 27, 0.8);
   border: 1px solid rgba(86, 233, 255, 0.35);
-  border-radius: 22px;
-  padding: 20px 28px;
-  box-shadow: 0 18px 60px rgba(3, 13, 29, 0.7), inset 0 0 22px rgba(10, 138, 255, 0.12);
+  border-radius: 20px;
+  padding: 16px 20px;
+  box-shadow: 0 16px 38px rgba(3, 6, 20, 0.7), inset 0 0 18px rgba(33, 191, 255, 0.08);
   backdrop-filter: blur(10px);
+  width: min(1040px, 96vw);
+  margin: 0 auto;
 }
 
 body.watchlist .wl-topbar-left {
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 body.watchlist .wl-logo-lockup {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #9cd5ff;
 }
 
 body.watchlist .wl-logo-lockup strong {
-  font-size: 1.2rem;
+  font-size: 1rem;
   display: block;
   color: #ffffff;
 }
 
 body.watchlist .wl-logo-lockup small {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   opacity: 0.75;
 }
 
 body.watchlist .wl-logo-pill {
-  width: 62px;
-  height: 62px;
-  border-radius: 18px;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
   background: linear-gradient(135deg, #0d6efd, #20f7c7);
-  box-shadow: 0 8px 25px rgba(29, 132, 255, 0.45);
+  box-shadow: 0 6px 18px rgba(29, 132, 255, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -154,7 +156,7 @@ body.watchlist .wl-sys-dot {
 body.watchlist .wl-nav-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
+  gap: 10px;
 }
 
 body.watchlist .wl-nav-links a {
@@ -167,6 +169,8 @@ body.watchlist .wl-nav-links a {
   border: 1px solid rgba(147, 221, 255, 0.4);
   color: #d7f8ff;
   transition: all 0.25s ease;
+  min-width: 118px;
+  text-align: center;
 }
 
 body.watchlist .wl-nav-links a:hover {
@@ -182,7 +186,7 @@ body.watchlist .wl-hud-band {
   z-index: 2;
   margin: 32px 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 18px;
 }
 
@@ -209,6 +213,10 @@ body.watchlist .wl-hud-readout {
   color: #f3fcff;
 }
 
+body.watchlist #activePlatformLabelWatchlist {
+  text-align: center;
+}
+
 body.watchlist .wl-hud-readout strong {
   color: #48ffe1;
 }
@@ -220,14 +228,15 @@ body.watchlist .wl-console {
   display: flex;
   flex-wrap: wrap;
   gap: 28px;
+  margin-top: 24px;
 }
 
 body.watchlist .wl-ops-column {
-  flex: 1 1 320px;
+  flex: 1 1 360px;
   display: flex;
   flex-direction: column;
   gap: 22px;
-  max-width: 380px;
+  max-width: 420px;
 }
 
 body.watchlist .wl-feed-column {
@@ -671,4 +680,57 @@ body.watchlist.dark-mode .wl-feed-live::before {
   body.watchlist .wl-feed-live {
     padding: 20px;
   }
+}
+/* Shared nav panel (matches index bar) */
+.nav-panel {
+  width: min(1040px, 96vw);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: rgba(5, 14, 27, 0.8);
+  border: 1px solid rgba(86, 233, 255, 0.35);
+  border-radius: 20px;
+  padding: 16px 20px;
+  box-shadow: 0 16px 38px rgba(3, 6, 20, 0.7), inset 0 0 18px rgba(33, 191, 255, 0.08);
+  backdrop-filter: blur(10px);
+}
+
+.nav-title {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-weight: 800;
+  font-size: 1.4rem;
+  color: #ffc94f;
+  text-align: center;
+}
+
+.nav-panel-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.nav-panel-buttons button {
+  min-width: 118px;
+  border-radius: 999px;
+  background: transparent;
+  color: #d7f8ff;
+  border: 1px solid rgba(147, 221, 255, 0.4);
+  box-shadow: none;
+  padding: 10px 18px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.nav-panel-buttons button:hover {
+  border-color: #45ffd8;
+  color: #041726;
+  background: linear-gradient(130deg, rgba(69, 255, 216, 0.9), rgba(50, 132, 255, 0.85));
+  box-shadow: 0 8px 20px rgba(68, 255, 227, 0.2);
 }

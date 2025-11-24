@@ -4,16 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PUBG Ban Checker</title>
+<link rel="preload" href="css/index.css" as="style" />
+<link rel="preload" href="img/steam.svg" as="image" type="image/svg+xml" />
+<link rel="preload" href="img/xbox.svg" as="image" type="image/svg+xml" />
+<link rel="preload" href="img/psn.svg" as="image" type="image/svg+xml" />
+<link rel="preload" href="img/kakao.svg" as="image" type="image/svg+xml" />
 <link rel="stylesheet" href="css/index.css" />
   <script defer src="js/main.js"></script>
 </head>
 <body>
-  <h1>PUBG Ban Checker</h1>
-
-  <nav class="nav-links">
-    <a href="watchlist.html"><button>Watchlist</button></a>
-    <a href="updates.html"><button>About</button></a>
-  </nav>
+  <div class="nav-panel">
+    <div class="nav-title">PUBG BAN CHECKER</div>
+    <div class="nav-panel-buttons">
+      <a href="watchlist.html"><button type="button">Watchlist</button></a>
+      <a href="recent.html"><button type="button">Sniper Watch</button></a>
+      <a href="updates.html"><button type="button">About</button></a>
+      <a href="games.html"><button type="button">Games</button></a>
+    </div>
+  </div>
 
   <!-- =======================================================
        Platform Selection (with shimmer + active label)
@@ -56,7 +64,6 @@
     <div class="control-buttons">
       <button id="checkBanBtn" type="button">Check</button>
       <button id="clearResultsBtn" class="secondary-btn" type="button">Clear</button>
-      <label><input type="checkbox" id="darkModeToggle" /> Dark Mode</label>
     </div>
 
     <div id="results"><p class="muted">No results yet.</p></div>

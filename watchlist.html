@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PUBG Ban Checker – Watchlist</title>
 
+  <link rel="preload" href="css/watchlist.css?v=1" as="style">
+  <link rel="preload" href="css/watchlist_theme.css?v=20250210" as="style">
+  <link rel="preload" href="img/steam.svg" as="image" type="image/svg+xml">
+  <link rel="preload" href="img/xbox.svg" as="image" type="image/svg+xml">
+  <link rel="preload" href="img/psn.svg" as="image" type="image/svg+xml">
+  <link rel="preload" href="img/kakao.svg" as="image" type="image/svg+xml">
+
   <!-- Main site styles -->
 <link rel="stylesheet" href="css/watchlist.css?v=1">
 
@@ -22,52 +29,23 @@
   </div>
   <div class="wl-scanlines" aria-hidden="true"></div>
 
-  <header class="wl-topbar">
-    <div class="wl-topbar-left">
-      <div class="wl-logo-lockup">
-        <span class="wl-logo-pill">OPS</span>
-        <div>
-          <strong>Watchlist Command</strong>
-          <small>Live ban-monitor console</small>
-        </div>
-      </div>
-      <div class="wl-system-status">
-        <span class="wl-sys-dot"></span>
-        Systems nominal
-      </div>
+  <div class="nav-panel">
+    <div class="nav-title">PUBG BAN CHECKER</div>
+    <div class="nav-panel-buttons">
+      <a href="index.html"><button type="button">Ban Checker</button></a>
+      <a href="watchlist.html"><button type="button">Watchlist</button></a>
+      <a href="recent.html"><button type="button">Sniper Watch</button></a>
+      <a href="updates.html"><button type="button">About</button></a>
+      <a href="games.html"><button type="button">Games</button></a>
     </div>
-
-    <nav class="wl-nav-links">
-      <a href="index.html">Ban Checker</a>
-      <a href="updates.html">About</a>
-      <a href="games.html">Games</a>
-    </nav>
-  </header>
-
-  <section class="wl-hud-band">
-    <div class="wl-hud-card">
-      <span class="wl-hud-label">Active platform</span>
-      <p id="activePlatformLabelWatchlist" class="wl-hud-readout">
-        Viewing watchlist for: <strong>Steam</strong>
-      </p>
-    </div>
-    <div class="wl-hud-card">
-      <span class="wl-hud-label">System status</span>
-      <p class="wl-hud-readout">Telemetry link stable</p>
-    </div>
-    <div class="wl-hud-card">
-      <span class="wl-hud-label">Last sweep</span>
-      <p class="wl-hud-readout">Awaiting refresh</p>
-    </div>
-  </section>
+  </div>
 
   <main class="wl-console">
     <section class="wl-ops-column">
 
       <article class="wl-module">
         <header>
-          <h2>Platform matrix</h2>
-          <span>Select the target network</span>
+          <h2>Platform selection</h2>
         </header>
 
         <div id="platformRowWatchlist" class="platform-row" role="group" aria-label="Platform selection buttons">
@@ -89,32 +67,20 @@
       </article>
 
       <article class="wl-module">
+        <p class="wl-hud-readout" id="activePlatformLabelWatchlist">
+          Viewing watchlist for: <strong>Steam</strong>
+        </p>
+      </article>
+
+      <article class="wl-module">
         <header>
-          <h2>Control stack</h2>
-          <span>Run sweeps &amp; tune filters</span>
+          <h2>Watchlist controls</h2>
+          <span>Run sweeps &amp; manage list</span>
         </header>
 
         <div class="wl-module-actions">
           <button id="refreshAllBtn" class="wl-btn wl-btn-primary">Refresh All</button>
           <button id="clearWatchlistBtn" class="wl-btn wl-btn-ghost">Clear All</button>
-        </div>
-
-        <div class="wl-module-fields">
-          <label>
-            Status filter
-            <select id="statusFilter">
-              <option value="all">All Signals</option>
-              <option value="perm">Permanent Bans</option>
-              <option value="temp">Temporary Bans</option>
-              <option value="ok">Not Banned</option>
-              <option value="unknown">Unknown / Error</option>
-            </select>
-          </label>
-
-          <label class="wl-toggle">
-            <input type="checkbox" id="darkModeToggle" />
-            <span>Dark mode</span>
-          </label>
         </div>
       </article>
 

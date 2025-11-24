@@ -12,8 +12,9 @@
   const BASE_URL = "https://pubg-ban-checker-backend.onrender.com";
 
   const LS_PLATFORM = "selectedPlatform";
-  const LS_DARK = "darkMode";
   const LS_WATCHLIST_PREFIX = "watchlist_";
+  const REFRESH_BATCH_DELAY = 500;
+  const BAN_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
   // --------------------------------------------------------------------
   // Helpers
@@ -117,28 +118,43 @@
     return { code: "unknown", text: statusLabel || "Unknown" };
   }
 
-  // --------------------------------------------------------------------
-  // Dark mode
-  // --------------------------------------------------------------------
+  function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
-  function applyInitialDarkMode() {
-    const body = document.body;
-    const toggle = document.getElementById("darkModeToggle");
-    const stored = localStorage.getItem(LS_DARK);
+  // Cache helpers scoped per platform/player to avoid refetching hot data
+  function makeCacheKey(platform, playerName) {
+    return `banCache_${platform}_${(playerName || "").toLowerCase()}`;
+  }
 
-    const on = stored === "true";
-    if (on) {
-      body.classList.add("dark-mode");
-      if (toggle) toggle.checked = true;
+  function getCachedBan(platform, playerName) {
+    try {
+      const raw = sessionStorage.getItem(makeCacheKey(platform, playerName));
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== "object") return null;
+      if (Date.now() - (parsed.ts || 0) > BAN_CACHE_TTL_MS) return null;
+      return parsed.data || null;
+    } catch {
+      return null;
     }
+  }
 
-    if (toggle) {
-      toggle.addEventListener("change", () => {
-        const enabled = toggle.checked;
-        body.classList.toggle("dark-mode", enabled);
-        localStorage.setItem(LS_DARK, String(enabled));
-      });
-    }
+  function setCachedBan(platform, playerName, data) {
+    try {
+      sessionStorage.setItem(
+        makeCacheKey(platform, playerName),
+        JSON.stringify({ ts: Date.now(), data })
+      );
+    } catch {}
+  }
+
+  // Dark mode removed; clear any legacy state
+  function clearLegacyDarkMode() {
+    document.body.classList.remove("dark-mode");
+    try {
+      localStorage.removeItem("darkMode");
+    } catch {}
   }
 
   // --------------------------------------------------------------------
@@ -269,26 +285,13 @@
   // Watchlist Rendering
   // --------------------------------------------------------------------
 
-  function getFilteredWatchlist() {
-    const platform = getPlatform();
-    const all = getWatchlist(platform);
-
-    const filter = document.getElementById("statusFilter")?.value || "all";
-    if (filter === "all") return all;
-
-    return all.filter(entry => {
-      const code = mapStatusToInfo(entry.statusLabel).code;
-      return code === filter;
-    });
-  }
-
-  function renderWatchlist() {
+  function renderWatchlist(baseList) {
     const container = document.getElementById("watchlistContainer");
     if (!container) return;
 
     container.innerHTML = "";
 
-    const list = getFilteredWatchlist();
+    const list = baseList || getWatchlist(getPlatform());
     if (!list.length) {
       container.innerHTML = `<p class="wl-empty">No players in your watchlist yet.</p>`;
       return;
@@ -304,7 +307,7 @@
     const list = getWatchlist(platform);
     list.splice(index, 1);
     saveWatchlist(platform, list);
-    renderWatchlist();
+    renderWatchlist(list);
   }
 
   // --------------------------------------------------------------------
@@ -314,15 +317,37 @@
   const modal = () => document.getElementById("nameChangeModal");
   const modalText = () => document.getElementById("nameChangeText");
   const closeBtn = () => document.getElementById("nameChangeCloseBtn");
+  const nameChangeQueue = [];
 
   function showNameChangeModal(oldName, newName) {
-    modalText().textContent = `${oldName} → ${newName}`;
-    modal().classList.remove("hidden");
+    nameChangeQueue.push({ oldName, newName });
+    const modalEl = modal();
+    if (!modalEl) return;
+
+    if (!modalEl.classList.contains("active")) {
+      renderNameChangeModal();
+    }
+  }
+
+  function renderNameChangeModal() {
+    const modalEl = modal();
+    if (!modalEl) return;
+    if (!nameChangeQueue.length) {
+      modalEl.classList.add("hidden");
+      modalEl.classList.remove("active");
+      return;
+    }
+
+    const { oldName, newName } = nameChangeQueue[0];
+    modalText().textContent = `${oldName} -> ${newName}`;
+    modalEl.classList.remove("hidden");
+    modalEl.classList.add("active");
   }
 
   if (closeBtn()) {
     closeBtn().addEventListener("click", () => {
-      modal().classList.add("hidden");
+      nameChangeQueue.shift();
+      renderNameChangeModal();
     });
   }
 
@@ -330,12 +355,48 @@
   // Re-check logic
   // --------------------------------------------------------------------
 
+  async function runWithConcurrency(items, limit, worker) {
+    const queue = [...items];
+    const runners = Array.from({ length: Math.min(limit, queue.length) }, async () => {
+      while (queue.length) {
+        const item = queue.shift();
+        await wait(100 + Math.random() * 200); // jitter to smooth bursts
+        await worker(item);
+      }
+    });
+    await Promise.all(runners);
+  }
+
+  function applyCachedState(platform, list) {
+    let changed = false;
+    list.forEach(entry => {
+      const cached = getCachedBan(platform, entry.player);
+      if (!cached) return;
+      entry.accountId = cached.accountId || entry.accountId;
+      entry.clan = cached.clan || entry.clan;
+      entry.statusLabel = cached.statusText || entry.statusLabel;
+      entry.lastChecked = entry.lastChecked || Date.now();
+      changed = true;
+    });
+    if (changed) renderWatchlist(list);
+  }
+
   async function recheckSingle(playerName) {
     const platform = getPlatform();
     const list = getWatchlist(platform);
 
     const match = list.find(e => e.player.toLowerCase() === playerName.toLowerCase());
     if (!match) return;
+
+    // Apply any cached status instantly for responsiveness
+    const cached = getCachedBan(platform, playerName);
+    if (cached) {
+      match.accountId = cached.accountId || match.accountId;
+      match.clan = cached.clan || match.clan;
+      match.statusLabel = cached.statusText || match.statusLabel;
+      match.lastChecked = match.lastChecked || Date.now();
+      renderWatchlist(list);
+    }
 
     try {
       const resp = await fetch(
@@ -370,11 +431,90 @@
       match.statusLabel = r.banStatus || r.status || r.statusText || match.statusLabel;
       match.lastChecked = Date.now();
 
+      setCachedBan(platform, match.player, {
+        accountId: match.accountId,
+        clan: match.clan,
+        statusText: match.statusLabel
+      });
+
       saveWatchlist(platform, list);
-      renderWatchlist();
+      renderWatchlist(list);
 
     } catch (err) {
       console.error("Recheck error", err);
+    }
+  }
+
+  async function recheckAll() {
+    const platform = getPlatform();
+    const list = getWatchlist(platform);
+    if (!list.length) return;
+
+    applyCachedState(platform, list);
+
+    const container = document.querySelector(".wl-list-card");
+    if (container) {
+      container.classList.add("wl-container-scan");
+      setTimeout(() => container.classList.remove("wl-container-scan"), 450);
+    }
+
+    const refreshAllBtn = document.getElementById("refreshAllBtn");
+    if (refreshAllBtn) {
+      refreshAllBtn.disabled = true;
+      refreshAllBtn.classList.add("fade-out");
+      refreshAllBtn.textContent = "Refreshing...";
+    }
+
+    await runWithConcurrency(list, 2, async entry => {
+      try {
+        const resp = await fetch(
+          `${BASE_URL}/check-ban-clan?platform=${encodeURIComponent(platform)}&player=${encodeURIComponent(entry.player)}`
+        );
+        const data = await resp.json();
+        if (!resp.ok || !Array.isArray(data.results) || !data.results.length) {
+          return;
+        }
+
+        const match =
+          data.results.find(r => (r.player || r.name || "").toLowerCase() === entry.player.toLowerCase()) ||
+          data.results[0];
+
+        const oldName = entry.player;
+        const newName = match.player || match.name || oldName;
+
+        if (newName !== oldName) {
+          entry.history = entry.history || [];
+          if (!entry.history.includes(oldName)) {
+            entry.history.push(oldName);
+          }
+          entry.player = newName;
+          showNameChangeModal(oldName, newName);
+        }
+
+        entry.accountId = match.accountId || match.id || entry.accountId;
+        entry.clan = match.clan || match.clanName || entry.clan;
+        entry.statusLabel = match.banStatus || match.status || match.statusText || entry.statusLabel;
+        entry.lastChecked = Date.now();
+
+        setCachedBan(platform, entry.player, {
+          accountId: entry.accountId,
+          clan: entry.clan,
+          statusText: entry.statusLabel
+        });
+      } catch (err) {
+        console.error("Recheck-all error", err);
+      }
+
+      await wait(REFRESH_BATCH_DELAY);
+    });
+
+    saveWatchlist(platform, list);
+    renderWatchlist(list);
+
+    if (refreshAllBtn) {
+      refreshAllBtn.disabled = false;
+      refreshAllBtn.classList.remove("fade-out");
+      refreshAllBtn.textContent = "Refresh All";
     }
   }
 
@@ -384,28 +524,17 @@
 
   document.addEventListener("DOMContentLoaded", () => {
 
-    applyInitialDarkMode();
+    clearLegacyDarkMode();
 
     applyPlatformToButtons(
       "platformRowWatchlist",
       "activePlatformLabelWatchlist"
     );
 
-    const filter = document.getElementById("statusFilter");
-    if (filter) {
-      filter.addEventListener("change", renderWatchlist);
-    }
-
     const refreshAllBtn = document.getElementById("refreshAllBtn");
     if (refreshAllBtn) {
       refreshAllBtn.addEventListener("click", () => {
-        const container = document.querySelector(".wl-list-card");
-        if (container) {
-          container.classList.add("wl-container-scan");
-          setTimeout(() => container.classList.remove("wl-container-scan"), 450);
-        }
-
-        // For now, per your request: no automatic refresh-all API calls
+        recheckAll();
       });
     }
 
@@ -422,3 +551,5 @@
   });
 
 })();
+
+
