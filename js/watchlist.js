@@ -9,7 +9,8 @@
 
 (() => {
 
-  const BASE_URL = "https://pubg-ban-checker-backend.onrender.com";
+  // Route all API calls through a same-origin proxy (e.g., /api -> Render backend)
+  const BASE_URL = "/api";
 
   const LS_PLATFORM = "selectedPlatform";
   const LS_WATCHLIST_PREFIX = "watchlist_";

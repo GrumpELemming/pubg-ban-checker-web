@@ -1,6 +1,6 @@
 (() => {
   const BATCH_BASE = "https://your-batch-app-name.fly.dev"; // Fly app (damage-agg)
-  const BAN_BASE = "https://pubg-ban-checker-backend.onrender.com"; // Existing ban checker
+  const BAN_BASE = "/api"; // Same-origin proxy to ban checker backend
   const PLATFORM = "steam";
   const SCAN_TIMEOUT_MS = 0; // no client-side abort; wait for backend to finish
 

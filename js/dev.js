@@ -1,9 +1,12 @@
-const BASE_URL = "https://pubg-ban-checker-backend.onrender.com";
+// Dev resolver tool - uses same-origin proxy for backend calls (e.g., /api -> Render)
+const BASE_URL = "/api";
 let SECRET_KEY = "";
 
 const el = id => document.getElementById(id);
 const show = (node, yes) => node.classList[yes ? "remove" : "add"]("hidden");
-const setText = (node, text) => { node.textContent = text; };
+const setText = (node, text) => {
+  node.textContent = text;
+};
 
 function showTool() {
   show(el("login"), false);
@@ -13,7 +16,10 @@ function showTool() {
 function unlock() {
   const inputKey = el("keyInput").value.trim();
   const msg = el("loginMsg");
-  if (!inputKey) { setText(msg, "Please enter a key."); return; }
+  if (!inputKey) {
+    setText(msg, "Please enter a key.");
+    return;
+  }
   SECRET_KEY = inputKey;
   sessionStorage.setItem("resolverKey", SECRET_KEY);
   showTool();
@@ -40,7 +46,9 @@ function copyToClipboard(text, copiedId) {
     const msg = el(copiedId);
     if (msg) {
       msg.style.display = "inline";
-      setTimeout(() => { msg.style.display = "none"; }, 2000);
+      setTimeout(() => {
+        msg.style.display = "none";
+      }, 2000);
     }
   });
 }
@@ -76,7 +84,7 @@ function formatResult(containerId, data) {
     const copiedMsg = document.createElement("span");
     copiedMsg.id = copyId;
     copiedMsg.className = "copied";
-    copiedMsg.textContent = "✔ Copied!";
+    copiedMsg.textContent = "Copied!";
 
     p2.append(strong2, spanId, copyBtn, copiedMsg);
     container.append(p1, p2);
@@ -94,7 +102,9 @@ async function resolveByName() {
   const out = el("nameResult");
   setText(out, "Loading...");
   try {
-    const res = await fetch(`${BASE_URL}/api/resolve-by-name?key=${encodeURIComponent(SECRET_KEY)}&name=${encodeURIComponent(name)}`);
+    const res = await fetch(
+      `${BASE_URL}/api/resolve-by-name?key=${encodeURIComponent(SECRET_KEY)}&name=${encodeURIComponent(name)}`
+    );
     const data = await res.json();
     formatResult("nameResult", data);
   } catch (err) {
@@ -109,7 +119,9 @@ async function resolveById() {
   const out = el("idResult");
   setText(out, "Loading...");
   try {
-    const res = await fetch(`${BASE_URL}/api/resolve-by-id?key=${encodeURIComponent(SECRET_KEY)}&id=${encodeURIComponent(id)}`);
+    const res = await fetch(
+      `${BASE_URL}/api/resolve-by-id?key=${encodeURIComponent(SECRET_KEY)}&id=${encodeURIComponent(id)}`
+    );
     const data = await res.json();
     formatResult("idResult", data);
   } catch (err) {

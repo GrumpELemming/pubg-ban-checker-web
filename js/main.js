@@ -4,7 +4,8 @@
    v2.2 - Strict Status Matching
    ------------------------------------------------------- */
 (() => {
-  const BASE_URL = "https://pubg-ban-checker-backend.onrender.com";
+  // Proxy all API traffic through the same origin (e.g., /api -> Render backend)
+  const BASE_URL = "/api";
 
   // LocalStorage keys
   const LS_PLATFORM = "selectedPlatform";
