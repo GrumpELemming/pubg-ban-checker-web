@@ -125,7 +125,7 @@
 
   // Cache helpers scoped per platform/player to avoid refetching hot data
   function makeCacheKey(platform, playerName) {
-    return `banCache_${platform}_${(playerName || "").toLowerCase()}`;
+    return `banCache_${platform}_${playerName || ""}`;
   }
 
   function getCachedBan(platform, playerName) {

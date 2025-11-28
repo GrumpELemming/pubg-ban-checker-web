@@ -105,7 +105,7 @@
 
   // ---------- Cache helpers ----------
   function makeCacheKey(platform, playerName) {
-    return `banCache_${platform}_${(playerName || "").toLowerCase()}`;
+    return `banCache_${platform}_${playerName || ""}`;
   }
 
   function getCachedBan(platform, playerName) {
@@ -149,15 +149,13 @@
         if (res.status === 429) {
           attempt += 1;
           if (attempt >= MAX_RATE_LIMIT_ATTEMPTS) {
-            const rateLimited = {
+            return {
               player: playerName,
               accountId: "",
               clan: "",
               statusText:
                 "Rate limited by backend. Please wait a moment and try again."
             };
-            setCachedBan(platform, playerName, rateLimited);
-            return rateLimited;
           }
           await wait(delayMs);
           delayMs *= 1.6;
@@ -166,15 +164,12 @@
 
         if (!res.ok) {
           const message = await res.text();
-          const failure = {
+          return {
             player: playerName,
             accountId: "",
             clan: "",
-            statusText:
-              message || `Request failed with status ${res.status}`
+            statusText: message || `Request failed with status ${res.status}`
           };
-          setCachedBan(platform, playerName, failure);
-          return failure;
         }
 
         const data = await res.json();
@@ -182,6 +177,8 @@
         let accountId = "";
         let clan = "";
         let statusText = "Unknown";
+
+        let shouldCache = false;
 
         if (data && Array.isArray(data.results) && data.results.length) {
           const match =
@@ -199,6 +196,7 @@
             match.status ||
             match.banStatus ||
             "Unknown";
+          shouldCache = true;
         }
 
         const result = {
@@ -208,20 +206,20 @@
           statusText
         };
 
-        setCachedBan(platform, playerName, result);
+        if (shouldCache) {
+          setCachedBan(platform, playerName, result);
+        }
         return result;
       } catch (err) {
         attempt += 1;
         if (attempt >= MAX_RATE_LIMIT_ATTEMPTS) {
-          const errorResult = {
+          return {
             player: playerName,
             accountId: "",
             clan: "",
             statusText:
               "Error contacting backend. Please try again later."
           };
-          setCachedBan(platform, playerName, errorResult);
-          return errorResult;
         }
         await wait(delayMs);
         delayMs *= 1.6;
@@ -235,7 +233,6 @@
       statusText: "Unknown"
     };
 
-    setCachedBan(platform, playerName, result);
     return result;
   }
 
@@ -441,7 +438,6 @@
 
     await runWithConcurrency(names, 2, async n => {
       const data = await getBanStatus(platform, n);
-      setCachedBan(platform, n, data);
 
       const finalRow = buildRow(data);
       const currentRow = rowMap.get(n);
