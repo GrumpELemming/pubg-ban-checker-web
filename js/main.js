@@ -10,7 +10,6 @@
   // LocalStorage keys
   const LS_PLATFORM = "selectedPlatform";
   const LS_WATCHLIST_PREFIX = "watchlist_";
-  const BAN_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
   const MAX_RATE_LIMIT_ATTEMPTS = 3;
   const INITIAL_RETRY_DELAY = 700;
@@ -103,38 +102,8 @@
     }
   }
 
-  // ---------- Cache helpers ----------
-  function makeCacheKey(platform, playerName) {
-    return `banCache_${platform}_${playerName || ""}`;
-  }
-
-  function getCachedBan(platform, playerName) {
-    try {
-      const raw = sessionStorage.getItem(makeCacheKey(platform, playerName));
-      if (!raw) return null;
-      const parsed = JSON.parse(raw);
-      if (!parsed || typeof parsed !== "object") return null;
-      if (Date.now() - (parsed.ts || 0) > BAN_CACHE_TTL_MS) return null;
-      return parsed.data || null;
-    } catch {
-      return null;
-    }
-  }
-
-  function setCachedBan(platform, playerName, data) {
-    try {
-      sessionStorage.setItem(
-        makeCacheKey(platform, playerName),
-        JSON.stringify({ ts: Date.now(), data })
-      );
-    } catch {}
-  }
-
   // ---------- Backend calls ----------
   async function getBanStatus(platform, playerName) {
-    const cached = getCachedBan(platform, playerName);
-    if (cached) return cached;
-
     const url = `${BASE_URL}/check-ban-clan?platform=${encodeURIComponent(
       platform
     )}&player=${encodeURIComponent(playerName)}`;
@@ -178,8 +147,6 @@
         let clan = "";
         let statusText = "Unknown";
 
-        let shouldCache = false;
-
         if (data && Array.isArray(data.results) && data.results.length) {
           const match =
             data.results.find(
@@ -196,7 +163,6 @@
             match.status ||
             match.banStatus ||
             "Unknown";
-          shouldCache = true;
         }
 
         const result = {
@@ -206,9 +172,6 @@
           statusText
         };
 
-        if (shouldCache) {
-          setCachedBan(platform, playerName, result);
-        }
         return result;
       } catch (err) {
         attempt += 1;
