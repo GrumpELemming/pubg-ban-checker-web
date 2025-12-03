@@ -141,6 +141,12 @@
     }
   }
 
+  function invalidateCachedBan(platform, playerName) {
+    try {
+      sessionStorage.removeItem(makeCacheKey(platform, playerName));
+    } catch {}
+  }
+
   function setCachedBan(platform, playerName, data) {
     try {
       sessionStorage.setItem(
@@ -170,7 +176,8 @@
     const latest = await resolveCurrentName(entry.accountId, platform);
     if (!latest) return false;
 
-    const currentLower = (entry.player || "").toLowerCase();
+    const currentName = entry.player || "";
+    const currentLower = currentName.toLowerCase();
     if (latest.toLowerCase() === currentLower) {
       return false;
     }
@@ -180,8 +187,75 @@
     if (!entry.history.some(h => h.toLowerCase() === currentLower)) {
       entry.history.push(oldName);
     }
+    invalidateCachedBan(platform, oldName);
     entry.player = latest;
     showNameChangeModal(oldName, latest);
+    return true;
+  }
+
+  async function updateEntryFromBan(entry, platform, hasRetried = false) {
+    if (!entry) return false;
+    await syncEntryNameFromAccount(entry, platform);
+
+    const lookupName = entry.player;
+    const resp = await fetch(
+      `${BASE_URL}/check-ban-clan?platform=${encodeURIComponent(platform)}&player=${encodeURIComponent(lookupName)}`
+    );
+
+    let data = null;
+    try {
+      data = await resp.json();
+    } catch {
+      data = null;
+    }
+
+    const hasResults = data && Array.isArray(data.results) && data.results.length;
+    if (!resp.ok || !hasResults) {
+      if (entry.accountId && !hasRetried) {
+        const renamed = await syncEntryNameFromAccount(entry, platform);
+        if (renamed) {
+          return updateEntryFromBan(entry, platform, true);
+        }
+      }
+      return false;
+    }
+
+    const normalized = lookupName.toLowerCase();
+    const match =
+      data.results.find(r => (r.player || r.name || "").toLowerCase() === normalized) || data.results[0];
+
+    const banStatusText = (match?.banStatus || match?.status || match?.statusText || "").toLowerCase();
+    if (!hasRetried && entry.accountId && banStatusText.includes("not found")) {
+      const renamed = await syncEntryNameFromAccount(entry, platform);
+      if (renamed) {
+        return updateEntryFromBan(entry, platform, true);
+      }
+    }
+
+    const oldName = entry.player;
+    const newName = match.player || match.name || oldName;
+    if (newName && newName !== oldName) {
+      entry.history = entry.history || [];
+      const lowerOld = oldName.toLowerCase();
+      if (!entry.history.some(h => h.toLowerCase() === lowerOld)) {
+        entry.history.push(oldName);
+      }
+      invalidateCachedBan(platform, oldName);
+      entry.player = newName;
+      showNameChangeModal(oldName, newName);
+    }
+
+    entry.accountId = match.accountId || match.id || entry.accountId;
+    entry.clan = match.clan || match.clanName || entry.clan;
+    entry.statusLabel = match.banStatus || match.status || match.statusText || entry.statusLabel;
+    entry.lastChecked = Date.now();
+
+    setCachedBan(platform, entry.player, {
+      accountId: entry.accountId,
+      clan: entry.clan,
+      statusText: entry.statusLabel
+    });
+
     return true;
   }
 
@@ -435,49 +509,11 @@
     }
 
     try {
-      await syncEntryNameFromAccount(match, platform);
-      const lookupName = match.player;
-      const resp = await fetch(
-        `${BASE_URL}/check-ban-clan?platform=${encodeURIComponent(platform)}&player=${encodeURIComponent(lookupName)}`
-      );
-
-      const data = await resp.json();
-      if (!resp.ok || !Array.isArray(data.results)) return;
-
-      const r = data.results[0];
-      if (!r) return;
-
-      const oldName = match.player;
-      const newName = r.player || r.name || oldName;
-
-      // NAME CHANGE DETECTED
-      if (newName !== oldName) {
-        match.history = match.history || [];
-
-        // Avoid duplicates
-        if (!match.history.includes(oldName)) {
-          match.history.push(oldName);
-        }
-
-        match.player = newName;
-
-        showNameChangeModal(oldName, newName);
+      const updated = await updateEntryFromBan(match, platform);
+      if (updated) {
+        saveWatchlist(platform, list);
+        renderWatchlist(list);
       }
-
-      match.accountId = r.accountId || r.id || match.accountId;
-      match.clan = r.clan || match.clan;
-      match.statusLabel = r.banStatus || r.status || r.statusText || match.statusLabel;
-      match.lastChecked = Date.now();
-
-      setCachedBan(platform, match.player, {
-        accountId: match.accountId,
-        clan: match.clan,
-        statusText: match.statusLabel
-      });
-
-      saveWatchlist(platform, list);
-      renderWatchlist(list);
-
     } catch (err) {
       console.error("Recheck error", err);
     }
@@ -505,42 +541,7 @@
 
     await runWithConcurrency(list, 2, async entry => {
       try {
-        await syncEntryNameFromAccount(entry, platform);
-        const lookupName = entry.player;
-        const resp = await fetch(
-          `${BASE_URL}/check-ban-clan?platform=${encodeURIComponent(platform)}&player=${encodeURIComponent(lookupName)}`
-        );
-        const data = await resp.json();
-        if (!resp.ok || !Array.isArray(data.results) || !data.results.length) {
-          return;
-        }
-
-        const match =
-          data.results.find(r => (r.player || r.name || "").toLowerCase() === entry.player.toLowerCase()) ||
-          data.results[0];
-
-        const oldName = entry.player;
-        const newName = match.player || match.name || oldName;
-
-        if (newName !== oldName) {
-          entry.history = entry.history || [];
-          if (!entry.history.includes(oldName)) {
-            entry.history.push(oldName);
-          }
-          entry.player = newName;
-          showNameChangeModal(oldName, newName);
-        }
-
-        entry.accountId = match.accountId || match.id || entry.accountId;
-        entry.clan = match.clan || match.clanName || entry.clan;
-        entry.statusLabel = match.banStatus || match.status || match.statusText || entry.statusLabel;
-        entry.lastChecked = Date.now();
-
-        setCachedBan(platform, entry.player, {
-          accountId: entry.accountId,
-          clan: entry.clan,
-          statusText: entry.statusLabel
-        });
+        await updateEntryFromBan(entry, platform);
       } catch (err) {
         console.error("Recheck-all error", err);
       }
