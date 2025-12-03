@@ -150,6 +150,41 @@
     } catch {}
   }
 
+  async function resolveCurrentName(accountId, platform) {
+    if (!accountId) return null;
+    try {
+      const resp = await fetch(
+        `${BASE_URL}/resolve?platform=${encodeURIComponent(platform)}&id=${encodeURIComponent(accountId)}`
+      );
+      if (!resp.ok) return null;
+      const data = await resp.json();
+      return data.currentName || data.name || null;
+    } catch (err) {
+      console.warn("Name resolve failed", err);
+      return null;
+    }
+  }
+
+  async function syncEntryNameFromAccount(entry, platform) {
+    if (!entry || !entry.accountId) return false;
+    const latest = await resolveCurrentName(entry.accountId, platform);
+    if (!latest) return false;
+
+    const currentLower = (entry.player || "").toLowerCase();
+    if (latest.toLowerCase() === currentLower) {
+      return false;
+    }
+
+    const oldName = entry.player;
+    entry.history = entry.history || [];
+    if (!entry.history.some(h => h.toLowerCase() === currentLower)) {
+      entry.history.push(oldName);
+    }
+    entry.player = latest;
+    showNameChangeModal(oldName, latest);
+    return true;
+  }
+
   // Dark mode removed; clear any legacy state
   function clearLegacyDarkMode() {
     document.body.classList.remove("dark-mode");
@@ -400,8 +435,10 @@
     }
 
     try {
+      await syncEntryNameFromAccount(match, platform);
+      const lookupName = match.player;
       const resp = await fetch(
-        `${BASE_URL}/check-ban-clan?platform=${encodeURIComponent(platform)}&player=${encodeURIComponent(playerName)}`
+        `${BASE_URL}/check-ban-clan?platform=${encodeURIComponent(platform)}&player=${encodeURIComponent(lookupName)}`
       );
 
       const data = await resp.json();
@@ -468,8 +505,10 @@
 
     await runWithConcurrency(list, 2, async entry => {
       try {
+        await syncEntryNameFromAccount(entry, platform);
+        const lookupName = entry.player;
         const resp = await fetch(
-          `${BASE_URL}/check-ban-clan?platform=${encodeURIComponent(platform)}&player=${encodeURIComponent(entry.player)}`
+          `${BASE_URL}/check-ban-clan?platform=${encodeURIComponent(platform)}&player=${encodeURIComponent(lookupName)}`
         );
         const data = await resp.json();
         if (!resp.ok || !Array.isArray(data.results) || !data.results.length) {
