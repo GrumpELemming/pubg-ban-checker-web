@@ -1,18 +1,52 @@
+:root {
+  --bg: #03070f;
+  --bg-accent-1: rgba(46, 227, 255, 0.18);
+  --bg-accent-2: rgba(123, 97, 255, 0.16);
+  --panel: rgba(6, 18, 36, 0.9);
+  --panel-strong: rgba(4, 16, 32, 0.88);
+  --border: rgba(64, 175, 255, 0.35);
+  --border-strong: rgba(86, 233, 255, 0.45);
+  --text: #e0f6ff;
+  --muted: #8ab9d6;
+  --accent: #48ffe1;
+  --accent-2: #1e51ff;
+  --warn: #ffd558;
+  --danger: #ff8f8f;
+  --neutral: #c5ccdb;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 32px clamp(18px, 4vw, 64px) 64px;
+  font-family: "Rajdhani", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: radial-gradient(circle at 20% 20%, var(--bg-accent-1), transparent 45%),
+              radial-gradient(circle at 80% 0%, var(--bg-accent-2), transparent 40%),
+              var(--bg);
+  color: var(--text);
+  letter-spacing: 0.02em;
+  position: relative;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
 .links-shell {
   max-width: 1100px;
-  margin: 40px auto 60px;
-  padding: 0 16px;
-  color: #e5f0ff;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0 auto 40px;
+  padding: 0 8px;
 }
 
 .links-hero {
-  background: radial-gradient(circle at top left, rgba(0, 196, 255, 0.12), rgba(0, 0, 0, 0.7));
-  border: 1px solid rgba(0, 196, 255, 0.2);
+  background: var(--panel);
+  border: 1px solid var(--border);
   border-radius: 16px;
   padding: 28px 24px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-  margin-bottom: 28px;
+  box-shadow: 0 16px 38px rgba(3, 6, 20, 0.7), inset 0 0 18px rgba(33, 191, 255, 0.08);
+  margin-bottom: 20px;
 }
 
 .links-hero .eyebrow {
@@ -30,7 +64,7 @@
 
 .links-hero .lede {
   margin: 0;
-  color: #c9d8f4;
+  color: var(--muted);
   line-height: 1.6;
 }
 
@@ -90,21 +124,19 @@
   transform: translateY(-1px);
 }
 
-body {
-  margin: 0;
-  background: #050b1a;
-}
-
 .nav-panel {
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  width: min(1040px, 96vw);
+  margin: 0 auto;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  padding: 12px 18px;
-  background: linear-gradient(90deg, rgba(5, 11, 26, 0.92), rgba(8, 20, 44, 0.92));
-  border-bottom: 1px solid rgba(0, 196, 255, 0.15);
+  justify-content: center;
+  gap: 12px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 16px 20px;
+  box-shadow: 0 16px 38px rgba(3, 6, 20, 0.7), inset 0 0 18px rgba(33, 191, 255, 0.08);
 }
 
 .nav-title {
@@ -113,42 +145,48 @@ body {
   letter-spacing: 0.05em;
 }
 
-.nav-panel-buttons a button {
-  background: rgba(0, 196, 255, 0.12);
-  color: #cfe9ff;
-  border: 1px solid rgba(0, 196, 255, 0.2);
-  border-radius: 8px;
-  padding: 8px 12px;
-  margin-left: 8px;
-  cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+.nav-panel-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
 }
 
-.nav-panel-buttons a button.active,
-.nav-panel-buttons a button:hover {
-  background: rgba(0, 196, 255, 0.25);
-  box-shadow: 0 0 0 2px rgba(0, 196, 255, 0.15);
-  transform: translateY(-1px);
+.nav-panel-buttons button {
+  min-width: 118px;
+  border-radius: 999px;
+  background: transparent;
+  color: #d7f8ff;
+  border: 1px solid rgba(147, 221, 255, 0.4);
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.nav-panel-buttons button.active {
+  border-color: #45ffd8;
+  color: #041726;
+  background: linear-gradient(130deg, rgba(69, 255, 216, 0.9), rgba(50, 132, 255, 0.85));
+  box-shadow: 0 8px 20px rgba(68, 255, 227, 0.2);
+}
+
+.nav-panel-buttons button:hover {
+  border-color: #45ffd8;
+  color: #041726;
+  background: linear-gradient(130deg, rgba(69, 255, 216, 0.9), rgba(50, 132, 255, 0.85));
+  box-shadow: 0 8px 20px rgba(68, 255, 227, 0.2);
 }
 
 @media (max-width: 720px) {
+  body {
+    padding: 22px 14px 48px;
+  }
   .links-shell {
-    margin-top: 20px;
+    margin-top: 8px;
   }
   .links-hero {
     padding: 22px 18px;
   }
   .links-hero h1 {
     font-size: 24px;
-  }
-  .nav-panel {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-  .nav-panel-buttons a button {
-    margin-left: 0;
-    margin-right: 8px;
-    margin-bottom: 6px;
   }
 }
