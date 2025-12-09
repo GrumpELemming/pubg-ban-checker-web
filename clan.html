@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PUBG Clan Leaderboard (Private)</title>
+  <link rel="stylesheet" href="css/clan.css?v=20250228">
+  <script defer src="js/clan.js?v=20250228"></script>
+</head>
+<body>
+  <div class="nav-panel">
+    <div class="nav-title">PUBG BAN CHECKER</div>
+    <div class="nav-panel-buttons">
+      <a href="index.html"><button type="button">Ban Checker</button></a>
+      <a href="watchlist.html"><button type="button">Watchlist</button></a>
+      <a href="recent.html"><button type="button">Sniper Watch</button></a>
+      <a href="links.html"><button type="button">Links</button></a>
+      <a href="updates.html"><button type="button">About</button></a>
+      <a href="games.html"><button type="button">Games</button></a>
+    </div>
+  </div>
+
+  <main class="clan-shell">
+    <header class="clan-hero">
+      <p class="eyebrow">Private clan hub</p>
+      <h1>Weekly performance leaderboard</h1>
+      <p class="lede">
+        Pulls cached stats for the active clan roster (Steam) and ranks them for the selected ISO week.
+        Data is pulled server-side; this page only reads the aggregated leaderboard.
+      </p>
+      <div class="controls">
+        <label for="weekInput">ISO week (YYYY-WW)</label>
+        <input id="weekInput" type="text" placeholder="auto (current week)" />
+        <button id="loadBtn" type="button">Load Leaderboard</button>
+        <span id="status" class="status"></span>
+      </div>
+    </header>
+
+    <section class="clan-card">
+      <div class="card-header">
+        <div>
+          <p class="eyebrow">Clan standings</p>
+          <h2 id="summaryTitle">Current week</h2>
+        </div>
+        <div class="stat-chip" id="entriesCount">0 players</div>
+      </div>
+
+      <div class="table-wrap">
+        <table id="leaderboard">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Matches</th>
+              <th>Kills</th>
+              <th>KDR</th>
+              <th>Damage</th>
+              <th>Time Played (h)</th>
+              <th>Wins</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="8" class="muted">No data yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
