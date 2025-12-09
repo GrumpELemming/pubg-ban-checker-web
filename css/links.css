@@ -140,9 +140,12 @@ body {
 }
 
 .nav-title {
-  color: #7dd4ff;
-  font-weight: 700;
-  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-weight: 800;
+  font-size: 1.4rem;
+  color: #ffc94f;
+  text-align: center;
 }
 
 .nav-panel-buttons {
