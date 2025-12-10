@@ -8,6 +8,9 @@ function $(id) {
   return document.getElementById(id);
 }
 
+let currentData = null;
+let currentSort = "matches";
+
 async function fetchLeaderboard(weekParam) {
   const statusEl = $("status");
   statusEl.textContent = "Loading...";
@@ -15,14 +18,13 @@ async function fetchLeaderboard(weekParam) {
 
   let url = `${API_BASE}/weekly-leaderboard`;
   if (weekParam) {
-    // Backend expects YYYY-WW
     url += `?week=${encodeURIComponent(weekParam)}`;
   }
 
   const resp = await fetch(url, {
     method: "GET",
     headers: {
-      "Accept": "application/json",
+      Accept: "application/json",
     },
   });
 
@@ -31,6 +33,34 @@ async function fetchLeaderboard(weekParam) {
   }
 
   return resp.json();
+}
+
+function sortEntries(entries, mode) {
+  const copy = [...entries];
+
+  if (mode === "kills") {
+    copy.sort((a, b) => {
+      if (b.kills !== a.kills) return b.kills - a.kills;
+      if (b.matches !== a.matches) return b.matches - a.matches;
+      return b.damage - a.damage;
+    });
+  } else if (mode === "time") {
+    copy.sort((a, b) => {
+      if (b.time_played_hours !== a.time_played_hours) {
+        return b.time_played_hours - a.time_played_hours;
+      }
+      if (b.kills !== a.kills) return b.kills - a.kills;
+      return b.matches - a.matches;
+    });
+  } else {
+    // default: matches then kills (same as backend)
+    copy.sort((a, b) => {
+      if (b.matches !== a.matches) return b.matches - a.matches;
+      return b.kills - a.kills;
+    });
+  }
+
+  return copy;
 }
 
 function renderLeaderboard(data) {
@@ -51,14 +81,14 @@ function renderLeaderboard(data) {
       day: "numeric",
     });
 
-  summaryTitle.textContent = `Week ${fmt(start)} → ${fmt(end)}`;
+  summaryTitle.textContent = `Week ${fmt(start)} \u2192 ${fmt(end)}`;
   entriesCount.textContent =
     data.count === 1 ? "1 player" : `${data.count} players`;
 
   if (!data.entries || data.entries.length === 0) {
     const tr = document.createElement("tr");
     const td = document.createElement("td");
-    td.colSpan = 8;
+    td.colSpan = 9;
     td.className = "muted";
     td.textContent = "No data for this week.";
     tr.appendChild(td);
@@ -67,7 +97,9 @@ function renderLeaderboard(data) {
     return;
   }
 
-  data.entries.forEach((entry, index) => {
+  const sorted = sortEntries(data.entries, currentSort);
+
+  sorted.forEach((entry, index) => {
     const tr = document.createElement("tr");
 
     const rankTd = document.createElement("td");
@@ -122,16 +154,19 @@ async function loadLeaderboard() {
 
   let weekParam = null;
   if (raw.length > 0) {
-    // Allow either "YYYY-WW" or "YYYY-WWW" or even "YYYY-WW" without the "W"
-    let formatted = raw.toUpperCase();
-    if (!formatted.includes("W")) {
-      formatted = formatted.replace("-", "-W");
+    const upper = raw.toUpperCase();
+    if (upper.includes("W")) {
+      // legacy ISO week "YYYY-WW"
+      weekParam = upper;
+    } else {
+      // prefer YYYY-MM-DD for "clan week" (Wed→Wed)
+      weekParam = raw;
     }
-    weekParam = formatted;
   }
 
-  try {
+  try:
     const data = await fetchLeaderboard(weekParam);
+    currentData = data;
     renderLeaderboard(data);
   } catch (err) {
     console.error(err);
@@ -142,12 +177,29 @@ async function loadLeaderboard() {
     tbody.innerHTML = "";
     const tr = document.createElement("tr");
     const td = document.createElement("td");
-    td.colSpan = 8;
+    td.colSpan = 9;
     td.className = "muted";
     td.textContent = "Failed to load leaderboard.";
     tr.appendChild(td);
     tbody.appendChild(tr);
   }
+}
+
+function setupSortButtons() {
+  const buttons = document.querySelectorAll(".sort-btn");
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const mode = btn.getAttribute("data-sort");
+      currentSort = mode || "matches";
+
+      buttons.forEach((b) => b.classList.remove("sort-active"));
+      btn.classList.add("sort-active");
+
+      if (currentData) {
+        renderLeaderboard(currentData);
+      }
+    });
+  });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -156,6 +208,8 @@ document.addEventListener("DOMContentLoaded", () => {
   loadBtn.addEventListener("click", () => {
     loadLeaderboard();
   });
+
+  setupSortButtons();
 
   // Auto-load current week on first visit
   loadLeaderboard();
