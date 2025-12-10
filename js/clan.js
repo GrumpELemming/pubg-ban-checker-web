@@ -96,6 +96,7 @@ function sortEntries(entries, mode) {
   const copy = [...entries];
 
   if (mode === "kills") {
+    // Sort by BR kills
     copy.sort((a, b) => {
       if (b.kills !== a.kills) return b.kills - a.kills;
       if (b.matches !== a.matches) return b.matches - a.matches;
@@ -110,7 +111,7 @@ function sortEntries(entries, mode) {
       return b.matches - a.matches;
     });
   } else {
-    // default: matches then kills
+    // default: matches then kills (all BR-only now)
     copy.sort((a, b) => {
       if (b.matches !== a.matches) return b.matches - a.matches;
       return b.kills - a.kills;
@@ -139,7 +140,7 @@ function renderLeaderboard(data) {
   if (!data.entries || data.entries.length === 0) {
     const tr = document.createElement("tr");
     const td = document.createElement("td");
-    td.colSpan = 8; // your table currently has 8 columns
+    td.colSpan = 9; // 9 columns now (including TDM Kills)
     td.className = "muted";
     td.textContent = "No data for this week.";
     tr.appendChild(td);
@@ -162,12 +163,19 @@ function renderLeaderboard(data) {
     tr.appendChild(nameTd);
 
     const matchesTd = document.createElement("td");
+    // BR matches
     matchesTd.textContent = entry.matches ?? 0;
     tr.appendChild(matchesTd);
 
     const killsTd = document.createElement("td");
+    // BR kills
     killsTd.textContent = entry.kills ?? 0;
     tr.appendChild(killsTd);
+
+    const tdmKillsTd = document.createElement("td");
+    const tdmKills = Number(entry.kills_tdm ?? 0);
+    tdmKillsTd.textContent = tdmKills;
+    tr.appendChild(tdmKillsTd);
 
     const kdrTd = document.createElement("td");
     const kdr = Number(entry.kdr ?? 0);
@@ -212,7 +220,7 @@ async function loadLeaderboard() {
     tbody.innerHTML = "";
     const tr = document.createElement("tr");
     const td = document.createElement("td");
-    td.colSpan = 8;
+    td.colSpan = 9;
     td.className = "muted";
     td.textContent = "Failed to load leaderboard.";
     tr.appendChild(td);
