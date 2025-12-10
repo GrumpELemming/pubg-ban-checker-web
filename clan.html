@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PUBG Clan Leaderboard (Private)</title>
   <link rel="stylesheet" href="css/clan.css?v=20250228">
-  <script defer src="js/clan.js?v=20251211"></script>
+  <!-- bump version to bust JS cache after changes -->
+  <script defer src="js/clan.js?v=20251211-tdm1"></script>
 </head>
 <body>
   <div class="nav-panel">
@@ -25,19 +26,19 @@
       <p class="eyebrow">Private clan hub</p>
       <h1>Weekly performance leaderboard</h1>
       <p class="lede">
-        Pulls cached stats for the active clan roster (Steam) and ranks them for the selected ISO week.
+        Pulls cached stats for the active clan roster (Steam) and ranks them for the selected PUBG clan week (Wed → Wed).
         Data is pulled server-side; this page only reads the aggregated leaderboard.
       </p>
-<div class="controls">
-  <label for="weekSelect">Clan week</label>
-  <select id="weekSelect">
-    <!-- JS will populate options like:
-         2025-12-11 - Week 11 Dec 2025 → 18 Dec 2025 -->
-  </select>
-  <button id="loadBtn" type="button">Load</button>
-  <span id="status" class="status">Ready</span>
-</div>
 
+      <div class="controls">
+        <label for="weekSelect">Clan week</label>
+        <select id="weekSelect">
+          <!-- JS will populate options like:
+               2025-12-10 - Week 10 Dec 2025 → 17 Dec 2025 -->
+        </select>
+        <button id="loadBtn" type="button">Load</button>
+        <span id="status" class="status">Ready</span>
+      </div>
     </header>
 
     <section class="clan-card">
@@ -45,15 +46,16 @@
         <div>
           <p class="eyebrow">Clan standings</p>
           <h2 id="summaryTitle">Current week</h2>
-<div class="stat-row">
-  <div class="stat-chip" id="entriesCount">0 players</div>
-  <div class="sort-controls">
-    <button type="button" class="sort-btn sort-active" data-sort="matches">Overall</button>
-    <button type="button" class="sort-btn" data-sort="kills">Kills</button>
-    <button type="button" class="sort-btn" data-sort="time">Time Played</button>
-  </div>
-</div>
-
+          <div class="stat-row">
+            <div class="stat-chip" id="entriesCount">0 players</div>
+            <div class="sort-controls">
+              <button type="button" class="sort-btn sort-active" data-sort="matches">Overall</button>
+              <button type="button" class="sort-btn" data-sort="kills">Kills</button>
+              <button type="button" class="sort-btn" data-sort="time">Time Played</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div class="table-wrap">
         <table id="leaderboard">
@@ -61,16 +63,17 @@
             <tr>
               <th>#</th>
               <th>Name</th>
-              <th>Matches</th>
-              <th>Kills</th>
-              <th>KDR</th>
-              <th>Damage</th>
+              <th>Matches (BR)</th>
+              <th>Kills (BR)</th>
+              <th>TDM Kills</th>
+              <th>KDR (BR)</th>
+              <th>Damage (BR)</th>
               <th>Time Played (h)</th>
-              <th>Wins</th>
+              <th>Wins (BR)</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td colspan="8" class="muted">No data yet.</td></tr>
+            <tr><td colspan="9" class="muted">No data yet.</td></tr>
           </tbody>
         </table>
       </div>
