@@ -41,9 +41,15 @@
         <div>
           <p class="eyebrow">Clan standings</p>
           <h2 id="summaryTitle">Current week</h2>
-        </div>
-        <div class="stat-chip" id="entriesCount">0 players</div>
-      </div>
+<div class="stat-row">
+  <div class="stat-chip" id="entriesCount">0 players</div>
+  <div class="sort-controls">
+    <button type="button" class="sort-btn sort-active" data-sort="matches">Overall</button>
+    <button type="button" class="sort-btn" data-sort="kills">Kills</button>
+    <button type="button" class="sort-btn" data-sort="time">Time Played</button>
+  </div>
+</div>
+
 
       <div class="table-wrap">
         <table id="leaderboard">
