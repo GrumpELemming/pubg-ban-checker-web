@@ -1,12 +1,9 @@
-// js/clan.js
 // Frontend for the private clan leaderboard.
-// Calls your backend via the Cloudflare Worker at /api/clan/weekly-leaderboard.
+// Calls backend via Cloudflare Worker: /api/clan/weekly-leaderboard
 
 const API_BASE = "/api/clan";
 
-function $(id) {
-  return document.getElementById(id);
-}
+function $(id) { return document.getElementById(id); }
 
 let currentData = null;
 let currentSort = "matches";
@@ -16,10 +13,8 @@ let currentSort = "matches";
 // -------------------------
 
 function getClanWeekStart(date) {
-  // Work with a copy
   const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  // JS getDay(): Sunday = 0, Monday = 1, ..., Wednesday = 3
-  const weekday = d.getDay();
+  const weekday = d.getDay(); // 0=Sun ... 3=Wed
   const WED = 3;
   const daysSinceWed = (weekday + 7 - WED) % 7;
   d.setDate(d.getDate() - daysSinceWed);
@@ -29,9 +24,7 @@ function getClanWeekStart(date) {
 
 function formatDateRange(start, end) {
   const opts = { year: "numeric", month: "short", day: "numeric" };
-  const s = start.toLocaleDateString(undefined, opts);
-  const e = end.toLocaleDateString(undefined, opts);
-  return `${s} \u2192 ${e}`;
+  return `${start.toLocaleDateString(undefined, opts)} → ${end.toLocaleDateString(undefined, opts)}`;
 }
 
 function buildWeekOptions(count = 8) {
@@ -39,7 +32,6 @@ function buildWeekOptions(count = 8) {
   if (!select) return;
 
   select.innerHTML = "";
-
   const now = new Date();
   const currentStart = getClanWeekStart(now);
 
@@ -49,16 +41,13 @@ function buildWeekOptions(count = 8) {
     const end = new Date(start);
     end.setDate(end.getDate() + 7);
 
-    const value = start.toISOString().slice(0, 10); // YYYY-MM-DD
+    const value = start.toISOString().slice(0, 10);
     const label = `${value} - Week ${formatDateRange(start, end)}`;
 
     const opt = document.createElement("option");
     opt.value = value;
     opt.textContent = label;
-
-    if (i === 0) {
-      opt.selected = true;
-    }
+    if (i === 0) opt.selected = true;
 
     select.appendChild(opt);
   }
@@ -70,27 +59,14 @@ function buildWeekOptions(count = 8) {
 
 async function fetchLeaderboard(weekParam) {
   const statusEl = $("status");
-  if (statusEl) {
-    statusEl.textContent = "Loading...";
-    statusEl.classList.remove("error");
-  }
+  statusEl.textContent = "Loading...";
+  statusEl.classList.remove("error");
 
   let url = `${API_BASE}/weekly-leaderboard`;
-  if (weekParam) {
-    url += `?week=${encodeURIComponent(weekParam)}`;
-  }
+  if (weekParam) url += `?week=${encodeURIComponent(weekParam)}`;
 
-  const resp = await fetch(url, {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-    },
-  });
-
-  if (!resp.ok) {
-    throw new Error(`Backend error (${resp.status})`);
-  }
-
+  const resp = await fetch(url, { headers: { Accept: "application/json" } });
+  if (!resp.ok) throw new Error(`Backend error (${resp.status})`);
   return resp.json();
 }
 
@@ -98,75 +74,63 @@ function sortEntries(entries, mode) {
   const copy = [...entries];
 
   if (mode === "kills") {
-    copy.sort((a, b) => {
-      if (b.kills !== a.kills) return b.kills - a.kills;
-      if (b.matches !== a.matches) return b.matches - a.matches;
-      return b.damage - a.damage;
-    });
+    copy.sort((a, b) =>
+      b.kills - a.kills || b.matches - a.matches || b.damage - a.damage
+    );
   } else if (mode === "time") {
-    copy.sort((a, b) => {
-      const ta = Number(a.time_played_hours ?? 0);
-      const tb = Number(b.time_played_hours ?? 0);
-      if (tb !== ta) return tb - ta;
-      if (b.kills !== a.kills) return b.kills - a.kills;
-      return b.matches - a.matches;
-    });
+    copy.sort((a, b) =>
+      (b.time_played_hours ?? 0) - (a.time_played_hours ?? 0) ||
+      b.kills - a.kills ||
+      b.matches - a.matches
+    );
   } else {
-    // default: matches then kills (like in-game "Overall")
-    copy.sort((a, b) => {
-      if (b.matches !== a.matches) return b.matches - a.matches;
-      return b.kills - a.kills;
-    });
+    copy.sort((a, b) =>
+      b.matches - a.matches || b.kills - a.kills
+    );
   }
 
   return copy;
 }
 
+// -------------------------
+// INACTIVE MEMBERS PANEL
+// -------------------------
+
 function renderInactive(data) {
   const inactiveTitle = $("inactiveTitle");
-  const inactiveBody = $("inactiveBody");
   const inactiveList = $("inactiveList");
 
-  if (!inactiveTitle || !inactiveBody || !inactiveList) return;
-
   const members = data.inactive_members || [];
-  const count =
-    data.inactive_count !== undefined
-      ? data.inactive_count
-      : members.length ?? 0;
+  const count = members.length;
 
   inactiveTitle.textContent =
-    count === 1
-      ? "Inactive member this week (1)"
-      : `Inactive members this week (${count})`;
+    count === 1 ? "Inactive member this week (1)" : `Inactive members this week (${count})`;
 
   inactiveList.innerHTML = "";
 
-  if (!members.length) {
+  if (!count) {
     const li = document.createElement("li");
     li.className = "muted";
-    li.textContent =
-      "No inactive members this week. Everyone played at least one match.";
+    li.textContent = "No inactive members this week.";
     inactiveList.appendChild(li);
     return;
   }
 
-  members.forEach((m) => {
+  members.forEach(m => {
     const li = document.createElement("li");
-    const name = m.name || m.player_id || "Unknown";
-    const platform = m.platform || "steam";
-    li.textContent = `${name} (${platform})`;
+    li.textContent = `${m.name || m.player_id} (${m.platform || "steam"})`;
     inactiveList.appendChild(li);
   });
 }
+
+// -------------------------
+// MAIN LEADERBOARD
+// -------------------------
 
 function renderLeaderboard(data) {
   const tbody = document.querySelector("#leaderboard tbody");
   const summaryTitle = $("summaryTitle");
   const entriesCount = $("entriesCount");
-  const statusEl = $("status");
-
-  if (!tbody || !summaryTitle || !entriesCount) return;
 
   tbody.innerHTML = "";
 
@@ -177,10 +141,9 @@ function renderLeaderboard(data) {
   entriesCount.textContent =
     data.count === 1 ? "1 player" : `${data.count} players`;
 
-  // render inactive panel too
   renderInactive(data);
 
-  if (!data.entries || data.entries.length === 0) {
+  if (!data.entries.length) {
     const tr = document.createElement("tr");
     const td = document.createElement("td");
     td.colSpan = 8;
@@ -188,7 +151,7 @@ function renderLeaderboard(data) {
     td.textContent = "No data for this week.";
     tr.appendChild(td);
     tbody.appendChild(tr);
-    if (statusEl) statusEl.textContent = "Loaded (no data)";
+    $("status").textContent = "Loaded (no data)";
     return;
   }
 
@@ -196,125 +159,63 @@ function renderLeaderboard(data) {
 
   sorted.forEach((entry, index) => {
     const tr = document.createElement("tr");
-
-    const rankTd = document.createElement("td");
-    rankTd.textContent = String(index + 1);
-    tr.appendChild(rankTd);
-
-    const nameTd = document.createElement("td");
-    nameTd.textContent = entry.name || entry.player_id || "Unknown";
-    tr.appendChild(nameTd);
-
-    const matchesTd = document.createElement("td");
-    matchesTd.textContent = entry.matches ?? 0;
-    tr.appendChild(matchesTd);
-
-    const killsTd = document.createElement("td");
-    killsTd.textContent = entry.kills ?? 0;
-    tr.appendChild(killsTd);
-
-    const kdrTd = document.createElement("td");
-    const kdr = Number(entry.kdr ?? 0);
-    kdrTd.textContent = kdr.toFixed(2);
-    tr.appendChild(kdrTd);
-
-    const dmgTd = document.createElement("td");
-    const dmg = Number(entry.damage ?? 0);
-    dmgTd.textContent = Math.round(dmg).toLocaleString();
-    tr.appendChild(dmgTd);
-
-    const timeTd = document.createElement("td");
-    const hours = Number(entry.time_played_hours ?? 0);
-    timeTd.textContent = hours.toFixed(2);
-    tr.appendChild(timeTd);
-
-    const winsTd = document.createElement("td");
-    winsTd.textContent = entry.wins ?? 0;
-    tr.appendChild(winsTd);
-
+    tr.innerHTML = `
+      <td>${index + 1}</td>
+      <td>${entry.name || entry.player_id}</td>
+      <td>${entry.matches}</td>
+      <td>${entry.kills}</td>
+      <td>${(entry.kdr ?? 0).toFixed(2)}</td>
+      <td>${Math.round(entry.damage).toLocaleString()}</td>
+      <td>${(entry.time_played_hours ?? 0).toFixed(2)}</td>
+      <td>${entry.wins}</td>
+    `;
     tbody.appendChild(tr);
   });
 
-  if (statusEl) statusEl.textContent = "Loaded";
+  $("status").textContent = "Loaded";
 }
 
-async function loadLeaderboard() {
-  const statusEl = $("status");
-  const select = $("weekSelect");
-  const weekParam = select ? select.value || null : null;
+// -------------------------
+// INIT
+// -------------------------
 
+async function loadLeaderboard() {
   try {
-    const data = await fetchLeaderboard(weekParam);
+    const week = $("weekSelect")?.value || null;
+    const data = await fetchLeaderboard(week);
     currentData = data;
     renderLeaderboard(data);
   } catch (err) {
     console.error(err);
-    if (statusEl) {
-      statusEl.textContent = `Error: ${err.message}`;
-      statusEl.classList.add("error");
-    }
-
-    const tbody = document.querySelector("#leaderboard tbody");
-    if (tbody) {
-      tbody.innerHTML = "";
-      const tr = document.createElement("tr");
-      const td = document.createElement("td");
-      td.colSpan = 8;
-      td.className = "muted";
-      td.textContent = "Failed to load leaderboard.";
-      tr.appendChild(td);
-      tbody.appendChild(tr);
-    }
+    $("status").textContent = `Error: ${err.message}`;
+    $("status").classList.add("error");
   }
 }
 
 function setupSortButtons() {
   const buttons = document.querySelectorAll(".sort-btn");
-  buttons.forEach((btn) => {
+  buttons.forEach(btn => {
     btn.addEventListener("click", () => {
-      const mode = btn.getAttribute("data-sort");
-      if (!mode) return;
-
-      currentSort = mode;
-
-      buttons.forEach((b) => b.classList.remove("sort-active"));
+      currentSort = btn.dataset.sort;
+      buttons.forEach(b => b.classList.remove("sort-active"));
       btn.classList.add("sort-active");
-
-      if (currentData) {
-        renderLeaderboard(currentData);
-      }
+      if (currentData) renderLeaderboard(currentData);
     });
   });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const loadBtn = $("loadBtn");
-
-  buildWeekOptions(8); // last 8 clan weeks, including current
-
-  if (loadBtn) {
-    loadBtn.addEventListener("click", () => {
-      loadLeaderboard();
-    });
-  }
-
-  const select = $("weekSelect");
-  if (select) {
-    select.addEventListener("change", () => {
-      loadLeaderboard();
-    });
-  }
-
+  buildWeekOptions(8);
   setupSortButtons();
 
-  const inactiveToggle = $("inactiveToggle");
-  const inactiveBody = $("inactiveBody");
-  if (inactiveToggle && inactiveBody) {
-    inactiveToggle.addEventListener("click", () => {
-      inactiveBody.classList.toggle("collapsed");
-    });
-  }
+  $("loadBtn").addEventListener("click", loadLeaderboard);
+  $("weekSelect").addEventListener("change", loadLeaderboard);
 
-  // Auto-load the currently selected (current) week on first visit
+  // Collapsible inactive panel
+  $("inactiveToggle").addEventListener("click", () => {
+    $("inactiveBody").classList.toggle("expanded");
+  });
+
+  // Load current week automatically
   loadLeaderboard();
 });
