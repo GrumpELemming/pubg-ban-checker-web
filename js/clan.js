@@ -1,5 +1,5 @@
 // js/clan.js
-// Simple frontend for the private clan leaderboard.
+// Frontend for the private clan leaderboard.
 // Calls your backend via the Cloudflare Worker at /api/clan/weekly-leaderboard.
 
 const API_BASE = "/api/clan";
@@ -10,6 +10,61 @@ function $(id) {
 
 let currentData = null;
 let currentSort = "matches";
+
+// -------------------------
+// Clan week helpers (Wed→Wed)
+// -------------------------
+
+function getClanWeekStart(date) {
+  // Work with a copy
+  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  // JS getDay(): Sunday = 0, Monday = 1, ..., Wednesday = 3
+  const weekday = d.getDay();
+  const WED = 3;
+  const daysSinceWed = (weekday + 7 - WED) % 7;
+  d.setDate(d.getDate() - daysSinceWed);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+function formatDateRange(start, end) {
+  const opts = { year: "numeric", month: "short", day: "numeric" };
+  const s = start.toLocaleDateString(undefined, opts);
+  const e = end.toLocaleDateString(undefined, opts);
+  return `${s} → ${e}`;
+}
+
+function buildWeekOptions(count = 8) {
+  const select = $("weekSelect");
+  select.innerHTML = "";
+
+  const now = new Date();
+  const currentStart = getClanWeekStart(now);
+
+  for (let i = 0; i < count; i++) {
+    const start = new Date(currentStart);
+    start.setDate(start.getDate() - 7 * i);
+    const end = new Date(start);
+    end.setDate(end.getDate() + 7);
+
+    const value = start.toISOString().slice(0, 10); // YYYY-MM-DD
+    const label = `${value} - Week ${formatDateRange(start, end)}`;
+
+    const opt = document.createElement("option");
+    opt.value = value;
+    opt.textContent = label;
+
+    if (i === 0) {
+      opt.selected = true;
+    }
+
+    select.appendChild(opt);
+  }
+}
+
+// -------------------------
+// API + rendering
+// -------------------------
 
 async function fetchLeaderboard(weekParam) {
   const statusEl = $("status");
@@ -46,14 +101,14 @@ function sortEntries(entries, mode) {
     });
   } else if (mode === "time") {
     copy.sort((a, b) => {
-      if (b.time_played_hours !== a.time_played_hours) {
-        return b.time_played_hours - a.time_played_hours;
-      }
+      const ta = Number(a.time_played_hours ?? 0);
+      const tb = Number(b.time_played_hours ?? 0);
+      if (tb !== ta) return tb - ta;
       if (b.kills !== a.kills) return b.kills - a.kills;
       return b.matches - a.matches;
     });
   } else {
-    // default: matches then kills (same as backend)
+    // default: matches then kills
     copy.sort((a, b) => {
       if (b.matches !== a.matches) return b.matches - a.matches;
       return b.kills - a.kills;
@@ -71,17 +126,11 @@ function renderLeaderboard(data) {
 
   tbody.innerHTML = "";
 
-  // Week summary
+  // Week summary from backend
   const start = new Date(data.week_start);
   const end = new Date(data.week_end);
-  const fmt = (d) =>
-    d.toLocaleDateString(undefined, {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
+  summaryTitle.textContent = `Week ${formatDateRange(start, end)}`;
 
-  summaryTitle.textContent = `Week ${fmt(start)} \u2192 ${fmt(end)}`;
   entriesCount.textContent =
     data.count === 1 ? "1 player" : `${data.count} players`;
 
@@ -148,23 +197,11 @@ function renderLeaderboard(data) {
 }
 
 async function loadLeaderboard() {
-  const weekInput = $("weekInput");
-  const raw = weekInput.value.trim();
   const statusEl = $("status");
+  const select = $("weekSelect");
+  const weekParam = select.value || null;
 
-  let weekParam = null;
-  if (raw.length > 0) {
-    const upper = raw.toUpperCase();
-    if (upper.includes("W")) {
-      // legacy ISO week "YYYY-WW"
-      weekParam = upper;
-    } else {
-      // prefer YYYY-MM-DD for "clan week" (Wed→Wed)
-      weekParam = raw;
-    }
-  }
-
-  try:
+  try {
     const data = await fetchLeaderboard(weekParam);
     currentData = data;
     renderLeaderboard(data);
@@ -205,12 +242,19 @@ function setupSortButtons() {
 document.addEventListener("DOMContentLoaded", () => {
   const loadBtn = $("loadBtn");
 
+  buildWeekOptions(8); // last 8 clan weeks, including current
+
   loadBtn.addEventListener("click", () => {
+    loadLeaderboard();
+  });
+
+  const select = $("weekSelect");
+  select.addEventListener("change", () => {
     loadLeaderboard();
   });
 
   setupSortButtons();
 
-  // Auto-load current week on first visit
+  // Auto-load the currently selected (current) week on first visit
   loadLeaderboard();
 });
