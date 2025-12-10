@@ -49,19 +49,24 @@ body {
     0 14px 36px rgba(0, 0, 0, 0.9),
     inset 0 0 20px rgba(255, 137, 187, 0.15);
 
-  /* Force perfect centering of all hero content */
+  /* Center the wrapper */
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
   text-align: center;
 }
 
+.hero-inner {
+  max-width: 720px;
+  width: 100%;
+}
+
 .tracker-title {
-  font-size: 2.6rem;
+  font-size: 2.4rem;
   font-weight: 900;
   margin: 0 0 10px;
   text-transform: uppercase;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.18em;   /* slightly reduced so it “feels” centered */
   color: var(--accent-strong);
   text-shadow:
     0 0 10px rgba(255, 95, 209, 0.9),
@@ -74,7 +79,6 @@ body {
   color: var(--muted);
   margin-bottom: 18px;
   line-height: 1.5;
-  max-width: 640px;
 }
 
 /* CONTROLS ------------------------------------------- */
@@ -271,7 +275,7 @@ td {
 
   .tracker-title {
     font-size: 1.9rem;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.15em;
   }
 
   .card-header {
