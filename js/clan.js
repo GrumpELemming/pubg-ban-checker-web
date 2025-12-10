@@ -59,8 +59,10 @@ function buildWeekOptions(count = 8) {
 
 async function fetchLeaderboard(weekParam) {
   const statusEl = $("status");
-  statusEl.textContent = "Loading...";
-  statusEl.classList.remove("error");
+  if (statusEl) {
+    statusEl.textContent = "Loading...";
+    statusEl.classList.remove("error");
+  }
 
   let url = `${API_BASE}/weekly-leaderboard`;
   if (weekParam) url += `?week=${encodeURIComponent(weekParam)}`;
@@ -79,11 +81,12 @@ function sortEntries(entries, mode) {
     );
   } else if (mode === "time") {
     copy.sort((a, b) =>
-      (b.time_played_hours ?? 0) - (a.time_played_hours ?? 0) ||
+      (Number(b.time_played_hours ?? 0)) - (Number(a.time_played_hours ?? 0)) ||
       b.kills - a.kills ||
       b.matches - a.matches
     );
   } else {
+    // Overall: matches then kills
     copy.sort((a, b) =>
       b.matches - a.matches || b.kills - a.kills
     );
@@ -99,12 +102,15 @@ function sortEntries(entries, mode) {
 function renderInactive(data) {
   const inactiveTitle = $("inactiveTitle");
   const inactiveList = $("inactiveList");
+  if (!inactiveTitle || !inactiveList) return;
 
   const members = data.inactive_members || [];
   const count = members.length;
 
   inactiveTitle.textContent =
-    count === 1 ? "Inactive member this week (1)" : `Inactive members this week (${count})`;
+    count === 1
+      ? "Inactive member this week (1)"
+      : `Inactive members this week (${count})`;
 
   inactiveList.innerHTML = "";
 
@@ -118,7 +124,9 @@ function renderInactive(data) {
 
   members.forEach(m => {
     const li = document.createElement("li");
-    li.textContent = `${m.name || m.player_id} (${m.platform || "steam"})`;
+    const name = m.name || m.player_id || "Unknown";
+    const platform = m.platform || "steam";
+    li.textContent = `${name} (${platform})`;
     inactiveList.appendChild(li);
   });
 }
@@ -131,6 +139,9 @@ function renderLeaderboard(data) {
   const tbody = document.querySelector("#leaderboard tbody");
   const summaryTitle = $("summaryTitle");
   const entriesCount = $("entriesCount");
+  const statusEl = $("status");
+
+  if (!tbody || !summaryTitle || !entriesCount) return;
 
   tbody.innerHTML = "";
 
@@ -138,12 +149,14 @@ function renderLeaderboard(data) {
   const end = new Date(data.week_end);
   summaryTitle.textContent = `Week ${formatDateRange(start, end)}`;
 
-  entriesCount.textContent =
-    data.count === 1 ? "1 player" : `${data.count} players`;
+  const count = data.count ?? (data.entries ? data.entries.length : 0);
+  entriesCount.textContent = count === 1 ? "1 player" : `${count} players`;
 
+  // inactive panel
   renderInactive(data);
 
-  if (!data.entries.length) {
+  const entries = data.entries || [];
+  if (!entries.length) {
     const tr = document.createElement("tr");
     const td = document.createElement("td");
     td.colSpan = 8;
@@ -151,28 +164,32 @@ function renderLeaderboard(data) {
     td.textContent = "No data for this week.";
     tr.appendChild(td);
     tbody.appendChild(tr);
-    $("status").textContent = "Loaded (no data)";
+    if (statusEl) statusEl.textContent = "Loaded (no data)";
     return;
   }
 
-  const sorted = sortEntries(data.entries, currentSort);
+  const sorted = sortEntries(entries, currentSort);
 
   sorted.forEach((entry, index) => {
     const tr = document.createElement("tr");
+
+    const timeHours = Number(entry.time_played_hours ?? 0); // 👈 ensure number
+
     tr.innerHTML = `
       <td>${index + 1}</td>
-      <td>${entry.name || entry.player_id}</td>
-      <td>${entry.matches}</td>
-      <td>${entry.kills}</td>
-      <td>${(entry.kdr ?? 0).toFixed(2)}</td>
-      <td>${Math.round(entry.damage).toLocaleString()}</td>
-      <td>${(entry.time_played_hours ?? 0).toFixed(2)}</td>
-      <td>${entry.wins}</td>
+      <td>${entry.name || entry.player_id || "Unknown"}</td>
+      <td>${entry.matches ?? 0}</td>
+      <td>${entry.kills ?? 0}</td>
+      <td>${Number(entry.kdr ?? 0).toFixed(2)}</td>
+      <td>${Math.round(Number(entry.damage ?? 0)).toLocaleString()}</td>
+      <td>${timeHours.toFixed(2)}</td>
+      <td>${entry.wins ?? 0}</td>
     `;
+
     tbody.appendChild(tr);
   });
 
-  $("status").textContent = "Loaded";
+  if (statusEl) statusEl.textContent = "Loaded";
 }
 
 // -------------------------
@@ -180,15 +197,32 @@ function renderLeaderboard(data) {
 // -------------------------
 
 async function loadLeaderboard() {
+  const statusEl = $("status");
+  const select = $("weekSelect");
+  const weekParam = select ? (select.value || null) : null;
+
   try {
-    const week = $("weekSelect")?.value || null;
-    const data = await fetchLeaderboard(week);
+    const data = await fetchLeaderboard(weekParam);
     currentData = data;
     renderLeaderboard(data);
   } catch (err) {
     console.error(err);
-    $("status").textContent = `Error: ${err.message}`;
-    $("status").classList.add("error");
+    if (statusEl) {
+      statusEl.textContent = `Error: ${err.message}`;
+      statusEl.classList.add("error");
+    }
+
+    const tbody = document.querySelector("#leaderboard tbody");
+    if (tbody) {
+      tbody.innerHTML = "";
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = 8;
+      td.className = "muted";
+      td.textContent = "Failed to load leaderboard.";
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+    }
   }
 }
 
@@ -196,26 +230,44 @@ function setupSortButtons() {
   const buttons = document.querySelectorAll(".sort-btn");
   buttons.forEach(btn => {
     btn.addEventListener("click", () => {
-      currentSort = btn.dataset.sort;
+      const mode = btn.getAttribute("data-sort");
+      if (!mode) return;
+
+      currentSort = mode;
+
       buttons.forEach(b => b.classList.remove("sort-active"));
       btn.classList.add("sort-active");
-      if (currentData) renderLeaderboard(currentData);
+
+      if (currentData) {
+        renderLeaderboard(currentData);
+      }
     });
   });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   buildWeekOptions(8);
+
+  const loadBtn = $("loadBtn");
+  if (loadBtn) {
+    loadBtn.addEventListener("click", loadLeaderboard);
+  }
+
+  const select = $("weekSelect");
+  if (select) {
+    select.addEventListener("change", loadLeaderboard);
+  }
+
   setupSortButtons();
 
-  $("loadBtn").addEventListener("click", loadLeaderboard);
-  $("weekSelect").addEventListener("change", loadLeaderboard);
+  const inactiveToggle = $("inactiveToggle");
+  const inactiveBody = $("inactiveBody");
+  if (inactiveToggle && inactiveBody) {
+    inactiveToggle.addEventListener("click", () => {
+      inactiveBody.classList.toggle("expanded"); // CSS uses .expanded
+    });
+  }
 
-  // Collapsible inactive panel
-  $("inactiveToggle").addEventListener("click", () => {
-    $("inactiveBody").classList.toggle("expanded");
-  });
-
-  // Load current week automatically
+  // Auto-load current week
   loadLeaderboard();
 });
