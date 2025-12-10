@@ -31,7 +31,7 @@ function formatDateRange(start, end) {
   const opts = { year: "numeric", month: "short", day: "numeric" };
   const s = start.toLocaleDateString(undefined, opts);
   const e = end.toLocaleDateString(undefined, opts);
-  return `${s} → ${e}`;
+  return `${s} \u2192 ${e}`;
 }
 
 function buildWeekOptions(count = 8) {
@@ -137,7 +137,7 @@ function renderLeaderboard(data) {
   if (!data.entries || data.entries.length === 0) {
     const tr = document.createElement("tr");
     const td = document.createElement("td");
-    td.colSpan = 9;
+    td.colSpan = 8; // your table currently has 8 columns
     td.className = "muted";
     td.textContent = "No data for this week.";
     tr.appendChild(td);
@@ -158,10 +158,6 @@ function renderLeaderboard(data) {
     const nameTd = document.createElement("td");
     nameTd.textContent = entry.name || entry.player_id || "Unknown";
     tr.appendChild(nameTd);
-
-    const platformTd = document.createElement("td");
-    platformTd.textContent = entry.platform || "steam";
-    tr.appendChild(platformTd);
 
     const matchesTd = document.createElement("td");
     matchesTd.textContent = entry.matches ?? 0;
@@ -214,7 +210,7 @@ async function loadLeaderboard() {
     tbody.innerHTML = "";
     const tr = document.createElement("tr");
     const td = document.createElement("td");
-    td.colSpan = 9;
+    td.colSpan = 8;
     td.className = "muted";
     td.textContent = "Failed to load leaderboard.";
     tr.appendChild(td);
