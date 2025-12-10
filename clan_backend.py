@@ -29,6 +29,7 @@ PUBG_API_KEY = os.getenv("PUBG_API_KEY")
 PROXY_SHARED_SECRET = os.getenv("PROXY_SHARED_SECRET")
 CRON_SECRET = os.getenv("CRON_SECRET")
 DATABASE_URL = os.getenv("DATABASE_URL")
+CLAN_TASK_MEMBER_LIMIT = int(os.getenv("CLAN_TASK_MEMBER_LIMIT", "1"))
 
 if not all([PUBG_API_KEY, PROXY_SHARED_SECRET, CRON_SECRET, DATABASE_URL]):
     sys.exit("Missing one of required envs: PUBG_API_KEY, PROXY_SHARED_SECRET, CRON_SECRET, DATABASE_URL")
@@ -121,7 +122,7 @@ def resolve_player_name(player_id, platform):
 
 def fetch_player_matches(player_id, platform):
     url = f"https://api.pubg.com/shards/{platform}/players/{player_id}"
-    r = requests.get(url, headers=HEADERS, timeout=10)
+    r = requests.get(url, headers=HEADERS, timeout=15)
     if r.status_code != 200:
         return None, None
     data = r.json().get("data", {})
@@ -132,7 +133,7 @@ def fetch_player_matches(player_id, platform):
 
 def fetch_match(match_id, platform):
     url = f"https://api.pubg.com/shards/{platform}/matches/{match_id}"
-    r = requests.get(url, headers=HEADERS, timeout=10)
+    r = requests.get(url, headers=HEADERS, timeout=15)
     if r.status_code != 200:
         return None
     return r.json()
@@ -146,9 +147,12 @@ def extract_player_stats(match_json, player_id):
         created_dt = datetime.now(timezone.utc)
     queue = match_json["data"]["attributes"].get("gameMode")
 
-    participant = None
+    participant = None    # find this player's participant record
     for item in match_json.get("included", []):
-        if item.get("type") == "participant" and item.get("attributes", {}).get("stats", {}).get("playerId") == player_id:
+        if (
+            item.get("type") == "participant"
+            and item.get("attributes", {}).get("stats", {}).get("playerId") == player_id
+        ):
             participant = item
             break
     if not participant:
@@ -214,20 +218,48 @@ def remove_member():
 
 @app.route("/tasks/pull-latest", methods=["POST"])
 def pull_latest():
-    members = fetch_all("SELECT player_id, platform, last_checked_at FROM clan_members WHERE active=true")
-    processed = 0
+    """
+    Walk active clan members and fetch recent matches.
+
+    We respect CLAN_TASK_MEMBER_LIMIT so that cron/GitHub Actions runs don't
+    take forever. Members are processed in order of least-recently-checked.
+    """
+    members = fetch_all(
+        """
+        SELECT player_id, platform, last_checked_at
+        FROM clan_members
+        WHERE active=true
+        ORDER BY last_checked_at NULLS FIRST, added_at ASC
+        """
+    )
+
+    processed_members = 0
+    processed_matches = 0
+    now = datetime.now(timezone.utc)
+
     for m in members:
+        if processed_members >= CLAN_TASK_MEMBER_LIMIT:
+            break
+
         player_id = m["player_id"]
         platform = m["platform"]
-        last_checked = m["last_checked_at"] or datetime.now(timezone.utc) - timedelta(days=14)
+        last_checked = m["last_checked_at"] or (now - timedelta(days=14))
 
         current_name, matches = fetch_player_matches(player_id, platform)
         if current_name:
-            execute("UPDATE clan_members SET current_name=%s WHERE player_id=%s", (current_name, player_id))
+            execute(
+                "UPDATE clan_members SET current_name=%s WHERE player_id=%s",
+                (current_name, player_id),
+            )
         if not matches:
+            execute(
+                "UPDATE clan_members SET last_checked_at=%s WHERE player_id=%s",
+                (now, player_id),
+            )
+            processed_members += 1
             continue
 
-        # process matches newer than last_checked
+        # Process matches newer than last_checked
         for match_ref in matches:
             match_id = match_ref.get("id")
             if not match_id:
@@ -240,10 +272,14 @@ def pull_latest():
                 continue
             if stats["created_at"] <= last_checked:
                 continue
+
             try:
                 execute(
                     """
-                    INSERT INTO match_stats (player_id, match_id, created_at, queue, kills, damage, time_survived, win_place, win)
+                    INSERT INTO match_stats (
+                      player_id, match_id, created_at,
+                      queue, kills, damage, time_survived, win_place, win
+                    )
                     VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
                     ON CONFLICT DO NOTHING
                     """,
@@ -259,38 +295,101 @@ def pull_latest():
                         stats["win"],
                     ),
                 )
+                processed_matches += 1
             except Exception:
                 conn.rollback()
                 continue
-            processed += 1
-        # update checkpoint
-        execute("UPDATE clan_members SET last_checked_at=%s WHERE player_id=%s", (datetime.now(timezone.utc), player_id))
+
+        execute(
+            "UPDATE clan_members SET last_checked_at=%s WHERE player_id=%s",
+            (now, player_id),
+        )
+        processed_members += 1
 
         # small delay to be gentle
         time.sleep(0.2)
 
-    return jsonify({"ok": True, "processed": processed})
+    return jsonify(
+        {
+            "ok": True,
+            "processed": processed_matches,
+            "members_processed": processed_members,
+            "member_limit": CLAN_TASK_MEMBER_LIMIT,
+        }
+    )
 
 
-def iso_week_bounds(iso_year, iso_week):
-    # ISO weeks start Monday; compute start-of-week in UTC
-    first = datetime.strptime(f"{iso_year}-W{iso_week}-1", "%G-W%V-%u").replace(tzinfo=timezone.utc)
-    return first, first + timedelta(days=7)
+# ---------------------------------------------------------------------------
+# Week helpers (Wed → Wed)
+# ---------------------------------------------------------------------------
+def clan_week_bounds_for_date(d):
+    """
+    Given a date, return the start/end datetimes (UTC) for the clan week:
+
+    - Weeks run Wednesday 00:00 → next Wednesday 00:00 (UTC).
+    - d can be any date inside that week.
+    """
+    if isinstance(d, datetime):
+        d = d.date()
+    # Python weekday: Monday=0 ... Sunday=6, we want Wednesday=2
+    wd = d.weekday()
+    days_since_wed = (wd - 2) % 7
+    start_date = d - timedelta(days=days_since_wed)
+    start = datetime(start_date.year, start_date.month, start_date.day, tzinfo=timezone.utc)
+    end = start + timedelta(days=7)
+    return start, end
 
 
+def clan_week_bounds(now=None, week_param=None):
+    """
+    Compute clan week bounds based on:
+    - week_param None      -> use current date
+    - week_param YYYY-MM-DD -> parse that date
+    - week_param YYYY-WW or YYYY-WWW (with 'W') -> still supported, but
+      we just take the Monday of that ISO week and then find the Wednesday
+      in that week and use Wed→Wed.
+    """
+    if now is None:
+        now = datetime.now(timezone.utc)
+
+    if not week_param:
+        return clan_week_bounds_for_date(now.date())
+
+    week_param = week_param.strip()
+
+    # YYYY-MM-DD (preferred)
+    if "-" in week_param and "W" not in week_param.upper():
+        try:
+            d = datetime.strptime(week_param, "%Y-%m-%d").date()
+            return clan_week_bounds_for_date(d)
+        except Exception:
+            raise ValueError("Invalid date format; use YYYY-MM-DD")
+
+    # Legacy ISO week: YYYY-WW or YYYY-WWW
+    try:
+        if "W" not in week_param.upper():
+            raise ValueError
+        # normalise "YYYY-WW" or "YYYY-WWW"
+        iso_str = week_param.upper()
+        # We want Monday of that ISO week, then convert to clan week
+        monday = datetime.strptime(iso_str + "-1", "%G-W%V-%u").date()
+        return clan_week_bounds_for_date(monday)
+    except Exception:
+        raise ValueError("Invalid week format; use YYYY-MM-DD or YYYY-WW")
+
+
+# ---------------------------------------------------------------------------
+# Weekly leaderboard
+# ---------------------------------------------------------------------------
 @app.route("/clan/weekly-leaderboard")
 def weekly_leaderboard():
-    week_param = request.args.get("week")  # YYYY-WW
+    week_param = request.args.get("week")  # "" or None or "YYYY-MM-DD" or "YYYY-WW"
     now = datetime.now(timezone.utc)
-    if week_param:
-        try:
-            iso_year, iso_week = week_param.split("-W")
-            start, end = iso_week_bounds(int(iso_year), int(iso_week))
-        except Exception:
-            abort(400, "Invalid week format. Use YYYY-WW.")
-    else:
-        iso_year, iso_week, _ = now.isocalendar()
-        start, end = iso_week_bounds(iso_year, iso_week)
+
+    try:
+        start, end = clan_week_bounds(now=now, week_param=week_param)
+    except ValueError as e:
+        abort(400, str(e))
 
     rows = fetch_all(
         """
@@ -302,42 +401,61 @@ def weekly_leaderboard():
           COALESCE(SUM(ms.time_survived),0) AS time_s,
           COALESCE(SUM(CASE WHEN ms.win THEN 1 ELSE 0 END),0) AS wins
         FROM match_stats ms
-        WHERE ms.created_at BETWEEN %s AND %s
+        WHERE ms.created_at >= %s AND ms.created_at < %s
         GROUP BY ms.player_id
         """,
         (start, end),
     )
 
-    member_map = {m["player_id"]: m for m in fetch_all("SELECT player_id, current_name, platform FROM clan_members")}
+    member_map = {
+        m["player_id"]: m
+        for m in fetch_all("SELECT player_id, current_name, platform FROM clan_members")
+    }
 
     leaderboard = []
     for r in rows:
-        deaths = max(0, r["matches_played"] - r["wins"])
-        kdr = r["kills"] / max(1, deaths)
+        matches = int(r["matches_played"])
+        kills = int(r["kills"])
+        damage = float(r["damage"])
+        time_s = float(r["time_s"])
+        wins = int(r["wins"])
+        deaths = max(0, matches - wins)
+        kdr = kills / max(1, deaths)
+        hours = time_s / 3600.0
+
+        kills_per_match = kills / max(1, matches)
+        win_rate = (wins / max(1, matches)) * 100.0
+
         entry = {
-          "player_id": r["player_id"],
-          "name": member_map.get(r["player_id"], {}).get("current_name"),
-          "platform": member_map.get(r["player_id"], {}).get("platform", "steam"),
-          "matches": r["matches_played"],
-          "kills": int(r["kills"]),
-          "damage": float(r["damage"]),
-          "time_played_hours": round(r["time_s"] / 3600, 2),
-          "wins": int(r["wins"]),
-          "kdr": round(kdr, 2),
+            "player_id": r["player_id"],
+            "name": member_map.get(r["player_id"], {}).get("current_name"),
+            "platform": member_map.get(r["player_id"], {}).get("platform", "steam"),
+            "matches": matches,
+            "kills": kills,
+            "damage": round(damage, 2),
+            "time_played_hours": round(hours, 2),
+            "wins": wins,
+            "kdr": round(kdr, 2),
+            "kills_per_match": round(kills_per_match, 2),
+            "win_rate": round(win_rate, 1),
         }
         leaderboard.append(entry)
 
+    # Default sort: matches desc, then kills desc
     leaderboard.sort(key=lambda e: (e["matches"], e["kills"]), reverse=True)
 
-    return jsonify({
-      "week_start": start.isoformat(),
-      "week_end": end.isoformat(),
-      "count": len(leaderboard),
-      "entries": leaderboard
-    })
+    return jsonify(
+        {
+            "week_start": start.isoformat(),
+            "week_end": end.isoformat(),
+            "count": len(leaderboard),
+            "entries": leaderboard,
+        }
+    )
 
 
 if __name__ == "__main__":
     # Optional: initialize schema
     execute(SCHEMA_SQL)
+    print("Schema created or already exists.")
     app.run(host="0.0.0.0", port=8080)
