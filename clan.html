@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PUBG Clan Leaderboard (Private)</title>
-  <link rel="stylesheet" href="css/clan.css?v=20251213">
-  <script defer src="js/clan.js?v=20251213"></script>
+  <title>LULZ CLAN TRACKER</title>
+  <link rel="stylesheet" href="css/clan.css?v=20251214">
+  <script defer src="js/clan.js?v=20251214"></script>
 </head>
 <body>
   <div class="nav-panel">
     <div class="nav-title">PUBG BAN CHECKER</div>
+    <div class="nav-subtitle">LULZ CLAN TRACKER</div>
     <div class="nav-panel-buttons">
       <a href="index.html"><button type="button">Ban Checker</button></a>
       <a href="watchlist.html"><button type="button">Watchlist</button></a>
@@ -23,10 +24,10 @@
   <main class="clan-shell">
     <header class="clan-hero">
       <p class="eyebrow">Private clan hub</p>
-      <h1>Weekly performance leaderboard</h1>
+      <h1>LULZ CLAN TRACKER</h1>
       <p class="lede">
-        Pulls cached stats for the active clan roster (Steam) and ranks them for the selected clan week (Wed → Wed).
-        Data is pulled server-side; this page only reads the aggregated leaderboard.
+        Weekly performance leaderboard for the LULZ clan (Wed → Wed).
+        Stats are pulled server-side and cached; this page only reads the aggregated results.
       </p>
       <div class="controls">
         <label for="weekSelect">Clan week</label>
@@ -86,7 +87,7 @@
           </div>
         </div>
       </div>
-      <div class="inactive-body" id="inactiveBody">
+      <div class="inactive-body collapsed" id="inactiveBody">
         <ul id="inactiveList" class="inactive-list">
           <li class="muted">Loading…</li>
         </ul>
