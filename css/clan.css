@@ -1,325 +1,461 @@
+/* ==========================================================================
+   PUBG Clan Leaderboard – Visual Style Only
+   (Safe: no JS / logic changes required)
+   ========================================================================== */
+
 :root {
-  --bg: #05040a;
-  --bg-accent-1: rgba(255, 77, 196, 0.15);
-  --bg-accent-2: rgba(94, 217, 255, 0.18);
-  --panel: rgba(10, 14, 30, 0.95);
-  --border: rgba(255, 166, 0, 0.6);
-  --text: #f7f6ff;
-  --muted: #a1a5c0;
-  --accent: #ffb347;
-  --accent-strong: #ff5fd1;
+  --bg-main: #050811;
+  --bg-elevated: #0b101d;
+  --bg-elevated-soft: #0d1424;
+  --bg-row-alt: #0f1828;
+  --border-soft: #252b3b;
+  --accent: #f6c249;        /* PUBG yellow */
+  --accent-soft: rgba(246, 194, 73, 0.18);
+  --accent-strong: #ffdd6b;
+  --text-main: #f4f6ff;
+  --text-muted: #9aa0b8;
+  --text-soft: #6b7280;
+  --danger: #ef4444;
+  --success: #22c55e;
+  --radius-lg: 18px;
+  --radius-pill: 999px;
+  --shadow-soft: 0 24px 80px rgba(0, 0, 0, 0.7);
+  --transition-fast: 160ms ease-out;
+  --transition-med: 220ms ease-out;
 }
 
-* {
+/* Global layout
+   -------------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
+html,
 body {
   margin: 0;
+  padding: 0;
+}
+
+body {
   min-height: 100vh;
-  padding: 32px clamp(18px, 4vw, 64px) 64px;
-  font-family: "Rajdhani", sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
   background:
-    radial-gradient(circle at 15% 0%, var(--bg-accent-1), transparent 55%),
-    radial-gradient(circle at 85% 0%, var(--bg-accent-2), transparent 55%),
-    var(--bg);
-  color: var(--text);
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.clan-shell {
-  width: min(1040px, 96vw);
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-/* HERO -------------------------------------------------- */
-
-.clan-hero {
-  background:
-    radial-gradient(circle at 0 0, rgba(255, 148, 114, 0.18), transparent 55%),
-    var(--panel);
-  border-radius: 18px;
-  padding: 20px 22px 24px;
-  border: 1px solid rgba(255, 166, 0, 0.55);
-  box-shadow:
-    0 14px 36px rgba(0, 0, 0, 0.9),
-    inset 0 0 20px rgba(255, 137, 187, 0.15);
-}
-
-/* full-width neon bar */
-
-.hero-title-bar {
-  width: 100%;
-  border-radius: 16px;
-  padding: 14px 16px;
-  margin-bottom: 18px;
-
-  background:
-    radial-gradient(circle at 15% 50%, rgba(255, 95, 209, 0.9), rgba(255, 95, 209, 0.55)),
-    radial-gradient(circle at 85% 50%, rgba(255, 202, 112, 0.9), rgba(255, 148, 114, 0.65));
-  box-shadow:
-    0 0 35px rgba(255, 95, 209, 0.75),
-    0 0 60px rgba(255, 148, 114, 0.65);
+    radial-gradient(circle at 0% 0%, #172554 0, transparent 50%),
+    radial-gradient(circle at 100% 100%, #451a03 0, transparent 55%),
+    var(--bg-main);
+  color: var(--text-main);
   display: flex;
   justify-content: center;
-  align-items: center;
+  padding: 32px 12px;
 }
 
-.tracker-title {
-  font-size: 2.6rem;
-  font-weight: 900;
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.32em;
-  color: #ffe9ff;
-  text-align: center;
+/* Main wrapper – works even if your HTML just has a <div> or <main> around content */
+
+main,
+.clan-container,
+#app,
+#root {
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
 }
 
-/* hero body under the neon bar */
+/* Card shell for the leaderboard section */
 
-.hero-body {
+.clan-leaderboard-shell {
+  background: radial-gradient(circle at top, rgba(15, 23, 42, 0.9), #020617);
+  border-radius: 24px;
+  padding: 22px 22px 18px;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+.clan-leaderboard-shell::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: radial-gradient(circle at top left,
+      rgba(246, 194, 73, 0.18),
+      transparent 55%);
+  opacity: 0.6;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+/* Header
+   -------------------------------------------------------------------------- */
+
+.clan-header {
   display: flex;
-  gap: 24px;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+  position: relative;
+  z-index: 1;
+}
+
+.clan-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.clan-title {
+  font-size: 1.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-strong);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.clan-title span.badge-live {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  padding: 2px 9px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(90deg, #22c55e, #4ade80);
+  color: #022c22;
+  letter-spacing: 0.08em;
+}
+
+.clan-subtitle {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+/* Right area – week info & buttons */
+
+.clan-header-right {
+  display: flex;
   flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
 }
 
-.lede {
-  flex: 1.4;
-  min-width: 260px;
-  color: var(--muted);
-  margin: 0;
-  line-height: 1.6;
+.week-chip {
+  font-size: 0.78rem;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(148, 163, 184, 0.55);
+  background: rgba(15, 23, 42, 0.85);
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
-/* CONTROLS ---------------------------------------------- */
+.week-chip strong {
+  color: var(--accent-strong);
+}
 
-.controls {
-  flex: 1;
-  min-width: 260px;
+.clan-legend {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  align-items: center;
-  justify-content: flex-end;
+  font-size: 0.74rem;
+  color: var(--text-soft);
 }
 
-.controls-label {
-  font-weight: 700;
-  margin-right: 4px;
+.clan-legend span {
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(55, 65, 81, 0.8);
+  background: rgba(15, 23, 42, 0.9);
 }
 
-.controls select {
-  padding: 9px 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 166, 0, 0.6);
-  background: rgba(8, 10, 24, 0.85);
-  color: var(--text);
-  min-width: 220px;
-}
+/* Buttons (generic) */
 
-.controls button {
-  padding: 9px 18px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 166, 0, 0.8);
-  background: linear-gradient(120deg, #ffb347, #ff5fd1);
-  color: #1a0930;
-  font-weight: 700;
-  cursor: pointer;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-}
-
-.controls button:hover {
-  filter: brightness(1.05);
-}
-
-.status {
-  color: var(--muted);
-  min-height: 18px;
-}
-
-.status.error {
-  color: #ff8d9d;
-}
-
-/* CARDS ------------------------------------------------- */
-
-.clan-card {
-  background: var(--panel);
-  border-radius: 16px;
-  padding: 16px;
-  border: 1px solid rgba(255, 166, 0, 0.45);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.85);
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-.card-header h2 {
-  margin: 2px 0 0;
-  font-size: 18px;
-  letter-spacing: 0.04em;
-}
-
-.stat-row {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-/* chips / sort buttons ---------------------------------- */
-
-.stat-chip {
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(11, 21, 60, 0.9);
-  color: #ffd9a1;
-  border: 1px solid rgba(255, 166, 0, 0.7);
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-.sort-controls {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.sort-btn {
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(12, 18, 40, 0.8);
-  color: var(--muted);
+button,
+.btn {
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(55, 65, 81, 0.9);
+  background: linear-gradient(120deg, #111827, #020617);
+  color: var(--text-main);
+  padding: 6px 14px;
   font-size: 0.8rem;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.06em;
   cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background var(--transition-med), transform var(--transition-fast),
+    box-shadow var(--transition-fast), border-color var(--transition-fast),
+    color var(--transition-fast);
 }
 
-.sort-btn.sort-active {
-  border-color: var(--accent-strong);
-  background: radial-gradient(circle at 0 0, rgba(255, 95, 209, 0.4), rgba(9, 14, 30, 0.94));
-  color: #ffeefc;
+button:hover,
+.btn:hover {
+  background: radial-gradient(circle at top,
+      rgba(248, 250, 252, 0.07),
+      #020617);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 0 0 1px rgba(248, 250, 252, 0.06),
+    0 18px 40px rgba(15, 23, 42, 0.9);
 }
 
-/* TABLE ------------------------------------------------- */
+button:active,
+.btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
 
-.table-wrap {
-  overflow-x: auto;
-  margin-top: 6px;
+/* Leaderboard table
+   -------------------------------------------------------------------------- */
+
+.clan-table-wrapper {
+  margin-top: 10px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border-soft);
+  background: radial-gradient(circle at top, rgba(15, 23, 42, 0.95), #020617);
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 100%;
+  table-layout: fixed;
 }
 
-th, td {
-  padding: 9px 8px;
-  text-align: left;
+thead {
+  background: linear-gradient(180deg,
+      rgba(15, 23, 42, 0.96),
+      rgba(15, 23, 42, 0.85));
 }
 
-th {
-  background: linear-gradient(90deg, rgba(255, 166, 0, 0.18), rgba(255, 95, 209, 0.1));
-  color: #fff1d4;
-  font-size: 11px;
-  letter-spacing: 0.14em;
+thead th {
+  padding: 10px 8px;
+  font-size: 0.72rem;
   text-transform: uppercase;
+  letter-spacing: 0.09em;
+  text-align: left;
+  color: var(--text-soft);
+  border-bottom: 1px solid rgba(51, 65, 85, 0.9);
+  white-space: nowrap;
 }
 
-tbody tr:nth-child(odd) {
-  background: rgba(255, 255, 255, 0.02);
+thead th:first-child {
+  padding-left: 14px;
+}
+
+thead th:last-child {
+  padding-right: 14px;
+}
+
+tbody tr {
+  transition: background var(--transition-fast), transform var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 tbody tr:nth-child(even) {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(15, 23, 42, 0.8);
+}
+
+tbody tr:nth-child(odd) {
+  background: rgba(15, 23, 42, 0.95);
+}
+
+tbody tr:hover {
+  background: radial-gradient(circle at left,
+      var(--accent-soft),
+      rgba(15, 23, 42, 1));
+  transform: translateY(-1px);
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.9);
 }
 
 td {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  font-size: 14px;
+  padding: 9px 8px;
+  font-size: 0.8rem;
+  border-bottom: 1px solid rgba(30, 41, 59, 0.85);
+  color: var(--text-muted);
 }
 
-.muted {
-  color: var(--muted);
+td:first-child {
+  padding-left: 14px;
+}
+
+td:last-child {
+  padding-right: 14px;
+}
+
+/* Player column styling (name + platform badge) */
+
+.clan-player-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.clan-rank-pill {
+  font-size: 0.78rem;
+  width: 26px;
   text-align: center;
+  padding: 3px 0;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(75, 85, 99, 0.9);
+  color: var(--text-soft);
+  flex-shrink: 0;
 }
 
-/* INACTIVE PANEL ---------------------------------------- */
-
-.inactive-card {
-  margin-top: 6px;
+.clan-player-name {
+  font-weight: 500;
+  color: var(--text-main);
+  letter-spacing: 0.02em;
 }
 
-.inactive-body {
-  margin-top: 6px;
+.clan-platform-badge {
+  font-size: 0.65rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(55, 65, 81, 0.8);
+  color: var(--text-soft);
+  background: rgba(15, 23, 42, 0.96);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
-.inactive-body.collapsed {
+/* Metric styling */
+
+.clan-metric-kills {
+  color: var(--accent-strong);
+  font-weight: 600;
+}
+
+.clan-metric-kdr {
+  font-variant-numeric: tabular-nums;
+}
+
+.clan-metric-wins {
+  color: var(--success);
+}
+
+/* Inactive members panel
+   -------------------------------------------------------------------------- */
+
+.inactive-panel {
+  margin-top: 16px;
+  padding: 10px 12px;
+  border-radius: var(--radius-lg);
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px dashed rgba(75, 85, 99, 0.9);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.inactive-panel-title {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+  color: var(--text-soft);
+  margin-right: 4px;
+}
+
+.inactive-chip {
+  font-size: 0.74rem;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.96);
+  border: 1px solid rgba(55, 65, 81, 0.9);
+  color: var(--text-muted);
+}
+
+/* Status / error banners
+   -------------------------------------------------------------------------- */
+
+.status-banner,
+.error-banner {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: var(--radius-lg);
+  font-size: 0.78rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-banner {
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid rgba(55, 65, 81, 0.9);
+  color: var(--text-muted);
+}
+
+.error-banner {
+  background: rgba(127, 29, 29, 0.95);
+  border: 1px solid rgba(248, 113, 113, 0.55);
+  color: #fee2e2;
+}
+
+/* Loading shimmer (optional, safe even if not used)
+   -------------------------------------------------------------------------- */
+
+.loading-overlay {
+  position: absolute;
+  inset: 0;
   display: none;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top,
+      rgba(15, 23, 42, 0.9),
+      rgba(15, 23, 42, 0.98));
+  z-index: 5;
 }
 
-.inactive-list {
-  list-style: none;
-  padding-left: 0;
-  margin: 0;
+.loading-overlay.active {
+  display: flex;
 }
 
-.inactive-list li {
-  padding: 5px 3px;
-  font-size: 14px;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  text-align: left;
+.loading-pulse {
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  border: 3px solid rgba(249, 250, 251, 0.08);
+  border-top-color: var(--accent-strong);
+  animation: clan-spin 900ms linear infinite;
 }
 
-/* RESPONSIVE ------------------------------------------- */
+@keyframes clan-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
-@media (max-width: 720px) {
+/* Responsive tweaks
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
   body {
-    padding: 20px 12px 40px;
+    padding: 18px 10px;
   }
 
-  .clan-hero {
-    padding: 16px 14px 20px;
-  }
-
-  .tracker-title {
-    font-size: 2.1rem;
-    letter-spacing: 0.26em;
-  }
-
-  .hero-body {
-    flex-direction: column;
+  .clan-header {
     align-items: flex-start;
-    gap: 14px;
   }
 
-  .controls {
-    justify-content: flex-start;
+  thead {
+    font-size: 0.68rem;
   }
 
-  .card-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
+  td,
+  th {
+    padding: 7px 6px;
   }
 
-  .stat-row {
-    width: 100%;
-    justify-content: space-between;
+  .clan-rank-pill {
+    display: none;
   }
 }
