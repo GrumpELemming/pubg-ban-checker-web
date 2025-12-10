@@ -10,7 +10,9 @@
   --accent-strong: #ff5fd1;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
@@ -46,6 +48,11 @@ body {
   box-shadow:
     0 14px 36px rgba(0, 0, 0, 0.9),
     inset 0 0 20px rgba(255, 137, 187, 0.15);
+
+  /* Force perfect centering of all hero content */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
 }
 
@@ -60,12 +67,14 @@ body {
     0 0 10px rgba(255, 95, 209, 0.9),
     0 0 20px rgba(255, 95, 209, 0.6),
     0 0 40px rgba(255, 95, 209, 0.4);
+  text-align: center;
 }
 
 .lede {
   color: var(--muted);
   margin-bottom: 18px;
   line-height: 1.5;
+  max-width: 640px;
 }
 
 /* CONTROLS ------------------------------------------- */
@@ -108,6 +117,10 @@ body {
   min-height: 18px;
 }
 
+.status.error {
+  color: #ff8d9d;
+}
+
 /* CARDS ------------------------------------------- */
 
 .clan-card {
@@ -125,6 +138,21 @@ body {
   margin-bottom: 12px;
 }
 
+.card-header h2 {
+  margin: 2px 0 0;
+  font-size: 18px;
+  letter-spacing: 0.04em;
+}
+
+.stat-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* CHIPS & SORT BUTTONS ---------------------------------- */
+
 .stat-chip {
   padding: 6px 10px;
   border-radius: 999px;
@@ -132,20 +160,26 @@ body {
   color: #ffd9a1;
   border: 1px solid rgba(255, 166, 0, 0.7);
   font-weight: 600;
+  font-size: 0.9rem;
 }
 
 .sort-controls {
   display: flex;
   gap: 6px;
+  flex-wrap: wrap;
 }
 
 .sort-btn {
   padding: 6px 10px;
   border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
   background: rgba(12, 18, 40, 0.8);
   color: var(--muted);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
   cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .sort-btn.sort-active {
@@ -158,6 +192,7 @@ body {
 
 .table-wrap {
   overflow-x: auto;
+  margin-top: 6px;
 }
 
 table {
@@ -166,7 +201,8 @@ table {
 }
 
 th, td {
-  padding: 9px;
+  padding: 9px 8px;
+  text-align: left;
 }
 
 th {
@@ -190,7 +226,20 @@ td {
   font-size: 14px;
 }
 
+.muted {
+  color: var(--muted);
+  text-align: center;
+}
+
 /* INACTIVE ------------------------------------------- */
+
+.inactive-card {
+  margin-top: 6px;
+}
+
+.inactive-body {
+  margin-top: 6px;
+}
 
 .inactive-body.collapsed {
   display: none;
@@ -199,18 +248,21 @@ td {
 .inactive-list {
   list-style: none;
   padding-left: 0;
+  margin: 0;
 }
 
 .inactive-list li {
   padding: 5px 3px;
+  font-size: 14px;
   border-bottom: 1px solid rgba(255,255,255,0.05);
+  text-align: left;
 }
 
 /* RESPONSIVE ------------------------------------------- */
 
 @media (max-width: 720px) {
   body {
-    padding: 20px 12px;
+    padding: 20px 12px 40px;
   }
 
   .clan-hero {
@@ -218,6 +270,18 @@ td {
   }
 
   .tracker-title {
-    font-size: 1.8rem;
+    font-size: 1.9rem;
+    letter-spacing: 0.18em;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .stat-row {
+    width: 100%;
+    justify-content: space-between;
   }
 }
