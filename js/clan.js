@@ -1,9 +1,11 @@
-// Frontend for the private clan leaderboard.
-// Calls backend via Cloudflare Worker: /api/clan/weekly-leaderboard
+// LULZ CLAN TRACKER frontend
+// Talks to backend via Cloudflare Worker: /api/clan/weekly-leaderboard
 
 const API_BASE = "/api/clan";
 
-function $(id) { return document.getElementById(id); }
+function $(id) {
+  return document.getElementById(id);
+}
 
 let currentData = null;
 let currentSort = "matches";
@@ -48,7 +50,6 @@ function buildWeekOptions(count = 8) {
     opt.value = value;
     opt.textContent = label;
     if (i === 0) opt.selected = true;
-
     select.appendChild(opt);
   }
 }
@@ -77,18 +78,21 @@ function sortEntries(entries, mode) {
 
   if (mode === "kills") {
     copy.sort((a, b) =>
-      b.kills - a.kills || b.matches - a.matches || b.damage - a.damage
+      (b.kills ?? 0) - (a.kills ?? 0) ||
+      (b.matches ?? 0) - (a.matches ?? 0) ||
+      (b.damage ?? 0) - (a.damage ?? 0)
     );
   } else if (mode === "time") {
     copy.sort((a, b) =>
-      (Number(b.time_played_hours ?? 0)) - (Number(a.time_played_hours ?? 0)) ||
-      b.kills - a.kills ||
-      b.matches - a.matches
+      Number(b.time_played_hours ?? 0) - Number(a.time_played_hours ?? 0) ||
+      (b.kills ?? 0) - (a.kills ?? 0) ||
+      (b.matches ?? 0) - (a.matches ?? 0)
     );
   } else {
     // Overall: matches then kills
     copy.sort((a, b) =>
-      b.matches - a.matches || b.kills - a.kills
+      (b.matches ?? 0) - (a.matches ?? 0) ||
+      (b.kills ?? 0) - (a.kills ?? 0)
     );
   }
 
@@ -149,13 +153,13 @@ function renderLeaderboard(data) {
   const end = new Date(data.week_end);
   summaryTitle.textContent = `Week ${formatDateRange(start, end)}`;
 
-  const count = data.count ?? (data.entries ? data.entries.length : 0);
+  const entries = data.entries || [];
+  const count = data.count ?? entries.length;
   entriesCount.textContent = count === 1 ? "1 player" : `${count} players`;
 
-  // inactive panel
+  // Inactive panel
   renderInactive(data);
 
-  const entries = data.entries || [];
   if (!entries.length) {
     const tr = document.createElement("tr");
     const td = document.createElement("td");
@@ -171,21 +175,21 @@ function renderLeaderboard(data) {
   const sorted = sortEntries(entries, currentSort);
 
   sorted.forEach((entry, index) => {
+    const timeHours = Number(entry.time_played_hours ?? 0);
+    const dmg = Number(entry.damage ?? 0);
+    const kdr = Number(entry.kdr ?? 0);
+
     const tr = document.createElement("tr");
-
-    const timeHours = Number(entry.time_played_hours ?? 0); // 👈 ensure number
-
     tr.innerHTML = `
       <td>${index + 1}</td>
       <td>${entry.name || entry.player_id || "Unknown"}</td>
       <td>${entry.matches ?? 0}</td>
       <td>${entry.kills ?? 0}</td>
-      <td>${Number(entry.kdr ?? 0).toFixed(2)}</td>
-      <td>${Math.round(Number(entry.damage ?? 0)).toLocaleString()}</td>
+      <td>${kdr.toFixed(2)}</td>
+      <td>${Math.round(dmg).toLocaleString()}</td>
       <td>${timeHours.toFixed(2)}</td>
       <td>${entry.wins ?? 0}</td>
     `;
-
     tbody.appendChild(tr);
   });
 
@@ -238,9 +242,7 @@ function setupSortButtons() {
       buttons.forEach(b => b.classList.remove("sort-active"));
       btn.classList.add("sort-active");
 
-      if (currentData) {
-        renderLeaderboard(currentData);
-      }
+      if (currentData) renderLeaderboard(currentData);
     });
   });
 }
@@ -249,25 +251,23 @@ document.addEventListener("DOMContentLoaded", () => {
   buildWeekOptions(8);
 
   const loadBtn = $("loadBtn");
-  if (loadBtn) {
-    loadBtn.addEventListener("click", loadLeaderboard);
-  }
+  if (loadBtn) loadBtn.addEventListener("click", loadLeaderboard);
 
   const select = $("weekSelect");
-  if (select) {
-    select.addEventListener("change", loadLeaderboard);
-  }
+  if (select) select.addEventListener("change", loadLeaderboard);
 
   setupSortButtons();
 
   const inactiveToggle = $("inactiveToggle");
   const inactiveBody = $("inactiveBody");
   if (inactiveToggle && inactiveBody) {
+    // ensure collapsed by default
+    inactiveBody.classList.add("collapsed");
     inactiveToggle.addEventListener("click", () => {
-      inactiveBody.classList.toggle("expanded"); // CSS uses .expanded
+      inactiveBody.classList.toggle("collapsed");
     });
   }
 
-  // Auto-load current week
+  // Auto-load the currently selected (current) week on first visit
   loadLeaderboard();
 });
