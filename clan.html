@@ -4,47 +4,40 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LULZ CLAN TRACKER</title>
-  <link rel="stylesheet" href="css/clan.css?v=20251214">
-  <script defer src="js/clan.js?v=20251214"></script>
+  <link rel="stylesheet" href="css/clan.css?v=20251215">
+  <script defer src="js/clan.js?v=20251215"></script>
 </head>
 <body>
-  <div class="nav-panel">
-    <div class="nav-title">PUBG BAN CHECKER</div>
-    <div class="nav-subtitle">LULZ CLAN TRACKER</div>
-    <div class="nav-panel-buttons">
-      <a href="index.html"><button type="button">Ban Checker</button></a>
-      <a href="watchlist.html"><button type="button">Watchlist</button></a>
-      <a href="recent.html"><button type="button">Sniper Watch</button></a>
-      <a href="links.html"><button type="button">Links</button></a>
-      <a href="updates.html"><button type="button">About</button></a>
-      <a href="games.html"><button type="button">Games</button></a>
-    </div>
-  </div>
 
   <main class="clan-shell">
+
     <header class="clan-hero">
-      <p class="eyebrow">Private clan hub</p>
-      <h1>LULZ CLAN TRACKER</h1>
+
+      <h1 class="tracker-title">LULZ CLAN TRACKER</h1>
+
       <p class="lede">
-        Weekly performance leaderboard for the LULZ clan (Wed → Wed).
-        Stats are pulled server-side and cached; this page only reads the aggregated results.
+        Weekly performance leaderboard for the LULZ clan (Wed → Wed).  
+        Stats are pulled server-side and cached.
       </p>
+
       <div class="controls">
         <label for="weekSelect">Clan week</label>
         <select id="weekSelect"></select>
         <button id="loadBtn" type="button">Load</button>
         <span id="status" class="status">Ready</span>
       </div>
+
     </header>
 
     <section class="clan-card">
       <div class="card-header">
         <div>
-          <p class="eyebrow">Clan standings</p>
           <h2 id="summaryTitle">Current week</h2>
         </div>
+
         <div class="stat-row">
           <div class="stat-chip" id="entriesCount">0 players</div>
+
           <div class="sort-controls">
             <button type="button" class="sort-btn sort-active" data-sort="matches">Overall</button>
             <button type="button" class="sort-btn" data-sort="kills">Kills</button>
@@ -77,9 +70,7 @@
     <section class="clan-card inactive-card">
       <div class="card-header">
         <div class="stat-row">
-          <div class="stat-chip" id="inactiveTitle">
-            Inactive members this week (0)
-          </div>
+          <div class="stat-chip" id="inactiveTitle">Inactive members this week (0)</div>
           <div class="sort-controls">
             <button type="button" id="inactiveToggle" class="sort-btn">
               Toggle list
@@ -87,12 +78,15 @@
           </div>
         </div>
       </div>
+
       <div class="inactive-body collapsed" id="inactiveBody">
         <ul id="inactiveList" class="inactive-list">
           <li class="muted">Loading…</li>
         </ul>
       </div>
     </section>
+
   </main>
+
 </body>
 </html>
