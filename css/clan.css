@@ -9,22 +9,29 @@
   --accent: #48ffe1;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
   min-height: 100vh;
   padding: 32px clamp(18px, 4vw, 64px) 64px;
   font-family: "Rajdhani", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: radial-gradient(circle at 20% 20%, var(--bg-accent-1), transparent 45%),
-              radial-gradient(circle at 80% 0%, var(--bg-accent-2), transparent 40%),
-              var(--bg);
+  background:
+    radial-gradient(circle at 20% 20%, var(--bg-accent-1), transparent 45%),
+    radial-gradient(circle at 80% 0%, var(--bg-accent-2), transparent 40%),
+    var(--bg);
   color: var(--text);
   letter-spacing: 0.02em;
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
+
+/* -------------------------------------------------
+ * Top nav
+ * ------------------------------------------------- */
 
 .nav-panel {
   width: min(1040px, 96vw);
@@ -37,7 +44,9 @@ body {
   border: 1px solid var(--border);
   border-radius: 20px;
   padding: 16px 20px;
-  box-shadow: 0 16px 38px rgba(3, 6, 20, 0.7), inset 0 0 18px rgba(33, 191, 255, 0.08);
+  box-shadow:
+    0 16px 38px rgba(3, 6, 20, 0.7),
+    inset 0 0 18px rgba(33, 191, 255, 0.08);
 }
 
 .nav-title {
@@ -78,6 +87,10 @@ body {
   box-shadow: 0 8px 20px rgba(68, 255, 227, 0.2);
 }
 
+/* -------------------------------------------------
+ * Layout shell
+ * ------------------------------------------------- */
+
 .clan-shell {
   width: min(1040px, 96vw);
   margin: 0 auto;
@@ -86,12 +99,18 @@ body {
   gap: 14px;
 }
 
+/* -------------------------------------------------
+ * Hero / controls
+ * ------------------------------------------------- */
+
 .clan-hero {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 26px 22px;
-  box-shadow: 0 16px 38px rgba(3, 6, 20, 0.7), inset 0 0 18px rgba(33, 191, 255, 0.08);
+  box-shadow:
+    0 16px 38px rgba(3, 6, 20, 0.7),
+    inset 0 0 18px rgba(33, 191, 255, 0.08);
 }
 
 .eyebrow {
@@ -122,15 +141,20 @@ body {
 
 .controls label {
   font-weight: 600;
+  font-size: 0.9rem;
 }
 
+/* week select and button */
+
+.controls select,
 .controls input {
   padding: 10px 12px;
   border-radius: 10px;
   border: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.03);
   color: var(--text);
-  min-width: 200px;
+  min-width: 220px;
+  font-size: 0.9rem;
 }
 
 .controls button {
@@ -146,7 +170,16 @@ body {
 .status {
   color: var(--muted);
   min-height: 18px;
+  font-size: 0.85rem;
 }
+
+.status.error {
+  color: #ff7a7a;
+}
+
+/* -------------------------------------------------
+ * Generic card
+ * ------------------------------------------------- */
 
 .clan-card {
   background: var(--panel);
@@ -161,10 +194,23 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
+  gap: 10px;
 }
 
 .card-header h2 {
   margin: 4px 0 0;
+}
+
+/* -------------------------------------------------
+ * Stat row / sort controls
+ * ------------------------------------------------- */
+
+.stat-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 .stat-chip {
@@ -174,7 +220,36 @@ body {
   color: #7dd4ff;
   border: 1px solid rgba(0, 196, 255, 0.2);
   font-weight: 700;
+  font-size: 0.9rem;
 }
+
+.sort-controls {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.sort-btn {
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid rgba(147, 221, 255, 0.3);
+  background: rgba(5, 25, 44, 0.8);
+  color: #cfe9ff;
+  cursor: pointer;
+}
+
+.sort-btn.sort-active {
+  border-color: #48ffe1;
+  background: radial-gradient(circle at 30% 0, rgba(72, 255, 225, 0.45), rgba(15, 44, 88, 0.9));
+  color: #041018;
+}
+
+/* -------------------------------------------------
+ * Leaderboard table
+ * ------------------------------------------------- */
 
 .table-wrap {
   overflow-x: auto;
@@ -185,7 +260,8 @@ table {
   border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
   padding: 10px;
   text-align: left;
 }
@@ -198,7 +274,7 @@ th {
   text-transform: uppercase;
 }
 
-tr:nth-child(every) {
+tr:nth-child(even) {
   background: rgba(255, 255, 255, 0.01);
 }
 
@@ -212,21 +288,76 @@ td {
   text-align: center;
 }
 
+/* -------------------------------------------------
+ * Inactive members panel
+ * ------------------------------------------------- */
+
+.inactive-card {
+  margin-top: 10px;
+}
+
+.inactive-body {
+  max-height: 500px;
+  opacity: 1;
+  overflow: hidden;
+  transition: max-height 0.25s ease, opacity 0.25s ease, padding 0.25s ease, margin 0.25s ease;
+  padding-top: 6px;
+}
+
+/* when collapsed via JS toggle */
+.inactive-body.collapsed {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+}
+
+.inactive-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.inactive-list li {
+  padding: 2px 0;
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+/* -------------------------------------------------
+ * Responsive tweaks
+ * ------------------------------------------------- */
+
 @media (max-width: 720px) {
   body {
     padding: 22px 14px 48px;
   }
+
   .nav-panel {
     flex-direction: column;
   }
+
   .nav-panel-buttons {
     justify-content: center;
   }
+
   .controls {
     flex-direction: column;
     align-items: flex-start;
   }
+
+  .controls select,
   .controls input {
     width: 100%;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .stat-row {
+    justify-content: flex-start;
   }
 }
