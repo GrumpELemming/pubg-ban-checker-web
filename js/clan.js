@@ -16,7 +16,7 @@ let currentSort = "matches";
 // -------------------------
 
 function getClanWeekStart(date) {
-  // Work with a copy (local time)
+  // Work with a copy
   const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
   // JS getDay(): Sunday = 0, Monday = 1, ..., Wednesday = 3
   const weekday = d.getDay();
@@ -47,12 +47,11 @@ function buildWeekOptions(count = 8) {
     const end = new Date(start);
     end.setDate(end.getDate() + 7);
 
-    // Use calendar start date (Wed) as the value: YYYY-MM-DD
-    const startIso = start.toISOString().slice(0, 10); // YYYY-MM-DD
-    const label = `${startIso} - Week ${formatDateRange(start, end)}`;
+    const value = start.toISOString().slice(0, 10); // YYYY-MM-DD
+    const label = `${value} - Week ${formatDateRange(start, end)}`;
 
     const opt = document.createElement("option");
-    opt.value = startIso;
+    opt.value = value;
     opt.textContent = label;
 
     if (i === 0) {
@@ -73,7 +72,6 @@ async function fetchLeaderboard(weekParam) {
   statusEl.classList.remove("error");
 
   let url = `${API_BASE}/weekly-leaderboard`;
-
   if (weekParam) {
     url += `?week=${encodeURIComponent(weekParam)}`;
   }
@@ -96,7 +94,6 @@ function sortEntries(entries, mode) {
   const copy = [...entries];
 
   if (mode === "kills") {
-    // Sort by BR kills
     copy.sort((a, b) => {
       if (b.kills !== a.kills) return b.kills - a.kills;
       if (b.matches !== a.matches) return b.matches - a.matches;
@@ -111,7 +108,7 @@ function sortEntries(entries, mode) {
       return b.matches - a.matches;
     });
   } else {
-    // default: matches then kills (all BR-only now)
+    // default: matches then kills
     copy.sort((a, b) => {
       if (b.matches !== a.matches) return b.matches - a.matches;
       return b.kills - a.kills;
@@ -140,7 +137,7 @@ function renderLeaderboard(data) {
   if (!data.entries || data.entries.length === 0) {
     const tr = document.createElement("tr");
     const td = document.createElement("td");
-    td.colSpan = 9; // 9 columns now (including TDM Kills)
+    td.colSpan = 8; // your table currently has 8 columns
     td.className = "muted";
     td.textContent = "No data for this week.";
     tr.appendChild(td);
@@ -163,19 +160,12 @@ function renderLeaderboard(data) {
     tr.appendChild(nameTd);
 
     const matchesTd = document.createElement("td");
-    // BR matches
     matchesTd.textContent = entry.matches ?? 0;
     tr.appendChild(matchesTd);
 
     const killsTd = document.createElement("td");
-    // BR kills
     killsTd.textContent = entry.kills ?? 0;
     tr.appendChild(killsTd);
-
-    const tdmKillsTd = document.createElement("td");
-    const tdmKills = Number(entry.kills_tdm ?? 0);
-    tdmKillsTd.textContent = tdmKills;
-    tr.appendChild(tdmKillsTd);
 
     const kdrTd = document.createElement("td");
     const kdr = Number(entry.kdr ?? 0);
@@ -220,7 +210,7 @@ async function loadLeaderboard() {
     tbody.innerHTML = "";
     const tr = document.createElement("tr");
     const td = document.createElement("td");
-    td.colSpan = 9;
+    td.colSpan = 8;
     td.className = "muted";
     td.textContent = "Failed to load leaderboard.";
     tr.appendChild(td);
