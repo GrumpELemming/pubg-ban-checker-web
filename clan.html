@@ -28,12 +28,16 @@
         Pulls cached stats for the active clan roster (Steam) and ranks them for the selected ISO week.
         Data is pulled server-side; this page only reads the aggregated leaderboard.
       </p>
-      <div class="controls">
-        <label for="weekInput">ISO week (YYYY-WW)</label>
-        <input id="weekInput" type="text" placeholder="auto (current week)" />
-        <button id="loadBtn" type="button">Load Leaderboard</button>
-        <span id="status" class="status"></span>
-      </div>
+<div class="controls">
+  <label for="weekSelect">Clan week</label>
+  <select id="weekSelect">
+    <!-- JS will populate options like:
+         2025-12-11 - Week 11 Dec 2025 → 18 Dec 2025 -->
+  </select>
+  <button id="loadBtn" type="button">Load</button>
+  <span id="status" class="status">Ready</span>
+</div>
+
     </header>
 
     <section class="clan-card">
