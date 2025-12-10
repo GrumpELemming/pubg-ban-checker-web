@@ -16,7 +16,7 @@ let currentSort = "matches";
 // -------------------------
 
 function getClanWeekStart(date) {
-  // Work with a copy
+  // Work with a copy (local time)
   const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
   // JS getDay(): Sunday = 0, Monday = 1, ..., Wednesday = 3
   const weekday = d.getDay();
@@ -47,11 +47,14 @@ function buildWeekOptions(count = 8) {
     const end = new Date(start);
     end.setDate(end.getDate() + 7);
 
-    const value = start.toISOString().slice(0, 10); // YYYY-MM-DD
-    const label = `${value} - Week ${formatDateRange(start, end)}`;
+    // Use weekOffset as the value: 0 (current week), -1 (last week), ...
+    const weekOffset = -i;
+    const startIso = start.toISOString().slice(0, 10); // YYYY-MM-DD just for label
+
+    const label = `${startIso} - Week ${formatDateRange(start, end)}`;
 
     const opt = document.createElement("option");
-    opt.value = value;
+    opt.value = String(weekOffset);
     opt.textContent = label;
 
     if (i === 0) {
@@ -66,15 +69,17 @@ function buildWeekOptions(count = 8) {
 // API + rendering
 // -------------------------
 
-async function fetchLeaderboard(weekParam) {
+async function fetchLeaderboard(weekOffset) {
   const statusEl = $("status");
   statusEl.textContent = "Loading...";
   statusEl.classList.remove("error");
 
   let url = `${API_BASE}/weekly-leaderboard`;
-  if (weekParam) {
-    url += `?week=${encodeURIComponent(weekParam)}`;
-  }
+
+  // Default to 0 (current week) if nothing passed
+  const offsetNumber = typeof weekOffset === "number" ? weekOffset : 0;
+
+  url += `?weekOffset=${encodeURIComponent(offsetNumber)}`;
 
   const resp = await fetch(url, {
     method: "GET",
@@ -126,7 +131,7 @@ function renderLeaderboard(data) {
 
   tbody.innerHTML = "";
 
-  // Week summary from backend
+  // Week summary from backend (note: backend is ISO week, Mon→Mon for now)
   const start = new Date(data.week_start);
   const end = new Date(data.week_end);
   summaryTitle.textContent = `Week ${formatDateRange(start, end)}`;
@@ -195,10 +200,18 @@ function renderLeaderboard(data) {
 async function loadLeaderboard() {
   const statusEl = $("status");
   const select = $("weekSelect");
-  const weekParam = select.value || null;
+  const rawValue = select.value;
+
+  let weekOffset = 0;
+  if (rawValue !== null && rawValue !== undefined && rawValue !== "") {
+    const parsed = parseInt(rawValue, 10);
+    if (!Number.isNaN(parsed)) {
+      weekOffset = parsed;
+    }
+  }
 
   try {
-    const data = await fetchLeaderboard(weekParam);
+    const data = await fetchLeaderboard(weekOffset);
     currentData = data;
     renderLeaderboard(data);
   } catch (err) {
