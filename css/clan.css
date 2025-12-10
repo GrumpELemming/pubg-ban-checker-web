@@ -9,29 +9,21 @@
   --accent: #48ffe1;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
   min-height: 100vh;
   padding: 32px clamp(18px, 4vw, 64px) 64px;
-  font-family: "Rajdhani", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background:
-    radial-gradient(circle at 20% 20%, var(--bg-accent-1), transparent 45%),
-    radial-gradient(circle at 80% 0%, var(--bg-accent-2), transparent 40%),
-    var(--bg);
+  font-family: "Rajdhani", "Segoe UI", sans-serif;
+  background: radial-gradient(circle at 20% 20%, var(--bg-accent-1), transparent 45%),
+              radial-gradient(circle at 80% 0%, var(--bg-accent-2), transparent 40%),
+              var(--bg);
   color: var(--text);
-  letter-spacing: 0.02em;
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
-
-/* -------------------------------------------------
- * Top nav
- * ------------------------------------------------- */
 
 .nav-panel {
   width: min(1040px, 96vw);
@@ -44,320 +36,72 @@ body {
   border: 1px solid var(--border);
   border-radius: 20px;
   padding: 16px 20px;
-  box-shadow:
-    0 16px 38px rgba(3, 6, 20, 0.7),
-    inset 0 0 18px rgba(33, 191, 255, 0.08);
 }
 
 .nav-title {
   text-transform: uppercase;
-  letter-spacing: 0.16em;
   font-weight: 800;
   font-size: 1.4rem;
   color: #ffc94f;
-  text-align: center;
 }
 
 .nav-panel-buttons {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  justify-content: flex-end;
 }
 
 .nav-panel-buttons button {
   min-width: 130px;
   border-radius: 999px;
   background: transparent;
-  color: #d7f8ff;
   border: 1px solid rgba(147, 221, 255, 0.4);
-  box-shadow: none;
-  cursor: pointer;
   padding: 12px 22px;
-  font-size: 0.9rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.nav-panel-buttons button:hover {
-  border-color: #45ffd8;
-  color: #041726;
-  background: linear-gradient(130deg, rgba(69, 255, 216, 0.9), rgba(50, 132, 255, 0.85));
-  box-shadow: 0 8px 20px rgba(68, 255, 227, 0.2);
-}
-
-/* -------------------------------------------------
- * Layout shell
- * ------------------------------------------------- */
-
-.clan-shell {
-  width: min(1040px, 96vw);
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-/* -------------------------------------------------
- * Hero / controls
- * ------------------------------------------------- */
-
-.clan-hero {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 26px 22px;
-  box-shadow:
-    0 16px 38px rgba(3, 6, 20, 0.7),
-    inset 0 0 18px rgba(33, 191, 255, 0.08);
-}
-
-.eyebrow {
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #7dd4ff;
-  font-size: 12px;
-  margin: 0 0 6px;
-}
-
-.clan-hero h1 {
-  margin: 0 0 10px;
-  font-size: 26px;
-}
-
-.lede {
-  margin: 0 0 12px;
-  color: var(--muted);
-  line-height: 1.6;
-}
-
-.controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
-}
-
-.controls label {
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-/* week select and button */
-
-.controls select,
-.controls input {
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.03);
-  color: var(--text);
-  min-width: 220px;
-  font-size: 0.9rem;
-}
-
-.controls button {
-  padding: 10px 18px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: linear-gradient(120deg, #11ffd3, #1e51ff);
-  color: #03121d;
-  font-weight: 700;
   cursor: pointer;
+  text-transform: uppercase;
 }
 
-.status {
-  color: var(--muted);
-  min-height: 18px;
-  font-size: 0.85rem;
-}
-
-.status.error {
-  color: #ff7a7a;
-}
-
-/* -------------------------------------------------
- * Generic card
- * ------------------------------------------------- */
+/* ------------------------
+   CLAN CARD
+------------------------ */
 
 .clan-card {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 16px;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
 }
 
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-  gap: 10px;
-}
-
-.card-header h2 {
-  margin: 4px 0 0;
-}
-
-/* -------------------------------------------------
- * Stat row / sort controls
- * ------------------------------------------------- */
-
-.stat-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-.stat-chip {
-  padding: 8px 12px;
-  border-radius: 10px;
-  background: rgba(0, 196, 255, 0.12);
-  color: #7dd4ff;
-  border: 1px solid rgba(0, 196, 255, 0.2);
-  font-weight: 700;
-  font-size: 0.9rem;
-}
-
-.sort-controls {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.sort-btn {
-  border-radius: 999px;
-  padding: 6px 12px;
-  font-size: 0.8rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  border: 1px solid rgba(147, 221, 255, 0.3);
-  background: rgba(5, 25, 44, 0.8);
-  color: #cfe9ff;
-  cursor: pointer;
-}
-
-.sort-btn.sort-active {
-  border-color: #48ffe1;
-  background: radial-gradient(circle at 30% 0, rgba(72, 255, 225, 0.45), rgba(15, 44, 88, 0.9));
-  color: #041018;
-}
-
-/* -------------------------------------------------
- * Leaderboard table
- * ------------------------------------------------- */
-
-.table-wrap {
-  overflow-x: auto;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th,
-td {
-  padding: 10px;
-  text-align: left;
-}
-
-th {
-  background: rgba(255, 255, 255, 0.04);
-  color: #cfe9ff;
-  font-size: 13px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-tr:nth-child(even) {
-  background: rgba(255, 255, 255, 0.01);
-}
-
-td {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  font-size: 15px;
-}
-
-.muted {
-  color: var(--muted);
-  text-align: center;
-}
-
-/* -------------------------------------------------
- * Inactive members panel
- * ------------------------------------------------- */
-
-.inactive-card {
-  margin-top: 10px;
-}
+/* ------------------------
+   INACTIVE LIST FIX
+------------------------ */
 
 .inactive-body {
-  max-height: 500px;
-  opacity: 1;
-  overflow: hidden;
-  transition: max-height 0.25s ease, opacity 0.25s ease, padding 0.25s ease, margin 0.25s ease;
-  padding-top: 6px;
-}
-
-/* when collapsed via JS toggle */
-.inactive-body.collapsed {
   max-height: 0;
   opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease, opacity 0.25s ease, margin 0.25s ease, padding 0.25s ease;
   padding-top: 0;
   padding-bottom: 0;
-  margin-top: 0;
+  margin: 0;
+}
+
+.inactive-body.expanded {
+  max-height: 600px;       /* Enough for a long list */
+  opacity: 1;
+  overflow-y: auto;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  margin-top: 6px;
 }
 
 .inactive-list {
   list-style: none;
   padding-left: 0;
-  margin: 0;
 }
 
 .inactive-list li {
-  padding: 2px 0;
-  font-size: 0.9rem;
-  text-align: left;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* -------------------------------------------------
- * Responsive tweaks
- * ------------------------------------------------- */
-
-@media (max-width: 720px) {
-  body {
-    padding: 22px 14px 48px;
-  }
-
-  .nav-panel {
-    flex-direction: column;
-  }
-
-  .nav-panel-buttons {
-    justify-content: center;
-  }
-
-  .controls {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .controls select,
-  .controls input {
-    width: 100%;
-  }
-
-  .card-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .stat-row {
-    justify-content: flex-start;
-  }
-}
