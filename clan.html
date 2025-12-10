@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LULZ CLAN TRACKER</title>
-  <link rel="stylesheet" href="css/clan.css?v=20251216">
+  <!-- bump version to break cache -->
+  <link rel="stylesheet" href="css/clan.css?v=20251217">
   <script defer src="js/clan.js?v=20251215"></script>
 </head>
 <body>
@@ -12,21 +13,25 @@
   <main class="clan-shell">
 
     <header class="clan-hero">
-
-      <h1 class="tracker-title">LULZ CLAN TRACKER</h1>
-
-      <p class="lede">
-        Weekly performance leaderboard for the LULZ clan (Wed → Wed).  
-        Stats are pulled server-side and cached.
-      </p>
-
-      <div class="controls">
-        <label for="weekSelect">Clan week</label>
-        <select id="weekSelect"></select>
-        <button id="loadBtn" type="button">Load</button>
-        <span id="status" class="status">Ready</span>
+      <!-- full-width neon title bar -->
+      <div class="hero-title-bar">
+        <h1 class="tracker-title">LULZ CLAN TRACKER</h1>
       </div>
 
+      <!-- body area: text left, controls right -->
+      <div class="hero-body">
+        <p class="lede">
+          Weekly performance leaderboard for the LULZ clan (Wed → Wed).<br>
+          Stats are pulled server-side and cached.
+        </p>
+
+        <div class="controls">
+          <label for="weekSelect" class="controls-label">Clan week</label>
+          <select id="weekSelect"></select>
+          <button id="loadBtn" type="button">Load</button>
+          <span id="status" class="status">Loaded</span>
+        </div>
+      </div>
     </header>
 
     <section class="clan-card">
@@ -34,10 +39,8 @@
         <div>
           <h2 id="summaryTitle">Current week</h2>
         </div>
-
         <div class="stat-row">
           <div class="stat-chip" id="entriesCount">0 players</div>
-
           <div class="sort-controls">
             <button type="button" class="sort-btn sort-active" data-sort="matches">Overall</button>
             <button type="button" class="sort-btn" data-sort="kills">Kills</button>
@@ -70,7 +73,9 @@
     <section class="clan-card inactive-card">
       <div class="card-header">
         <div class="stat-row">
-          <div class="stat-chip" id="inactiveTitle">Inactive members this week (0)</div>
+          <div class="stat-chip" id="inactiveTitle">
+            Inactive members this week (0)
+          </div>
           <div class="sort-controls">
             <button type="button" id="inactiveToggle" class="sort-btn">
               Toggle list
@@ -78,7 +83,7 @@
           </div>
         </div>
       </div>
-
+      <!-- start collapsed -->
       <div class="inactive-body collapsed" id="inactiveBody">
         <ul id="inactiveList" class="inactive-list">
           <li class="muted">Loading…</li>
