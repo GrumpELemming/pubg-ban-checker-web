@@ -1,0 +1,105 @@
+Step-by-step: add the clan leaderboard to your existing Render backend (single service, behind Cloudflare)
+
+What you already have
+- One Render backend service (Flask) with Cloudflare Worker proxying /api/* and adding X-Proxy-Secret.
+- Env vars set in Render for PUBG_API_KEY and PROXY_SHARED_SECRET.
+
+What you’ll add
+- New routes for clan stats in the same Flask app.
+- A Postgres database for storing clan members and match stats.
+- A daily cron call to refresh stats.
+- A private frontend page (clan.html) that reads the cached leaderboard.
+
+1) Add env vars in Render (same service)
+- PUBG_API_KEY: your real key (already set).
+- PROXY_SHARED_SECRET: same as Cloudflare Worker (already set).
+- CRON_SECRET: choose a new secret string (used for /tasks and /admin).
+- DATABASE_URL: Postgres connection string (from Render Postgres or another provider).
+
+2) Add dependencies to your backend
+- In requirements.txt (or equivalent), add:
+  flask
+  flask_cors
+  flask_limiter
+  requests
+  psycopg2-binary
+  python-dateutil
+
+3) Create the DB tables once
+- Use the SQL in clan_backend.py (SCHEMA_SQL) or run this against your DATABASE_URL:
+  CREATE TABLE IF NOT EXISTS clan_members (
+    id serial PRIMARY KEY,
+    player_id text UNIQUE NOT NULL,
+    current_name text,
+    platform text NOT NULL,
+    active boolean NOT NULL DEFAULT true,
+    added_at timestamptz NOT NULL DEFAULT now(),
+    last_checked_at timestamptz
+  );
+  CREATE TABLE IF NOT EXISTS match_stats (
+    id serial PRIMARY KEY,
+    player_id text NOT NULL,
+    match_id text NOT NULL,
+    created_at timestamptz NOT NULL,
+    queue text,
+    kills int,
+    damage numeric,
+    time_survived numeric,
+    win_place int,
+    win boolean,
+    UNIQUE (player_id, match_id)
+  );
+  CREATE INDEX IF NOT EXISTS idx_match_stats_player_time ON match_stats (player_id, created_at);
+
+4) Seed the roster once
+- Run seed_clan_members.sql against the same DB (73 Steam account IDs, deduped).
+
+5) Add the clan code to your Flask app (single service)
+- Drop clan_backend.py into your backend repo.
+- Either:
+  a) Serve clan_backend.py directly (e.g., gunicorn -b 0.0.0.0:8080 clan_backend:app), OR
+  b) Merge the clan routes into your existing app via a Blueprint to avoid redefining app. (Easiest for now: run clan_backend.py as the entrypoint; it already enforces X-Proxy-Secret and CRON_SECRET for tasks/admin.)
+
+Route summary (all under /api because Cloudflare routes /api/*):
+- Public read: /api/clan/weekly-leaderboard
+- Tasks/admin (must send both X-Proxy-Secret and X-Cron-Secret):
+  /api/tasks/pull-latest
+  /api/admin/add-member
+  /api/admin/remove-member
+
+6) Cloudflare Worker
+- No change needed if it already proxies /api/* to your Render backend and adds X-Proxy-Secret. The new routes ride the same path.
+
+7) Cron job (daily)
+- Call: https://yourdomain/api/tasks/pull-latest
+- Headers:
+  X-Proxy-Secret: <PROXY_SHARED_SECRET>
+  X-Cron-Secret: <CRON_SECRET>
+- Use any scheduler (cron-job.org, GitHub Actions) to hit this once per day.
+
+8) Frontend page (private)
+- Deploy clan.html, css/clan.css, js/clan.js in your static site.
+- Access https://yourdomain/clan.html (share privately; not in nav if you prefer).
+- It calls /api/clan/weekly-leaderboard through Cloudflare; no keys in the browser.
+
+9) Admin add/remove (manual via curl)
+- Add member:
+  curl -X POST https://yourdomain/api/admin/add-member ^
+    -H "X-Proxy-Secret: <PROXY_SHARED_SECRET>" ^
+    -H "X-Cron-Secret: <CRON_SECRET>" ^
+    -H "Content-Type: application/json" ^
+    -d "{\"player_id\":\"account.xxx\",\"platform\":\"steam\",\"current_name\":\"IGN(optional)\"}"
+- Remove member:
+  curl -X POST https://yourdomain/api/admin/remove-member ^
+    -H "X-Proxy-Secret: <PROXY_SHARED_SECRET>" ^
+    -H "X-Cron-Secret: <CRON_SECRET>" ^
+    -H "Content-Type: application/json" ^
+    -d "{\"player_id\":\"account.xxx\"}"
+
+10) How it works (summary)
+- Daily cron hits /api/tasks/pull-latest with both secrets.
+- Backend fetches new matches for active clan members, stores stats, updates names.
+- Leaderboard aggregates weekly stats from the DB.
+- clan.html reads /api/clan/weekly-leaderboard and renders the table.
+
+If you prefer one entrypoint: point your Render start command to clan_backend.py (gunicorn -b 0.0.0.0:8080 clan_backend:app); it already has the proxy gate and clan routes. Your existing routes can be merged, or you can keep them in your older file—just ensure only one app runs. For clarity, running clan_backend.py as the service entrypoint is simplest.

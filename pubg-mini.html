@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PUNG Zombies</title>
+  <link rel="stylesheet" href="css/pubg-mini.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="panel">
+      <div class="top-bar">
+        <div class="title">PUNG Zombies</div>
+        <div class="pill">Bluezone closes fast. Zombies swarm. Shoot or die.</div>
+        <button class="btn" id="startBtn">Redeploy</button>
+      </div>
+      <div class="muted" style="margin-bottom:10px;">
+        Move with <b>WASD / Arrows</b>. Aim with mouse; hold <b>Click</b> or <b>Space</b> to shoot. Press <b>G</b> to toss a grenade (start with 1, rare pickups). No mouse? It auto-aims nearest zombie. Medkits heal. R to restart after knock.
+      </div>
+      <div class="canvas-wrap">
+        <canvas id="arena" width="960" height="540"></canvas>
+        <div id="hud" class="hud">
+          <span>Score: <strong data-id="score">0</strong></span>
+          <span>Kills: <strong data-id="kills">0</strong></span>
+          <span>Zombies: <strong data-id="alive">0</strong></span>
+          <span>Nades: <strong data-id="nades">1</strong></span>
+          <span>HP: <strong data-id="hp">100</strong></span>
+          <span>Safe Radius: <strong data-id="gas">0</strong></span>
+          <span>Best: <strong data-id="best">0</strong></span>
+        </div>
+      </div>
+      <div class="bottom-row">
+        <div class="legend muted">
+          <span><span class="badge player"></span> You</span>
+          <span><span class="badge enemy"></span> Zombies</span>
+          <span><span class="badge grenade"></span> Grenade pickup</span>
+          <span><span class="badge heal"></span> Medkit</span>
+          <span><span class="badge gas"></span> Blue zone</span>
+        </div>
+        <div class="muted">Tip: Strafe around center to stay in zone. Kills refill medkit spawns. R to restart after knock.</div>
+      </div>
+    </div>
+  </div>
+  <script src="js/pubg-mini.js"></script>
+</body>
+</html>

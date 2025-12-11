@@ -7,29 +7,35 @@
   <link rel="stylesheet" href="styles.css" />
 
   <style>
-    /* === Menu Buttons & Best Time Styling === */
+    /* Menu Buttons & Best Time Styling (Spectrum look) */
     .menuButton {
       display: block;
       margin: 12px auto;
-      padding: 10px 22px;
-      font-family: 'BebasNeue', sans-serif;
-      font-size: 22px;
-      background: #111;
-      color: #ffcc00;
-      border: 2px solid #ffcc00;
-      border-radius: 6px;
+      padding: 12px 24px;
+      font-family: "Lucida Console","Courier New",monospace;
+      font-size: 20px;
+      background: #000;
+      color: #ffea00;
+      border: 3px solid #ff1ed2;
+      border-radius: 0;
       cursor: pointer;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      box-shadow: 0 0 0 3px #000, 0 0 16px rgba(255,30,210,0.5);
     }
     .menuButton:hover {
-      background: #ffcc00;
+      background: #ffea00;
       color: #000;
+      border-color: #ffea00;
+      box-shadow: 0 0 0 3px #000, 0 0 20px rgba(255,234,0,0.7);
     }
     .best-time {
       margin-top: 8px;
-      color: #9fe8ff;
-      font-family: 'BebasNeue', sans-serif;
-      font-size: 20px;
+      color: #7fffd4;
+      font-family: "Lucida Console","Courier New",monospace;
+      font-size: 18px;
       text-align: center;
+      text-shadow: 0 0 10px rgba(127,255,212,0.5);
     }
   </style>
 </head>
@@ -45,12 +51,12 @@
   <!-- MAIN MENU -->
   <div id="intro" class="overlay hidden">
     <div class="panel">
-      <h1>🦊 SCHNEEFUCHS HATES SMGS</h1>
+      <h1>SCHNEEFUCHS HATES SMGS</h1>
       <p class="muted">
-        SCHNEEFUCHS Hates SMG'S so much he is having a nightmare where he is constantly being shot at by SMG's. How long can he survive this nightmare?
+        SCHNEEFUCHS hates SMGs so much he is having a nightmare where he is constantly being shot at by SMGs. How long can he survive this nightmare?
       </p>
       <div class="keys muted">
-        Move: <b>WASD</b>/<b>Arrows</b> · Dash: <b>Shift</b> · Start: <b>Enter</b>
+        Move: <b>WASD</b>/<b>Arrows</b> &nbsp; | &nbsp; Dash: <b>Shift</b> &nbsp; | &nbsp; Start: <b>Enter</b>
       </div>
 
       <!-- Buttons -->
@@ -67,7 +73,7 @@
   <!-- GAME OVER SCREEN -->
   <div id="gameover" class="overlay hidden">
     <div class="panel">
-      <h1>💀 GAME OVER</h1>
+      <h1>GAME OVER</h1>
       <p class="muted" id="finalStats">You reached Phase 1 and survived 00:00.</p>
       <div class="btns">
         <button id="restartBtn" class="menuButton">Restart</button>
@@ -79,4 +85,3 @@
   <script src="game.js"></script>
 </body>
 </html>
-
