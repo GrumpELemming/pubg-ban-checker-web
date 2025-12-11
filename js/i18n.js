@@ -29,6 +29,7 @@ const TRANSLATIONS = {
     "hero.index.searchid": "Search by Account ID",
     "hero.index.lookup": "Lookup ID",
     "hero.index.clearid": "Clear",
+    "common.noresults": "No results yet.",
     "watchlist.platform": "Platform selection",
     "watchlist.controls": "Watchlist controls",
     "watchlist.refresh": "Refresh All",
@@ -50,6 +51,15 @@ const TRANSLATIONS = {
     "crate.hero.title": "Hideout Crate Simulator",
     "crate.hero.subtitle": "Winter Eclipse",
     "crate.hero.lede": "Spend 1800 G-Coin per 10-pack, flip each card to reveal the drop, and keep track of how much you've spent.",
+    "games.title": "PUBG Inspired Games",
+    "games.crate.btn": "Hideout Crate Simulator - \"Winter Eclipse\"",
+    "games.crate.desc": "Flip 10 crates at a time for 1800 GC, track total spend, and reveal your drops with the published probabilities.",
+    "games.hangman.btn": "HANGMAN",
+    "games.bluemem.btn": "BLUE MEMORY",
+    "games.red13.btn": "Red13 - Life Of A Bluezone Runner",
+    "games.red13.desc": "Red13: The Life of a Blue Zone Runner is a fan-made web game inspired by the intensity and atmosphere of PUBG's blue zone mechanic. This project is not affiliated with or endorsed by PUBG or Krafton.",
+    "games.schnee.btn": "SCHNEEFUCHS HATES SMG'S",
+    "games.schnee.desc": "Help Schneefuchs survive his nightmare where he is facing what he hates the most.........",
   },
   ko: {
     "nav.ban": "밴 확인기",
@@ -74,6 +84,7 @@ const TRANSLATIONS = {
     "watchlist.controls": "관심 목록 제어",
     "watchlist.refresh": "전체 새로고침",
     "watchlist.clear": "전체 삭제",
+    "common.noresults": "아직 결과가 없습니다.",
     "recent.label": "PUBG 사용자 이름 입력",
     "recent.button": "14일 스캔",
     "recent.note": "최근 3회 이상 피해를 준 상대만 표시합니다.",
@@ -91,6 +102,15 @@ const TRANSLATIONS = {
     "crate.hero.title": "하이도트 상자 시뮬레이터",
     "crate.hero.subtitle": "윈터 이클립스",
     "crate.hero.lede": "10팩당 1800 G-Coin을 사용해 카드를 뒤집고, 소비 금액을 추적하세요.",
+    "games.title": "PUBG 영감 게임",
+    "games.crate.btn": "하이도트 상자 시뮬레이터 - \"윈터 이클립스\"",
+    "games.crate.desc": "한 번에 10개 상자를 1800 GC로 열고, 총 지출을 추적하며 확률 공개된 드랍을 확인하세요.",
+    "games.hangman.btn": "행맨",
+    "games.bluemem.btn": "블루 메모리",
+    "games.red13.btn": "Red13 - 블루존 러너의 삶",
+    "games.red13.desc": "Red13은 PUBG 블루존의 긴장감과 분위기에서 영감을 받은 팬 게임입니다. PUBG나 Krafton과 제휴되지 않았습니다.",
+    "games.schnee.btn": "슈니푸흐스는 SMG를 싫어해",
+    "games.schnee.desc": "슈니푸흐스가 가장 싫어하는 것들과 맞서야 하는 악몽을 버틸 수 있게 도와주세요.",
   },
   zh: {
     "nav.ban": "封禁查询",
@@ -111,6 +131,7 @@ const TRANSLATIONS = {
     "hero.index.searchid": "按账号 ID 搜索",
     "hero.index.lookup": "查询 ID",
     "hero.index.clearid": "清空",
+    "common.noresults": "暂无结果。",
     "watchlist.platform": "平台选择",
     "watchlist.controls": "关注列表控制",
     "watchlist.refresh": "全部刷新",
@@ -132,11 +153,20 @@ const TRANSLATIONS = {
     "crate.hero.title": "藏身处箱子模拟器",
     "crate.hero.subtitle": "冬日蚀月",
     "crate.hero.lede": "每 10 包花费 1800 G-Coin，翻牌查看掉落并记录花费。",
+    "games.title": "PUBG 灵感游戏",
+    "games.crate.btn": "藏身处箱子模拟器 - “冬日蚀月”",
+    "games.crate.desc": "一次开 10 个箱子花费 1800 GC，记录总花费，并按照公布概率查看掉落。",
+    "games.hangman.btn": "吊死鬼",
+    "games.bluemem.btn": "蓝色记忆",
+    "games.red13.btn": "Red13 - 蓝圈跑者的一生",
+    "games.red13.desc": "Red13 是一款受 PUBG 蓝圈机制氛围启发的粉丝游戏，与 PUBG 或 Krafton 无关。",
+    "games.schnee.btn": "SCHNEEFUCHS 讨厌冲锋枪",
+    "games.schnee.desc": "帮助 Schneefuchs 挺过他最讨厌的事物的噩梦……",
   },
   de: {
     "nav.ban": "Ban-Prüfer",
-    "nav.watchlist": "Watchlist",
-    "nav.sniper": "Sniper Watch",
+    "nav.watchlist": "Beobachtungsliste",
+    "nav.sniper": "Sniper-Überwachung",
     "nav.links": "Links",
     "nav.about": "Info",
     "nav.games": "Spiele",
@@ -152,6 +182,7 @@ const TRANSLATIONS = {
     "hero.index.searchid": "Nach Account-ID suchen",
     "hero.index.lookup": "ID nachschlagen",
     "hero.index.clearid": "Löschen",
+    "common.noresults": "Noch keine Ergebnisse.",
     "watchlist.platform": "Plattform-Auswahl",
     "watchlist.controls": "Watchlist-Steuerung",
     "watchlist.refresh": "Alle aktualisieren",
@@ -173,6 +204,15 @@ const TRANSLATIONS = {
     "crate.hero.title": "Versteck-Kistensimulator",
     "crate.hero.subtitle": "Winter Eclipse",
     "crate.hero.lede": "Pro 10er-Paket 1800 G-Coin, Karten aufdecken und Ausgaben verfolgen.",
+    "games.title": "Von PUBG inspirierte Spiele",
+    "games.crate.btn": "Versteck-Kistensimulator - \"Winter Eclipse\"",
+    "games.crate.desc": "Öffne 10 Kisten für 1800 GC, verfolge deine Ausgaben und sehe die Drops mit veröffentlichten Wahrscheinlichkeiten.",
+    "games.hangman.btn": "GALGENMÄNNCHEN",
+    "games.bluemem.btn": "BLUE MEMORY",
+    "games.red13.btn": "Red13 - Leben eines Bluezone-Runners",
+    "games.red13.desc": "Red13 ist ein Fan-Game, inspiriert von der Intensität der PUBG-Bluezone. Kein offizieller Zusammenhang mit PUBG oder Krafton.",
+    "games.schnee.btn": "SCHNEEFUCHS HASST SMG'S",
+    "games.schnee.desc": "Hilf Schneefuchs, seinen Albtraum zu überleben, in dem er dem am meisten Gehassten gegenübersteht...",
   },
   fi: {
     "nav.ban": "Ban-tarkistin",
@@ -193,6 +233,7 @@ const TRANSLATIONS = {
     "hero.index.searchid": "Hae tilin ID:llä",
     "hero.index.lookup": "Hae ID",
     "hero.index.clearid": "Tyhjennä",
+    "common.noresults": "Ei tuloksia vielä.",
     "watchlist.platform": "Alustan valinta",
     "watchlist.controls": "Seurantalistan hallinta",
     "watchlist.refresh": "Päivitä kaikki",
@@ -214,6 +255,15 @@ const TRANSLATIONS = {
     "crate.hero.title": "Piilopaikan laatikkosimulaattori",
     "crate.hero.subtitle": "Winter Eclipse",
     "crate.hero.lede": "Käytä 1800 G-Coin / 10 pakettia, käännä kortit ja seuraa kulutusta.",
+    "games.title": "PUBG:stä inspiroituneet pelit",
+    "games.crate.btn": "Piilopaikan laatikkosimulaattori - \"Winter Eclipse\"",
+    "games.crate.desc": "Avaa 10 laatikkoa kerralla 1800 GC:llä, seuraa kulutusta ja näe tiput ilmoitetuilla todennäköisyyksillä.",
+    "games.hangman.btn": "Hirsipuu",
+    "games.bluemem.btn": "Blue Memory",
+    "games.red13.btn": "Red13 - Bluezone-juoksijan elämä",
+    "games.red13.desc": "Red13 on fanipeli, joka on saanut inspiraationsa PUBG:n sinisen vyöhykkeen intensiteetistä. Ei yhteyttä PUBG:hen tai Kraftoniin.",
+    "games.schnee.btn": "SCHNEEFUCHS VIHAA SMG:itä",
+    "games.schnee.desc": "Auta Schneefuchsia selviämään painajaisestaan, jossa hän kohtaa eniten vihaamansa asiat...",
   },
 };
 
@@ -227,6 +277,13 @@ function setCurrentLang(lang) {
   if (!LANGS[lang]) return;
   localStorage.setItem("siteLang", lang);
 }
+
+function tr(key) {
+  const lang = getCurrentLang();
+  const dict = TRANSLATIONS[lang] || TRANSLATIONS.en;
+  return dict[key] || TRANSLATIONS.en[key] || key;
+}
+window.tr = tr;
 
 function applyTranslations(lang) {
   const dict = TRANSLATIONS[lang] || TRANSLATIONS.en;

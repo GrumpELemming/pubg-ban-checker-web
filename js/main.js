@@ -496,7 +496,7 @@
       clearResultsBtn.addEventListener("click", () => {
         const results = document.getElementById("results");
         if (results) {
-          results.innerHTML = "<p class='muted'>No results yet.</p>";
+          results.innerHTML = `<p class='muted'>${(window.tr && window.tr("common.noresults")) || "No results yet."}</p>`;
         }
       });
     }
@@ -506,7 +506,7 @@
       clearIdBtn.addEventListener("click", () => {
         const out = document.getElementById("idLookupResults");
         const input = document.getElementById("accountIdInput");
-        if (out) out.innerHTML = "<p class='muted'>No results yet.</p>";
+        if (out) out.innerHTML = `<p class='muted'>${(window.tr && window.tr("common.noresults")) || "No results yet."}</p>`;
         if (input) input.value = "";
       });
     }
