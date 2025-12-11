@@ -1,0 +1,36 @@
+.lang-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 6px;
+}
+
+.lang-switch label {
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #d7f8ff;
+}
+
+.lang-switch select,
+.lang-switch button {
+  border-radius: 10px;
+  border: 1px solid rgba(147, 221, 255, 0.4);
+  background: rgba(255, 255, 255, 0.05);
+  color: #e0f6ff;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+.lang-switch button {
+  background: linear-gradient(120deg, #11ffd3, #1e51ff);
+  color: #03121d;
+  font-weight: 700;
+}
+
+.lang-switch button:hover,
+.lang-switch select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(69, 255, 216, 0.2);
+}

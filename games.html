@@ -14,17 +14,25 @@
   ">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PUBG Ban Checker - Games</title>
+  <link rel="stylesheet" href="css/lang.css">
   <link rel="stylesheet" href="css/games.css">
+  <script defer src="js/i18n.js"></script>
 </head>
 <body>
   <div class="nav-panel">
     <div class="nav-title">PUBG BAN CHECKER</div>
     <div class="nav-panel-buttons">
-      <a href="index.html"><button type="button">Ban Checker</button></a>
-      <a href="watchlist.html"><button type="button">Watchlist</button></a>
-      <a href="recent.html"><button type="button">Sniper Watch</button></a>
-      <a href="links.html"><button type="button">Links</button></a>
-      <a href="updates.html"><button type="button">About</button></a>
+      <a href="index.html"><button type="button" data-i18n="nav.ban">Ban Checker</button></a>
+      <a href="watchlist.html"><button type="button" data-i18n="nav.watchlist">Watchlist</button></a>
+      <a href="recent.html"><button type="button" data-i18n="nav.sniper">Sniper Watch</button></a>
+      <a href="links.html"><button type="button" data-i18n="nav.links">Links</button></a>
+      <a href="updates.html"><button type="button" data-i18n="nav.about">About</button></a>
+      <a href="crate.html"><button type="button" data-i18n="nav.crate">Crate Simulator</button></a>
+    </div>
+    <div class="lang-switch">
+      <label for="langSelectGames" data-i18n="nav.lang">Language</label>
+      <select id="langSelectGames"></select>
+      <button type="button" id="requestLangBtn" data-i18n="nav.request">Request language</button>
     </div>
   </div>
 

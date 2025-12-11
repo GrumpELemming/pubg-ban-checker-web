@@ -88,6 +88,12 @@ function sortEntries(entries, mode) {
       (b.kills ?? 0) - (a.kills ?? 0) ||
       (b.matches ?? 0) - (a.matches ?? 0)
     );
+  } else if (mode === "wins") {
+    copy.sort((a, b) =>
+      (b.wins ?? 0) - (a.wins ?? 0) ||
+      (b.matches ?? 0) - (a.matches ?? 0) ||
+      (b.kills ?? 0) - (a.kills ?? 0)
+    );
   } else {
     // Overall: matches then kills
     copy.sort((a, b) =>
