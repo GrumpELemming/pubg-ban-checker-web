@@ -17,7 +17,7 @@
   <div class="recent-scanlines" aria-hidden="true"></div>
 
   <div class="nav-panel">
-    <div class="nav-title">PUBG BAN CHECKER</div>
+    <div class="nav-title" data-i18n="hero.index.title">PUBG BAN CHECKER</div>
     <div class="nav-panel-buttons">
       <a href="index.html"><button type="button" data-i18n="nav.ban">Ban Checker</button></a>
       <a href="watchlist.html"><button type="button" data-i18n="nav.watchlist">Watchlist</button></a>
@@ -28,21 +28,19 @@
     <div class="lang-switch">
       <label for="langSelectRecent" data-i18n="nav.lang">Language</label>
       <select id="langSelectRecent"></select>
-      <button type="button" id="requestLangBtn" data-i18n="nav.request">Request language</button>
+      <button type="button" class="request-lang-btn" data-i18n="nav.request">Request language</button>
     </div>
   </div>
 
   <main class="recent-shell">
     <section class="recent-search">
-      <label for="playerNameInput">Enter your PUBG username</label>
+      <label for="playerNameInput" data-i18n="recent.label">Enter your PUBG username</label>
       <div class="recent-search-row">
-        <input id="playerNameInput" type="text" placeholder="Example: BattlegroundHero" autocomplete="off" />
-        <button id="fetchEncountersBtn" type="button">Scan 14 Days</button>
+        <input id="playerNameInput" type="text" data-i18n-placeholder="recent.label" placeholder="Example: BattlegroundHero" autocomplete="off" />
+        <button id="fetchEncountersBtn" type="button" data-i18n="recent.button">Scan 14 Days</button>
       </div>
-      <p class="helper-line" id="fetchNote">Shows only opponents who damaged you in 3+ matches over the last 14 days.</p>
-      <p class="helper-line">
-        Sniper Watch analyzes your recent matches to spotlight repeat offenders and totals the damage they’ve dealt to you, so you can prioritize who to avoid or report.
-      </p>
+      <p class="helper-line" id="fetchNote" data-i18n="recent.note">Shows only opponents who damaged you in 3+ matches over the last 14 days.</p>
+      <p class="helper-line" data-i18n="recent.helper">Sniper Watch analyzes your recent matches to spotlight repeat offenders and totals the damage they have dealt to you, so you can prioritize who to avoid or report.</p>
     </section>
 
     <section class="recent-card">
@@ -61,4 +59,5 @@
   </main>
 </body>
 </html>
+
 

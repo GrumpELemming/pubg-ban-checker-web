@@ -32,9 +32,9 @@
   <div class="wl-scanlines" aria-hidden="true"></div>
 
   <div class="nav-panel">
-    <div class="nav-title">PUBG BAN CHECKER</div>
+    <div class="nav-title" data-i18n="hero.index.title">PUBG BAN CHECKER</div>
     <div class="nav-panel-buttons">
-      <a href="index.html"><button type="button">Ban Checker</button></a>
+      <a href="index.html"><button type="button" data-i18n="nav.ban">Ban Checker</button></a>
       <a href="recent.html"><button type="button" data-i18n="nav.sniper">Sniper Watch</button></a>
       <a href="links.html"><button type="button" data-i18n="nav.links">Links</button></a>
       <a href="updates.html"><button type="button" data-i18n="nav.about">About</button></a>
@@ -43,7 +43,7 @@
     <div class="lang-switch">
       <label for="langSelectWatch" data-i18n="nav.lang">Language</label>
       <select id="langSelectWatch"></select>
-      <button type="button" id="requestLangBtn" data-i18n="nav.request">Request language</button>
+      <button type="button" class="request-lang-btn" data-i18n="nav.request">Request language</button>
     </div>
   </div>
 
@@ -52,7 +52,7 @@
 
       <article class="wl-module">
         <header>
-          <h2>Platform selection</h2>
+          <h2 data-i18n="watchlist.platform">Platform selection</h2>
         </header>
 
         <div id="platformRowWatchlist" class="platform-row" role="group" aria-label="Platform selection buttons">
@@ -81,13 +81,13 @@
 
       <article class="wl-module">
         <header>
-          <h2>Watchlist controls</h2>
-          <span>Run sweeps &amp; manage list</span>
+          <h2 data-i18n="watchlist.controls">Watchlist controls</h2>
+          <span data-i18n="watchlist.controls">Run sweeps &amp; manage list</span>
         </header>
 
         <div class="wl-module-actions">
-          <button id="refreshAllBtn" class="wl-btn wl-btn-primary">Refresh All</button>
-          <button id="clearWatchlistBtn" class="wl-btn wl-btn-ghost">Clear All</button>
+          <button id="refreshAllBtn" class="wl-btn wl-btn-primary" data-i18n="watchlist.refresh">Refresh All</button>
+          <button id="clearWatchlistBtn" class="wl-btn wl-btn-ghost" data-i18n="watchlist.clear">Clear All</button>
         </div>
       </article>
 

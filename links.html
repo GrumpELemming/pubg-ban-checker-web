@@ -19,7 +19,7 @@
 </head>
 <body>
   <div class="nav-panel">
-    <div class="nav-title">PUBG BAN CHECKER</div>
+    <div class="nav-title" data-i18n="hero.index.title">PUBG BAN CHECKER</div>
     <div class="nav-panel-buttons">
       <a href="index.html"><button type="button" data-i18n="nav.ban">Ban Checker</button></a>
       <a href="watchlist.html"><button type="button" data-i18n="nav.watchlist">Watchlist</button></a>
@@ -30,7 +30,7 @@
     <div class="lang-switch">
       <label for="langSelectLinks" data-i18n="nav.lang">Language</label>
       <select id="langSelectLinks"></select>
-      <button type="button" id="requestLangBtn" data-i18n="nav.request">Request language</button>
+      <button type="button" class="request-lang-btn" data-i18n="nav.request">Request language</button>
     </div>
   </div>
 
@@ -38,10 +38,7 @@
     <header class="links-hero">
       <p class="eyebrow">Community Radar</p>
       <h1>Trusted PUBG Resources</h1>
-      <p class="lede">
-        Report cheaters, review stats, watch 2D replays, and follow creators who expose bad actors. These are the
-        go-to destinations we recommend.
-      </p>
+      <p class="lede" data-i18n="links.hero.lede">Report cheaters, review stats, watch 2D replays, and follow creators who expose bad actors. These are the go-to destinations we recommend.</p>
     </header>
 
     <section class="links-grid">
@@ -49,7 +46,7 @@
         <div>
           <p class="eyebrow">Cheater Reporting</p>
           <h2>PUBG Together</h2>
-          <p>Vote on community clips and send evidence straight to PUBG Support. Crowd-sourced verdicts make reports clear and credible.</p>
+          <p data-i18n="links.pubgtogether">Vote on community clips and send evidence straight to PUBG Support. Crowd-sourced verdicts make reports clear and credible.</p>
         </div>
         <a class="link-btn" href="https://www.pubgtogether.com/" target="_blank" rel="noopener noreferrer">pubgtogether.com</a>
       </article>
@@ -67,7 +64,7 @@
         <div>
           <p class="eyebrow">Stat Tracking</p>
           <h2>PUBG Meta</h2>
-          <p>Rich dashboards, meta insights, and compare views. Another must-have for digging into player or squad performance.</p>
+          <p data-i18n="links.meta">Rich dashboards, meta insights, and compare views. Another must-have for digging into player or squad performance.</p>
         </div>
         <a class="link-btn" href="https://www.pubg-meta.com/" target="_blank" rel="noopener noreferrer">pubg-meta.com</a>
       </article>
@@ -85,7 +82,7 @@
         <div>
           <p class="eyebrow">2D Replays</p>
           <h2>Chicken Dinner GG</h2>
-          <p>Detailed heatmaps and timelines in 2D. Great for reviewing engagements and positioning across the entire lobby.</p>
+          <p data-i18n="links.chicken">Detailed heatmaps and timelines in 2D. Great for reviewing engagements and positioning across the entire lobby.</p>
         </div>
         <a class="link-btn" href="https://chickendinner.gg/" target="_blank" rel="noopener noreferrer">chickendinner.gg</a>
       </article>
@@ -94,7 +91,7 @@
         <div>
           <p class="eyebrow">Community Spotlight</p>
           <h2>Shady Knights</h2>
-          <p>Exposes cheaters with polished breakdowns and commentary. A solid pulse-check on the state of fair play.</p>
+          <p data-i18n="links.shady">Exposes cheaters with polished breakdowns and commentary. A solid pulse-check on the state of fair play.</p>
         </div>
         <a class="link-btn" href="https://www.youtube.com/@shady_knights" target="_blank" rel="noopener noreferrer">YouTube channel</a>
       </article>
@@ -112,3 +109,4 @@
 </body>
 <script defer src="js/i18n.js"></script>
 </html>
+

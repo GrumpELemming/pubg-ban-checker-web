@@ -1,4 +1,4 @@
-// Simple i18n helper for static pages (excludes clan tracker)
+// Simple i18n helper for static pages (excluding clan tracker)
 // Languages: English (default), Korean, Chinese, German, Finnish
 
 const LANGS = {
@@ -20,6 +20,36 @@ const TRANSLATIONS = {
     "nav.crate": "Crate Simulator",
     "nav.request": "Request language",
     "nav.lang": "Language",
+    "hero.index.title": "PUBG Ban Checker",
+    "hero.index.platform": "Select Platform",
+    "hero.index.banchecker": "Ban & Clan Checker",
+    "hero.index.placeholder": "Enter player names, separated by commas or new lines (max 10 per check)",
+    "hero.index.check": "Check",
+    "hero.index.clear": "Clear",
+    "hero.index.searchid": "Search by Account ID",
+    "hero.index.lookup": "Lookup ID",
+    "hero.index.clearid": "Clear",
+    "watchlist.platform": "Platform selection",
+    "watchlist.controls": "Watchlist controls",
+    "watchlist.refresh": "Refresh All",
+    "watchlist.clear": "Clear All",
+    "recent.label": "Enter your PUBG username",
+    "recent.button": "Scan 14 Days",
+    "recent.note": "Shows only opponents who damaged you in 3+ matches over the last 14 days.",
+    "recent.helper": "Sniper Watch analyzes your recent matches to spotlight repeat offenders and totals the damage they have dealt to you.",
+    "updates.title": "PUBG Ban Checker - Updates",
+    "links.hero.title": "Trusted PUBG Resources",
+    "links.hero.lede": "Report cheaters, review stats, watch 2D replays, and follow creators who expose bad actors. These are the go-to destinations we recommend.",
+    "links.pubgtogether": "Vote on community clips and send evidence straight to PUBG Support. Crowd-sourced verdicts make reports clear and credible.",
+    "links.lookup": "Deep personal stats, leaderboards, and match history—great for scouting your own performance or checking other pilots.",
+    "links.meta": "Rich dashboards, meta insights, and compare views. Another must-have for digging into player or squad performance.",
+    "links.pubgsh": "Fast, clean 2D match replays—scan drops, rotations, and team paths to spot patterns or suspicious routes.",
+    "links.chicken": "Detailed heatmaps and timelines in 2D. Great for reviewing engagements and positioning across the entire lobby.",
+    "links.shady": "Exposes cheaters with polished breakdowns and commentary. A solid pulse-check on the state of fair play.",
+    "links.stupid": "Light-hearted takedowns of perm-banned cheaters—proof that justice lands and worth a laugh between matches.",
+    "crate.hero.title": "Hideout Crate Simulator",
+    "crate.hero.subtitle": "Winter Eclipse",
+    "crate.hero.lede": "Spend 1800 G-Coin per 10-pack, flip each card to reveal the drop, and keep track of how much you've spent.",
   },
   ko: {
     "nav.ban": "밴 확인기",
@@ -31,6 +61,36 @@ const TRANSLATIONS = {
     "nav.crate": "상자 시뮬레이터",
     "nav.request": "언어 요청",
     "nav.lang": "언어",
+    "hero.index.title": "PUBG 밴 확인",
+    "hero.index.platform": "플랫폼 선택",
+    "hero.index.banchecker": "밴 & 클랜 확인",
+    "hero.index.placeholder": "플레이어 이름을 쉼표나 줄바꿈으로 입력 (최대 10명)",
+    "hero.index.check": "확인",
+    "hero.index.clear": "지우기",
+    "hero.index.searchid": "계정 ID로 검색",
+    "hero.index.lookup": "ID 조회",
+    "hero.index.clearid": "지우기",
+    "watchlist.platform": "플랫폼 선택",
+    "watchlist.controls": "관심 목록 제어",
+    "watchlist.refresh": "전체 새로고침",
+    "watchlist.clear": "전체 삭제",
+    "recent.label": "PUBG 사용자 이름 입력",
+    "recent.button": "14일 스캔",
+    "recent.note": "최근 3회 이상 피해를 준 상대만 표시합니다.",
+    "recent.helper": "최근 매치를 분석해 반복 가해자를 표시하고 받은 피해 총합을 보여줍니다.",
+    "updates.title": "PUBG 밴 확인 - 업데이트",
+    "links.hero.title": "신뢰할 수 있는 PUBG 리소스",
+    "links.hero.lede": "치터 신고, 스탯 확인, 2D 리플레이, 공정성 채널 등을 위한 추천 목적지입니다.",
+    "links.pubgtogether": "커뮤니티 클립에 투표하고 증거를 PUBG 지원팀에 전달합니다. 군중 평결로 신고가 명확해집니다.",
+    "links.lookup": "개인 스탯, 리더보드, 매치 기록을 깊이 있게 확인해 본인 또는 다른 파일럿을 탐색하세요.",
+    "links.meta": "대시보드, 메타 인사이트, 비교 보기가 뛰어납니다. 플레이어/스쿼드 퍼포먼스 분석에 필수입니다.",
+    "links.pubgsh": "빠르고 깔끔한 2D 리플레이—드랍, 이동, 경로를 살펴 패턴이나 의심스러운 동선을 찾습니다.",
+    "links.chicken": "상세 히트맵과 타임라인 제공. 교전과 포지셔닝을 전체 로비 관점에서 검토하기 좋습니다.",
+    "links.shady": "치터를 세련된 분석과 해설로 드러냅니다. 공정성 상태를 확인하기 좋은 채널입니다.",
+    "links.stupid": "영구 밴된 치터를 유쾌하게 다룹니다. 정의가 실현된 사례를 보며 웃을 수 있습니다.",
+    "crate.hero.title": "하이도트 상자 시뮬레이터",
+    "crate.hero.subtitle": "윈터 이클립스",
+    "crate.hero.lede": "10팩당 1800 G-Coin을 사용해 카드를 뒤집고, 소비 금액을 추적하세요.",
   },
   zh: {
     "nav.ban": "封禁查询",
@@ -42,6 +102,36 @@ const TRANSLATIONS = {
     "nav.crate": "箱子模拟器",
     "nav.request": "请求语言",
     "nav.lang": "语言",
+    "hero.index.title": "PUBG 封禁查询",
+    "hero.index.platform": "选择平台",
+    "hero.index.banchecker": "封禁与战队查询",
+    "hero.index.placeholder": "输入玩家名，逗号或换行分隔（最多 10 个）",
+    "hero.index.check": "查询",
+    "hero.index.clear": "清空",
+    "hero.index.searchid": "按账号 ID 搜索",
+    "hero.index.lookup": "查询 ID",
+    "hero.index.clearid": "清空",
+    "watchlist.platform": "平台选择",
+    "watchlist.controls": "关注列表控制",
+    "watchlist.refresh": "全部刷新",
+    "watchlist.clear": "全部清除",
+    "recent.label": "输入你的 PUBG 用户名",
+    "recent.button": "扫描 14 天",
+    "recent.note": "仅显示在 3 场及以上比赛中对你造成伤害的对手。",
+    "recent.helper": "分析最近比赛，突出重复攻击者并汇总伤害，便于识别狙击者。",
+    "updates.title": "PUBG 封禁查询 - 更新",
+    "links.hero.title": "可信的 PUBG 资源",
+    "links.hero.lede": "举报作弊、查看数据、观看 2D 回放、关注揭露作弊的创作者。推荐这些目的地。",
+    "links.pubgtogether": "为社区视频投票，并将证据直接发送给 PUBG 支持。群体裁决让举报更明确。",
+    "links.lookup": "深度个人统计、排行榜和比赛记录——用于自查或查看他人表现。",
+    "links.meta": "丰富的仪表盘、元数据洞察和对比视图。分析玩家或战队表现的必备。",
+    "links.pubgsh": "快速、简洁的 2D 回放——查看跳点、转点和队伍路线，发现模式或可疑动线。",
+    "links.chicken": "详细热力图和时间线。适合整体视角回顾交战和站位。",
+    "links.shady": "用精炼的解说揭露作弊者。了解公平性状态的好渠道。",
+    "links.stupid": "戏谑永封作弊者，展示制裁成果，轻松一笑。",
+    "crate.hero.title": "藏身处箱子模拟器",
+    "crate.hero.subtitle": "冬日蚀月",
+    "crate.hero.lede": "每 10 包花费 1800 G-Coin，翻牌查看掉落并记录花费。",
   },
   de: {
     "nav.ban": "Ban-Prüfer",
@@ -53,6 +143,36 @@ const TRANSLATIONS = {
     "nav.crate": "Kisten-Simulator",
     "nav.request": "Sprache anfragen",
     "nav.lang": "Sprache",
+    "hero.index.title": "PUBG Ban-Checker",
+    "hero.index.platform": "Plattform auswählen",
+    "hero.index.banchecker": "Ban & Clan Prüfer",
+    "hero.index.placeholder": "Spielernamen durch Kommas oder Zeilen trennen (max. 10)",
+    "hero.index.check": "Prüfen",
+    "hero.index.clear": "Löschen",
+    "hero.index.searchid": "Nach Account-ID suchen",
+    "hero.index.lookup": "ID nachschlagen",
+    "hero.index.clearid": "Löschen",
+    "watchlist.platform": "Plattform-Auswahl",
+    "watchlist.controls": "Watchlist-Steuerung",
+    "watchlist.refresh": "Alle aktualisieren",
+    "watchlist.clear": "Alle löschen",
+    "recent.label": "Gib deinen PUBG-Namen ein",
+    "recent.button": "14 Tage scannen",
+    "recent.note": "Zeigt nur Gegner, die dir in 3+ Matches Schaden zugefügt haben.",
+    "recent.helper": "Analysiert deine letzten Matches, hebt Wiederholungstäter hervor und summiert den Schaden.",
+    "updates.title": "PUBG Ban Checker - Updates",
+    "links.hero.title": "Vertrauenswürdige PUBG-Ressourcen",
+    "links.hero.lede": "Cheater melden, Stats prüfen, 2D-Replays ansehen und Creator folgen, die Cheater aufdecken.",
+    "links.pubgtogether": "Stimme über Clips ab und sende Beweise direkt an PUBG Support. Crowd-Verdikte machen Meldungen klarer.",
+    "links.lookup": "Tiefe Statistiken, Ranglisten und Match-Historie—ideal für eigene Performance oder andere Spieler.",
+    "links.meta": "Reiche Dashboards, Meta-Insights und Vergleichsansichten. Pflicht für Spieler- oder Squad-Analysen.",
+    "links.pubgsh": "Schnelle 2D-Replays—Drops, Rotationen und Teamwege prüfen, um Muster oder Verdächtiges zu finden.",
+    "links.chicken": "Detailierte Heatmaps und Zeitachsen. Gut für Engagement- und Positions-Review.",
+    "links.shady": "Deckt Cheater mit Analysen und Kommentaren auf. Ein guter Puls zur Fairness-Lage.",
+    "links.stupid": "Humorvolle Videos zu permagebanten Cheatern—zeigt, dass Gerechtigkeit wirkt.",
+    "crate.hero.title": "Versteck-Kistensimulator",
+    "crate.hero.subtitle": "Winter Eclipse",
+    "crate.hero.lede": "Pro 10er-Paket 1800 G-Coin, Karten aufdecken und Ausgaben verfolgen.",
   },
   fi: {
     "nav.ban": "Ban-tarkistin",
@@ -64,6 +184,36 @@ const TRANSLATIONS = {
     "nav.crate": "Laatikkomallinnin",
     "nav.request": "Pyydä kieltä",
     "nav.lang": "Kieli",
+    "hero.index.title": "PUBG-ban-tarkistin",
+    "hero.index.platform": "Valitse alusta",
+    "hero.index.banchecker": "Banien ja klaanien tarkistus",
+    "hero.index.placeholder": "Kirjoita pelaajat, pilkuin tai rivein eroteltuna (enint. 10)",
+    "hero.index.check": "Tarkista",
+    "hero.index.clear": "Tyhjennä",
+    "hero.index.searchid": "Hae tilin ID:llä",
+    "hero.index.lookup": "Hae ID",
+    "hero.index.clearid": "Tyhjennä",
+    "watchlist.platform": "Alustan valinta",
+    "watchlist.controls": "Seurantalistan hallinta",
+    "watchlist.refresh": "Päivitä kaikki",
+    "watchlist.clear": "Tyhjennä kaikki",
+    "recent.label": "Anna PUBG-käyttäjänimesi",
+    "recent.button": "Skannaa 14 päivää",
+    "recent.note": "Näyttää vain vastustajat, jotka vahingoittivat sinua vähintään 3 ottelussa.",
+    "recent.helper": "Analysoi viime ottelut, nostaa esiin toistuvat hyökkääjät ja summaa vahingon.",
+    "updates.title": "PUBG-ban-tarkistin - päivitykset",
+    "links.hero.title": "Luotettavat PUBG-resurssit",
+    "links.hero.lede": "Ilmoita huijareista, tarkista tilastot, katso 2D-uusintoja ja seuraa huijareita paljastavia tekijöitä.",
+    "links.pubgtogether": "Äänestä klippejä ja lähetä todisteet suoraan PUBG-tukeen. Yhteisötuomiot selkeyttävät ilmoituksia.",
+    "links.lookup": "Syvät tilastot, listat ja otteluhistoria—hyvä itselle ja muiden pelaajien tarkistukseen.",
+    "links.meta": "Rikkaat kojelaudat, meta-analyysit ja vertailut. Pakollinen pelaaja-/joukkuetason analyysiin.",
+    "links.pubgsh": "Nopeat 2D-uusinnat—pudotukset, rotaatiot ja tiimipolut näkyviin malleja tai epäilyttäviä reittejä varten.",
+    "links.chicken": "Yksityiskohtaiset lämpökartat ja aikajanat. Hyvä taistelujen ja sijoittumisen tarkasteluun.",
+    "links.shady": "Paljastaa huijareita analyysein ja kommentein. Hyvä tilannetaju reiluudesta.",
+    "links.stupid": "Humoristiset videot pysyvästi bannatuista huijareista—osoittaa, että oikeus toteutuu.",
+    "crate.hero.title": "Piilopaikan laatikkosimulaattori",
+    "crate.hero.subtitle": "Winter Eclipse",
+    "crate.hero.lede": "Käytä 1800 G-Coin / 10 pakettia, käännä kortit ja seuraa kulutusta.",
   },
 };
 
@@ -85,37 +235,43 @@ function applyTranslations(lang) {
     const txt = dict[key] || TRANSLATIONS.en[key] || el.textContent;
     el.textContent = txt;
   });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+    const key = el.getAttribute("data-i18n-placeholder");
+    const txt = dict[key] || TRANSLATIONS.en[key];
+    if (txt) el.setAttribute("placeholder", txt);
+  });
 }
 
 function buildLangSelector() {
-  const container = document.querySelector(".lang-switch");
-  if (!container) return;
-  const label = container.querySelector("[data-i18n='nav.lang']");
-  const select = container.querySelector("select");
-  const requestBtn = container.querySelector("#requestLangBtn");
+  const containerList = document.querySelectorAll(".lang-switch");
   const current = getCurrentLang();
 
-  if (select) {
-    select.innerHTML = "";
-    Object.entries(LANGS).forEach(([code, name]) => {
-      const opt = document.createElement("option");
-      opt.value = code;
-      opt.textContent = name;
-      if (code === current) opt.selected = true;
-      select.appendChild(opt);
-    });
-    select.addEventListener("change", () => {
-      const lang = select.value;
-      setCurrentLang(lang);
-      applyTranslations(lang);
-    });
-  }
+  containerList.forEach(container => {
+    const select = container.querySelector("select");
+    const requestBtn = container.querySelector(".request-lang-btn");
 
-  if (requestBtn) {
-    requestBtn.addEventListener("click", () => {
-      window.location.href = "mailto:thegrumpylemming@gmail.com?subject=Language%20request";
-    });
-  }
+    if (select) {
+      select.innerHTML = "";
+      Object.entries(LANGS).forEach(([code, name]) => {
+        const opt = document.createElement("option");
+        opt.value = code;
+        opt.textContent = name;
+        if (code === current) opt.selected = true;
+        select.appendChild(opt);
+      });
+      select.addEventListener("change", () => {
+        const lang = select.value;
+        setCurrentLang(lang);
+        applyTranslations(lang);
+      });
+    }
+
+    if (requestBtn) {
+      requestBtn.addEventListener("click", () => {
+        window.location.href = "mailto:thegrumpylemming@gmail.com?subject=Language%20request";
+      });
+    }
+  });
 
   applyTranslations(current);
 }
