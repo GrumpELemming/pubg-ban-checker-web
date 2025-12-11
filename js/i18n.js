@@ -69,7 +69,7 @@ const TRANSLATIONS = {
     "nav.about": "소개",
     "nav.games": "게임",
     "nav.crate": "상자 시뮬레이터",
-    "nav.request": "언어 요청",
+    "nav.request": "언어추가 문의",
     "nav.lang": "언어",
     "hero.index.title": "PUBG 밴 확인",
     "hero.index.platform": "플랫폼 선택",
