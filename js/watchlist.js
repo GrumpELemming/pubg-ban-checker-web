@@ -123,6 +123,10 @@
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
+  function isNotBanned(statusText) {
+    return (statusText || "").toLowerCase().trim() === "not banned";
+  }
+
   // Cache helpers scoped per platform/player to avoid refetching hot data
   function makeCacheKey(platform, playerName) {
     return `banCache_${platform}_${playerName || ""}`;
@@ -193,11 +197,7 @@
     return true;
   }
 
-  async function updateEntryFromBan(entry, platform, hasRetried = false) {
-    if (!entry) return false;
-    await syncEntryNameFromAccount(entry, platform);
-
-    const lookupName = entry.player;
+  async function fetchBanData(platform, lookupName) {
     const resp = await fetch(
       `${BASE_URL}/check-ban-clan?platform=${encodeURIComponent(platform)}&player=${encodeURIComponent(lookupName)}`
     );
@@ -208,6 +208,16 @@
     } catch {
       data = null;
     }
+    return { resp, data };
+  }
+
+  async function updateEntryFromBan(entry, platform, hasRetried = false) {
+    if (!entry) return false;
+    await syncEntryNameFromAccount(entry, platform);
+
+    const lookupName = entry.player;
+    const firstAttempt = await fetchBanData(platform, lookupName);
+    let { resp, data } = firstAttempt;
 
     const hasResults = data && Array.isArray(data.results) && data.results.length;
     if (!resp.ok || !hasResults) {
@@ -221,10 +231,29 @@
     }
 
     const normalized = lookupName.toLowerCase();
-    const match =
+    let match =
       data.results.find(r => (r.player || r.name || "").toLowerCase() === normalized) || data.results[0];
 
-    const banStatusText = (match?.banStatus || match?.status || match?.statusText || "").toLowerCase();
+    let banStatusText = (match?.banStatus || match?.status || match?.statusText || "").toLowerCase();
+
+    // Confirm "Not banned" with a second quick lookup to avoid stale OKs
+    if (isNotBanned(banStatusText)) {
+      await wait(700);
+      const second = await fetchBanData(platform, lookupName);
+      const secondHasResults = second.data && Array.isArray(second.data.results) && second.data.results.length;
+      if (secondHasResults) {
+        const secondMatch =
+          second.data.results.find(r => (r.player || r.name || "").toLowerCase() === normalized) ||
+          second.data.results[0];
+        const secondStatus = (secondMatch?.banStatus || secondMatch?.status || secondMatch?.statusText || "").toLowerCase();
+        if (!isNotBanned(secondStatus)) {
+          match = secondMatch;
+          banStatusText = secondStatus;
+          data = second.data;
+        }
+      }
+    }
+
     if (!hasRetried && entry.accountId && banStatusText.includes("not found")) {
       const renamed = await syncEntryNameFromAccount(entry, platform);
       if (renamed) {
@@ -592,5 +621,4 @@
   });
 
 })();
-
 

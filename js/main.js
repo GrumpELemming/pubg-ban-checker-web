@@ -102,8 +102,12 @@
     }
   }
 
+  function isNotBanned(statusText) {
+    return (statusText || "").toLowerCase().trim() === "not banned";
+  }
+
   // ---------- Backend calls ----------
-  async function getBanStatus(platform, playerName) {
+  async function fetchBanOnce(platform, playerName) {
     const url = `${BASE_URL}/check-ban-clan?platform=${encodeURIComponent(
       platform
     )}&player=${encodeURIComponent(playerName)}`;
@@ -197,6 +201,21 @@
     };
 
     return result;
+  }
+
+  async function getBanStatus(platform, playerName) {
+    const first = await fetchBanOnce(platform, playerName);
+    if (!isNotBanned(first.statusText)) {
+      return first;
+    }
+
+    // Confirm "Not banned" with a quick recheck to avoid stale OKs
+    await wait(700);
+    const second = await fetchBanOnce(platform, playerName);
+    if (!isNotBanned(second.statusText)) {
+      return second;
+    }
+    return second;
   }
 
   async function resolveById(id, platform) {
