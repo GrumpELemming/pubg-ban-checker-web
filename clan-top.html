@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LULZ CLAN RECORDS</title>
+  <link rel="stylesheet" href="css/clan.css?v=20251218">
+  <script defer src="js/clan_top.js?v=20251218"></script>
+</head>
+<body>
+
+  <main class="clan-shell">
+
+    <header class="clan-hero">
+      <div class="hero-title-bar">
+        <h1 class="tracker-title">LULZ CLAN RECORDS</h1>
+      </div>
+
+      <div class="hero-body">
+        <p class="lede">
+          All-time clan records pulled from server-cached matches (no TDM/arena). Refresh to fetch the latest pulls.
+        </p>
+
+        <div class="pill-links">
+          <a class="pill-link" href="clan.html">← Back to weekly leaderboard</a>
+          <a class="pill-link secondary" href="clan-top.html">Top 10 records</a>
+        </div>
+      </div>
+    </header>
+
+    <section class="clan-card">
+      <div class="card-header">
+        <div>
+          <h2>All-time top 10</h2>
+          <p class="muted" style="margin: 4px 0 0;">Data comes from your scheduled pulls; PUBG lifetime stats aren’t queried directly.</p>
+        </div>
+        <div class="stat-row">
+          <button id="refreshRecords" type="button" class="sort-btn">Refresh</button>
+          <span id="recordsStatus" class="status">Loaded</span>
+        </div>
+      </div>
+
+      <div class="record-grid" id="recordsGrid">
+        <!-- cards injected by JS -->
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>

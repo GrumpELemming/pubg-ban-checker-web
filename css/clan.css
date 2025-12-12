@@ -286,6 +286,75 @@ td {
   text-align: left;
 }
 
+.pill-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.pill-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 166, 0, 0.08);
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.pill-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.35);
+  background: rgba(255, 166, 0, 0.16);
+}
+
+.pill-link.secondary {
+  background: rgba(255, 95, 209, 0.12);
+  border-color: rgba(255, 95, 209, 0.55);
+}
+
+.record-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.record-card h3 {
+  margin: 0;
+}
+
+.record-card table {
+  width: 100%;
+  border-spacing: 0;
+}
+
+.record-card td,
+.record-card th {
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
+.record-card th {
+  text-align: left;
+  font-weight: 700;
+  color: var(--muted);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.record-card td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.record-card tbody tr:last-child td {
+  border-bottom: none;
+}
+
 /* RESPONSIVE ------------------------------------------- */
 
 @media (max-width: 720px) {
