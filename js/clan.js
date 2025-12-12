@@ -2,6 +2,8 @@
 // Talks to backend via Cloudflare Worker: /api/clan/weekly-leaderboard
 
 const API_BASE = "/api/clan";
+// Show only recent clan weeks (DB starts 2025-11-26)
+const EARLIEST_CLAN_DATE = new Date("2025-11-26T00:00:00Z");
 
 function $(id) {
   return document.getElementById(id);
@@ -29,7 +31,7 @@ function formatDateRange(start, end) {
   return `${start.toLocaleDateString(undefined, opts)} → ${end.toLocaleDateString(undefined, opts)}`;
 }
 
-function buildWeekOptions(count = 8) {
+function buildWeekOptions(count = 2) {
   const select = $("weekSelect");
   if (!select) return;
 
@@ -42,6 +44,11 @@ function buildWeekOptions(count = 8) {
     start.setDate(start.getDate() - 7 * i);
     const end = new Date(start);
     end.setDate(end.getDate() + 7);
+
+    // stop if we go before the first tracked week
+    if (start < EARLIEST_CLAN_DATE) {
+      break;
+    }
 
     const value = start.toISOString().slice(0, 10);
     const label = `${value} - Week ${formatDateRange(start, end)}`;
