@@ -85,6 +85,16 @@ const BOARDS = [
       { label: "Matches", render: row => formatInt(row.matches) },
     ],
   },
+  {
+    key: "top_kill_streak",
+    title: "Kill Streak (single match)",
+    subtitle: "Highest kills in one BR match",
+    columns: [
+      { label: "#", render: (_, idx) => idx + 1 },
+      { label: "Name", render: row => row.name || row.player_id || "Unknown" },
+      { label: "Kills", render: row => formatInt(row.max_kills || row.kills) },
+    ],
+  },
 ];
 
 function formatInt(val) {
