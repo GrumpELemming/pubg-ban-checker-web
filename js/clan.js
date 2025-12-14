@@ -11,6 +11,7 @@ function $(id) {
 
 let currentData = null;
 let currentSort = "matches";
+let currentIncludeCasual = false;
 
 // -------------------------
 // Clan week helpers (Wed→Wed)
@@ -65,7 +66,7 @@ function buildWeekOptions(count = 2) {
 // API + rendering
 // -------------------------
 
-async function fetchLeaderboard(weekParam) {
+async function fetchLeaderboard(weekParam, includeCasual) {
   const statusEl = $("status");
   if (statusEl) {
     statusEl.textContent = "Loading...";
@@ -74,6 +75,9 @@ async function fetchLeaderboard(weekParam) {
 
   let url = `${API_BASE}/weekly-leaderboard`;
   if (weekParam) url += `?week=${encodeURIComponent(weekParam)}`;
+  if (includeCasual) {
+    url += url.includes("?") ? "&include_casual=1" : "?include_casual=1";
+  }
 
   const resp = await fetch(url, { headers: { Accept: "application/json" } });
   if (!resp.ok) throw new Error(`Backend error (${resp.status})`);
@@ -217,9 +221,11 @@ async function loadLeaderboard() {
   const statusEl = $("status");
   const select = $("weekSelect");
   const weekParam = select ? (select.value || null) : null;
+  const includeCasual = !!(document.getElementById("includeCasualToggle")?.checked);
+  currentIncludeCasual = includeCasual;
 
   try {
-    const data = await fetchLeaderboard(weekParam);
+    const data = await fetchLeaderboard(weekParam, includeCasual);
     currentData = data;
     renderLeaderboard(data);
   } catch (err) {
@@ -270,6 +276,11 @@ document.addEventListener("DOMContentLoaded", () => {
   if (select) select.addEventListener("change", loadLeaderboard);
 
   setupSortButtons();
+
+  const includeCasualToggle = $("includeCasualToggle");
+  if (includeCasualToggle) {
+    includeCasualToggle.addEventListener("change", loadLeaderboard);
+  }
 
   const inactiveToggle = $("inactiveToggle");
   const inactiveBody = $("inactiveBody");

@@ -113,13 +113,19 @@ function formatHours(seconds) {
 }
 
 async function fetchRecords() {
+  const includeCasual = !!(document.getElementById("includeCasualRecords")?.checked);
   const statusEl = document.getElementById("recordsStatus");
   if (statusEl) {
     statusEl.textContent = "Loading...";
     statusEl.classList.remove("error");
   }
 
-  const resp = await fetch(`${API_BASE}/alltime-stats`, {
+  let url = `${API_BASE}/alltime-stats`;
+  if (includeCasual) {
+    url += "?include_casual=1";
+  }
+
+  const resp = await fetch(url, {
     headers: { Accept: "application/json" },
   });
   if (!resp.ok) throw new Error(`Backend error (${resp.status})`);
@@ -207,5 +213,7 @@ async function loadRecords() {
 document.addEventListener("DOMContentLoaded", () => {
   const refreshBtn = document.getElementById("refreshRecords");
   if (refreshBtn) refreshBtn.addEventListener("click", loadRecords);
+  const includeCasualToggle = document.getElementById("includeCasualRecords");
+  if (includeCasualToggle) includeCasualToggle.addEventListener("change", loadRecords);
   loadRecords();
 });
