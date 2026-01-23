@@ -35,6 +35,11 @@
   box-shadow: 0 0 0 2px rgba(69, 255, 216, 0.2);
 }
 
+body .nav-panel {
+  width: min(1040px, 100%);
+  max-width: 100%;
+}
+
 @media (max-width: 720px) {
   body .nav-panel {
     padding: 14px;
