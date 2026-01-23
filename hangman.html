@@ -5,8 +5,9 @@
   <title>PUBG Hangman</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    html, body { margin: 0; height: 100vh; overflow: hidden; background: #0b1220; color: #eee; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans"; }
-    canvas { display: block; width: 100%; height: 100%; outline: none; cursor: default; }
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #0b1220; color: #eee; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans"; }
+    body { height: 100dvh; }
+    canvas { display: block; width: 100%; height: 100%; outline: none; cursor: default; touch-action: manipulation; }
   </style>
 </head>
 <body>
@@ -147,11 +148,25 @@
   const canvas = document.getElementById("game");
   const ctx = canvas.getContext("2d");
 
+  let viewScale = 1;
+  let viewOffsetX = 0;
+  let viewOffsetY = 0;
+  let viewDpr = 1;
+
   function doResize() {
     const dpr = Math.max(1, window.devicePixelRatio || 1);
-    canvas.width = Math.round(window.innerWidth * dpr);
-    canvas.height = Math.round(window.innerHeight * dpr);
-    ctx.setTransform(canvas.width / VIRTUAL_W, 0, 0, canvas.height / VIRTUAL_H, 0, 0);
+    const cssW = window.innerWidth;
+    const cssH = window.innerHeight;
+    canvas.width = Math.round(cssW * dpr);
+    canvas.height = Math.round(cssH * dpr);
+
+    const scale = Math.min(cssW / VIRTUAL_W, cssH / VIRTUAL_H);
+    viewScale = scale;
+    viewOffsetX = (cssW - VIRTUAL_W * scale) / 2;
+    viewOffsetY = (cssH - VIRTUAL_H * scale) / 2;
+    viewDpr = dpr;
+
+    ctx.setTransform(viewScale * dpr, 0, 0, viewScale * dpr, viewOffsetX * dpr, viewOffsetY * dpr);
   }
 
   // Debounced resize
@@ -163,13 +178,55 @@
 
   const KEY_ROWS = [ "QWERTYUIOP".split(""), "ASDFGHJKL".split(""), "ZXCVBNM".split("") ];
 
-  let mouse = { x: 0, y: 0, clicked: false };
-  canvas.addEventListener("mousemove", e => {
+  function mapClientToVirtual(clientX, clientY) {
     const r = canvas.getBoundingClientRect();
-    mouse.x = (e.clientX - r.left) * (VIRTUAL_W / r.width);
-    mouse.y = (e.clientY - r.top) * (VIRTUAL_H / r.height);
+    const x = clientX - r.left;
+    const y = clientY - r.top;
+    const vx = (x - viewOffsetX) / viewScale;
+    const vy = (y - viewOffsetY) / viewScale;
+    if (vx < 0 || vy < 0 || vx > VIRTUAL_W || vy > VIRTUAL_H) return null;
+    return { x: vx, y: vy };
+  }
+
+  let mouse = { x: -9999, y: -9999, clicked: false };
+  canvas.addEventListener("mousemove", e => {
+    const pt = mapClientToVirtual(e.clientX, e.clientY);
+    if (!pt) {
+      mouse.x = -9999;
+      mouse.y = -9999;
+      return;
+    }
+    mouse.x = pt.x;
+    mouse.y = pt.y;
   });
-  canvas.addEventListener("mousedown", () => { mouse.clicked = true; canvas.focus(); });
+  canvas.addEventListener("mousedown", e => {
+    const pt = mapClientToVirtual(e.clientX, e.clientY);
+    if (!pt) return;
+    mouse.x = pt.x;
+    mouse.y = pt.y;
+    mouse.clicked = true;
+    canvas.focus();
+  });
+  canvas.addEventListener("touchstart", e => {
+    const t = e.touches[0];
+    if (!t) return;
+    const pt = mapClientToVirtual(t.clientX, t.clientY);
+    if (!pt) return;
+    mouse.x = pt.x;
+    mouse.y = pt.y;
+    mouse.clicked = true;
+    canvas.focus();
+    e.preventDefault();
+  }, { passive: false });
+  canvas.addEventListener("touchmove", e => {
+    const t = e.touches[0];
+    if (!t) return;
+    const pt = mapClientToVirtual(t.clientX, t.clientY);
+    if (!pt) return;
+    mouse.x = pt.x;
+    mouse.y = pt.y;
+    e.preventDefault();
+  }, { passive: false });
 
   window.addEventListener("keydown", e => {
     if (state.mode !== "game") {
@@ -536,6 +593,11 @@
   let running = false;
 
   function frame() {
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = THEME.BLUE_BG;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.setTransform(viewScale * viewDpr, 0, 0, viewScale * viewDpr, viewOffsetX * viewDpr, viewOffsetY * viewDpr);
+
     drawBackground();
     // --- Gentle Visual Enhancements ---
     // Soft blue haze that subtly pulses
