@@ -343,6 +343,12 @@ input.text-input::placeholder {
   animation: rowReveal 0.35s ease forwards;
   opacity: 0;
   color: #eaf7ff;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.player-row > div {
+  min-width: 0;
 }
 
 @keyframes rowReveal {
@@ -518,5 +524,29 @@ body.dark-mode .history {
   .container {
     width: 100%;
     padding: 20px 18px;
+  }
+}
+
+@media (max-width: 640px) {
+  .control-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .control-buttons button {
+    width: 100%;
+  }
+
+  .player-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .player-row > div {
+    min-width: 0;
+  }
+
+  .player-row button {
+    width: 100%;
   }
 }

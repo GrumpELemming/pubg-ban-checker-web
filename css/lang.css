@@ -34,3 +34,37 @@
   outline: none;
   box-shadow: 0 0 0 2px rgba(69, 255, 216, 0.2);
 }
+
+@media (max-width: 720px) {
+  body .nav-panel {
+    padding: 14px;
+  }
+
+  body .nav-panel-buttons {
+    width: 100%;
+    justify-content: center;
+  }
+
+  body .nav-panel-buttons a {
+    display: flex;
+    flex: 1 1 160px;
+  }
+
+  body .nav-panel-buttons button {
+    width: 100%;
+    min-width: 0;
+    padding: 10px 14px;
+    letter-spacing: 0.08em;
+  }
+
+  body .lang-switch {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  body .nav-panel-buttons a {
+    flex: 1 1 calc(50% - 6px);
+  }
+}

@@ -510,6 +510,12 @@ body.watchlist .watchlist-player {
   margin-bottom: 12px;
   animation: wlRowReveal 0.4s ease forwards;
   opacity: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+body.watchlist .watchlist-player > div {
+  min-width: 0;
 }
 
 body.watchlist .watchlist-player:nth-child(even) {
@@ -554,6 +560,8 @@ body.watchlist .wl-meta {
   color: #91bbd6;
   display: grid;
   gap: 3px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 body.watchlist .wl-meta strong {
@@ -567,6 +575,8 @@ body.watchlist .wl-history {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 body.watchlist .wl-history-name {
@@ -679,6 +689,34 @@ body.watchlist.dark-mode .wl-feed-live::before {
 
   body.watchlist .wl-feed-live {
     padding: 20px;
+  }
+}
+
+@media (max-width: 720px) {
+  body.watchlist .wl-console {
+    flex-direction: column;
+  }
+
+  body.watchlist .wl-module-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  body.watchlist .wl-module-actions .wl-btn {
+    width: 100%;
+  }
+
+  body.watchlist .watchlist-player {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  body.watchlist .wl-card-buttons {
+    width: 100%;
+  }
+
+  body.watchlist .wl-card-buttons .wl-btn {
+    flex: 1 1 140px;
   }
 }
 /* Shared nav panel (matches index bar) */

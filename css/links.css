@@ -198,3 +198,14 @@ body {
     font-size: 24px;
   }
 }
+
+@media (max-width: 520px) {
+  .link-card {
+    padding: 16px 14px;
+  }
+
+  .link-btn {
+    align-self: stretch;
+    text-align: center;
+  }
+}
