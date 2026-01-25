@@ -93,7 +93,7 @@ const TRANSLATIONS = {
     "hero.index.check": "Ստուգել",
     "hero.index.clear": "Չնչել",
     "hero.index.searchid": "Բնտրել IDով",
-    "hero.index.lookup": "?????? ID",
+    "hero.index.lookup": "ՈՐՈՆԵԼ ID",
     "hero.index.clearid": "Չնչել IDին",
     "common.noresults": "Չկայ արդիւնք",
     "watchlist.platform": "Բլադֆորմի ընտրութիւն",
