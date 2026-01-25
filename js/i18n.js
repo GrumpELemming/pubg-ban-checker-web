@@ -1,4 +1,4 @@
-// Simple i18n helper for static pages (excluding clan tracker)
+﻿// Simple i18n helper for static pages (excluding clan tracker)
 // Languages: English (default), Korean, Chinese, German, Finnish, Polish, Russian, Turkish, Armenian
 
 const LANGS = {
@@ -10,7 +10,7 @@ const LANGS = {
   pl: "Polski",
   ru: "Русский",
   tr: "Türkçe",
-  hy: "???????",
+  hy: "ՀԱՅ",
 };
 
 const TRANSLATIONS = {
@@ -26,7 +26,8 @@ const TRANSLATIONS = {
     "hero.index.title": "PUBG Ban Checker",
     "hero.index.platform": "Select Platform",
     "hero.index.banchecker": "Ban & Clan Checker",
-    "hero.index.placeholder": "Enter player names, separated by commas or new lines (max 10 per check)",
+    "hero.index.placeholder":
+      "Enter player names, separated by commas or new lines (max 10 per check)",
     "hero.index.check": "Check",
     "hero.index.clear": "Clear",
     "hero.index.searchid": "Search by Account ID",
@@ -38,29 +39,101 @@ const TRANSLATIONS = {
     "watchlist.refresh": "Refresh All",
     "watchlist.clear": "Clear All",
     "watchlist.feed.title": "Your Watchlist Feed",
-    "watchlist.feed.body": "Monitor ban states across every platform like a command desk. Use “Re-check” on any pilot when you need a fresh scan.",
+    "watchlist.feed.body":
+      "Monitor ban states across every platform like a command desk. Use “Re-check” on any pilot when you need a fresh scan.",
     "updates.title": "PUBG Ban Checker - Updates",
     "links.hero.title": "Trusted PUBG Resources",
-    "links.hero.lede": "Report cheaters, review stats, watch 2D replays, and follow creators who expose bad actors. These are the go-to destinations we recommend.",
-    "links.pubgtogether": "Vote on community clips and send evidence straight to PUBG Support. Crowd-sourced verdicts make reports clear and credible.",
-    "links.lookup": "Deep personal stats, leaderboards, and match history—great for scouting your own performance or checking other pilots.",
-    "links.meta": "Rich dashboards, meta insights, and compare views. Another must-have for digging into player or squad performance.",
-    "links.pubgsh": "Fast, clean 2D match replays—scan drops, rotations, and team paths to spot patterns or suspicious routes.",
-    "links.chicken": "Detailed heatmaps and timelines in 2D. Great for reviewing engagements and positioning across the entire lobby.",
-    "links.shady": "Exposes cheaters with polished breakdowns and commentary. A solid pulse-check on the state of fair play.",
-    "links.stupid": "Light-hearted takedowns of perm-banned cheaters—proof that justice lands and worth a laugh between matches.",
+    "links.hero.lede":
+      "Report cheaters, review stats, watch 2D replays, and follow creators who expose bad actors. These are the go-to destinations we recommend.",
+    "links.pubgtogether":
+      "Vote on community clips and send evidence straight to PUBG Support. Crowd-sourced verdicts make reports clear and credible.",
+    "links.lookup":
+      "Deep personal stats, leaderboards, and match history—great for scouting your own performance or checking other pilots.",
+    "links.meta":
+      "Rich dashboards, meta insights, and compare views. Another must-have for digging into player or squad performance.",
+    "links.pubgsh":
+      "Fast, clean 2D match replays—scan drops, rotations, and team paths to spot patterns or suspicious routes.",
+    "links.chicken":
+      "Detailed heatmaps and timelines in 2D. Great for reviewing engagements and positioning across the entire lobby.",
+    "links.shady":
+      "Exposes cheaters with polished breakdowns and commentary. A solid pulse-check on the state of fair play.",
+    "links.stupid":
+      "Light-hearted takedowns of perm-banned cheaters—proof that justice lands and worth a laugh between matches.",
     "crate.hero.title": "Hideout Crate Simulator",
     "crate.hero.subtitle": "Winter Eclipse",
-    "crate.hero.lede": "Spend 1800 G-Coin per 10-pack, flip each card to reveal the drop, and keep track of how much you've spent.",
+    "crate.hero.lede":
+      "Spend 1800 G-Coin per 10-pack, flip each card to reveal the drop, and keep track of how much you've spent.",
     "games.title": "PUBG Inspired Games",
-    "games.crate.btn": "Hideout Crate Simulator - \"Winter Eclipse\"",
-    "games.crate.desc": "Flip 10 crates at a time for 1800 GC, track total spend, and reveal your drops with the published probabilities.",
+    "games.crate.btn": 'Hideout Crate Simulator - "Winter Eclipse"',
+    "games.crate.desc":
+      "Flip 10 crates at a time for 1800 GC, track total spend, and reveal your drops with the published probabilities.",
     "games.hangman.btn": "HANGMAN",
     "games.bluemem.btn": "BLUE MEMORY",
     "games.red13.btn": "Red13 - Life Of A Bluezone Runner",
-    "games.red13.desc": "Red13: The Life of a Blue Zone Runner is a fan-made web game inspired by the intensity and atmosphere of PUBG's blue zone mechanic. This project is not affiliated with or endorsed by PUBG or Krafton.",
+    "games.red13.desc":
+      "Red13: The Life of a Blue Zone Runner is a fan-made web game inspired by the intensity and atmosphere of PUBG's blue zone mechanic. This project is not affiliated with or endorsed by PUBG or Krafton.",
     "games.schnee.btn": "SCHNEEFUCHS HATES SMG'S",
-    "games.schnee.desc": "Help Schneefuchs survive his nightmare where he is facing what he hates the most.........",
+    "games.schnee.desc":
+      "Help Schneefuchs survive his nightmare where he is facing what he hates the most.........",
+  },
+  hy: {
+    "nav.ban": "Արգելութիւն",
+    "nav.watchlist": "Դիտացանկ",
+    "nav.links": "Ալիքներ",
+    "nav.about": "Մասին",
+    "nav.games": "Խաղեր",
+    "nav.crate": "Տուբ",
+    "nav.request": "Խնդրիր լէզու",
+    "nav.lang": "Լեզու",
+    "hero.index.title": "PUBG արգելութիւն ստուգել",
+    "hero.index.platform": "Ընտրել բլադֆորմ",
+    "hero.index.banchecker": "Ստուգել արգելութիւն եւ Գլաններ",
+    "hero.index.placeholder":
+      "Գրել խաղցողների անունները. զատուած ստորակետնէրով կամ նոր տողով: Ամենաշատը 10 խաղացող:",
+    "hero.index.check": "Ստուգել",
+    "hero.index.clear": "Չնչել",
+    "hero.index.searchid": "Բնտրել IDով",
+    "hero.index.lookup": "?????? ID",
+    "hero.index.clearid": "Չնչել IDին",
+    "common.noresults": "Չկայ արդիւնք",
+    "watchlist.platform": "Բլադֆորմի ընտրութիւն",
+    "watchlist.controls": "Դիտացանկի կառավարումն",
+    "watchlist.refresh": "Թարմացնել Բոլորը",
+    "watchlist.clear": "Չնչել Բոլորը",
+    "watchlist.feed.title": "Քու դիտացանկդ",
+    "watchlist.feed.body":
+      "Ստուգել արգելութիւններ բոլոր բլադֆորմներում. թարմացնելու համար կոխեցեք Re-check կոճակը",
+    "updates.title": "PUBG արգելութիւն ստուգման Նորութիւնները",
+    "links.hero.title": "Վսդահելի PUBGի ռեսուրսմեր",
+    "links.hero.lede":
+      "Հաղորդեք խաբեբաներ, դիտեք խաղերի կրկնությունները 2Dով  եւ հետեւեք չարագործներին բացահայտող ստեղծողներին: Ձեզի խորհուրդ կուտանք որ այս հղումներին նայիք եթէ նման բաներ կը հետաքրքրեն ձէզի:",
+    "links.pubgtogether":
+      "Քուեարկէլ տեսանիութներիվրայ ու ապացուցէլ PUBG Օգնուդիանին խաբեբալ խաղցողների համար: Հաշվետվութիւնները կհաստատուեն ամբոխի քվեարկութիամբ։",
+    "links.lookup":
+      "Ծառայութիւն որը կրնաք նայել ձէր ու ուրիշ խաղցողների վիճակագրութիւնը:",
+    "links.meta": "Հարուստ վահանակներ, ՄԷԴԱ վերլուծութիւններ եւ ավելին:",
+    "links.pubgsh":
+      "Արաք ծառայութիւն որ կրնաք նայել ձեր խաղերը ով ու սօրվիլ ձեր սխալներէն:",
+    "links.chicken":
+      "Մանրամասն ջերմային քարտեզներ եւ ժամանակացոյցեր 2D-ով: Նայեւ կըրնաք գործածել որ ձեր սխալները սորվելու համար:",
+    "links.shady":
+      "Բացահայտում է խաբեբաներին՝ հղկուած մեկնաբանությիւններով եւ վերլուծութիւններով։",
+    "links.stupid":
+      "Մշտական ​​արգելք ստացած խաբեբայ խաղցողների թեթեւ քննադատութիւնները՝ ապացույց այն բանի, որ արդարությունը հաղթանակ կը տանի, եւ կը արժէ խնդալ խաղերի միջեւ։",
+    "crate.hero.title": "Տուփիկ բանալու խաղ",
+    "crate.hero.subtitle": "Վինթր Էքլիփս",
+    "crate.hero.lede": "Բաց 10 հատ տուբ միաժամանակ 1800GCի գինով.",
+    "games.title": "PUBGեն Ոգեշնչուած խաղեր",
+    "games.crate.btn": "Տուբ բանալույ խաղ - 'Վինթր Էքլիփս'",
+    "games.crate.desc":
+      "Ծախսեք 1800 G-Coin յուրաքանչյուր 10 հատնոց տուփի համար, բացեք յուրաքանչյուր քարտը՝ որ տեսնեք ինչ ստացաք, եւ հետեւեք թէ որքան GC ծախսել եք։",
+    "games.hangman.btn": "ԲԱՌԱԽԱՂ",
+    "games.bluemem.btn": "ԿԱՊՈՅՏ ՀԻՇՈՂՈՒԹԻՒՆ",
+    "games.red13.btn": "Ռետ13. ԿԱՊՈՅՏ ԳՈՏԻԻ ՄԱՐԴՈՒ ԿՅԱՆՔԸ",
+    "games.red13.desc":
+      "Ռետ13. վեբ խաղ, որը ոգեշնչուած է PUBG-ի կապույտ գոտու մեխանիկայէն: Այս խաղը կապ չունի կամ PUBG-ի կամ Krafton-էն:",
+    "games.schnee.btn": "ՍՇՆՆԻՖԱՇՇԸ ԿԱՏԷ SMGնէրը",
+    "games.schnee.desc": "Օգնէ ՍՇՆՆԻՖԱՇՇին որ դէմ ելլէյ իր ամենայ ատած զենքին:",
   },
   ko: {
     "nav.ban": "밴 확인기",
@@ -74,7 +147,8 @@ const TRANSLATIONS = {
     "hero.index.title": "PUBG 밴 확인",
     "hero.index.platform": "플랫폼 선택",
     "hero.index.banchecker": "밴 & 클랜 확인",
-    "hero.index.placeholder": "플레이어 이름을 쉼표나 줄바꿈으로 입력 (최대 10명)",
+    "hero.index.placeholder":
+      "플레이어 이름을 쉼표나 줄바꿈으로 입력 (최대 10명)",
     "hero.index.check": "확인",
     "hero.index.clear": "지우기",
     "hero.index.searchid": "계정 ID로 검색",
@@ -86,29 +160,42 @@ const TRANSLATIONS = {
     "watchlist.refresh": "전체 새로고침",
     "watchlist.clear": "전체 삭제",
     "watchlist.feed.title": "관심 목록 피드",
-    "watchlist.feed.body": "모든 플랫폼의 밴 상태를 지휘실처럼 모니터링하세요. 새로 확인이 필요하면 해당 파일럿의 \"재확인\"을 사용하세요.",
+    "watchlist.feed.body":
+      '모든 플랫폼의 밴 상태를 지휘실처럼 모니터링하세요. 새로 확인이 필요하면 해당 파일럿의 "재확인"을 사용하세요.',
     "updates.title": "PUBG 밴 확인 - 업데이트",
     "links.hero.title": "신뢰할 수 있는 PUBG 리소스",
-    "links.hero.lede": "치터 신고, 스탯 확인, 2D 리플레이, 공정성 채널 등을 위한 추천 목적지입니다.",
-    "links.pubgtogether": "커뮤니티 클립에 투표하고 증거를 PUBG 지원팀에 전달합니다. 군중 평결로 신고가 명확해집니다.",
-    "links.lookup": "개인 스탯, 리더보드, 매치 기록을 깊이 있게 확인해 본인 또는 다른 파일럿을 탐색하세요.",
-    "links.meta": "대시보드, 메타 인사이트, 비교 보기가 뛰어납니다. 플레이어/스쿼드 퍼포먼스 분석에 필수입니다.",
-    "links.pubgsh": "빠르고 깔끔한 2D 리플레이—드랍, 이동, 경로를 살펴 패턴이나 의심스러운 동선을 찾습니다.",
-    "links.chicken": "상세 히트맵과 타임라인 제공. 교전과 포지셔닝을 전체 로비 관점에서 검토하기 좋습니다.",
-    "links.shady": "치터를 세련된 분석과 해설로 드러냅니다. 공정성 상태를 확인하기 좋은 채널입니다.",
-    "links.stupid": "영구 밴된 치터를 유쾌하게 다룹니다. 정의가 실현된 사례를 보며 웃을 수 있습니다.",
+    "links.hero.lede":
+      "치터 신고, 스탯 확인, 2D 리플레이, 공정성 채널 등을 위한 추천 목적지입니다.",
+    "links.pubgtogether":
+      "커뮤니티 클립에 투표하고 증거를 PUBG 지원팀에 전달합니다. 군중 평결로 신고가 명확해집니다.",
+    "links.lookup":
+      "개인 스탯, 리더보드, 매치 기록을 깊이 있게 확인해 본인 또는 다른 파일럿을 탐색하세요.",
+    "links.meta":
+      "대시보드, 메타 인사이트, 비교 보기가 뛰어납니다. 플레이어/스쿼드 퍼포먼스 분석에 필수입니다.",
+    "links.pubgsh":
+      "빠르고 깔끔한 2D 리플레이—드랍, 이동, 경로를 살펴 패턴이나 의심스러운 동선을 찾습니다.",
+    "links.chicken":
+      "상세 히트맵과 타임라인 제공. 교전과 포지셔닝을 전체 로비 관점에서 검토하기 좋습니다.",
+    "links.shady":
+      "치터를 세련된 분석과 해설로 드러냅니다. 공정성 상태를 확인하기 좋은 채널입니다.",
+    "links.stupid":
+      "영구 밴된 치터를 유쾌하게 다룹니다. 정의가 실현된 사례를 보며 웃을 수 있습니다.",
     "crate.hero.title": "하이도트 상자 시뮬레이터",
     "crate.hero.subtitle": "윈터 이클립스",
-    "crate.hero.lede": "10팩당 1800 G-Coin을 사용해 카드를 뒤집고, 소비 금액을 추적하세요.",
+    "crate.hero.lede":
+      "10팩당 1800 G-Coin을 사용해 카드를 뒤집고, 소비 금액을 추적하세요.",
     "games.title": "PUBG 영감 게임",
-    "games.crate.btn": "하이도트 상자 시뮬레이터 - \"윈터 이클립스\"",
-    "games.crate.desc": "한 번에 10개 상자를 1800 GC로 열고, 총 지출을 추적하며 확률 공개된 드랍을 확인하세요.",
+    "games.crate.btn": '하이도트 상자 시뮬레이터 - "윈터 이클립스"',
+    "games.crate.desc":
+      "한 번에 10개 상자를 1800 GC로 열고, 총 지출을 추적하며 확률 공개된 드랍을 확인하세요.",
     "games.hangman.btn": "행맨",
     "games.bluemem.btn": "블루 메모리",
     "games.red13.btn": "Red13 - 블루존 러너의 삶",
-    "games.red13.desc": "Red13은 PUBG 블루존의 긴장감과 분위기에서 영감을 받은 팬 게임입니다. PUBG나 Krafton과 제휴되지 않았습니다.",
+    "games.red13.desc":
+      "Red13은 PUBG 블루존의 긴장감과 분위기에서 영감을 받은 팬 게임입니다. PUBG나 Krafton과 제휴되지 않았습니다.",
     "games.schnee.btn": "슈니푸흐스는 SMG를 싫어해",
-    "games.schnee.desc": "슈니푸흐스가 가장 싫어하는 것들과 맞서야 하는 악몽을 버틸 수 있게 도와주세요.",
+    "games.schnee.desc":
+      "슈니푸흐스가 가장 싫어하는 것들과 맞서야 하는 악몽을 버틸 수 있게 도와주세요.",
   },
   zh: {
     "nav.ban": "封禁查询",
@@ -134,14 +221,19 @@ const TRANSLATIONS = {
     "watchlist.refresh": "全部刷新",
     "watchlist.clear": "全部清除",
     "watchlist.feed.title": "你的关注列表",
-    "watchlist.feed.body": "像指挥台一样监控所有平台的封禁状态。需要刷新时，对任意玩家使用“重新检查”。",
+    "watchlist.feed.body":
+      "像指挥台一样监控所有平台的封禁状态。需要刷新时，对任意玩家使用“重新检查”。",
     "updates.title": "PUBG 封禁查询 - 更新",
     "links.hero.title": "可信的 PUBG 资源",
-    "links.hero.lede": "举报作弊、查看数据、观看 2D 回放、关注揭露作弊的创作者。推荐这些目的地。",
-    "links.pubgtogether": "为社区视频投票，并将证据直接发送给 PUBG 支持。群体裁决让举报更明确。",
+    "links.hero.lede":
+      "举报作弊、查看数据、观看 2D 回放、关注揭露作弊的创作者。推荐这些目的地。",
+    "links.pubgtogether":
+      "为社区视频投票，并将证据直接发送给 PUBG 支持。群体裁决让举报更明确。",
     "links.lookup": "深度个人统计、排行榜和比赛记录——用于自查或查看他人表现。",
-    "links.meta": "丰富的仪表盘、元数据洞察和对比视图。分析玩家或战队表现的必备。",
-    "links.pubgsh": "快速、简洁的 2D 回放——查看跳点、转点和队伍路线，发现模式或可疑动线。",
+    "links.meta":
+      "丰富的仪表盘、元数据洞察和对比视图。分析玩家或战队表现的必备。",
+    "links.pubgsh":
+      "快速、简洁的 2D 回放——查看跳点、转点和队伍路线，发现模式或可疑动线。",
     "links.chicken": "详细热力图和时间线。适合整体视角回顾交战和站位。",
     "links.shady": "用精炼的解说揭露作弊者。了解公平性状态的好渠道。",
     "links.stupid": "戏谑永封作弊者，展示制裁成果，轻松一笑。",
@@ -150,11 +242,13 @@ const TRANSLATIONS = {
     "crate.hero.lede": "每 10 包花费 1800 G-Coin，翻牌查看掉落并记录花费。",
     "games.title": "PUBG 灵感游戏",
     "games.crate.btn": "藏身处箱子模拟器 - “冬日蚀月”",
-    "games.crate.desc": "一次开 10 个箱子花费 1800 GC，记录总花费，并按照公布概率查看掉落。",
+    "games.crate.desc":
+      "一次开 10 个箱子花费 1800 GC，记录总花费，并按照公布概率查看掉落。",
     "games.hangman.btn": "吊死鬼",
     "games.bluemem.btn": "蓝色记忆",
     "games.red13.btn": "Red13 - 蓝圈跑者的一生",
-    "games.red13.desc": "Red13 是一款受 PUBG 蓝圈机制氛围启发的粉丝游戏，与 PUBG 或 Krafton 无关。",
+    "games.red13.desc":
+      "Red13 是一款受 PUBG 蓝圈机制氛围启发的粉丝游戏，与 PUBG 或 Krafton 无关。",
     "games.schnee.btn": "SCHNEEFUCHS 讨厌冲锋枪",
     "games.schnee.desc": "帮助 Schneefuchs 挺过他最讨厌的事物的噩梦……",
   },
@@ -170,7 +264,8 @@ const TRANSLATIONS = {
     "hero.index.title": "PUBG Ban-Checker",
     "hero.index.platform": "Plattform auswählen",
     "hero.index.banchecker": "Ban & Clan Prüfer",
-    "hero.index.placeholder": "Spielernamen durch Kommas oder Zeilen trennen (max. 10)",
+    "hero.index.placeholder":
+      "Spielernamen durch Kommas oder Zeilen trennen (max. 10)",
     "hero.index.check": "Prüfen",
     "hero.index.clear": "Löschen",
     "hero.index.searchid": "Nach Account-ID suchen",
@@ -182,29 +277,42 @@ const TRANSLATIONS = {
     "watchlist.refresh": "Alle aktualisieren",
     "watchlist.clear": "Alle löschen",
     "watchlist.feed.title": "Dein Watchlist-Feed",
-    "watchlist.feed.body": "Überwache Ban-Status auf allen Plattformen wie am Kommandotisch. Nutze „Erneut prüfen“, wenn du einen frischen Scan brauchst.",
+    "watchlist.feed.body":
+      "Überwache Ban-Status auf allen Plattformen wie am Kommandotisch. Nutze „Erneut prüfen“, wenn du einen frischen Scan brauchst.",
     "updates.title": "PUBG Ban Checker - Updates",
     "links.hero.title": "Vertrauenswürdige PUBG-Ressourcen",
-    "links.hero.lede": "Cheater melden, Stats prüfen, 2D-Replays ansehen und Creator folgen, die Cheater aufdecken.",
-    "links.pubgtogether": "Stimme über Clips ab und sende Beweise direkt an PUBG Support. Crowd-Verdikte machen Meldungen klarer.",
-    "links.lookup": "Tiefe Statistiken, Ranglisten und Match-Historie—ideal für eigene Performance oder andere Spieler.",
-    "links.meta": "Reiche Dashboards, Meta-Insights und Vergleichsansichten. Pflicht für Spieler- oder Squad-Analysen.",
-    "links.pubgsh": "Schnelle 2D-Replays—Drops, Rotationen und Teamwege prüfen, um Muster oder Verdächtiges zu finden.",
-    "links.chicken": "Detailierte Heatmaps und Zeitachsen. Gut für Engagement- und Positions-Review.",
-    "links.shady": "Deckt Cheater mit Analysen und Kommentaren auf. Ein guter Puls zur Fairness-Lage.",
-    "links.stupid": "Humorvolle Videos zu permagebanten Cheatern—zeigt, dass Gerechtigkeit wirkt.",
+    "links.hero.lede":
+      "Cheater melden, Stats prüfen, 2D-Replays ansehen und Creator folgen, die Cheater aufdecken.",
+    "links.pubgtogether":
+      "Stimme über Clips ab und sende Beweise direkt an PUBG Support. Crowd-Verdikte machen Meldungen klarer.",
+    "links.lookup":
+      "Tiefe Statistiken, Ranglisten und Match-Historie—ideal für eigene Performance oder andere Spieler.",
+    "links.meta":
+      "Reiche Dashboards, Meta-Insights und Vergleichsansichten. Pflicht für Spieler- oder Squad-Analysen.",
+    "links.pubgsh":
+      "Schnelle 2D-Replays—Drops, Rotationen und Teamwege prüfen, um Muster oder Verdächtiges zu finden.",
+    "links.chicken":
+      "Detailierte Heatmaps und Zeitachsen. Gut für Engagement- und Positions-Review.",
+    "links.shady":
+      "Deckt Cheater mit Analysen und Kommentaren auf. Ein guter Puls zur Fairness-Lage.",
+    "links.stupid":
+      "Humorvolle Videos zu permagebanten Cheatern—zeigt, dass Gerechtigkeit wirkt.",
     "crate.hero.title": "Versteck-Kistensimulator",
     "crate.hero.subtitle": "Winter Eclipse",
-    "crate.hero.lede": "Pro 10er-Paket 1800 G-Coin, Karten aufdecken und Ausgaben verfolgen.",
+    "crate.hero.lede":
+      "Pro 10er-Paket 1800 G-Coin, Karten aufdecken und Ausgaben verfolgen.",
     "games.title": "Von PUBG inspirierte Spiele",
-    "games.crate.btn": "Versteck-Kistensimulator - \"Winter Eclipse\"",
-    "games.crate.desc": "Öffne 10 Kisten für 1800 GC, verfolge deine Ausgaben und sehe die Drops mit veröffentlichten Wahrscheinlichkeiten.",
+    "games.crate.btn": 'Versteck-Kistensimulator - "Winter Eclipse"',
+    "games.crate.desc":
+      "Öffne 10 Kisten für 1800 GC, verfolge deine Ausgaben und sehe die Drops mit veröffentlichten Wahrscheinlichkeiten.",
     "games.hangman.btn": "GALGENMÄNNCHEN",
     "games.bluemem.btn": "BLUE MEMORY",
     "games.red13.btn": "Red13 - Leben eines Bluezone-Runners",
-    "games.red13.desc": "Red13 ist ein Fan-Game, inspiriert von der Intensität der PUBG-Bluezone. Kein offizieller Zusammenhang mit PUBG oder Krafton.",
+    "games.red13.desc":
+      "Red13 ist ein Fan-Game, inspiriert von der Intensität der PUBG-Bluezone. Kein offizieller Zusammenhang mit PUBG oder Krafton.",
     "games.schnee.btn": "SCHNEEFUCHS HASST SMG'S",
-    "games.schnee.desc": "Hilf Schneefuchs, seinen Albtraum zu überleben, in dem er dem am meisten Gehassten gegenübersteht...",
+    "games.schnee.desc":
+      "Hilf Schneefuchs, seinen Albtraum zu überleben, in dem er dem am meisten Gehassten gegenübersteht...",
   },
   fi: {
     "nav.ban": "Ban-tarkistin",
@@ -218,7 +326,8 @@ const TRANSLATIONS = {
     "hero.index.title": "PUBG-ban-tarkistin",
     "hero.index.platform": "Valitse alusta",
     "hero.index.banchecker": "Banien ja klaanien tarkistus",
-    "hero.index.placeholder": "Kirjoita pelaajat, pilkuin tai rivein eroteltuna (enint. 10)",
+    "hero.index.placeholder":
+      "Kirjoita pelaajat, pilkuin tai rivein eroteltuna (enint. 10)",
     "hero.index.check": "Tarkista",
     "hero.index.clear": "Tyhjennä",
     "hero.index.searchid": "Hae tilin ID:llä",
@@ -230,29 +339,42 @@ const TRANSLATIONS = {
     "watchlist.refresh": "Päivitä kaikki",
     "watchlist.clear": "Tyhjennä kaikki",
     "watchlist.feed.title": "Seurantalistasi syöte",
-    "watchlist.feed.body": "Seuraa ban-statuksia kaikilla alustoilla kuin komentokeskus. Käytä \"Tarkista uudelleen\" kun tarvitset tuoreen tarkastuksen.",
+    "watchlist.feed.body":
+      'Seuraa ban-statuksia kaikilla alustoilla kuin komentokeskus. Käytä "Tarkista uudelleen" kun tarvitset tuoreen tarkastuksen.',
     "updates.title": "PUBG-ban-tarkistin - päivitykset",
     "links.hero.title": "Luotettavat PUBG-resurssit",
-    "links.hero.lede": "Ilmoita huijareista, tarkista tilastot, katso 2D-uusintoja ja seuraa huijareita paljastavia tekijöitä.",
-    "links.pubgtogether": "Äänestä klippejä ja lähetä todisteet suoraan PUBG-tukeen. Yhteisötuomiot selkeyttävät ilmoituksia.",
-    "links.lookup": "Syvät tilastot, listat ja otteluhistoria—hyvä itselle ja muiden pelaajien tarkistukseen.",
-    "links.meta": "Rikkaat kojelaudat, meta-analyysit ja vertailut. Pakollinen pelaaja-/joukkuetason analyysiin.",
-    "links.pubgsh": "Nopeat 2D-uusinnat—pudotukset, rotaatiot ja tiimipolut näkyviin malleja tai epäilyttäviä reittejä varten.",
-    "links.chicken": "Yksityiskohtaiset lämpökartat ja aikajanat. Hyvä taistelujen ja sijoittumisen tarkasteluun.",
-    "links.shady": "Paljastaa huijareita analyysein ja kommentein. Hyvä tilannetaju reiluudesta.",
-    "links.stupid": "Humoristiset videot pysyvästi bannatuista huijareista—osoittaa, että oikeus toteutuu.",
+    "links.hero.lede":
+      "Ilmoita huijareista, tarkista tilastot, katso 2D-uusintoja ja seuraa huijareita paljastavia tekijöitä.",
+    "links.pubgtogether":
+      "Äänestä klippejä ja lähetä todisteet suoraan PUBG-tukeen. Yhteisötuomiot selkeyttävät ilmoituksia.",
+    "links.lookup":
+      "Syvät tilastot, listat ja otteluhistoria—hyvä itselle ja muiden pelaajien tarkistukseen.",
+    "links.meta":
+      "Rikkaat kojelaudat, meta-analyysit ja vertailut. Pakollinen pelaaja-/joukkuetason analyysiin.",
+    "links.pubgsh":
+      "Nopeat 2D-uusinnat—pudotukset, rotaatiot ja tiimipolut näkyviin malleja tai epäilyttäviä reittejä varten.",
+    "links.chicken":
+      "Yksityiskohtaiset lämpökartat ja aikajanat. Hyvä taistelujen ja sijoittumisen tarkasteluun.",
+    "links.shady":
+      "Paljastaa huijareita analyysein ja kommentein. Hyvä tilannetaju reiluudesta.",
+    "links.stupid":
+      "Humoristiset videot pysyvästi bannatuista huijareista—osoittaa, että oikeus toteutuu.",
     "crate.hero.title": "Piilopaikan laatikkosimulaattori",
     "crate.hero.subtitle": "Winter Eclipse",
-    "crate.hero.lede": "Käytä 1800 G-Coin / 10 pakettia, käännä kortit ja seuraa kulutusta.",
+    "crate.hero.lede":
+      "Käytä 1800 G-Coin / 10 pakettia, käännä kortit ja seuraa kulutusta.",
     "games.title": "PUBG:stä inspiroituneet pelit",
-    "games.crate.btn": "Piilopaikan laatikkosimulaattori - \"Winter Eclipse\"",
-    "games.crate.desc": "Avaa 10 laatikkoa kerralla 1800 GC:llä, seuraa kulutusta ja näe tiput ilmoitetuilla todennäköisyyksillä.",
+    "games.crate.btn": 'Piilopaikan laatikkosimulaattori - "Winter Eclipse"',
+    "games.crate.desc":
+      "Avaa 10 laatikkoa kerralla 1800 GC:llä, seuraa kulutusta ja näe tiput ilmoitetuilla todennäköisyyksillä.",
     "games.hangman.btn": "Hirsipuu",
     "games.bluemem.btn": "Blue Memory",
     "games.red13.btn": "Red13 - Bluezone-juoksijan elämä",
-    "games.red13.desc": "Red13 on fanipeli, joka on saanut inspiraationsa PUBG:n sinisen vyöhykkeen intensiteetistä. Ei yhteyttä PUBG:hen tai Kraftoniin.",
+    "games.red13.desc":
+      "Red13 on fanipeli, joka on saanut inspiraationsa PUBG:n sinisen vyöhykkeen intensiteetistä. Ei yhteyttä PUBG:hen tai Kraftoniin.",
     "games.schnee.btn": "SCHNEEFUCHS VIHAA SMG:itä",
-    "games.schnee.desc": "Auta Schneefuchsia selviämään painajaisestaan, jossa hän kohtaa eniten vihaamansa asiat...",
+    "games.schnee.desc":
+      "Auta Schneefuchsia selviämään painajaisestaan, jossa hän kohtaa eniten vihaamansa asiat...",
   },
   pl: {
     "nav.ban": "Sprawdzanie bana",
@@ -266,7 +388,8 @@ const TRANSLATIONS = {
     "hero.index.title": "Sprawdzanie bana w PUBG",
     "hero.index.platform": "Wybierz platformę",
     "hero.index.banchecker": "Sprawdzanie banów i klanu",
-    "hero.index.placeholder": "Wpisz nazwy graczy oddzielone przecinkami lub nową linią (max 10)",
+    "hero.index.placeholder":
+      "Wpisz nazwy graczy oddzielone przecinkami lub nową linią (max 10)",
     "hero.index.check": "Sprawdź",
     "hero.index.clear": "Wyczyść",
     "hero.index.searchid": "Szukaj po ID konta",
@@ -278,29 +401,42 @@ const TRANSLATIONS = {
     "watchlist.refresh": "Odśwież wszystko",
     "watchlist.clear": "Wyczyść wszystko",
     "watchlist.feed.title": "Twój kanał Watchlist",
-    "watchlist.feed.body": "Monitoruj bany na każdej platformie niczym na stanowisku dowodzenia. Użyj „Ponownie sprawdź”, gdy potrzebujesz świeżego skanu.",
+    "watchlist.feed.body":
+      "Monitoruj bany na każdej platformie niczym na stanowisku dowodzenia. Użyj „Ponownie sprawdź”, gdy potrzebujesz świeżego skanu.",
     "updates.title": "Sprawdzanie bana w PUBG - Aktualizacje",
     "links.hero.title": "Zaufane zasoby PUBG",
-    "links.hero.lede": "Zgłaszaj cheaterów, sprawdzaj statystyki, oglądaj 2D replaye i śledź twórców ujawniających oszustów.",
-    "links.pubgtogether": "Głosuj na klipy społeczności i wysyłaj dowody bezpośrednio do wsparcia PUBG. Werdykty społeczności uwiarygadniają zgłoszenia.",
-    "links.lookup": "Głębokie statystyki, rankingi i historia meczów—świetne do sprawdzania siebie i innych pilotów.",
-    "links.meta": "Bogate pulpity, meta-wglądy i porównania. Niezbędne do analizy gracza lub drużyny.",
-    "links.pubgsh": "Szybkie, czytelne replaye 2D—sprawdź dropy, rotacje i ścieżki drużyn, by znaleźć wzorce lub podejrzane ruchy.",
-    "links.chicken": "Szczegółowe heatmapy i osie czasu. Dobre do przeglądu starć i pozycji w całej lobby.",
-    "links.shady": "Demaskuje cheaterów z komentarzem. Dobry pulsometr stanu fair play.",
-    "links.stupid": "Humorystyczne materiały o permabannowanych cheaterach—dowód, że sprawiedliwość działa.",
+    "links.hero.lede":
+      "Zgłaszaj cheaterów, sprawdzaj statystyki, oglądaj 2D replaye i śledź twórców ujawniających oszustów.",
+    "links.pubgtogether":
+      "Głosuj na klipy społeczności i wysyłaj dowody bezpośrednio do wsparcia PUBG. Werdykty społeczności uwiarygadniają zgłoszenia.",
+    "links.lookup":
+      "Głębokie statystyki, rankingi i historia meczów—świetne do sprawdzania siebie i innych pilotów.",
+    "links.meta":
+      "Bogate pulpity, meta-wglądy i porównania. Niezbędne do analizy gracza lub drużyny.",
+    "links.pubgsh":
+      "Szybkie, czytelne replaye 2D—sprawdź dropy, rotacje i ścieżki drużyn, by znaleźć wzorce lub podejrzane ruchy.",
+    "links.chicken":
+      "Szczegółowe heatmapy i osie czasu. Dobre do przeglądu starć i pozycji w całej lobby.",
+    "links.shady":
+      "Demaskuje cheaterów z komentarzem. Dobry pulsometr stanu fair play.",
+    "links.stupid":
+      "Humorystyczne materiały o permabannowanych cheaterach—dowód, że sprawiedliwość działa.",
     "crate.hero.title": "Symulator skrzynki z kryjówki",
     "crate.hero.subtitle": "Winter Eclipse",
-    "crate.hero.lede": "Wydaj 1800 G-Coin za 10 pakietów, odkryj karty i śledź swoje wydatki.",
+    "crate.hero.lede":
+      "Wydaj 1800 G-Coin za 10 pakietów, odkryj karty i śledź swoje wydatki.",
     "games.title": "Gry inspirowane PUBG",
-    "games.crate.btn": "Symulator skrzynki z kryjówki - \"Winter Eclipse\"",
-    "games.crate.desc": "Otwórz 10 skrzynek za 1800 GC, śledź wydatki i sprawdź dropy z opublikowanymi szansami.",
+    "games.crate.btn": 'Symulator skrzynki z kryjówki - "Winter Eclipse"',
+    "games.crate.desc":
+      "Otwórz 10 skrzynek za 1800 GC, śledź wydatki i sprawdź dropy z opublikowanymi szansami.",
     "games.hangman.btn": "WISIELEC",
     "games.bluemem.btn": "BLUE MEMORY",
     "games.red13.btn": "Red13 - Życie biegacza w bluezonie",
-    "games.red13.desc": "Red13 to fanowska gra webowa inspirowana mechaniką bluezone w PUBG. Brak powiązań z PUBG lub Krafton.",
+    "games.red13.desc":
+      "Red13 to fanowska gra webowa inspirowana mechaniką bluezone w PUBG. Brak powiązań z PUBG lub Krafton.",
     "games.schnee.btn": "SCHNEEFUCHS NIENAWIDZI SMG",
-    "games.schnee.desc": "Pomóż Schneefuchsowi przetrwać koszmar z tym, czego najbardziej nienawidzi...",
+    "games.schnee.desc":
+      "Pomóż Schneefuchsowi przetrwać koszmar z tym, czego najbardziej nienawidzi...",
   },
   ru: {
     "nav.ban": "Проверка бана",
@@ -314,7 +450,8 @@ const TRANSLATIONS = {
     "hero.index.title": "Проверка бана PUBG",
     "hero.index.platform": "Выберите платформу",
     "hero.index.banchecker": "Проверка бана и клана",
-    "hero.index.placeholder": "Введите имена игроков через запятую или с новой строки (до 10)",
+    "hero.index.placeholder":
+      "Введите имена игроков через запятую или с новой строки (до 10)",
     "hero.index.check": "Проверить",
     "hero.index.clear": "Очистить",
     "hero.index.searchid": "Поиск по ID аккаунта",
@@ -326,29 +463,42 @@ const TRANSLATIONS = {
     "watchlist.refresh": "Обновить все",
     "watchlist.clear": "Очистить все",
     "watchlist.feed.title": "Твоя лента списка наблюдения",
-    "watchlist.feed.body": "Следи за статусом банов на всех платформах как на командном пункте. Нажимай «Проверить снова» для обновленного скана.",
+    "watchlist.feed.body":
+      "Следи за статусом банов на всех платформах как на командном пункте. Нажимай «Проверить снова» для обновленного скана.",
     "updates.title": "Проверка бана PUBG - обновления",
     "links.hero.title": "Надежные ресурсы по PUBG",
-    "links.hero.lede": "Сообщайте о читерах, смотрите статистику, 2D-повторы и каналы, разоблачающие нарушителей. Эти ресурсы мы рекомендуем.",
-    "links.pubgtogether": "Голосуйте за клипы и отправляйте доказательства в PUBG Support. Решения сообщества усиливают заявки.",
-    "links.lookup": "Глубокая личная статистика, рейтинги и история матчей — удобно для себя и проверки других игроков.",
-    "links.meta": "Богатые дашборды, мета-аналитика и сравнение. Необходимы для анализа игрока или сквада.",
-    "links.pubgsh": "Быстрые и чистые 2D-повторы — смотрите дропы, ротации и пути команд, чтобы найти паттерны или подозрительные маршруты.",
-    "links.chicken": "Детальные тепловые карты и таймлайны. Отлично для обзора перестрелок и позиций.",
-    "links.shady": "Разоблачает читеров с анализом и комментариями. Хороший индикатор состояния честной игры.",
-    "links.stupid": "С юмором о пермабанах читеров — наглядно показывает торжество справедливости.",
+    "links.hero.lede":
+      "Сообщайте о читерах, смотрите статистику, 2D-повторы и каналы, разоблачающие нарушителей. Эти ресурсы мы рекомендуем.",
+    "links.pubgtogether":
+      "Голосуйте за клипы и отправляйте доказательства в PUBG Support. Решения сообщества усиливают заявки.",
+    "links.lookup":
+      "Глубокая личная статистика, рейтинги и история матчей — удобно для себя и проверки других игроков.",
+    "links.meta":
+      "Богатые дашборды, мета-аналитика и сравнение. Необходимы для анализа игрока или сквада.",
+    "links.pubgsh":
+      "Быстрые и чистые 2D-повторы — смотрите дропы, ротации и пути команд, чтобы найти паттерны или подозрительные маршруты.",
+    "links.chicken":
+      "Детальные тепловые карты и таймлайны. Отлично для обзора перестрелок и позиций.",
+    "links.shady":
+      "Разоблачает читеров с анализом и комментариями. Хороший индикатор состояния честной игры.",
+    "links.stupid":
+      "С юмором о пермабанах читеров — наглядно показывает торжество справедливости.",
     "crate.hero.title": "Симулятор ящиков Hideout",
     "crate.hero.subtitle": "Winter Eclipse",
-    "crate.hero.lede": "Тратьте 1800 G-Coin за 10 паков, открывайте карты и отслеживайте затраты.",
+    "crate.hero.lede":
+      "Тратьте 1800 G-Coin за 10 паков, открывайте карты и отслеживайте затраты.",
     "games.title": "Игры по мотивам PUBG",
-    "games.crate.btn": "Симулятор ящиков Hideout - \"Winter Eclipse\"",
-    "games.crate.desc": "Открывайте по 10 ящиков за 1800 GC, следите за расходами и смотрите дропы по заявленным шансам.",
+    "games.crate.btn": 'Симулятор ящиков Hideout - "Winter Eclipse"',
+    "games.crate.desc":
+      "Открывайте по 10 ящиков за 1800 GC, следите за расходами и смотрите дропы по заявленным шансам.",
     "games.hangman.btn": "ВИСЕЛИЦА",
     "games.bluemem.btn": "BLUE MEMORY",
     "games.red13.btn": "Red13 - Жизнь бегуна по синей зоне",
-    "games.red13.desc": "Red13 — фанатская веб-игра, вдохновленная механикой синей зоны PUBG. Не связана с PUBG или Krafton.",
+    "games.red13.desc":
+      "Red13 — фанатская веб-игра, вдохновленная механикой синей зоны PUBG. Не связана с PUBG или Krafton.",
     "games.schnee.btn": "SCHNEEFUCHS НЕНАВИДИТ SMG",
-    "games.schnee.desc": "Помогите Schneefuchs пережить кошмар, где он сталкивается с тем, что ненавидит больше всего...",
+    "games.schnee.desc":
+      "Помогите Schneefuchs пережить кошмар, где он сталкивается с тем, что ненавидит больше всего...",
   },
   tr: {
     "nav.ban": "Ban Kontrol",
@@ -362,7 +512,8 @@ const TRANSLATIONS = {
     "hero.index.title": "PUBG Ban Kontrol",
     "hero.index.platform": "Platform seçin",
     "hero.index.banchecker": "Ban ve Klan Kontrolü",
-    "hero.index.placeholder": "Oyuncu adlarını virgül veya yeni satırla girin (en fazla 10)",
+    "hero.index.placeholder":
+      "Oyuncu adlarını virgül veya yeni satırla girin (en fazla 10)",
     "hero.index.check": "Kontrol et",
     "hero.index.clear": "Temizle",
     "hero.index.searchid": "Hesap ID ile ara",
@@ -374,77 +525,42 @@ const TRANSLATIONS = {
     "watchlist.refresh": "Hepsini yenile",
     "watchlist.clear": "Hepsini temizle",
     "watchlist.feed.title": "İzleme Listesi Akışın",
-    "watchlist.feed.body": "Tüm platformlardaki ban durumlarını komuta masasındaymış gibi izle. Taze tarama için herhangi bir pilotta “Tekrar kontrol” kullan.",
+    "watchlist.feed.body":
+      "Tüm platformlardaki ban durumlarını komuta masasındaymış gibi izle. Taze tarama için herhangi bir pilotta “Tekrar kontrol” kullan.",
     "updates.title": "PUBG Ban Kontrol - Güncellemeler",
     "links.hero.title": "Güvenilir PUBG Kaynakları",
-    "links.hero.lede": "Hilecileri bildir, istatistiklere bak, 2D tekrarları izle ve hilecileri ifşa eden içerik üreticilerini takip et. Bunlar tavsiye ettiğimiz adresler.",
-    "links.pubgtogether": "Topluluk kliplerine oy ver ve kanıtı PUBG desteğe gönder. Topluluk kararları raporları daha net yapar.",
-    "links.lookup": "Derin istatistikler, lider tabloları ve maç geçmişi—kendini veya diğer pilotları incelemek için harika.",
-    "links.meta": "Zengin paneller, meta içgörüler ve karşılaştırmalar. Oyuncu veya kadro performansını incelemek için şart.",
-    "links.pubgsh": "Hızlı, temiz 2D tekrarlar—drop'ları, rotasyonları ve takım yollarını inceleyerek şüpheli hareketleri yakalayın.",
-    "links.chicken": "Detaylı ısı haritaları ve zaman çizelgeleri. Çatışmaları ve pozisyonları tüm lobide incelemek için ideal.",
-    "links.shady": "Analiz ve yorumla hilecileri ifşa eder. Adil oyun durumunun iyi bir göstergesi.",
-    "links.stupid": "Kalıcı ban alan hilecilerle ilgili eğlenceli videolar—adaletin işlediğini gösterir.",
+    "links.hero.lede":
+      "Hilecileri bildir, istatistiklere bak, 2D tekrarları izle ve hilecileri ifşa eden içerik üreticilerini takip et. Bunlar tavsiye ettiğimiz adresler.",
+    "links.pubgtogether":
+      "Topluluk kliplerine oy ver ve kanıtı PUBG desteğe gönder. Topluluk kararları raporları daha net yapar.",
+    "links.lookup":
+      "Derin istatistikler, lider tabloları ve maç geçmişi—kendini veya diğer pilotları incelemek için harika.",
+    "links.meta":
+      "Zengin paneller, meta içgörüler ve karşılaştırmalar. Oyuncu veya kadro performansını incelemek için şart.",
+    "links.pubgsh":
+      "Hızlı, temiz 2D tekrarlar—drop'ları, rotasyonları ve takım yollarını inceleyerek şüpheli hareketleri yakalayın.",
+    "links.chicken":
+      "Detaylı ısı haritaları ve zaman çizelgeleri. Çatışmaları ve pozisyonları tüm lobide incelemek için ideal.",
+    "links.shady":
+      "Analiz ve yorumla hilecileri ifşa eder. Adil oyun durumunun iyi bir göstergesi.",
+    "links.stupid":
+      "Kalıcı ban alan hilecilerle ilgili eğlenceli videolar—adaletin işlediğini gösterir.",
     "crate.hero.title": "Saklanma Kasa Simülatörü",
     "crate.hero.subtitle": "Winter Eclipse",
-    "crate.hero.lede": "10'lu paket için 1800 G-Coin harca, kartları aç ve harcamalarını takip et.",
+    "crate.hero.lede":
+      "10'lu paket için 1800 G-Coin harca, kartları aç ve harcamalarını takip et.",
     "games.title": "PUBG'den esinlenen oyunlar",
-    "games.crate.btn": "Saklanma Kasa Simülatörü - \"Winter Eclipse\"",
-    "games.crate.desc": "1800 GC karşılığında aynı anda 10 kasa aç, harcamayı takip et ve açıklanan oranlarla drop'ları gör.",
+    "games.crate.btn": 'Saklanma Kasa Simülatörü - "Winter Eclipse"',
+    "games.crate.desc":
+      "1800 GC karşılığında aynı anda 10 kasa aç, harcamayı takip et ve açıklanan oranlarla drop'ları gör.",
     "games.hangman.btn": "ADAM ASMACA",
     "games.bluemem.btn": "BLUE MEMORY",
     "games.red13.btn": "Red13 - Bluezone koşucusunun hayatı",
-    "games.red13.desc": "Red13, PUBG'nin bluezone atmosferinden ilham alan hayran yapımı bir web oyunudur. PUBG veya Krafton ile bağlantılı değildir.",
+    "games.red13.desc":
+      "Red13, PUBG'nin bluezone atmosferinden ilham alan hayran yapımı bir web oyunudur. PUBG veya Krafton ile bağlantılı değildir.",
     "games.schnee.btn": "SCHNEEFUCHS SMG'LERDEN NEFRET EDER",
-    "games.schnee.desc": "Schneefuchs'un en nefret ettiği şeylerle yüzleştiği kabustan sağ çıkmasına yardım et...",
-  },
-  hy: {
-    "nav.ban": "??? ???????",
-    "nav.watchlist": "????????? ??????",
-    "nav.links": "????????",
-    "nav.about": "??? ?????",
-    "nav.games": "?????",
-    "nav.crate": "????? ???????????",
-    "nav.request": "????? ???????",
-    "nav.lang": "?????",
-    "hero.index.title": "PUBG ??? ???????",
-    "hero.index.platform": "?????? ???????",
-    "hero.index.banchecker": "??? ? ???? ???????",
-    "hero.index.placeholder": "?????????? ??????????? ?????????? ???????????? ??? ??? ????? (????. 10 ???????? ?????)",
-    "hero.index.check": "???????",
-    "hero.index.clear": "??????",
-    "hero.index.searchid": "?????? ????? ID-??",
-    "hero.index.lookup": "?????? ID",
-    "hero.index.clearid": "??????",
-    "common.noresults": "??????????? ??? ?????",
-    "watchlist.platform": "??????? ???????????",
-    "watchlist.controls": "????????? ??????? ??????????",
-    "watchlist.refresh": "????????? ??????",
-    "watchlist.clear": "?????? ??????",
-    "watchlist.feed.title": "??? ????????? ?????",
-    "watchlist.feed.body": "????????? ?????? ?????? ????? ????????????? ?????? ?????????????? ??????????? ?????????? ????????????? ???????? ???????? ?????, ??? ???? ? ???? ?????????",
-    "updates.title": "PUBG ??? ??????? - ????????????",
-    "links.hero.title": "???????? PUBG ??????????",
-    "links.hero.lede": "???????? ??????????, ????? ????????????????, ????? 2D ??????????????? ? ?????? ?????, ????? ??????????? ?? ???????????? ????? ??? ?????????? ??????????????? ???",
-    "links.pubgtogether": "???????? ??????????? ???????????? ??? ? ???????? ???????????? ????? PUBG Support-??? ???????? ???????? ???????? ?? ??????????? ????? ?? ?????????",
-    "links.lookup": "???? ???????? ???????????????, ???????????? ??????????? ? ?????? ??????????? ? ???????? ??? ??? ????????? ???????????? ????????? ??????",
-    "links.meta": "??????? ??????????, meta ?????????????? ? ?????????? ????? ??? ?? ??? ????????? ??????? ???????? ??? ?????? ??????????????????? ??????????? ??????",
-    "links.pubgsh": "???? ? ?????? 2D ?????????????? ? ????? ???????????, ??????????? ? ?????? ????????? ?????????????????? ??? ????????? ?????????? ???????? ??????",
-    "links.chicken": "????????? ???????? ????????? ? ???????????? 2D-???? ??????? ?? ??? ???????? ??????? ? ???????????? ??????????? ??????",
-    "links.shady": "??????????? ? ??????????? ??????? ??????????????????? ? ????????????????????? ??? ?????????? ????? ???? ?????? ?????????? ??????",
-    "links.stupid": "???? ?? ???????? ?????????????? ??????? ??? ?????? ????????? ????? ? ????????, ?? ????????????????? ??????? ??",
-    "crate.hero.title": "???????? ????? ???????????",
-    "crate.hero.subtitle": "Winter Eclipse",
-    "crate.hero.lede": "?????? 1800 G-Coin ????????????? 10-?????? ?????, ????? ????????????? ????? ? ?????? ?????????",
-    "games.title": "PUBG-?? ????????? ?????",
-    "games.crate.btn": "???????? ????? ??????????? - ?Winter Eclipse?",
-    "games.crate.desc": "????????? ????? 10 ???? 1800 GC-??, ?????? ????????? ?????? ? ????? ?????? ??????????? ??????????????????????",
-    "games.hangman.btn": "???????",
-    "games.bluemem.btn": "??????? ????????????",
-    "games.red13.btn": "Red13 - ??????? ????? ?????? ??????",
-    "games.red13.desc": "Red13-? ???-??? ??? ?, ??? ????????? ? PUBG-? ??????? ????? ????????????????? ? ??????????? ??? ???????? ?????? ?? PUBG-? ??? Krafton-? ????",
-    "games.schnee.btn": "SCHNEEFUCHS-? ????? ? SMG-???",
-    "games.schnee.desc": "????? Schneefuchs-?? ???????? ?? ???????????, ????? ?? ??????? ? ??? ?????, ???? ????????? ? ?????.........",
+    "games.schnee.desc":
+      "Schneefuchs'un en nefret ettiği şeylerle yüzleştiği kabustan sağ çıkmasına yardım et...",
   },
 };
 
@@ -468,12 +584,12 @@ window.tr = tr;
 
 function applyTranslations(lang) {
   const dict = TRANSLATIONS[lang] || TRANSLATIONS.en;
-  document.querySelectorAll("[data-i18n]").forEach(el => {
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
     const key = el.getAttribute("data-i18n");
     const txt = dict[key] || TRANSLATIONS.en[key] || el.textContent;
     el.textContent = txt;
   });
-  document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
     const key = el.getAttribute("data-i18n-placeholder");
     const txt = dict[key] || TRANSLATIONS.en[key];
     if (txt) el.setAttribute("placeholder", txt);
@@ -484,7 +600,7 @@ function buildLangSelector() {
   const containerList = document.querySelectorAll(".lang-switch");
   const current = getCurrentLang();
 
-  containerList.forEach(container => {
+  containerList.forEach((container) => {
     const select = container.querySelector("select");
     const requestBtn = container.querySelector(".request-lang-btn");
 
@@ -506,7 +622,8 @@ function buildLangSelector() {
 
     if (requestBtn) {
       requestBtn.addEventListener("click", () => {
-        window.location.href = "mailto:thegrumpylemming@gmail.com?subject=Language%20request";
+        window.location.href =
+          "mailto:thegrumpylemming@gmail.com?subject=Language%20request";
       });
     }
   });
