@@ -24,6 +24,11 @@
   color-scheme: dark;
 }
 
+.lang-switch select option {
+  background: #0d1a2e;
+  color: #e0f6ff;
+}
+
 .lang-switch button {
   background: linear-gradient(120deg, #11ffd3, #1e51ff);
   color: #03121d;
