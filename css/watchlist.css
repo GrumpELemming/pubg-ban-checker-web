@@ -654,11 +654,11 @@ body.watchlist .wl-history-name {
 
 /* NOTES */
 body.watchlist .wl-notes {
-  margin-top: 8px;
+  margin-top: 5px;
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  gap: 6px;
+  gap: 5px;
 }
 
 body.watchlist .wl-note-text {
