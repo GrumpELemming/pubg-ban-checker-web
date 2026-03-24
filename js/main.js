@@ -349,7 +349,7 @@
       !isLoading && platform
         ? `<div class="profile-links">
             <a href="https://pubglookup.com/players/${encodeURIComponent(platform)}/${encodeURIComponent(player)}" target="_blank" rel="noopener noreferrer">pubglookup.com</a>
-            <a href="https://www.pubg-meta.com/player/${encodeURIComponent(player)}" target="_blank" rel="noopener noreferrer">pubg-meta.com</a>
+            <a href="https://www.pubg-meta.com/player-stats/${encodeURIComponent(platform)}/${encodeURIComponent(player)}/profile" target="_blank" rel="noopener noreferrer">pubg-meta.com</a>
           </div>`
         : "";
 
