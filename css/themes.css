@@ -1,0 +1,387 @@
+/* ==============================================
+   PUBG Ban Checker — Theme System
+   ============================================== */
+
+/* --- Default additions to :root (Cyber Blue) --- */
+:root {
+  --accent-rgb: 72, 255, 225;
+  --accent-2-rgb: 30, 81, 255;
+  --grid-line: rgba(33, 147, 176, 0.2);
+  --grid-glow: rgba(0, 255, 200, 0.12);
+  --btn-gradient: linear-gradient(120deg, #11ffd3, #1e51ff);
+  --btn-hover-shadow: rgba(55, 255, 214, 0.35);
+  --nav-hover-bg: linear-gradient(130deg, rgba(69, 255, 216, 0.9), rgba(50, 132, 255, 0.85));
+  --nav-hover-border: #45ffd8;
+  --nav-hover-text: #041726;
+}
+
+/* --- Blood Red --- */
+html.theme-red {
+  --bg: #0f0305;
+  --bg-accent-1: rgba(255, 50, 60, 0.14);
+  --bg-accent-2: rgba(160, 20, 50, 0.12);
+  --panel: rgba(22, 5, 8, 0.9);
+  --panel-strong: rgba(16, 3, 6, 0.88);
+  --border: rgba(200, 60, 70, 0.3);
+  --border-strong: rgba(255, 80, 90, 0.45);
+  --text: #ffe8e8;
+  --muted: #bf8888;
+  --accent: #ff4d6a;
+  --accent-rgb: 255, 77, 106;
+  --accent-2: #cc0033;
+  --accent-2-rgb: 204, 0, 51;
+  --grid-line: rgba(180, 40, 50, 0.18);
+  --grid-glow: rgba(255, 50, 60, 0.1);
+  --btn-gradient: linear-gradient(120deg, #ff4d6a, #cc0033);
+  --btn-hover-shadow: rgba(255, 77, 106, 0.4);
+  --nav-hover-bg: linear-gradient(130deg, rgba(255, 100, 120, 0.9), rgba(180, 0, 40, 0.85));
+  --nav-hover-border: #ff6070;
+  --nav-hover-text: #1a0008;
+}
+
+/* --- Toxic Green --- */
+html.theme-green {
+  --bg: #030f04;
+  --bg-accent-1: rgba(50, 255, 80, 0.13);
+  --bg-accent-2: rgba(90, 190, 40, 0.11);
+  --panel: rgba(5, 18, 6, 0.9);
+  --panel-strong: rgba(3, 13, 4, 0.88);
+  --border: rgba(50, 200, 80, 0.28);
+  --border-strong: rgba(60, 255, 90, 0.42);
+  --text: #e0ffe4;
+  --muted: #80b890;
+  --accent: #39ff6a;
+  --accent-rgb: 57, 255, 106;
+  --accent-2: #009933;
+  --accent-2-rgb: 0, 153, 51;
+  --grid-line: rgba(40, 160, 70, 0.18);
+  --grid-glow: rgba(50, 255, 80, 0.09);
+  --btn-gradient: linear-gradient(120deg, #39ff6a, #009933);
+  --btn-hover-shadow: rgba(57, 255, 106, 0.38);
+  --nav-hover-bg: linear-gradient(130deg, rgba(80, 255, 120, 0.9), rgba(0, 130, 40, 0.85));
+  --nav-hover-border: #39ff6a;
+  --nav-hover-text: #001a08;
+}
+
+/* --- Phantom --- */
+html.theme-phantom {
+  --bg: #050507;
+  --bg-accent-1: rgba(200, 200, 230, 0.06);
+  --bg-accent-2: rgba(140, 140, 200, 0.05);
+  --panel: rgba(12, 12, 18, 0.9);
+  --panel-strong: rgba(8, 8, 14, 0.88);
+  --border: rgba(170, 170, 220, 0.2);
+  --border-strong: rgba(200, 200, 240, 0.35);
+  --text: #f0f0f8;
+  --muted: #a0a0b8;
+  --accent: #c8c8ff;
+  --accent-rgb: 200, 200, 255;
+  --accent-2: #7878cc;
+  --accent-2-rgb: 120, 120, 204;
+  --grid-line: rgba(130, 130, 180, 0.12);
+  --grid-glow: rgba(180, 180, 230, 0.06);
+  --btn-gradient: linear-gradient(120deg, #c8c8ff, #7878cc);
+  --btn-hover-shadow: rgba(180, 180, 255, 0.3);
+  --nav-hover-bg: linear-gradient(130deg, rgba(200, 200, 255, 0.85), rgba(100, 100, 200, 0.85));
+  --nav-hover-border: #c8c8ff;
+  --nav-hover-text: #080818;
+}
+
+/* --- Solar Gold --- */
+html.theme-gold {
+  --bg: #0a0800;
+  --bg-accent-1: rgba(255, 200, 30, 0.13);
+  --bg-accent-2: rgba(200, 110, 15, 0.11);
+  --panel: rgba(18, 14, 3, 0.9);
+  --panel-strong: rgba(12, 9, 2, 0.88);
+  --border: rgba(210, 170, 40, 0.28);
+  --border-strong: rgba(255, 210, 70, 0.42);
+  --text: #fff8e0;
+  --muted: #c0a060;
+  --accent: #ffd700;
+  --accent-rgb: 255, 215, 0;
+  --accent-2: #ff8c00;
+  --accent-2-rgb: 255, 140, 0;
+  --grid-line: rgba(180, 140, 20, 0.16);
+  --grid-glow: rgba(255, 200, 20, 0.09);
+  --btn-gradient: linear-gradient(120deg, #ffd700, #ff8c00);
+  --btn-hover-shadow: rgba(255, 215, 0, 0.38);
+  --nav-hover-bg: linear-gradient(130deg, rgba(255, 215, 0, 0.9), rgba(200, 90, 0, 0.85));
+  --nav-hover-border: #ffd700;
+  --nav-hover-text: #1a1000;
+}
+
+/* ==============================================
+   THEME SWITCHER SWATCHES
+   ============================================== */
+
+.theme-switcher {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.theme-swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.2);
+  padding: 0;
+  min-width: unset;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: none;
+  background: none;
+}
+
+.theme-swatch:hover {
+  transform: scale(1.25);
+  border-color: rgba(255,255,255,0.7);
+  box-shadow: none;
+}
+
+.theme-swatch.active {
+  border-color: #fff;
+  transform: scale(1.2);
+  box-shadow: 0 0 8px rgba(255,255,255,0.5);
+}
+
+.theme-swatch[data-theme="cyber"]   { background: #48ffe1; }
+.theme-swatch[data-theme="red"]     { background: #ff4d6a; }
+.theme-swatch[data-theme="green"]   { background: #39ff6a; }
+.theme-swatch[data-theme="phantom"] { background: #c8c8ff; }
+.theme-swatch[data-theme="gold"]    { background: #ffd700; }
+
+/* ==============================================
+   CROSS-PAGE OVERRIDES FOR NON-DEFAULT THEMES
+   Handles hardcoded values in existing CSS files
+   ============================================== */
+
+/* Body background grid (index, updates, games pages) */
+html.theme-red body::before,
+html.theme-green body::before,
+html.theme-phantom body::before,
+html.theme-gold body::before {
+  background-image:
+    linear-gradient(0deg, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  filter: drop-shadow(0 0 8px var(--grid-glow));
+}
+
+/* Buttons (all pages) */
+html.theme-red button:not(.theme-swatch):not(.platform-btn),
+html.theme-green button:not(.theme-swatch):not(.platform-btn),
+html.theme-phantom button:not(.theme-swatch):not(.platform-btn),
+html.theme-gold button:not(.theme-swatch):not(.platform-btn) {
+  background: var(--btn-gradient);
+  color: var(--nav-hover-text);
+  box-shadow: 0 12px 25px var(--btn-hover-shadow);
+}
+
+html.theme-red button:not(.theme-swatch):not(.platform-btn):hover,
+html.theme-green button:not(.theme-swatch):not(.platform-btn):hover,
+html.theme-phantom button:not(.theme-swatch):not(.platform-btn):hover,
+html.theme-gold button:not(.theme-swatch):not(.platform-btn):hover {
+  box-shadow: 0 18px 30px var(--btn-hover-shadow);
+}
+
+/* Ghost/secondary buttons */
+html.theme-red button.secondary-btn,
+html.theme-green button.secondary-btn,
+html.theme-phantom button.secondary-btn,
+html.theme-gold button.secondary-btn,
+html.theme-red .wl-btn-ghost,
+html.theme-green .wl-btn-ghost,
+html.theme-phantom .wl-btn-ghost,
+html.theme-gold .wl-btn-ghost {
+  background: transparent !important;
+  color: var(--accent) !important;
+  border-color: rgba(var(--accent-rgb), 0.45) !important;
+  box-shadow: none !important;
+}
+
+html.theme-red button.secondary-btn:hover,
+html.theme-green button.secondary-btn:hover,
+html.theme-phantom button.secondary-btn:hover,
+html.theme-gold button.secondary-btn:hover,
+html.theme-red .wl-btn-ghost:hover,
+html.theme-green .wl-btn-ghost:hover,
+html.theme-phantom .wl-btn-ghost:hover,
+html.theme-gold .wl-btn-ghost:hover {
+  background: var(--nav-hover-bg) !important;
+  color: var(--nav-hover-text) !important;
+  border-color: var(--nav-hover-border) !important;
+}
+
+/* Nav panel button hover */
+html.theme-red .nav-panel-buttons button:hover,
+html.theme-green .nav-panel-buttons button:hover,
+html.theme-phantom .nav-panel-buttons button:hover,
+html.theme-gold .nav-panel-buttons button:hover {
+  border-color: var(--nav-hover-border) !important;
+  color: var(--nav-hover-text) !important;
+  background: var(--nav-hover-bg) !important;
+  box-shadow: none !important;
+}
+
+/* Platform button active/hover */
+html.theme-red .platform-btn.active,
+html.theme-red .platform-btn:hover,
+html.theme-green .platform-btn.active,
+html.theme-green .platform-btn:hover,
+html.theme-phantom .platform-btn.active,
+html.theme-phantom .platform-btn:hover,
+html.theme-gold .platform-btn.active,
+html.theme-gold .platform-btn:hover {
+  border-color: rgba(var(--accent-rgb), 0.9) !important;
+  box-shadow: 0 14px 30px rgba(var(--accent-rgb), 0.25) !important;
+}
+
+html.theme-red .platform-btn.active::before,
+html.theme-green .platform-btn.active::before,
+html.theme-phantom .platform-btn.active::before,
+html.theme-gold .platform-btn.active::before {
+  border-color: rgba(var(--accent-rgb), 0.5) !important;
+  box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.4) !important;
+}
+
+/* Accent text colour (used in various labels) */
+html.theme-red .active-platform-label strong,
+html.theme-green .active-platform-label strong,
+html.theme-phantom .active-platform-label strong,
+html.theme-gold .active-platform-label strong {
+  color: var(--accent);
+}
+
+/* Profile links */
+html.theme-red .profile-links a,
+html.theme-green .profile-links a,
+html.theme-phantom .profile-links a,
+html.theme-gold .profile-links a {
+  color: var(--accent);
+}
+
+/* ==============================================
+   WATCHLIST-SPECIFIC OVERRIDES
+   ============================================== */
+
+/* Watchlist body background */
+html.theme-red body.watchlist,
+html.theme-green body.watchlist,
+html.theme-phantom body.watchlist,
+html.theme-gold body.watchlist {
+  background:
+    radial-gradient(circle at 20% 20%, var(--bg-accent-1), transparent 45%),
+    radial-gradient(circle at 80% 0%, var(--bg-accent-2), transparent 40%),
+    var(--bg) !important;
+}
+
+/* Watchlist backdrop grid */
+html.theme-red .wl-backdrop-grid,
+html.theme-green .wl-backdrop-grid,
+html.theme-phantom .wl-backdrop-grid,
+html.theme-gold .wl-backdrop-grid {
+  background-image:
+    linear-gradient(0deg, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) !important;
+  filter: drop-shadow(0 0 8px var(--grid-glow)) !important;
+}
+
+/* System status dot */
+html.theme-red .wl-sys-dot,
+html.theme-green .wl-sys-dot,
+html.theme-phantom .wl-sys-dot,
+html.theme-gold .wl-sys-dot {
+  background: var(--accent) !important;
+  box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.9) !important;
+}
+
+/* Module borders */
+html.theme-red body.watchlist .wl-module,
+html.theme-green body.watchlist .wl-module,
+html.theme-phantom body.watchlist .wl-module,
+html.theme-gold body.watchlist .wl-module {
+  border-color: var(--border) !important;
+}
+
+/* Feed header + live borders */
+html.theme-red body.watchlist .wl-feed-header,
+html.theme-green body.watchlist .wl-feed-header,
+html.theme-phantom body.watchlist .wl-feed-header,
+html.theme-gold body.watchlist .wl-feed-header {
+  border-color: var(--border) !important;
+}
+
+html.theme-red body.watchlist .wl-feed-live,
+html.theme-green body.watchlist .wl-feed-live,
+html.theme-phantom body.watchlist .wl-feed-live,
+html.theme-gold body.watchlist .wl-feed-live {
+  border-color: var(--border) !important;
+}
+
+html.theme-red body.watchlist .wl-feed-live::before,
+html.theme-green body.watchlist .wl-feed-live::before,
+html.theme-phantom body.watchlist .wl-feed-live::before,
+html.theme-gold body.watchlist .wl-feed-live::before {
+  background: radial-gradient(circle at top right, rgba(var(--accent-rgb), 0.1), transparent 40%) !important;
+}
+
+/* Watchlist row borders */
+html.theme-red body.watchlist .watchlist-player,
+html.theme-green body.watchlist .watchlist-player,
+html.theme-phantom body.watchlist .watchlist-player,
+html.theme-gold body.watchlist .watchlist-player {
+  border-color: rgba(var(--accent-2-rgb), 0.2) !important;
+  border-left-color: rgba(var(--accent-2-rgb), 0.55) !important;
+}
+
+html.theme-red body.watchlist .watchlist-player:nth-child(even),
+html.theme-green body.watchlist .watchlist-player:nth-child(even),
+html.theme-phantom body.watchlist .watchlist-player:nth-child(even),
+html.theme-gold body.watchlist .watchlist-player:nth-child(even) {
+  border-left-color: rgba(var(--accent-rgb), 0.55) !important;
+}
+
+/* Platform badge in watchlist */
+html.theme-red body.watchlist .wl-platform-badge,
+html.theme-green body.watchlist .wl-platform-badge,
+html.theme-phantom body.watchlist .wl-platform-badge,
+html.theme-gold body.watchlist .wl-platform-badge {
+  background: rgba(var(--accent-2-rgb), 0.15) !important;
+  border-color: rgba(var(--accent-2-rgb), 0.35) !important;
+  color: var(--text) !important;
+}
+
+/* Logo pill */
+html.theme-red .wl-logo-pill,
+html.theme-green .wl-logo-pill,
+html.theme-phantom .wl-logo-pill,
+html.theme-gold .wl-logo-pill {
+  background: linear-gradient(135deg, var(--accent-2), var(--accent)) !important;
+}
+
+/* Nav links in watchlist */
+html.theme-red body.watchlist .wl-nav-links a:hover,
+html.theme-green body.watchlist .wl-nav-links a:hover,
+html.theme-phantom body.watchlist .wl-nav-links a:hover,
+html.theme-gold body.watchlist .wl-nav-links a:hover {
+  border-color: var(--nav-hover-border) !important;
+  color: var(--nav-hover-text) !important;
+  background: var(--nav-hover-bg) !important;
+}
+
+/* Scan sweep */
+html.theme-red body.watchlist .wl-list-card.wl-container-scan::after,
+html.theme-green body.watchlist .wl-list-card.wl-container-scan::after,
+html.theme-phantom body.watchlist .wl-list-card.wl-container-scan::after,
+html.theme-gold body.watchlist .wl-list-card.wl-container-scan::after {
+  background: linear-gradient(120deg, rgba(var(--accent-rgb), 0), rgba(var(--accent-rgb), 0.32), rgba(var(--accent-rgb), 0)) !important;
+}
+
+/* Note input focus */
+html.theme-red body.watchlist .wl-note-input:focus,
+html.theme-green body.watchlist .wl-note-input:focus,
+html.theme-phantom body.watchlist .wl-note-input:focus,
+html.theme-gold body.watchlist .wl-note-input:focus {
+  border-color: rgba(var(--accent-rgb), 0.5) !important;
+}

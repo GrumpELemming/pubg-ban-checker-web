@@ -3,14 +3,29 @@
    Creates a standalone HUD vibe for the watchlist surface.
    ---------------------------------------------------------- */
 
+:root {
+  --bg: #03070f;
+  --bg-accent-1: rgba(46, 227, 255, 0.18);
+  --bg-accent-2: rgba(123, 97, 255, 0.16);
+  --accent-rgb: 72, 255, 225;
+  --accent-2-rgb: 30, 81, 255;
+  --grid-line: rgba(33, 147, 176, 0.2);
+  --grid-glow: rgba(0, 255, 200, 0.12);
+  --btn-gradient: linear-gradient(120deg, #11ffd3, #1e51ff);
+  --btn-hover-shadow: rgba(55, 255, 214, 0.35);
+  --nav-hover-bg: linear-gradient(130deg, rgba(69, 255, 216, 0.9), rgba(50, 132, 255, 0.85));
+  --nav-hover-border: #45ffd8;
+  --nav-hover-text: #041726;
+}
+
 body.watchlist {
   margin: 0;
   min-height: 100vh;
   padding: 32px clamp(18px, 4vw, 64px) 64px;
   font-family: "Rajdhani", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: radial-gradient(circle at 20% 20%, rgba(46, 227, 255, 0.18), transparent 45%),
-              radial-gradient(circle at 80% 0%, rgba(123, 97, 255, 0.16), transparent 40%),
-              #03070f;
+  background: radial-gradient(circle at 20% 20%, var(--bg-accent-1), transparent 45%),
+              radial-gradient(circle at 80% 0%, var(--bg-accent-2), transparent 40%),
+              var(--bg);
   color: #e0f6ff;
   letter-spacing: 0.02em;
   position: relative;
@@ -39,12 +54,12 @@ body.watchlist .wl-backdrop-grid {
   position: absolute;
   inset: -20%;
   background-image:
-    linear-gradient(0deg, rgba(33, 147, 176, 0.2) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(33, 147, 176, 0.2) 1px, transparent 1px);
+    linear-gradient(0deg, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
   background-size: 120px 120px;
   opacity: 0.4;
   transform: rotate(8deg) scale(1);
-  filter: drop-shadow(0 0 8px rgba(0, 255, 200, 0.12));
+  filter: drop-shadow(0 0 8px var(--grid-glow));
 }
 
 body.watchlist .wl-backdrop-grid-alt {
@@ -174,9 +189,9 @@ body.watchlist .wl-nav-links a {
 }
 
 body.watchlist .wl-nav-links a:hover {
-  border-color: #45ffd8;
-  color: #041726;
-  background: linear-gradient(130deg, rgba(69, 255, 216, 0.9), rgba(50, 132, 255, 0.85));
+  border-color: var(--nav-hover-border);
+  color: var(--nav-hover-text);
+  background: var(--nav-hover-bg);
   box-shadow: 0 8px 25px rgba(68, 255, 227, 0.25);
 }
 
@@ -343,18 +358,18 @@ body.watchlist .wl-btn {
   text-transform: uppercase;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
-  background: linear-gradient(120deg, #00f0ff, #5e63ff);
+  background: var(--btn-gradient);
   color: #03121d;
-  box-shadow: 0 12px 25px rgba(64, 160, 255, 0.35);
+  box-shadow: 0 12px 25px var(--btn-hover-shadow);
 }
 
 body.watchlist .wl-btn:hover {
   transform: translateY(-2px) scale(1.01);
-  box-shadow: 0 18px 30px rgba(55, 255, 214, 0.35);
+  box-shadow: 0 18px 30px var(--btn-hover-shadow);
 }
 
 body.watchlist .wl-btn-primary {
-  background: linear-gradient(120deg, #11ffd3, #1e51ff);
+  background: var(--btn-gradient);
   color: #081325;
 }
 
@@ -769,8 +784,8 @@ body.watchlist.dark-mode .wl-feed-live::before {
 }
 
 .nav-panel-buttons button:hover {
-  border-color: #45ffd8;
-  color: #041726;
-  background: linear-gradient(130deg, rgba(69, 255, 216, 0.9), rgba(50, 132, 255, 0.85));
+  border-color: var(--nav-hover-border);
+  color: var(--nav-hover-text);
+  background: var(--nav-hover-bg);
   box-shadow: 0 8px 20px rgba(68, 255, 227, 0.2);
 }
