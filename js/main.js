@@ -318,7 +318,7 @@
   }
 
   // ---------- UI builders ----------
-  function buildRow({ player, accountId, clan, statusText }) {
+  function buildRow({ player, accountId, clan, statusText, platform }) {
     const row = document.createElement("div");
     row.className = "player-row";
 
@@ -344,6 +344,15 @@
       statusText.trim().toLowerCase() !== label.toLowerCase() &&
       status !== "unknown";
 
+    const isLoading = statusText === "Checking...";
+    const profileLinks =
+      !isLoading && platform
+        ? `<div class="profile-links">
+            <a href="https://pubglookup.com/players/${encodeURIComponent(platform)}/${encodeURIComponent(player)}" target="_blank" rel="noopener noreferrer">pubglookup.com</a>
+            <a href="https://www.pubg-meta.com/player/${encodeURIComponent(player)}" target="_blank" rel="noopener noreferrer">pubg-meta.com</a>
+          </div>`
+        : "";
+
     const info = document.createElement("div");
     info.innerHTML = `
       <strong>${escapeHtml(player)}</strong><br>
@@ -355,6 +364,7 @@
           ? `<div class="status-detail">${escapeHtml(statusText)}</div>`
           : ""
       }
+      ${profileLinks}
     `;
 
     const addBtn = document.createElement("button");
@@ -410,7 +420,8 @@
         player: n,
         accountId: "...",
         clan: "...",
-        statusText: "Checking..."
+        statusText: "Checking...",
+        platform
       });
       rowMap.set(n, loadingRow);
       fragment.appendChild(loadingRow);
@@ -421,7 +432,7 @@
     await runWithConcurrency(names, 2, async n => {
       const data = await getBanStatus(platform, n);
 
-      const finalRow = buildRow(data);
+      const finalRow = buildRow({ ...data, platform });
       const currentRow = rowMap.get(n);
       if (currentRow && currentRow.isConnected) {
         results.replaceChild(finalRow, currentRow);
@@ -466,7 +477,8 @@
 
       const row = buildRow({
         ...banData,
-        accountId: banData.accountId || id
+        accountId: banData.accountId || id,
+        platform
       });
 
       out.innerHTML = "";

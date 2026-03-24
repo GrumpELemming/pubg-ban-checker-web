@@ -371,6 +371,26 @@ input.text-input::placeholder {
   color: #9fe9ff;
 }
 
+.profile-links {
+  margin-top: 8px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.profile-links a {
+  font-size: 0.82rem;
+  color: #7ecfff;
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.15s;
+}
+
+.profile-links a:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
 .player-row.not-banned {
   background: rgba(67, 255, 210, 0.14);
   border-left-color: rgba(67, 255, 210, 0.6);
