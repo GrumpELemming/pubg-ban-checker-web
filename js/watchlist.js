@@ -391,6 +391,61 @@
       });
     }
 
+    // NOTES section
+    const notesEl = document.createElement("div");
+    notesEl.className = "wl-notes";
+
+    function renderNoteView() {
+      notesEl.innerHTML = "";
+      if (entry.notes) {
+        const noteText = document.createElement("span");
+        noteText.className = "wl-note-text";
+        noteText.textContent = entry.notes;
+        const editBtn = document.createElement("button");
+        editBtn.className = "wl-btn wl-btn-mini wl-btn-ghost wl-note-edit-btn";
+        editBtn.textContent = "Edit note";
+        editBtn.addEventListener("click", renderNoteEditor);
+        notesEl.appendChild(noteText);
+        notesEl.appendChild(editBtn);
+      } else {
+        const addBtn = document.createElement("button");
+        addBtn.className = "wl-btn wl-btn-mini wl-btn-ghost wl-note-add-btn";
+        addBtn.textContent = "+ Add note";
+        addBtn.addEventListener("click", renderNoteEditor);
+        notesEl.appendChild(addBtn);
+      }
+    }
+
+    function renderNoteEditor() {
+      notesEl.innerHTML = "";
+      const textarea = document.createElement("textarea");
+      textarea.className = "wl-note-input";
+      textarea.placeholder = "Why are you watching this player?";
+      textarea.value = entry.notes || "";
+      const saveBtn = document.createElement("button");
+      saveBtn.className = "wl-btn wl-btn-mini wl-btn-primary";
+      saveBtn.textContent = "Save";
+      saveBtn.addEventListener("click", () => {
+        const val = textarea.value.trim();
+        entry.notes = val || "";
+        const platform = getPlatform();
+        const list = getWatchlist(platform);
+        if (list[index]) list[index].notes = entry.notes;
+        saveWatchlist(platform, list);
+        renderNoteView();
+      });
+      const cancelBtn = document.createElement("button");
+      cancelBtn.className = "wl-btn wl-btn-mini wl-btn-ghost";
+      cancelBtn.textContent = "Cancel";
+      cancelBtn.addEventListener("click", renderNoteView);
+      notesEl.appendChild(textarea);
+      notesEl.appendChild(saveBtn);
+      notesEl.appendChild(cancelBtn);
+      textarea.focus();
+    }
+
+    renderNoteView();
+
     // Buttons
     const btns = document.createElement("div");
     btns.className = "wl-card-buttons";
@@ -413,6 +468,7 @@
     left.appendChild(nameLine);
     left.appendChild(meta);
     if (historyEl) left.appendChild(historyEl);
+    left.appendChild(notesEl);
 
     row.appendChild(left);
     row.appendChild(btns);

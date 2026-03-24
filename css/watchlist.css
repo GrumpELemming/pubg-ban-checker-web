@@ -652,6 +652,56 @@ body.watchlist .wl-history-name {
   font-weight: 500;
 }
 
+/* NOTES */
+body.watchlist .wl-notes {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+body.watchlist .wl-note-text {
+  font-size: 0.85rem;
+  color: #e0d9ff;
+  font-style: italic;
+  background: rgba(255,255,255,0.08);
+  padding: 4px 8px;
+  border-radius: 6px;
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+}
+
+body.watchlist .wl-note-add-btn,
+body.watchlist .wl-note-edit-btn {
+  opacity: 0.65;
+  font-size: 0.75rem !important;
+}
+
+body.watchlist .wl-note-add-btn:hover,
+body.watchlist .wl-note-edit-btn:hover {
+  opacity: 1;
+}
+
+body.watchlist .wl-note-input {
+  width: 100%;
+  min-height: 60px;
+  resize: vertical;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: #fff;
+  font-size: 0.85rem;
+  font-family: inherit;
+  outline: none;
+}
+
+body.watchlist .wl-note-input:focus {
+  border-color: rgba(255,221,89,0.5);
+}
+
 /* STATUS PILLS */
 body.watchlist .wl-status-pill {
   padding: 3px 10px;
