@@ -8,7 +8,7 @@
 
   function applyTheme(name) {
     var html = document.documentElement;
-    ['red','green','phantom','gold'].forEach(function(t) {
+    ['red','green','phantom','gold','void','ember','synthwave','arctic','orange'].forEach(function(t) {
       html.classList.remove('theme-' + t);
     });
     if (name !== DEFAULT) html.classList.add('theme-' + name);
