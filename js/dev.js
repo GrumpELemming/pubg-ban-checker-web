@@ -26,14 +26,6 @@ function unlock() {
 }
 
 (function init() {
-  const params = new URLSearchParams(window.location.search);
-  const urlKey = params.get("key");
-  if (urlKey) {
-    SECRET_KEY = urlKey;
-    sessionStorage.setItem("resolverKey", SECRET_KEY);
-    showTool();
-    return;
-  }
   const storedKey = sessionStorage.getItem("resolverKey");
   if (storedKey) {
     SECRET_KEY = storedKey;
