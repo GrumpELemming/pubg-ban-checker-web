@@ -11,6 +11,7 @@ const LANGS = {
   ru: "Русский",
   tr: "Türkçe",
   hy: "ՀԱՅ",
+  ar: "العربية",
 };
 
 const TRANSLATIONS = {
@@ -562,6 +563,68 @@ const TRANSLATIONS = {
     "games.schnee.desc":
       "Schneefuchs'un en nefret ettiği şeylerle yüzleştiği kabustan sağ çıkmasına yardım et...",
   },
+  ar: {
+    "nav.ban": "فاحص الحظر",
+    "nav.watchlist": "قائمة المراقبة",
+    "nav.links": "روابط",
+    "nav.about": "حول",
+    "nav.games": "ألعاب",
+    "nav.crate": "محاكي الصناديق",
+    "nav.request": "طلب لغة",
+    "nav.lang": "اللغة",
+    "hero.index.title": "فاحص حظر PUBG",
+    "hero.index.platform": "اختر المنصة",
+    "hero.index.banchecker": "فاحص الحظر والعشيرة",
+    "hero.index.placeholder":
+      "أدخل أسماء اللاعبين، مفصولة بفواصل أو أسطر جديدة (حد أقصى 10 لاعبين)",
+    "hero.index.check": "فحص",
+    "hero.index.clear": "مسح",
+    "hero.index.searchid": "البحث بمعرف الحساب",
+    "hero.index.lookup": "بحث",
+    "hero.index.clearid": "مسح",
+    "common.noresults": "لا توجد نتائج بعد.",
+    "watchlist.platform": "اختيار المنصة",
+    "watchlist.controls": "إعدادات قائمة المراقبة",
+    "watchlist.refresh": "تحديث الكل",
+    "watchlist.clear": "مسح الكل",
+    "watchlist.feed.title": "قائمة المراقبة",
+    "watchlist.feed.body":
+      "راقب حالات الحظر عبر جميع المنصات. استخدم \"إعادة الفحص\" على أي لاعب عند الحاجة.",
+    "updates.title": "فاحص حظر PUBG - التحديثات",
+    "links.hero.title": "موارد PUBG الموثوقة",
+    "links.hero.lede":
+      "أبلغ عن الغشاشين، راجع الإحصائيات، شاهد إعادات ثنائية الأبعاد، وتابع منشئي المحتوى الذين يكشفون المخالفين.",
+    "links.pubgtogether":
+      "صوّت على مقاطع المجتمع وأرسل الأدلة مباشرة إلى دعم PUBG.",
+    "links.lookup":
+      "إحصائيات تفصيلية ولوحات صدارة وسجل مباريات — رائع لمراقبة أدائك أو اللاعبين الآخرين.",
+    "links.meta":
+      "لوحات تحكم غنية وتحليلات ومقارنات. أداة أساسية لتحليل أداء اللاعب أو الفريق.",
+    "links.pubgsh":
+      "إعادات ثنائية الأبعاد سريعة ونظيفة — افحص الهبوط والمسارات للكشف عن الأنماط المشبوهة.",
+    "links.chicken":
+      "خرائط حرارية تفصيلية وجداول زمنية. مثالي لمراجعة الاشتباكات والمواقع.",
+    "links.shady":
+      "يكشف الغشاشين بتحليلات وتعليقات متقنة. نبض جيد على حالة اللعب النظيف.",
+    "links.stupid":
+      "مقاطع خفيفة عن الغشاشين المحظورين دائمًا — دليل على أن العدالة تنتصر.",
+    "crate.hero.title": "محاكي صناديق Hideout",
+    "crate.hero.subtitle": "Winter Eclipse",
+    "crate.hero.lede":
+      "أنفق 1800 جي-كوين لكل 10 صناديق، اقلب البطاقات لاكتشاف المكافأة، وتتبع إنفاقك.",
+    "games.title": "ألعاب مستوحاة من PUBG",
+    "games.crate.btn": "محاكي صناديق Hideout - \"Winter Eclipse\"",
+    "games.crate.desc":
+      "افتح 10 صناديق دفعة واحدة بـ1800 GC، تتبع إجمالي الإنفاق واكتشف مكافآتك.",
+    "games.hangman.btn": "لعبة المشنقة",
+    "games.bluemem.btn": "الذاكرة الزرقاء",
+    "games.red13.btn": "Red13 - حياة عداء المنطقة الزرقاء",
+    "games.red13.desc":
+      "Red13 لعبة ويب من صنع المعجبين مستوحاة من ميكانيكا المنطقة الزرقاء في PUBG. هذا المشروع غير مرتبط بـ PUBG أو Krafton.",
+    "games.schnee.btn": "SCHNEEFUCHS يكره الـ SMG",
+    "games.schnee.desc":
+      "ساعد Schneefuchs على النجاة من كابوسه حيث يواجه أكثر ما يكرهه...",
+  },
 };
 
 function getCurrentLang() {
@@ -582,7 +645,10 @@ function tr(key) {
 }
 window.tr = tr;
 
+const RTL_LANGS = new Set(["ar"]);
+
 function applyTranslations(lang) {
+  document.documentElement.dir = RTL_LANGS.has(lang) ? "rtl" : "ltr";
   const dict = TRANSLATIONS[lang] || TRANSLATIONS.en;
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     const key = el.getAttribute("data-i18n");
