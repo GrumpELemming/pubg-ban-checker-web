@@ -380,7 +380,7 @@
     actions.className = "player-actions";
     actions.append(addBtn);
 
-    if (status === "perm" && accountId && accountId !== "...") {
+    if (status === "perm") {
       const cardBtn = document.createElement("button");
       cardBtn.type = "button";
       cardBtn.className = "secondary-btn generate-card-btn";

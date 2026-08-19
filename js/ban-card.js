@@ -218,8 +218,24 @@
     return data;
   }
 
-  async function fetchCardData({ platform, accountId }) {
-    const url = `/api/ban-card-data?platform=${encodeURIComponent(platform)}&accountId=${encodeURIComponent(accountId)}`;
+  async function resolveAccountId(platform, player) {
+    const url = `/api/resolve?platform=${encodeURIComponent(platform)}&name=${encodeURIComponent(player)}`;
+    const response = await fetch(url, { headers: { Accept: "application/json" } });
+    let body = {};
+    try { body = await response.json(); } catch {}
+    if (!response.ok || !body.accountId) {
+      const error = new Error(ERROR_MESSAGES.player_not_found);
+      error.code = "player_not_found";
+      throw error;
+    }
+    return body.accountId;
+  }
+
+  async function fetchCardData({ platform, accountId, player }) {
+    const resolvedId = accountId && accountId !== "..."
+      ? accountId
+      : await resolveAccountId(platform, player);
+    const url = `/api/ban-card-data?platform=${encodeURIComponent(platform)}&accountId=${encodeURIComponent(resolvedId)}`;
     const response = await fetch(url, { headers: { Accept: "application/json" } });
     let body = {};
     try { body = await response.json(); } catch {}
