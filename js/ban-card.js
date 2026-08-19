@@ -142,7 +142,7 @@
     ctx.stroke();
 
     ctx.fillStyle = "rgba(255, 65, 78, 0.12)";
-    roundedRect(ctx, 440, 125, 700, 435, 24);
+    roundedRect(ctx, 440, 125, 700, 470, 24);
     ctx.fill();
 
     ctx.fillStyle = "#f4f8ff";
@@ -209,10 +209,10 @@
       const x = 490 + index * 150;
       ctx.fillStyle = "#8797b0";
       ctx.font = "700 15px Arial, sans-serif";
-      ctx.fillText(label, x, 535);
+      ctx.fillText(label, x, 530);
       ctx.fillStyle = config.accent;
       ctx.font = "900 27px Arial, sans-serif";
-      ctx.fillText(String(value), x, 566);
+      ctx.fillText(String(value), x, 561);
     });
 
     const checkedDate = new Date(data.checkedAt);
