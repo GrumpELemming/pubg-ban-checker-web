@@ -20,9 +20,10 @@
 <link rel="preload" href="img/xbox.svg" as="image" type="image/svg+xml" />
 <link rel="preload" href="img/psn.svg" as="image" type="image/svg+xml" />
 <link rel="preload" href="img/kakao.svg" as="image" type="image/svg+xml" />
-<link rel="stylesheet" href="css/index.css" />
+  <link rel="stylesheet" href="css/index.css" />
   <script src="js/theme.js"></script>
   <link rel="stylesheet" href="css/themes.css">
+  <script defer src="js/ban-card.js"></script>
   <script defer src="js/main.js"></script>
   <script defer src="js/i18n.js?v=20251228"></script>
 </head>
@@ -113,5 +114,20 @@
 
     <div id="idLookupResults"><p class="muted" data-i18n="common.noresults">No results yet.</p></div>
   </section>
+
+  <div id="banCardModal" class="ban-card-modal" hidden>
+    <div class="ban-card-backdrop" data-ban-card-close></div>
+    <section class="ban-card-dialog" role="dialog" aria-modal="true" aria-labelledby="banCardTitle" tabindex="-1">
+      <div class="ban-card-header">
+        <h2 id="banCardTitle">Permanent Ban Card</h2>
+        <button class="ban-card-close secondary-btn" type="button" data-ban-card-close aria-label="Close ban card">Close</button>
+      </div>
+      <div id="banCardStatus" class="ban-card-status" role="status" aria-live="polite">Loading card data…</div>
+      <canvas id="banCardCanvas" width="1200" height="675" aria-label="Generated permanent ban card preview" hidden></canvas>
+      <div class="ban-card-actions">
+        <button id="downloadBanCardBtn" type="button" disabled>Download PNG</button>
+      </div>
+    </section>
+  </div>
 </body>
 </html>

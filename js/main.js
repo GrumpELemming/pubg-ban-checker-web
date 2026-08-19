@@ -376,7 +376,24 @@
       addBtn.classList.add("added-btn");
     });
 
-    row.append(info, addBtn);
+    const actions = document.createElement("div");
+    actions.className = "player-actions";
+    actions.append(addBtn);
+
+    if (status === "perm" && accountId && accountId !== "...") {
+      const cardBtn = document.createElement("button");
+      cardBtn.type = "button";
+      cardBtn.className = "secondary-btn generate-card-btn";
+      cardBtn.textContent = "Generate Ban Card";
+      cardBtn.addEventListener("click", () => {
+        if (window.BanCard) {
+          window.BanCard.open({ player, accountId, platform, trigger: cardBtn });
+        }
+      });
+      actions.append(cardBtn);
+    }
+
+    row.append(info, actions);
     return row;
   }
 

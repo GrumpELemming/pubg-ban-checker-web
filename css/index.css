@@ -360,6 +360,67 @@ input.text-input::placeholder {
   min-width: 0;
 }
 
+.player-actions {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ban-card-modal[hidden] { display: none; }
+
+.ban-card-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.ban-card-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 4, 12, 0.86);
+  backdrop-filter: blur(8px);
+}
+
+.ban-card-dialog {
+  position: relative;
+  width: min(100%, 1040px);
+  max-height: calc(100vh - 40px);
+  overflow: auto;
+  padding: 20px;
+  border: 1px solid rgba(81, 192, 255, 0.42);
+  border-radius: 16px;
+  background: #061426;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.72);
+}
+
+.ban-card-header,
+.ban-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.ban-card-header h2 { margin: 0; }
+.ban-card-status { padding: 28px 0; text-align: center; color: #c8e9ff; }
+.ban-card-status.error { color: #ff9e9e; }
+
+#banCardCanvas {
+  width: 100%;
+  height: auto;
+  margin: 18px 0;
+  border-radius: 10px;
+  background: #07101d;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+.ban-card-actions { justify-content: flex-end; }
+body.ban-card-open { overflow: hidden; }
+
 @keyframes rowReveal {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -578,4 +639,8 @@ body.dark-mode .history {
   .player-row button {
     width: 100%;
   }
+
+  .player-actions { width: 100%; }
+  .ban-card-dialog { padding: 14px; }
+  .ban-card-header { align-items: flex-start; }
 }
