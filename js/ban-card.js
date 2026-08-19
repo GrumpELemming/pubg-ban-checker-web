@@ -7,9 +7,9 @@
   const TIER_CONFIG = {
     bronze: { title: "BRONZE BOMBER", tagline: "Banned before escaping Bronze", color: "#c88752", accent: "#f0b47d", badge: "img/ban-cards/bronze.png" },
     silver: { title: "SILVER SURFER", tagline: "The ban wave caught up", color: "#aeb9c5", accent: "#e4edf5", badge: "img/ban-cards/silver.png" },
-    gold: { title: "GOLD WHALE", tagline: "A golden run with a permanent ending", color: "#d8a82e", accent: "#ffe47e", badge: "img/ban-cards/gold.png" },
-    platinum: { title: "PLATINUM", tagline: "Permanently banned", color: "#68c9c1", accent: "#b6fff8", badge: "img/ban-cards/platinum.png" },
-    diamond: { title: "DIAMOND", tagline: "Permanently banned", color: "#70a8ff", accent: "#c3ddff", badge: "img/ban-cards/diamond.png" }
+    gold: { title: "GOLDEN FINGER", tagline: "Everything touched turned suspicious", color: "#d8a82e", accent: "#ffe47e", badge: "img/ban-cards/gold.png" },
+    platinum: { title: "GOLDEN GOBLIN", tagline: "Collected loot and a permanent ban", color: "#d6a72e", accent: "#ffe59a", badge: "img/ban-cards/platinum.png" },
+    diamond: { title: "GOLDEN WHALE", tagline: "A heavyweight permanent ending", color: "#e3b83f", accent: "#fff0a6", badge: "img/ban-cards/diamond.png" }
   };
 
   const ERROR_MESSAGES = {
@@ -156,8 +156,8 @@
 
     try {
       const badge = await loadImage(config.badge);
-      const size = 330;
-      ctx.drawImage(badge, 105, 155, size, size);
+      const size = 310;
+      ctx.drawImage(badge, 115, 165, size, size);
     } catch {
       drawFallbackBadge(ctx, config);
     }
@@ -174,23 +174,45 @@
     ctx.font = "500 23px Arial, sans-serif";
     ctx.fillText(config.tagline, 487, 287);
 
-    const rows = [
-      ["LEVEL", `${safeNumber(data.mastery?.level)} · ${titleCase(tier)}`],
+    const tierNumber = safeNumber(data.mastery?.tierNumber);
+    const level = safeNumber(data.mastery?.level);
+    const clan = data.clan || "No clan";
+    const currentRank = data.ranked?.current?.label || "Unranked / unavailable";
+    const highestRank = data.ranked?.highest?.label || "Unranked / unavailable";
+
+    const detailRows = [
+      ["SURVIVAL", `Tier ${tierNumber || "?"} · Level ${level}/500`],
+      ["CLAN", clan],
+      ["ACCOUNT ID", data.accountId || "Unavailable"],
+      ["CURRENT RANK", currentRank],
+      ["HIGHEST RANK", highestRank]
+    ];
+    detailRows.forEach(([label, value], index) => {
+      const y = 325 + index * 38;
+      ctx.fillStyle = "#8797b0";
+      ctx.font = "700 17px Arial, sans-serif";
+      ctx.fillText(label, 490, y);
+      ctx.fillStyle = "#f5f8fd";
+      ctx.font = index === 2 ? "700 15px Arial, sans-serif" : "800 19px Arial, sans-serif";
+      ctx.textAlign = "right";
+      ctx.fillText(ellipsize(ctx, String(value), 420), 1090, y);
+      ctx.textAlign = "left";
+    });
+
+    const statItems = [
       ["MATCHES", safeNumber(stats.matches).toLocaleString("en-GB")],
       ["KILLS", safeNumber(stats.kills).toLocaleString("en-GB")],
       ["WINS", safeNumber(stats.wins).toLocaleString("en-GB")],
       ["K/D", safeNumber(stats.losses) === 0 ? "—" : safeNumber(stats.kd).toFixed(2)]
     ];
-    rows.forEach(([label, value], index) => {
-      const y = 350 + index * 45;
+    statItems.forEach(([label, value], index) => {
+      const x = 490 + index * 150;
       ctx.fillStyle = "#8797b0";
-      ctx.font = "700 20px Arial, sans-serif";
-      ctx.fillText(label, 490, y);
-      ctx.fillStyle = "#f5f8fd";
-      ctx.font = "800 24px Arial, sans-serif";
-      ctx.textAlign = "right";
-      ctx.fillText(String(value), 1090, y);
-      ctx.textAlign = "left";
+      ctx.font = "700 15px Arial, sans-serif";
+      ctx.fillText(label, x, 535);
+      ctx.fillStyle = config.accent;
+      ctx.font = "900 27px Arial, sans-serif";
+      ctx.fillText(String(value), x, 566);
     });
 
     const checkedDate = new Date(data.checkedAt);
