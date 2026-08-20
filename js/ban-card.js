@@ -7,8 +7,8 @@
   const TIER_CONFIG = {
     bronze: { title: "BRONZE BOMBER", tagline: "Banned before escaping Bronze", color: "#c88752", accent: "#f0b47d", badge: "img/ban-cards/bronze.png" },
     silver: { title: "SWEATY SILVER", tagline: "The ban wave caught up", color: "#aeb9c5", accent: "#e4edf5", badge: "img/ban-cards/silver.png" },
-    gold: { title: "GOLDEN FINGER", tagline: "Everything touched turned suspicious", color: "#d8a82e", accent: "#ffe47e", badge: "img/ban-cards/gold.png" },
-    platinum: { title: "GOLDEN GOBLIN", tagline: "Collected loot and a permanent ban", color: "#d6a72e", accent: "#ffe59a", badge: "img/ban-cards/platinum.png" },
+    gold: { title: "PYRITE PLATED BOT", tagline: "A paranoid machine shooting itself in the foot", color: "#b88335", accent: "#f4cf79", badge: "img/ban-cards/pyrite-plated-bot.png" },
+    platinum: { title: "BASEMENT DWELLING LOOT GOBLIN", tagline: "Collecting loot beneath the glow of two screens", color: "#557b68", accent: "#9cf2a7", badge: "img/ban-cards/basement-loot-goblin.png" },
     diamond: { title: "SALTY WHALE", tagline: "A heavyweight permanent ending", color: "#e3b83f", accent: "#fff0a6", badge: "img/ban-cards/diamond.png" }
   };
 
