@@ -455,6 +455,22 @@
     reBtn.textContent = "Re-check";
     reBtn.addEventListener("click", () => recheckSingle(entry.player));
 
+    if (statusInfo.code === "perm") {
+      const cardBtn = document.createElement("button");
+      cardBtn.type = "button";
+      cardBtn.className = "wl-btn wl-btn-mini wl-ban-card-btn";
+      cardBtn.textContent = "Generate Ban Card";
+      cardBtn.addEventListener("click", () => {
+        window.BanCard?.open({
+          player: entry.player,
+          accountId: entry.accountId,
+          platform: entry.platform || getPlatform(),
+          trigger: cardBtn,
+        });
+      });
+      btns.appendChild(cardBtn);
+    }
+
     const rmBtn = document.createElement("button");
     rmBtn.className = "wl-btn wl-btn-mini wl-btn-ghost";
     rmBtn.textContent = "Remove";
@@ -677,4 +693,3 @@
   });
 
 })();
-

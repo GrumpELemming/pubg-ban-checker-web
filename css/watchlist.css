@@ -570,6 +570,72 @@ body.watchlist .wl-btn-mini {
   margin-left: 6px;
 }
 
+body.watchlist .wl-ban-card-btn {
+  background: linear-gradient(135deg, #b97818, #e2b84c);
+  color: #130d03;
+  box-shadow: 0 0 16px rgba(226, 184, 76, 0.25);
+}
+
+body.watchlist .wl-ban-card-btn:hover {
+  box-shadow: 0 0 22px rgba(226, 184, 76, 0.48);
+}
+
+body.watchlist .ban-card-modal[hidden] { display: none; }
+
+body.watchlist .ban-card-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+body.watchlist .ban-card-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 4, 12, 0.86);
+  backdrop-filter: blur(8px);
+}
+
+body.watchlist .ban-card-dialog {
+  position: relative;
+  width: min(100%, 1040px);
+  max-height: calc(100vh - 40px);
+  overflow: auto;
+  padding: 20px;
+  border: 1px solid rgba(81, 192, 255, 0.42);
+  border-radius: 16px;
+  background: #061426;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.72);
+}
+
+body.watchlist .ban-card-header,
+body.watchlist .ban-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+body.watchlist .ban-card-header h2 { margin: 0; }
+body.watchlist .ban-card-status { padding: 28px 0; text-align: center; color: #c8e9ff; }
+body.watchlist .ban-card-status.error { color: #ff9e9e; }
+
+body.watchlist #banCardCanvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 18px 0;
+  border-radius: 10px;
+  background: #07101d;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+body.watchlist #banCardCanvas[hidden] { display: none; }
+body.watchlist .ban-card-actions { justify-content: flex-end; }
+body.watchlist.ban-card-open { overflow: hidden; }
+
 /* LIST WRAPPER (right panel) */
 body.watchlist .wl-list-card {
   flex: 1;

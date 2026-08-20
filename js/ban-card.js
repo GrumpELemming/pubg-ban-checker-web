@@ -100,7 +100,7 @@
 
   function drawFallbackBadge(ctx, config) {
     ctx.save();
-    ctx.translate(270, 325);
+    ctx.translate(230, 345);
     ctx.fillStyle = config.color;
     ctx.strokeStyle = config.accent;
     ctx.lineWidth = 10;
@@ -129,6 +129,8 @@
     const tier = data.mastery?.tier || "Unknown";
     const config = getTierConfig(tier);
     const stats = data.lifetime || {};
+    const hasTimeSurvived = stats.timeSurvived !== undefined && stats.timeSurvived !== null;
+    const timePlayedHours = hasTimeSurvived ? safeNumber(stats.timeSurvived) / 3600 : null;
     const gradient = ctx.createLinearGradient(0, 0, CARD_WIDTH, CARD_HEIGHT);
     gradient.addColorStop(0, "#050b15");
     gradient.addColorStop(0.62, "#0a1b31");
@@ -157,7 +159,7 @@
     try {
       const badge = await loadImage(config.badge);
       const size = 310;
-      ctx.drawImage(badge, 115, 165, size, size);
+      ctx.drawImage(badge, 75, 190, size, size);
     } catch {
       drawFallbackBadge(ctx, config);
     }
@@ -201,15 +203,16 @@
       ["MATCHES", safeNumber(stats.matches).toLocaleString("en-GB")],
       ["KILLS", safeNumber(stats.kills).toLocaleString("en-GB")],
       ["WINS", safeNumber(stats.wins).toLocaleString("en-GB")],
-      ["K/D", safeNumber(stats.losses) === 0 ? "—" : safeNumber(stats.kd).toFixed(2)]
+      ["K/D", safeNumber(stats.losses) === 0 ? "—" : safeNumber(stats.kd).toFixed(2)],
+      ["PLAYTIME", timePlayedHours === null ? "—" : `${timePlayedHours.toLocaleString("en-GB", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}h`]
     ];
     statItems.forEach(([label, value], index) => {
-      const x = 490 + index * 150;
+      const x = 490 + index * 125;
       ctx.fillStyle = "#8797b0";
-      ctx.font = "700 15px Arial, sans-serif";
+      ctx.font = "700 14px Arial, sans-serif";
       ctx.fillText(label, x, 530);
       ctx.fillStyle = config.accent;
-      ctx.font = "900 27px Arial, sans-serif";
+      ctx.font = "900 25px Arial, sans-serif";
       ctx.fillText(String(value), x, 561);
     });
 
@@ -220,8 +223,20 @@
     ctx.fillStyle = "#7f8ca0";
     ctx.font = "500 18px Arial, sans-serif";
     ctx.fillText(formattedDate, 62, 620);
+
+    const siteLabel = "pubgbanchecker.com";
+    ctx.font = "900 20px Arial, sans-serif";
+    const siteWidth = ctx.measureText(siteLabel).width + 36;
+    const siteX = 1138 - siteWidth;
+    ctx.fillStyle = "rgba(5, 11, 21, 0.9)";
+    ctx.strokeStyle = config.accent;
+    ctx.lineWidth = 2;
+    roundedRect(ctx, siteX, 587, siteWidth, 46, 12);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = "#ffffff";
     ctx.textAlign = "right";
-    ctx.fillText("pubgbanchecker.com", 1138, 620);
+    ctx.fillText(siteLabel, 1120, 617);
     ctx.textAlign = "left";
 
     filename = `PUBGBanChecker_${sanitizeFilenamePart(player, "Player")}_${sanitizeFilenamePart(config.title.replace(/\s+/g, ""), "BanCard")}.png`;
