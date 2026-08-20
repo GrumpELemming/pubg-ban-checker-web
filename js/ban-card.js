@@ -7,8 +7,8 @@
   const TIER_CONFIG = {
     bronze: { title: "BRONZE BOMBER", tagline: "Banned before escaping Bronze", color: "#c88752", accent: "#f0b47d", badge: "img/ban-cards/bronze.png" },
     silver: { title: "SWEATY SILVER", tagline: "The ban wave caught up", color: "#aeb9c5", accent: "#e4edf5", badge: "img/ban-cards/silver.png" },
-    gold: { title: "PYRITE PLATED BOT", tagline: "A paranoid machine shooting itself in the foot", color: "#b88335", accent: "#f4cf79", badge: "img/ban-cards/pyrite-plated-bot.png" },
-    platinum: { title: "BASEMENT DWELLING LOOT GOBLIN", tagline: "Collecting loot beneath the glow of two screens", color: "#557b68", accent: "#9cf2a7", badge: "img/ban-cards/basement-loot-goblin.png" },
+    gold: { title: "BRAINDEAD BOT", tagline: "A paranoid machine shooting itself in the foot", color: "#b88335", accent: "#f4cf79", badge: "img/ban-cards/pyrite-plated-bot.png" },
+    platinum: { title: "BASEMENT DWELLER", tagline: "Collecting loot beneath the glow of two screens", color: "#557b68", accent: "#9cf2a7", badge: "img/ban-cards/basement-loot-goblin.png" },
     diamond: { title: "SALTY WHALE", tagline: "A heavyweight permanent ending", color: "#e3b83f", accent: "#fff0a6", badge: "img/ban-cards/diamond.png" }
   };
 
@@ -224,19 +224,11 @@
     ctx.font = "500 18px Arial, sans-serif";
     ctx.fillText(formattedDate, 62, 620);
 
-    const siteLabel = "pubgbanchecker.com";
-    ctx.font = "900 20px Arial, sans-serif";
-    const siteWidth = ctx.measureText(siteLabel).width + 36;
-    const siteX = 1138 - siteWidth;
-    ctx.fillStyle = "rgba(5, 11, 21, 0.9)";
-    ctx.strokeStyle = config.accent;
-    ctx.lineWidth = 2;
-    roundedRect(ctx, siteX, 587, siteWidth, 46, 12);
-    ctx.fill();
-    ctx.stroke();
+    const siteLabel = "pubgbanchecker.com by https://www.youtube.com/@Grump-E-Lemming";
+    fitText(ctx, siteLabel, 700, 20, 14, 900);
     ctx.fillStyle = "#ffffff";
-    ctx.textAlign = "right";
-    ctx.fillText(siteLabel, 1120, 617);
+    ctx.textAlign = "center";
+    ctx.fillText(siteLabel, CARD_WIDTH / 2, 642);
     ctx.textAlign = "left";
 
     filename = `PUBGBanChecker_${sanitizeFilenamePart(player, "Player")}_${sanitizeFilenamePart(config.title.replace(/\s+/g, ""), "BanCard")}.png`;
