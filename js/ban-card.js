@@ -177,16 +177,14 @@
     const tierNumber = safeNumber(data.mastery?.tierNumber);
     const level = safeNumber(data.mastery?.level);
     const clan = data.clan || "No clan";
-    const currentRank = data.ranked?.current?.label || "Unranked / unavailable";
-    const highestRank = data.ranked?.highest?.label || "Unranked / unavailable";
+    const highestRank = data.ranked?.highest?.label;
 
     const detailRows = [
       ["SURVIVAL", `Tier ${tierNumber || "?"} · Level ${level}/500`],
       ["CLAN", clan],
-      ["ACCOUNT ID", data.accountId || "Unavailable"],
-      ["CURRENT RANK", currentRank],
-      ["HIGHEST RANK", highestRank]
+      ["ACCOUNT ID", data.accountId || "Unavailable"]
     ];
+    if (highestRank) detailRows.push(["HIGHEST RANK", highestRank]);
     detailRows.forEach(([label, value], index) => {
       const y = 325 + index * 38;
       ctx.fillStyle = "#8797b0";
