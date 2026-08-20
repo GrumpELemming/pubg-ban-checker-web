@@ -4,6 +4,8 @@ The frontend calls `GET /api/ban-card-data?platform={platform}&accountId={accoun
 
 The endpoint must revalidate the permanent ban before returning data, fetch Survival Mastery for the level/tier, and aggregate lifetime stats across `solo`, `solo-fpp`, `duo`, `duo-fpp`, `squad`, and `squad-fpp`. `matches`, `kills`, `wins`, and `losses` are sums; `kd` is total kills divided by total losses (zero when losses is zero—the card displays an em dash).
 
+It must also find the player's most recent available ranked result. Fetch the season list, order ranked seasons from newest to oldest, and query `/players/{accountId}/seasons/{seasonId}/ranked` until a season containing ranked data is found. From that season, select the highest `bestRankPoint`/best tier across the available ranked game modes. Stop searching after the first season with ranked data: “highest rank” means the player's highest rank in their most recent ranked season, not their all-time highest rank. Cache the season list and ranked responses under the backend's existing cache policy to limit PUBG API usage.
+
 Successful response:
 
 ```json
@@ -16,16 +18,18 @@ Successful response:
   "lifetime": { "matches": 41, "kills": 62, "wins": 1, "losses": 40, "kd": 1.55 },
   "clan": "CLAN",
   "ranked": {
-    "current": { "label": "Gold 2", "points": 2800, "mode": "squad" },
     "highest": { "label": "Platinum 5", "points": 3100, "mode": "squad" },
-    "seasonId": "division.bro.official..."
+    "seasonId": "division.bro.official...",
+    "isCurrentSeason": false
   }
 }
 ```
 
-Ranked fields describe the current ranked season at the time the card is generated.
-They are `null` when PUBG has no available ranked data; the PUBG API does not expose
-a historical rank snapshot from the time an account was banned.
+`ranked` describes the most recent season in which PUBG returns ranked data for the
+player. It is `null` when no ranked data is found in any searchable ranked season.
+The card omits the rank row when `ranked.highest.label` is unavailable. This is the
+last rank retrievable from the public API, not necessarily a snapshot of the exact
+rank held at the time the account was banned.
 
 Errors use an appropriate HTTP status and a stable code:
 
