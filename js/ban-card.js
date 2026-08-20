@@ -152,8 +152,8 @@
     ctx.fillText("PUBG BANCHECKER", 62, 72);
     ctx.fillStyle = "#ff5964";
     ctx.font = "900 42px Arial, sans-serif";
-    ctx.textAlign = "right";
-    ctx.fillText("PERMANENTLY BANNED", 1138, 76);
+    ctx.textAlign = "left";
+    ctx.fillText("PERMANENTLY BANNED", 485, 76);
     ctx.textAlign = "left";
 
     try {
@@ -233,7 +233,8 @@
     const channelWidth = ctx.measureText(channelLabel).width;
     const contentWidth = prefixWidth + attributionGap + youtubeIconWidth + attributionGap + channelWidth;
     const siteWidth = contentWidth + 36;
-    const siteX = (CARD_WIDTH - siteWidth) / 2;
+    const contentX = 485;
+    const siteX = contentX - 18;
     ctx.fillStyle = "rgba(5, 11, 21, 0.9)";
     ctx.strokeStyle = config.accent;
     ctx.lineWidth = 2;
@@ -241,7 +242,6 @@
     ctx.fill();
     ctx.stroke();
 
-    const contentX = (CARD_WIDTH - contentWidth) / 2;
     ctx.fillStyle = "#ffffff";
     ctx.textAlign = "left";
     ctx.fillText(sitePrefix, contentX, 634);
