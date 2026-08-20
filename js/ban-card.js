@@ -224,11 +224,41 @@
     ctx.font = "500 18px Arial, sans-serif";
     ctx.fillText(formattedDate, 62, 620);
 
-    const siteLabel = "pubgbanchecker.com by https://www.youtube.com/@Grump-E-Lemming";
-    fitText(ctx, siteLabel, 700, 20, 14, 900);
+    const sitePrefix = "pubgbanchecker.com by";
+    const channelLabel = "@Grump-E-Lemming";
+    const youtubeIconWidth = 28;
+    const attributionGap = 9;
+    fitText(ctx, `${sitePrefix} ${channelLabel}`, 620, 20, 14, 900);
+    const prefixWidth = ctx.measureText(sitePrefix).width;
+    const channelWidth = ctx.measureText(channelLabel).width;
+    const contentWidth = prefixWidth + attributionGap + youtubeIconWidth + attributionGap + channelWidth;
+    const siteWidth = contentWidth + 36;
+    const siteX = (CARD_WIDTH - siteWidth) / 2;
+    ctx.fillStyle = "rgba(5, 11, 21, 0.9)";
+    ctx.strokeStyle = config.accent;
+    ctx.lineWidth = 2;
+    roundedRect(ctx, siteX, 604, siteWidth, 46, 12);
+    ctx.fill();
+    ctx.stroke();
+
+    const contentX = (CARD_WIDTH - contentWidth) / 2;
     ctx.fillStyle = "#ffffff";
-    ctx.textAlign = "center";
-    ctx.fillText(siteLabel, CARD_WIDTH / 2, 642);
+    ctx.textAlign = "left";
+    ctx.fillText(sitePrefix, contentX, 634);
+
+    const iconX = contentX + prefixWidth + attributionGap;
+    ctx.fillStyle = "#ff0033";
+    roundedRect(ctx, iconX, 615, youtubeIconWidth, 20, 5);
+    ctx.fill();
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath();
+    ctx.moveTo(iconX + 11, 620);
+    ctx.lineTo(iconX + 11, 630);
+    ctx.lineTo(iconX + 19, 625);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillText(channelLabel, iconX + youtubeIconWidth + attributionGap, 634);
     ctx.textAlign = "left";
 
     filename = `PUBGBanChecker_${sanitizeFilenamePart(player, "Player")}_${sanitizeFilenamePart(config.title.replace(/\s+/g, ""), "BanCard")}.png`;
