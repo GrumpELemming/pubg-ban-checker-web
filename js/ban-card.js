@@ -6,7 +6,7 @@
   const CARD_HEIGHT = 675;
   const TIER_CONFIG = {
     bronze: { title: "BRONZE BOMBER", tagline: "Banned before escaping Bronze", color: "#c88752", accent: "#f0b47d", badge: "img/ban-cards/bronze.png" },
-    silver: { title: "SILVER SURFER", tagline: "The ban wave caught up", color: "#aeb9c5", accent: "#e4edf5", badge: "img/ban-cards/silver.png" },
+    silver: { title: "SWEATY SILVER", tagline: "The ban wave caught up", color: "#aeb9c5", accent: "#e4edf5", badge: "img/ban-cards/silver.png" },
     gold: { title: "GOLDEN FINGER", tagline: "Everything touched turned suspicious", color: "#d8a82e", accent: "#ffe47e", badge: "img/ban-cards/gold.png" },
     platinum: { title: "GOLDEN GOBLIN", tagline: "Collected loot and a permanent ban", color: "#d6a72e", accent: "#ffe59a", badge: "img/ban-cards/platinum.png" },
     diamond: { title: "GOLDEN WHALE", tagline: "A heavyweight permanent ending", color: "#e3b83f", accent: "#fff0a6", badge: "img/ban-cards/diamond.png" }
