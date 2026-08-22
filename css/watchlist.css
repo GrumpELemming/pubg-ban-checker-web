@@ -937,6 +937,31 @@ body.watchlist .wl-account-noscript {
   line-height: 1.4;
 }
 
+body.watchlist .wl-account-privacy {
+  position: relative;
+  z-index: 1;
+  margin: 12px 0 0;
+  color: #9fc5d9;
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+body.watchlist .wl-account-privacy a {
+  color: #8ef2df;
+  font-weight: 700;
+  text-underline-offset: 0.2em;
+}
+
+body.watchlist .wl-account-privacy a:hover {
+  color: #fff3a3;
+}
+
+body.watchlist .wl-account-privacy a:focus-visible {
+  outline: 3px solid rgba(255, 255, 255, 0.9);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
 body.watchlist .wl-account-status[data-tone="success"] {
   color: #71e9c8;
 }

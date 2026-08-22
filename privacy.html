@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self';
+    style-src 'self';
+    img-src 'self' data:;
+    font-src 'self';
+    connect-src 'self';
+    frame-ancestors 'none';
+    base-uri 'self';
+    form-action 'none';
+  ">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Privacy policy for PUBG Ban Checker and its optional Discord Watchlist sign-in.">
+  <title>PUBG Ban Checker - Privacy Policy</title>
+  <link rel="stylesheet" href="css/privacy.css?v=20260822a">
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/themes.css">
+</head>
+<body>
+  <nav class="privacy-nav" aria-label="Main navigation">
+    <a class="privacy-brand" href="index.html">PUBG BAN CHECKER</a>
+    <div class="privacy-nav-links">
+      <a href="index.html">Ban Checker</a>
+      <a href="watchlist.html">Watchlist</a>
+      <a href="updates.html">About</a>
+    </div>
+  </nav>
+
+  <main class="privacy-shell">
+    <header class="privacy-hero">
+      <p class="privacy-eyebrow">Your data, plainly explained</p>
+      <h1>Privacy Policy</h1>
+      <p class="privacy-summary">
+        Discord sign-in is optional. You can continue using a browser-saved Watchlist without an account.
+        If you sign in, we use the minimum Discord profile information needed to identify your account and
+        sync your Watchlist across devices.
+      </p>
+      <p class="privacy-date"><strong>Effective and last updated:</strong> 22 August 2026</p>
+    </header>
+
+    <section class="privacy-card" aria-labelledby="who-we-are">
+      <h2 id="who-we-are">1. Who we are</h2>
+      <p>
+        PUBG Ban Checker is an independently operated PUBG utility. For privacy questions, account-data
+        requests, or deletion requests, email
+        <a href="mailto:thegrumpylemming@gmail.com?subject=PUBG%20Ban%20Checker%20privacy%20request">thegrumpylemming@gmail.com</a>.
+      </p>
+    </section>
+
+    <section class="privacy-card" aria-labelledby="scope">
+      <h2 id="scope">2. What this policy covers</h2>
+      <p>
+        This policy covers pubgbanchecker.com, including the optional Discord sign-in and cloud Watchlist
+        sync. Discord separately controls the information in your Discord account and processes it under
+        <a href="https://discord.com/privacy" target="_blank" rel="noopener noreferrer">Discord's Privacy Policy</a>.
+      </p>
+    </section>
+
+    <section class="privacy-card" aria-labelledby="data-collected">
+      <h2 id="data-collected">3. Information we process</h2>
+
+      <h3>Discord account information</h3>
+      <p>
+        We request only Discord's <code>identify</code> OAuth scope. Discord returns basic profile information,
+        but we retain only your:
+      </p>
+      <ul>
+        <li>Discord user ID;</li>
+        <li>Discord username; and</li>
+        <li>Discord display name.</li>
+      </ul>
+      <p>
+        We do not request or store your Discord email address, password, guild or server memberships,
+        friends, messages, linked accounts, or payment information. Discord may include an avatar reference
+        in its basic profile response, but PUBG Ban Checker does not store or use it.
+      </p>
+
+      <h3>Synced Watchlist information</h3>
+      <p>When you enable account sync, we store Watchlist information associated with your Discord user ID, including:</p>
+      <ul>
+        <li>platform and PUBG player names or account IDs;</li>
+        <li>clan, ban-status, last-check, and name-history information;</li>
+        <li>notes you choose to add; and</li>
+        <li>record identifiers, revision numbers, and creation or update timestamps used for syncing.</li>
+      </ul>
+      <p>Do not place sensitive personal information in Watchlist notes.</p>
+
+      <h3>Authentication and security information</h3>
+      <p>
+        We create an opaque session token and an anti-forgery token. Only cryptographic hashes of these
+        tokens are stored in the database, along with session creation, last-use, and expiry times. Discord's
+        temporary OAuth access token is used once to retrieve your basic profile and is not saved.
+      </p>
+
+      <h3>Browser storage and service logs</h3>
+      <p>
+        Guest Watchlists, signed-in cache copies, sync state, theme, language, and selected platform can be
+        stored locally in your browser. Our hosting and security providers may also process routine technical
+        information such as IP address, request time, requested path, browser user-agent, and security headers
+        for delivery, rate limiting, abuse prevention, and troubleshooting.
+      </p>
+    </section>
+
+    <section class="privacy-card" aria-labelledby="why-used">
+      <h2 id="why-used">4. Why we use this information</h2>
+      <p>We use the information described above only to:</p>
+      <ul>
+        <li>sign you in and show which Discord account is connected;</li>
+        <li>save, merge, protect, and synchronise your Watchlist across devices;</li>
+        <li>check the public PUBG player and ban information you request;</li>
+        <li>maintain session security, prevent abuse, and resolve sync conflicts; and</li>
+        <li>diagnose errors and keep the service reliable.</li>
+      </ul>
+      <p>
+        We do not sell your information, use Discord information for advertising, profile your relationships,
+        or send marketing messages to your Discord account.
+      </p>
+      <p>
+        Where UK data-protection law applies, account and Watchlist processing is necessary to provide the
+        optional service you request. Limited security and operational processing is based on our legitimate
+        interest in protecting and maintaining the service. We process information when legally required to do so.
+      </p>
+    </section>
+
+    <section class="privacy-card" aria-labelledby="cookies">
+      <h2 id="cookies">5. Cookies and local storage</h2>
+      <p>
+        We use only the following account cookies. They are strictly necessary when you request Discord sign-in
+        or a signed-in session; they are not advertising or analytics cookies.
+      </p>
+      <div class="privacy-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Cookie</th>
+              <th>Purpose</th>
+              <th>Lifetime</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>pbc_oauth_state</code></td>
+              <td>Prevents forged Discord login callbacks.</td>
+              <td>10 minutes</td>
+            </tr>
+            <tr>
+              <td><code>pbc_oauth_next</code></td>
+              <td>Returns you safely to the Watchlist after sign-in.</td>
+              <td>10 minutes</td>
+            </tr>
+            <tr>
+              <td><code>pbc_session</code></td>
+              <td>Maintains your signed-in session using an opaque token.</td>
+              <td>Up to 30 days</td>
+            </tr>
+            <tr>
+              <td><code>pbc_csrf</code></td>
+              <td>Protects Watchlist changes and sign-out requests.</td>
+              <td>Up to 30 days</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Account cookies are marked <code>Secure</code> and <code>HttpOnly</code>. Browser local storage remains
+        on that device until you clear the site's storage or remove the entries. Disabling storage may prevent
+        guest Watchlists, preferences, or offline cache features from working.
+      </p>
+    </section>
+
+    <section class="privacy-card" aria-labelledby="sharing">
+      <h2 id="sharing">6. Service providers and sharing</h2>
+      <p>We disclose information only where needed to operate the service:</p>
+      <ul>
+        <li><strong>Discord</strong> provides OAuth sign-in and your basic profile response.</li>
+        <li><strong>Cloudflare</strong> proxies and protects API traffic.</li>
+        <li><strong>Render</strong> hosts the application backend.</li>
+        <li><strong>Neon</strong> hosts the PostgreSQL database used for accounts, sessions, and synced Watchlists.</li>
+        <li><strong>GitHub Pages</strong> hosts the static website files.</li>
+        <li><strong>PUBG's public API</strong> receives the platform and PUBG player identifiers required for checks. We do not send your Discord identity to the PUBG API.</li>
+      </ul>
+      <p>
+        We may also disclose information if required by law, or when reasonably necessary to protect users,
+        the service, or legal rights. We do not sell or rent personal information.
+      </p>
+    </section>
+
+    <section class="privacy-card" aria-labelledby="transfers">
+      <h2 id="transfers">7. International processing</h2>
+      <p>
+        The website uses global providers, and the account backend and database are hosted in Oregon, United
+        States. Information may therefore be processed outside your country. Where UK data-protection law
+        applies, international processing must be covered by an applicable adequacy decision or appropriate
+        safeguards, such as provider contractual protections. Contact us if you would like more information.
+      </p>
+    </section>
+
+    <section class="privacy-card" aria-labelledby="retention">
+      <h2 id="retention">8. How long we keep information</h2>
+      <ul>
+        <li>Discord OAuth access tokens are discarded immediately after the login profile request.</li>
+        <li>OAuth state cookies expire after 10 minutes.</li>
+        <li>Sessions stop being accepted after no more than 30 days; expired session records are removed during database cleanup.</li>
+        <li>Discord identity fields and synced Watchlists are kept while the sync account remains in use, until deletion is requested, or until the service is discontinued.</li>
+        <li>Operational logs and backups are retained for limited periods determined by security needs and provider configuration.</li>
+        <li>Browser-saved data remains until you clear it on that device.</li>
+      </ul>
+    </section>
+
+    <section class="privacy-card" aria-labelledby="choices">
+      <h2 id="choices">9. Your choices and deletion requests</h2>
+      <p>
+        Discord sign-in is optional. Signing out ends the current server session but does not delete the synced
+        Watchlist or account record. You can also remove the application through Discord's authorised-app settings;
+        sign out of PUBG Ban Checker as well to end the current website session.
+      </p>
+      <p>
+        To request a copy, correction, or deletion of your Discord-linked account and synced Watchlists, email
+        <a href="mailto:thegrumpylemming@gmail.com?subject=PUBG%20Ban%20Checker%20data%20deletion">thegrumpylemming@gmail.com</a>
+        with the subject “PUBG Ban Checker data request”. We may ask you to verify control of the relevant Discord
+        account. Never send your Discord password, OAuth code, session cookie, or database credentials.
+      </p>
+      <p>
+        Depending on where you live, you may have rights to access, correct, erase, restrict, object to, or receive
+        a portable copy of personal data. In the UK, you may also complain to the
+        <a href="https://ico.org.uk/make-a-complaint/data-protection-complaints/" target="_blank" rel="noopener noreferrer">Information Commissioner's Office</a>.
+      </p>
+    </section>
+
+    <section class="privacy-card" aria-labelledby="security">
+      <h2 id="security">10. Security</h2>
+      <p>
+        We minimise the Discord information retained, use HTTPS, protect account cookies from JavaScript access,
+        hash session and anti-forgery tokens in the database, restrict write requests, and do not retain Discord
+        access tokens. No online service can guarantee absolute security, so please report suspected problems to
+        the contact address above.
+      </p>
+    </section>
+
+    <section class="privacy-card" aria-labelledby="children">
+      <h2 id="children">11. Age limits</h2>
+      <p>
+        Do not use Discord sign-in if you are below Discord's minimum permitted age in your country. We do not
+        knowingly use Discord API data belonging to children below the legally permitted age. Contact us if you
+        believe such information has been submitted.
+      </p>
+    </section>
+
+    <section class="privacy-card" aria-labelledby="changes">
+      <h2 id="changes">12. Changes to this policy</h2>
+      <p>
+        We may update this policy when the service, providers, or legal requirements change. The date at the top
+        will show the latest revision. Material changes affecting Discord-linked information will be made clearly
+        available from the Watchlist sign-in area.
+      </p>
+    </section>
+
+    <p class="privacy-note">
+      This notice is intended to explain the service's actual data handling in clear language. It is not a substitute
+      for legal advice about obligations that may apply to the operator in a particular jurisdiction.
+    </p>
+  </main>
+
+  <footer class="privacy-footer">
+    <a href="watchlist.html">Return to Watchlist</a>
+    <span aria-hidden="true">•</span>
+    <a href="mailto:thegrumpylemming@gmail.com?subject=PUBG%20Ban%20Checker%20privacy%20request">Privacy contact</a>
+  </footer>
+</body>
+</html>
