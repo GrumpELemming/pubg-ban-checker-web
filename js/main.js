@@ -9,7 +9,6 @@
 
   // LocalStorage keys
   const LS_PLATFORM = "selectedPlatform";
-  const LS_WATCHLIST_PREFIX = "watchlist_";
 
   const MAX_RATE_LIMIT_ATTEMPTS = 3;
   const INITIAL_RETRY_DELAY = 700;
@@ -232,63 +231,43 @@
   }
 
   // ---------- Watchlist helpers ----------
-  function getWatchlistKey(platform) {
-    return `${LS_WATCHLIST_PREFIX}${platform}`;
-  }
-
   function getWatchlist(platform) {
+    if (window.PBCWatchlistStore) {
+      return window.PBCWatchlistStore.get(platform);
+    }
+
+    // Defensive fallback for an old cached HTML document that has not yet
+    // loaded the shared store script.
     try {
-      const raw = localStorage.getItem(getWatchlistKey(platform));
+      const raw = localStorage.getItem(`watchlist_${platform}`);
       const parsed = raw ? JSON.parse(raw) : [];
-      if (!Array.isArray(parsed)) return [];
-
-      let needsSave = false;
-      const cleaned = parsed
-        .map(item => {
-          if (!item || typeof item !== "object") {
-            needsSave = true;
-            return null;
-          }
-          if (!item.platform) {
-            item.platform = platform;
-            needsSave = true;
-          }
-          if (typeof item.statusLabel !== "string") {
-            item.statusLabel = "";
-            needsSave = true;
-          }
-          return item;
-        })
-        .filter(Boolean);
-
-      if (needsSave) {
-        saveWatchlist(platform, cleaned);
-      }
-
-      return cleaned;
+      return Array.isArray(parsed) ? parsed : [];
     } catch {
       return [];
     }
   }
 
   function saveWatchlist(platform, arr) {
+    if (window.PBCWatchlistStore) {
+      return window.PBCWatchlistStore.save(platform, arr || []);
+    }
     try {
-      localStorage.setItem(
-        getWatchlistKey(platform),
-        JSON.stringify(arr || [])
-      );
+      localStorage.setItem(`watchlist_${platform}`, JSON.stringify(arr || []));
     } catch {}
+    return arr || [];
   }
 
   function addWatchlist(player, accountId, clan, platformLabel) {
     const platform = getPlatform();
     const list = getWatchlist(platform);
 
-    const existing = list.find(
-      x =>
-        x.player.toLowerCase() === player.toLowerCase() &&
-        (x.accountId || "") === (accountId || "")
-    );
+    const normalizedPlayer = player.toLowerCase();
+    const existing = list.find(x => {
+      const sameAccount = accountId && x.accountId && x.accountId === accountId;
+      const sameName = (x.player || "").toLowerCase() === normalizedPlayer;
+      const conflictingAccounts = accountId && x.accountId && x.accountId !== accountId;
+      return sameAccount || (sameName && !conflictingAccounts);
+    });
     if (existing) return;
 
     list.push({

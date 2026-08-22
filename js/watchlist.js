@@ -13,7 +13,6 @@
   const BASE_URL = "/api";
 
   const LS_PLATFORM = "selectedPlatform";
-  const LS_WATCHLIST_PREFIX = "watchlist_";
   const REFRESH_BATCH_DELAY = 500;
   const BAN_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
@@ -53,49 +52,30 @@
     } catch {}
   }
 
-  function getWatchlistKey(platform) {
-    return `${LS_WATCHLIST_PREFIX}${platform}`;
-  }
-
   function getWatchlist(platform) {
+    if (window.PBCWatchlistStore) {
+      return window.PBCWatchlistStore.get(platform);
+    }
+
+    // Defensive fallback for an old cached HTML document that has not yet
+    // loaded the shared store script.
     try {
-      const raw = localStorage.getItem(getWatchlistKey(platform));
+      const raw = localStorage.getItem(`watchlist_${platform}`);
       const parsed = raw ? JSON.parse(raw) : [];
-      if (!Array.isArray(parsed)) return [];
-
-      let needsSave = false;
-      const cleaned = parsed
-        .map(item => {
-          if (!item || typeof item !== "object") {
-            needsSave = true;
-            return null;
-          }
-          if (!item.platform) {
-            item.platform = platform;
-            needsSave = true;
-          }
-          if (typeof item.statusLabel !== "string") {
-            item.statusLabel = "";
-            needsSave = true;
-          }
-          return item;
-        })
-        .filter(Boolean);
-
-      if (needsSave) {
-        saveWatchlist(platform, cleaned);
-      }
-
-      return cleaned;
+      return Array.isArray(parsed) ? parsed : [];
     } catch {
       return [];
     }
   }
 
   function saveWatchlist(platform, arr) {
+    if (window.PBCWatchlistStore) {
+      return window.PBCWatchlistStore.save(platform, arr || []);
+    }
     try {
-      localStorage.setItem(getWatchlistKey(platform), JSON.stringify(arr));
+      localStorage.setItem(`watchlist_${platform}`, JSON.stringify(arr || []));
     } catch {}
+    return arr || [];
   }
 
   function formatDateTime(ts) {
@@ -355,7 +335,7 @@
 
     const badge = document.createElement("span");
     badge.className = "wl-platform-badge";
-    badge.textContent = entry.platform.toUpperCase();
+    badge.textContent = (entry.platform || getPlatform()).toUpperCase();
     nameLine.appendChild(badge);
 
     const pill = document.createElement("span");
@@ -421,6 +401,7 @@
       const textarea = document.createElement("textarea");
       textarea.className = "wl-note-input";
       textarea.placeholder = "Why are you watching this player?";
+      textarea.maxLength = 4000;
       textarea.value = entry.notes || "";
       const saveBtn = document.createElement("button");
       saveBtn.className = "wl-btn wl-btn-mini wl-btn-primary";
@@ -430,7 +411,8 @@
         entry.notes = val || "";
         const platform = getPlatform();
         const list = getWatchlist(platform);
-        if (list[index]) list[index].notes = entry.notes;
+        const current = list.find(item => item.id && item.id === entry.id) || list[index];
+        if (current) current.notes = entry.notes;
         saveWatchlist(platform, list);
         renderNoteView();
       });
@@ -664,6 +646,13 @@
   // Init
   // --------------------------------------------------------------------
 
+  window.addEventListener("pbc:watchlist-change", event => {
+    const detail = event.detail || {};
+    if (detail.source === "local") return;
+    if (detail.platform && detail.platform !== getPlatform()) return;
+    renderWatchlist();
+  });
+
   document.addEventListener("DOMContentLoaded", () => {
 
     clearLegacyDarkMode();
@@ -690,6 +679,10 @@
     }
 
     renderWatchlist();
+
+    // The local guest list can render immediately. Once optional account
+    // detection and cloud hydration finish, render the active user's cache.
+    window.PBCWatchlistStore?.ready.then(() => renderWatchlist());
   });
 
 })();
