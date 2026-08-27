@@ -30,6 +30,8 @@
     const status = document.getElementById("watchlistAccountStatus");
     const signInButton = document.getElementById("watchlistSignInBtn");
     const signOutButton = document.getElementById("watchlistSignOutBtn");
+    const exportButton = document.getElementById("exportWatchlistBtn");
+    const diagnostics = document.getElementById("watchlistSyncDiagnostics");
 
     if (!panel || !summary || !accountName || !description || !status || !signInButton || !signOutButton) {
       return;
@@ -45,6 +47,21 @@
     let latestSync = null;
     let notice = consumeOAuthNotice();
     let sessionCheckFailed = false;
+    const syncStates = new Map();
+    let lastSyncedAt = 0;
+
+    function renderDiagnostics(authenticated) {
+      if (!diagnostics) return;
+      diagnostics.hidden = !authenticated;
+      if (!authenticated) return;
+      const synced = Array.from(syncStates.values()).filter(item => item.status === "synced" || item.status === "conflict-resolved").length;
+      const pending = Array.from(syncStates.values()).filter(item => ["syncing", "offline", "error"].includes(item.status)).length;
+      diagnostics.querySelector("[data-sync-last]").textContent = lastSyncedAt ? new Date(lastSyncedAt).toLocaleString() : "Not yet";
+      diagnostics.querySelector("[data-sync-platforms]").textContent = `${synced} synchronized`;
+      diagnostics.querySelector("[data-sync-pending]").textContent = navigator.onLine === false
+        ? `${pending || 1} waiting for connection`
+        : pending ? `${pending} pending` : "No pending changes";
+    }
 
     function userDisplayName(user) {
       if (!user || typeof user !== "object") return "Discord user";
@@ -72,6 +89,8 @@
       summary.setAttribute("aria-busy", actionPending ? "true" : "false");
       signInButton.hidden = authenticated;
       signOutButton.hidden = !authenticated;
+      if (exportButton) exportButton.hidden = !authenticated;
+      renderDiagnostics(authenticated);
 
       if (actionPending) {
         summary.dataset.authState = "loading";
@@ -178,6 +197,8 @@
     function onSync(event) {
       if (!notice?.sticky) notice = null;
       latestSync = event.detail && typeof event.detail === "object" ? event.detail : null;
+      if (latestSync?.platform) syncStates.set(latestSync.platform, latestSync);
+      if (latestSync?.status === "synced" || latestSync?.status === "conflict-resolved") lastSyncedAt = Date.now();
       if (session.authenticated && !actionPending) render();
     }
 
@@ -251,6 +272,25 @@
       }
     }
 
+    function exportWatchlistData() {
+      const store = window.PBCWatchlistStore;
+      if (!session.authenticated || !store?.get) return;
+      const platforms = store.platforms || ["steam", "xbox", "psn", "kakao"];
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        account: { id: session.user?.id || "", username: session.user?.username || "", displayName: userDisplayName(session.user) },
+        watchlists: Object.fromEntries(platforms.map(platform => [platform, store.get(platform)]))
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `pubg-ban-checker-watchlist-${new Date().toISOString().slice(0, 10)}.json`;
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      setStatus("Watchlist data exported", "success");
+    }
+
     signInButton.addEventListener("click", function () {
       if (signInButton.disabled) return;
       actionPending = true;
@@ -263,6 +303,7 @@
     });
 
     signOutButton.addEventListener("click", signOut);
+    exportButton?.addEventListener("click", exportWatchlistData);
     window.addEventListener("pbc:watchlist-session", onSession);
     window.addEventListener("pbc:watchlist-sync", onSync);
     window.addEventListener("online", render);

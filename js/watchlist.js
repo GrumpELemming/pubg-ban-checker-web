@@ -141,6 +141,14 @@
     return "unknown";
   }
 
+  function observationLabel(status) {
+    const value = String(status || "").toLowerCase();
+    if (value === "permanent") return "Permanent ban observed";
+    if (value === "temporary") return "Temporary ban observed";
+    if (value === "innocent") return "Appears clear";
+    return "Unknown response observed";
+  }
+
   function statusLabelFromObservation(status) {
     if (status === "permanent") return "Permanently banned";
     if (status === "temporary") return "Temporarily banned";
@@ -592,6 +600,33 @@
             ? "Later checks indicate that a previously observed permanent ban may have been overturned."
             : "This is this watchlist's observed history, not the player's complete PUBG ban record.");
       observed.appendChild(copy);
+
+      const observations = Array.isArray(entry.observations)
+        ? [...entry.observations].sort((a, b) => Number(b.observedAt) - Number(a.observedAt))
+        : [];
+      const buildTimeline = items => {
+        const timeline = document.createElement("ol");
+        timeline.className = "wl-observation-timeline";
+        items.forEach(item => {
+          const event = document.createElement("li");
+          const label = document.createElement("span");
+          label.textContent = observationLabel(item.status);
+          const time = document.createElement("time");
+          time.dateTime = new Date(item.observedAt).toISOString();
+          time.textContent = formatDateTime(item.observedAt);
+          event.append(label, time);
+          timeline.appendChild(event);
+        });
+        return timeline;
+      };
+      if (observations.length) observed.appendChild(buildTimeline(observations.slice(0, 5)));
+      if (observations.length > 5) {
+        const fullHistory = document.createElement("details");
+        const fullSummary = document.createElement("summary");
+        fullSummary.textContent = `Show ${observations.length - 5} earlier observations`;
+        fullHistory.append(fullSummary, buildTimeline(observations.slice(5)));
+        observed.appendChild(fullHistory);
+      }
       left.appendChild(observed);
     }
     left.appendChild(notesEl);

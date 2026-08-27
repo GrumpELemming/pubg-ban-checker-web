@@ -1021,6 +1021,45 @@ body.watchlist .wl-account-status[data-tone="error"] {
   line-height: 1.5;
 }
 
+.wl-sync-diagnostics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 12px 0 0;
+}
+
+.wl-sync-diagnostics[hidden] { display: none; }
+.wl-sync-diagnostics div {
+  padding: 8px;
+  border: 1px solid rgba(93, 218, 255, .16);
+  border-radius: 9px;
+  background: rgba(5, 16, 31, .45);
+}
+.wl-sync-diagnostics dt { color: #7f9db5; font-size: .68rem; text-transform: uppercase; }
+.wl-sync-diagnostics dd { margin: 3px 0 0; color: #dff8ff; font-size: .78rem; }
+
+.wl-observation-timeline {
+  display: grid;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.wl-observation-timeline li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-left: 12px;
+  border-left: 2px solid rgba(93, 218, 255, .35);
+  color: #bdd2e2;
+  font-size: .78rem;
+}
+.wl-observation-timeline time { color: #7f9db5; white-space: nowrap; }
+@media (max-width: 560px) {
+  .wl-sync-diagnostics { grid-template-columns: 1fr; }
+  .wl-observation-timeline li { display: grid; gap: 2px; }
+}
+
 .wl-stale-badge {
   margin-left: 6px;
   color: #ffd25c;

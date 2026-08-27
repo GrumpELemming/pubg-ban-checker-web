@@ -36,3 +36,13 @@ test("email address is hidden until requested", async ({ page }) => {
   await page.locator("[data-reveal-email]").first().click();
   await expect(page.locator("a[href^='mailto:']").first()).toBeVisible();
 });
+
+test("watchlist exposes display and sweep controls", async ({ page }) => {
+  await page.goto("/watchlist.html");
+  await expect(page.locator("#watchlistFilter")).toBeVisible();
+  await expect(page.locator("#watchlistSort")).toBeVisible();
+  await expect(page.locator("#pauseSweepBtn")).toBeHidden();
+  await expect(page.locator("#stopSweepBtn")).toBeHidden();
+  await expect(page.locator("#watchlistSyncDiagnostics")).toBeHidden();
+  await expect(page.locator("#exportWatchlistBtn")).toBeHidden();
+});
