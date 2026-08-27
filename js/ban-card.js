@@ -6,8 +6,8 @@
   const CARD_HEIGHT = 675;
   const CUSTOM_CARDS = {
     "account.308b52a145fc425a92eb9d4fd17af37a": {
-      image: "img/ban-cards/bellebollo-account-banned.png",
-      filename: "PUBGBanChecker_Bellebollo_AccountBanned.png"
+      image: "img/ban-cards/bellebollo-account-banned.png?v=20260827b",
+      filename: "PUBGBanChecker_bellebollo_AccountBanned.png"
     }
   };
   const TIER_CONFIG = {
