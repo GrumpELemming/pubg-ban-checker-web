@@ -15,6 +15,8 @@
   const LS_PLATFORM = "selectedPlatform";
   const REFRESH_BATCH_DELAY = 800;
   const BAN_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+  const TEMP_CLEAR_CONFIRMATION_MS = 60 * 60 * 1000;
+  const PERMANENT_REVERSAL_CONFIRMATION_MS = 24 * 60 * 60 * 1000;
   let refreshAllInProgress = false;
 
   // --------------------------------------------------------------------
@@ -106,6 +108,81 @@
 
   function isNotBanned(statusText) {
     return (statusText || "").toLowerCase().trim() === "not banned";
+  }
+
+  function isSignedIn() {
+    return Boolean(window.PBCWatchlistStore?.getSession?.().authenticated);
+  }
+
+  function observationStatus(statusText) {
+    const value = String(statusText || "").toLowerCase();
+    if (value.includes("permanent")) return "permanent";
+    if (value.includes("temporary")) return "temporary";
+    if (value.includes("not banned") || value === "innocent") return "innocent";
+    return "unknown";
+  }
+
+  function statusLabelFromObservation(status) {
+    if (status === "permanent") return "Permanently banned";
+    if (status === "temporary") return "Temporarily banned";
+    if (status === "innocent") return "Not banned";
+    return "Unknown";
+  }
+
+  function recordSignedInObservation(entry, rawStatus, observedAt = Date.now()) {
+    if (!isSignedIn()) return false;
+    const status = observationStatus(rawStatus);
+    if (status === "unknown") return false;
+
+    entry.observations = Array.isArray(entry.observations) ? entry.observations : [];
+    const hadObservations = entry.observations.length > 0;
+    entry.observations.push({ status, observedAt });
+    entry.observations = entry.observations.slice(-100);
+    entry.checkCount = Math.max(0, Number(entry.checkCount) || 0) + 1;
+    entry.firstWatchedAt = Number(entry.firstWatchedAt) || Number(entry.createdAt) || observedAt;
+
+    const previous = entry.effectiveStatus || observationStatus(entry.statusLabel);
+    entry.verificationState = "";
+
+    if (status === "permanent") {
+      if (previous !== "permanent") entry.lastStatusChangeAt = observedAt;
+      entry.effectiveStatus = "permanent";
+      entry.firstPermanentObservedAt = Number(entry.firstPermanentObservedAt) || observedAt;
+      entry.consecutiveClearCount = 0;
+      entry.clearCandidateSince = 0;
+    } else if (status === "temporary") {
+      if (previous !== "temporary" || (!hadObservations && !Number(entry.tempBanCount))) {
+        entry.tempBanCount = Math.max(0, Number(entry.tempBanCount) || 0) + 1;
+        entry.lastStatusChangeAt = observedAt;
+      }
+      entry.effectiveStatus = "temporary";
+      entry.consecutiveClearCount = 0;
+      entry.clearCandidateSince = 0;
+    } else if (previous === "permanent" || previous === "temporary") {
+      entry.consecutiveClearCount = Math.max(0, Number(entry.consecutiveClearCount) || 0) + 1;
+      entry.clearCandidateSince = Number(entry.clearCandidateSince) || observedAt;
+      const requiredCount = previous === "permanent" ? 3 : 2;
+      const requiredTime = previous === "permanent"
+        ? PERMANENT_REVERSAL_CONFIRMATION_MS
+        : TEMP_CLEAR_CONFIRMATION_MS;
+      if (entry.consecutiveClearCount >= requiredCount && observedAt - entry.clearCandidateSince >= requiredTime) {
+        entry.effectiveStatus = "innocent";
+        entry.lastStatusChangeAt = observedAt;
+        entry.verificationState = previous === "permanent" ? "apparently-overturned" : "cleared";
+        entry.consecutiveClearCount = 0;
+        entry.clearCandidateSince = 0;
+      } else {
+        entry.effectiveStatus = previous;
+        entry.verificationState = "possible-reversal";
+      }
+    } else {
+      entry.effectiveStatus = "innocent";
+      entry.consecutiveClearCount = 0;
+      entry.clearCandidateSince = 0;
+    }
+
+    entry.statusLabel = statusLabelFromObservation(entry.effectiveStatus);
+    return true;
   }
 
   // Cache helpers scoped per platform/player to avoid refetching hot data
@@ -257,8 +334,11 @@
 
     entry.accountId = match.accountId || match.id || entry.accountId;
     entry.clan = match.clan || match.clanName || entry.clan;
-    entry.statusLabel = match.banStatus || match.status || match.statusText || entry.statusLabel;
     entry.lastChecked = Date.now();
+    const observedStatus = match.banStatus || match.status || match.statusText || entry.statusLabel;
+    if (!recordSignedInObservation(entry, observedStatus, entry.lastChecked)) {
+      entry.statusLabel = observedStatus;
+    }
 
     setCachedBan(platform, entry.player, {
       accountId: entry.accountId,
@@ -467,6 +547,25 @@
     left.appendChild(nameLine);
     left.appendChild(meta);
     if (historyEl) left.appendChild(historyEl);
+    if (isSignedIn() && Number(entry.checkCount) > 0) {
+      const observed = document.createElement("details");
+      observed.className = "wl-observed-history";
+      const summary = document.createElement("summary");
+      const temporaryCount = Math.max(0, Number(entry.tempBanCount) || 0);
+      summary.textContent = `${entry.checkCount} checks · ${temporaryCount} temporary ban${temporaryCount === 1 ? "" : "s"} observed`;
+      observed.appendChild(summary);
+
+      const copy = document.createElement("p");
+      const watchedAt = entry.firstWatchedAt || entry.createdAt;
+      copy.textContent = `Observed since ${formatDateTime(watchedAt)}. ` +
+        (entry.verificationState === "possible-reversal"
+          ? "PUBG has returned conflicting results; the previous confirmed status is retained while verification continues."
+          : entry.firstPermanentObservedAt && entry.effectiveStatus === "innocent"
+            ? "Later checks indicate that a previously observed permanent ban may have been overturned."
+            : "This is this watchlist's observed history, not the player's complete PUBG ban record.");
+      observed.appendChild(copy);
+      left.appendChild(observed);
+    }
     left.appendChild(notesEl);
 
     row.appendChild(left);
@@ -594,7 +693,7 @@
 
     // Apply any cached status instantly for responsiveness
     const cached = getCachedBan(platform, playerName);
-    if (cached) {
+    if (cached && !isSignedIn()) {
       match.accountId = cached.accountId || match.accountId;
       match.clan = cached.clan || match.clan;
       match.statusLabel = cached.statusText || match.statusLabel;
@@ -668,6 +767,16 @@
     renderWatchlist();
   });
 
+  function updateObservationNotice() {
+    const notice = document.getElementById("watchlistObservationNotice");
+    if (notice) notice.hidden = !isSignedIn();
+  }
+
+  window.addEventListener("pbc:watchlist-session", () => {
+    updateObservationNotice();
+    renderWatchlist();
+  });
+
   document.addEventListener("DOMContentLoaded", () => {
 
     clearLegacyDarkMode();
@@ -694,6 +803,7 @@
     }
 
     renderWatchlist();
+    updateObservationNotice();
 
     // The local guest list can render immediately. Once optional account
     // detection and cloud hydration finish, render the active user's cache.

@@ -16,7 +16,7 @@
   const PENDING_PREFIX = "pbc_watchlist_pending:";
   const TOMBSTONE_PREFIX = "pbc_watchlist_tombstones:";
   const IMPORT_PREFIX = "pbc_watchlist_imported:";
-  const SCHEMA_VERSION = 1;
+  const SCHEMA_VERSION = 2;
   const REQUEST_TIMEOUT_MS = 10000;
 
   let session = {
@@ -178,6 +178,33 @@
     return history;
   }
 
+  function earliestTimestamp(...values) {
+    const valid = values.map(value => timestamp(value)).filter(value => value > 0);
+    return valid.length ? Math.min(...valid) : 0;
+  }
+
+  function normalizeObservations(value) {
+    if (!Array.isArray(value)) return [];
+    const seen = new Set();
+    return value
+      .map(item => {
+        if (!item || typeof item !== "object") return null;
+        const status = cleanString(item.status).slice(0, 32);
+        const observedAt = timestamp(item.observedAt);
+        if (!status || !observedAt) return null;
+        return { status, observedAt };
+      })
+      .filter(item => {
+        if (!item) return false;
+        const key = `${item.observedAt}:${item.status}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      })
+      .sort((left, right) => left.observedAt - right.observedAt)
+      .slice(-100);
+  }
+
   function normalizeEntry(raw, platform, now = Date.now()) {
     if (!raw || typeof raw !== "object") return null;
     const player = cleanString(raw.player || raw.name);
@@ -195,6 +222,16 @@
       lastChecked: normalizeLastChecked(raw.lastChecked),
       history: normalizeHistory(raw.history),
       notes: cleanString(raw.notes),
+      observations: normalizeObservations(raw.observations),
+      effectiveStatus: cleanString(raw.effectiveStatus).slice(0, 32),
+      verificationState: cleanString(raw.verificationState).slice(0, 32),
+      checkCount: Math.max(0, Math.floor(Number(raw.checkCount) || 0)),
+      tempBanCount: Math.max(0, Math.floor(Number(raw.tempBanCount) || 0)),
+      firstWatchedAt: timestamp(raw.firstWatchedAt, createdAt),
+      lastStatusChangeAt: timestamp(raw.lastStatusChangeAt),
+      firstPermanentObservedAt: timestamp(raw.firstPermanentObservedAt),
+      consecutiveClearCount: Math.max(0, Math.floor(Number(raw.consecutiveClearCount) || 0)),
+      clearCandidateSince: timestamp(raw.clearCandidateSince),
       createdAt,
       updatedAt: timestamp(raw.updatedAt, timestamp(raw.lastChecked, createdAt))
     };
@@ -264,6 +301,26 @@
         lastChecked: Math.max(timestamp(left?.lastChecked), timestamp(right?.lastChecked)),
         history: mergeHistory(left, right, currentPlayer),
         notes: mergeNotes(left?.notes, right?.notes),
+        observations: normalizeObservations([
+          ...(left?.observations || []),
+          ...(right?.observations || [])
+        ]),
+        effectiveStatus: preferred?.effectiveStatus || other?.effectiveStatus,
+        verificationState: preferred?.verificationState || other?.verificationState,
+        checkCount: Math.max(
+          Number(left?.checkCount) || 0,
+          Number(right?.checkCount) || 0,
+          normalizeObservations([...(left?.observations || []), ...(right?.observations || [])]).length
+        ),
+        tempBanCount: Math.max(Number(left?.tempBanCount) || 0, Number(right?.tempBanCount) || 0),
+        firstWatchedAt: earliestTimestamp(left?.firstWatchedAt, right?.firstWatchedAt),
+        lastStatusChangeAt: Math.max(timestamp(left?.lastStatusChangeAt), timestamp(right?.lastStatusChangeAt)),
+        firstPermanentObservedAt: earliestTimestamp(
+          left?.firstPermanentObservedAt,
+          right?.firstPermanentObservedAt
+        ),
+        consecutiveClearCount: Number(preferred?.consecutiveClearCount) || 0,
+        clearCandidateSince: timestamp(preferred?.clearCandidateSince),
         createdAt: Math.min(
           timestamp(left?.createdAt, Number.MAX_SAFE_INTEGER),
           timestamp(right?.createdAt, Number.MAX_SAFE_INTEGER)
@@ -311,7 +368,17 @@
       history: entry.history,
       notes: entry.notes,
       createdAt: entry.createdAt,
-      updatedAt: entry.updatedAt
+      updatedAt: entry.updatedAt,
+      observations: entry.observations,
+      effectiveStatus: entry.effectiveStatus,
+      verificationState: entry.verificationState,
+      checkCount: entry.checkCount,
+      tempBanCount: entry.tempBanCount,
+      firstWatchedAt: entry.firstWatchedAt,
+      lastStatusChangeAt: entry.lastStatusChangeAt,
+      firstPermanentObservedAt: entry.firstPermanentObservedAt,
+      consecutiveClearCount: entry.consecutiveClearCount,
+      clearCandidateSince: entry.clearCandidateSince
     };
   }
 
@@ -329,7 +396,17 @@
       statusLabel: entry.statusLabel,
       lastChecked: entry.lastChecked,
       history: entry.history,
-      notes: entry.notes
+      notes: entry.notes,
+      observations: entry.observations,
+      effectiveStatus: entry.effectiveStatus,
+      verificationState: entry.verificationState,
+      checkCount: entry.checkCount,
+      tempBanCount: entry.tempBanCount,
+      firstWatchedAt: entry.firstWatchedAt,
+      lastStatusChangeAt: entry.lastStatusChangeAt,
+      firstPermanentObservedAt: entry.firstPermanentObservedAt,
+      consecutiveClearCount: entry.consecutiveClearCount,
+      clearCandidateSince: entry.clearCandidateSince
     });
   }
 

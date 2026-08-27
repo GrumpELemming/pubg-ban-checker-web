@@ -538,6 +538,44 @@ body.watchlist .watchlist-player:nth-child(even) {
   background: rgba(19, 18, 49, 0.85);
 }
 
+body.watchlist .wl-observation-notice {
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 213, 88, 0.35);
+  border-radius: 14px;
+  background: rgba(255, 213, 88, 0.08);
+  color: #cbeaff;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+body.watchlist .wl-observation-notice[hidden] { display: none; }
+
+body.watchlist .wl-observation-notice strong {
+  color: #ffd558;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+body.watchlist .wl-observation-notice p { margin: 5px 0 0; }
+
+body.watchlist .wl-observed-history {
+  margin-top: 8px;
+  color: #9fdcff;
+  font-size: 0.76rem;
+}
+
+body.watchlist .wl-observed-history summary {
+  cursor: pointer;
+  color: #ffd558;
+  font-weight: 700;
+}
+
+body.watchlist .wl-observed-history p {
+  margin: 6px 0 0;
+  max-width: 70ch;
+  line-height: 1.45;
+}
+
 body.watchlist .wl-btn:disabled {
   cursor: wait;
   opacity: 0.55;
