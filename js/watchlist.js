@@ -13,8 +13,9 @@
   const BASE_URL = "/api";
 
   const LS_PLATFORM = "selectedPlatform";
-  const REFRESH_BATCH_DELAY = 500;
+  const REFRESH_BATCH_DELAY = 800;
   const BAN_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+  let refreshAllInProgress = false;
 
   // --------------------------------------------------------------------
   // Helpers
@@ -495,6 +496,42 @@
     });
   }
 
+  function setRefreshControlsLocked(locked) {
+    document.querySelectorAll(
+      "#refreshAllBtn, #clearWatchlistBtn, #platformRowWatchlist .platform-btn, #watchlistContainer .wl-btn"
+    ).forEach(button => {
+      button.disabled = locked;
+    });
+  }
+
+  function markRowChecking(row, position, total) {
+    if (!row) return;
+    row.classList.remove("wl-row-complete");
+    row.classList.add("wl-row-checking");
+    row.setAttribute("aria-busy", "true");
+
+    const existing = row.querySelector(".wl-refresh-progress");
+    const progress = existing || document.createElement("span");
+    progress.className = "wl-refresh-progress";
+    progress.setAttribute("role", "status");
+    progress.textContent = `Scanning ${position} of ${total}`;
+    if (!existing) row.appendChild(progress);
+  }
+
+  function replaceRefreshedRow(row, entry, index) {
+    if (!row) return;
+    const refreshed = buildWatchlistRow(entry, index);
+    refreshed.classList.add("wl-row-complete");
+    refreshed.setAttribute("aria-busy", "false");
+    row.replaceWith(refreshed);
+    if (refreshAllInProgress) {
+      refreshed.querySelectorAll(".wl-btn").forEach(button => {
+        button.disabled = true;
+      });
+    }
+    setTimeout(() => refreshed.classList.remove("wl-row-complete"), 700);
+  }
+
   function removeFromWatchlist(index) {
     const platform = getPlatform();
     const list = getWatchlist(platform);
@@ -548,32 +585,6 @@
   // Re-check logic
   // --------------------------------------------------------------------
 
-  async function runWithConcurrency(items, limit, worker) {
-    const queue = [...items];
-    const runners = Array.from({ length: Math.min(limit, queue.length) }, async () => {
-      while (queue.length) {
-        const item = queue.shift();
-        await wait(100 + Math.random() * 200); // jitter to smooth bursts
-        await worker(item);
-      }
-    });
-    await Promise.all(runners);
-  }
-
-  function applyCachedState(platform, list) {
-    let changed = false;
-    list.forEach(entry => {
-      const cached = getCachedBan(platform, entry.player);
-      if (!cached) return;
-      entry.accountId = cached.accountId || entry.accountId;
-      entry.clan = cached.clan || entry.clan;
-      entry.statusLabel = cached.statusText || entry.statusLabel;
-      entry.lastChecked = entry.lastChecked || Date.now();
-      changed = true;
-    });
-    if (changed) renderWatchlist(list);
-  }
-
   async function recheckSingle(playerName) {
     const platform = getPlatform();
     const list = getWatchlist(platform);
@@ -603,42 +614,46 @@
   }
 
   async function recheckAll() {
+    if (refreshAllInProgress) return;
+
     const platform = getPlatform();
     const list = getWatchlist(platform);
     if (!list.length) return;
 
-    applyCachedState(platform, list);
-
-    const container = document.querySelector(".wl-list-card");
-    if (container) {
-      container.classList.add("wl-container-scan");
-      setTimeout(() => container.classList.remove("wl-container-scan"), 450);
-    }
-
     const refreshAllBtn = document.getElementById("refreshAllBtn");
-    if (refreshAllBtn) {
-      refreshAllBtn.disabled = true;
-      refreshAllBtn.classList.add("fade-out");
-      refreshAllBtn.textContent = "Refreshing...";
-    }
+    const container = document.getElementById("watchlistContainer");
+    refreshAllInProgress = true;
+    setRefreshControlsLocked(true);
+    container?.setAttribute("aria-busy", "true");
 
-    await runWithConcurrency(list, 2, async entry => {
-      try {
-        await updateEntryFromBan(entry, platform);
-      } catch (err) {
-        console.error("Recheck-all error", err);
+    try {
+      for (let index = 0; index < list.length; index += 1) {
+        const entry = list[index];
+        const row = container?.children[index];
+        markRowChecking(row, index + 1, list.length);
+        if (refreshAllBtn) {
+          refreshAllBtn.textContent = `Checking ${index + 1} / ${list.length}`;
+        }
+
+        let updated = false;
+        try {
+          updated = await updateEntryFromBan(entry, platform);
+        } catch (err) {
+          console.error("Recheck-all error", err);
+        }
+
+        if (updated) saveWatchlist(platform, list);
+        replaceRefreshedRow(row, entry, index);
+
+        if (index < list.length - 1) await wait(REFRESH_BATCH_DELAY);
       }
 
-      await wait(REFRESH_BATCH_DELAY);
-    });
-
-    saveWatchlist(platform, list);
-    renderWatchlist(list);
-
-    if (refreshAllBtn) {
-      refreshAllBtn.disabled = false;
-      refreshAllBtn.classList.remove("fade-out");
-      refreshAllBtn.textContent = "Refresh All";
+      saveWatchlist(platform, list);
+    } finally {
+      refreshAllInProgress = false;
+      container?.setAttribute("aria-busy", "false");
+      setRefreshControlsLocked(false);
+      if (refreshAllBtn) refreshAllBtn.textContent = "Refresh All";
     }
   }
 
