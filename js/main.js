@@ -106,17 +106,24 @@
   }
 
   // ---------- Backend calls ----------
-  async function fetchBanOnce(platform, playerName) {
+  async function fetchBanOnce(platform, playerName, options = {}) {
     const url = `${BASE_URL}/check-ban-clan?platform=${encodeURIComponent(
       platform
-    )}&player=${encodeURIComponent(playerName)}`;
+    )}&player=${encodeURIComponent(playerName)}${options.fresh ? "&fresh=1" : ""}`;
 
     let attempt = 0;
     let delayMs = INITIAL_RETRY_DELAY;
 
     while (attempt < MAX_RATE_LIMIT_ATTEMPTS) {
       try {
-        const res = await fetch(url);
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 12000);
+        let res;
+        try {
+          res = await fetch(url, { signal: controller.signal });
+        } finally {
+          clearTimeout(timeout);
+        }
 
         if (res.status === 429) {
           attempt += 1;
@@ -125,6 +132,7 @@
               player: playerName,
               accountId: "",
               clan: "",
+              errorCode: "rate_limited",
               statusText:
                 "Rate limited by backend. Please wait a moment and try again."
             };
@@ -135,12 +143,20 @@
         }
 
         if (!res.ok) {
-          const message = await res.text();
+          let body = {};
+          try { body = await res.json(); } catch {}
+          const errorCode = res.status === 404 ? "player_not_found" : res.status >= 500 ? "api_unavailable" : "request_failed";
+          const messages = {
+            player_not_found: "Player not found",
+            api_unavailable: "PUBG API is temporarily unavailable",
+            request_failed: "The request could not be completed"
+          };
           return {
             player: playerName,
             accountId: "",
             clan: "",
-            statusText: message || `Request failed with status ${res.status}`
+            errorCode,
+            statusText: body?.error?.message || body?.error || messages[errorCode]
           };
         }
 
@@ -172,7 +188,8 @@
           player: playerName,
           accountId,
           clan,
-          statusText
+          statusText,
+          errorCode: statusText.toLowerCase().includes("rate limit") ? "rate_limited" : ""
         };
 
         return result;
@@ -183,8 +200,12 @@
             player: playerName,
             accountId: "",
             clan: "",
-            statusText:
-              "Error contacting backend. Please try again later."
+            errorCode: err?.name === "AbortError" ? "timeout" : navigator.onLine === false ? "offline" : "network_error",
+            statusText: err?.name === "AbortError"
+              ? "Request timed out"
+              : navigator.onLine === false
+                ? "You are offline"
+                : "Network error while contacting the checker"
           };
         }
         await wait(delayMs);
@@ -210,7 +231,7 @@
 
     // Confirm "Not banned" with a quick recheck to avoid stale OKs
     await wait(700);
-    const second = await fetchBanOnce(platform, playerName);
+    const second = await fetchBanOnce(platform, playerName, { fresh: true });
     if (!isNotBanned(second.statusText)) {
       return second;
     }
@@ -318,7 +339,7 @@
   }
 
   // ---------- UI builders ----------
-  function buildRow({ player, accountId, clan, statusText, platform }) {
+  function buildRow({ player, accountId, clan, statusText, platform, errorCode }) {
     const row = document.createElement("div");
     row.className = "player-row";
 
@@ -347,6 +368,15 @@
     const isLoading = statusText === "Checking...";
     const confidenceText = isLoading
       ? "Checking PUBG now"
+      : errorCode
+        ? ({
+            rate_limited: "Rate limited — wait before retrying",
+            offline: "Offline — reconnect and retry",
+            timeout: "PUBG took too long to respond",
+            network_error: "Network connection failed",
+            api_unavailable: "PUBG API is temporarily unavailable",
+            player_not_found: "No matching player was returned"
+          }[errorCode] || "The result could not be verified")
       : status === "unknown"
         ? "PUBG response could not be confirmed"
         : "Reported by PUBG now";
