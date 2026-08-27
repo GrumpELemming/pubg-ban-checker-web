@@ -42,7 +42,7 @@
   <script defer src="js/watchlist-store.js?v=20260827c"></script>
   <script defer src="js/auth-ui.js?v=20260827b"></script>
   <script defer src="js/watchlist.js?v=20260827f"></script>
-  <script defer src="js/i18n.js?v=20251228"></script>
+  <script defer src="js/i18n.js?v=20260828a"></script>
 </head>
 
 <body class="watchlist">
@@ -85,8 +85,8 @@
 
       <article class="wl-module wl-account-module" id="watchlistAccountPanel" aria-labelledby="watchlistAccountTitle">
         <header>
-          <h2 id="watchlistAccountTitle">Watchlist account</h2>
-          <span>Optional sign-in for cross-device sync</span>
+          <h2 id="watchlistAccountTitle" data-i18n="watchlist.account.title">Watchlist account</h2>
+          <span data-i18n="watchlist.account.subtitle">Optional sign-in for cross-device sync</span>
         </header>
 
         <div class="wl-account-summary" id="watchlistAccountSummary" data-auth-state="loading" aria-busy="true">
@@ -104,12 +104,12 @@
           <button id="watchlistSignOutBtn" class="wl-btn wl-btn-ghost" type="button" hidden>
             Sign out
           </button>
-          <button id="exportWatchlistBtn" class="wl-btn wl-btn-ghost" type="button" hidden>
+          <button id="exportWatchlistBtn" class="wl-btn wl-btn-ghost" type="button" hidden data-i18n="watchlist.account.export">
             Export my data
           </button>
-          <button id="revokeSessionsBtn" class="wl-btn wl-btn-ghost" type="button" hidden>Sign out other sessions</button>
-          <button id="deleteSyncedWatchlistsBtn" class="wl-btn wl-btn-danger" type="button" hidden>Delete synced Watchlists</button>
-          <button id="deleteAccountDataBtn" class="wl-btn wl-btn-danger" type="button" hidden>Delete account data</button>
+          <button id="revokeSessionsBtn" class="wl-btn wl-btn-ghost" type="button" hidden data-i18n="watchlist.account.sessions">Sign out other sessions</button>
+          <button id="deleteSyncedWatchlistsBtn" class="wl-btn wl-btn-danger" type="button" hidden data-i18n="watchlist.account.deleteLists">Delete synced Watchlists</button>
+          <button id="deleteAccountDataBtn" class="wl-btn wl-btn-danger" type="button" hidden data-i18n="watchlist.account.deleteAccount">Delete account data</button>
         </div>
 
         <p class="wl-account-privacy">
@@ -165,12 +165,12 @@
 
         <div class="wl-module-actions">
           <button id="refreshAllBtn" class="wl-btn wl-btn-primary" data-i18n="watchlist.refresh" type="button">Refresh All</button>
-          <button id="pauseSweepBtn" class="wl-btn wl-btn-ghost" type="button" hidden>Pause</button>
-          <button id="stopSweepBtn" class="wl-btn wl-btn-ghost" type="button" hidden>Stop</button>
+          <button id="pauseSweepBtn" class="wl-btn wl-btn-ghost" type="button" hidden data-i18n="watchlist.pause">Pause</button>
+          <button id="stopSweepBtn" class="wl-btn wl-btn-ghost" type="button" hidden data-i18n="watchlist.stop">Stop</button>
           <button id="clearWatchlistBtn" class="wl-btn wl-btn-ghost" data-i18n="watchlist.clear">Clear All</button>
         </div>
         <div id="sweepSummary" class="wl-sweep-summary" role="status" aria-live="polite" hidden></div>
-        <button id="retryFailedBtn" class="wl-btn wl-btn-ghost" type="button" hidden>Retry failed checks</button>
+        <button id="retryFailedBtn" class="wl-btn wl-btn-ghost" type="button" hidden data-i18n="watchlist.retry">Retry failed checks</button>
       </article>
 
     </section>
@@ -185,7 +185,7 @@
       </div>
 
       <div class="wl-feed-tools" aria-label="Watchlist display controls">
-        <label>Filter
+        <label><span data-i18n="watchlist.filter">Filter</span>
           <select id="watchlistFilter">
             <option value="all">All players</option>
             <option value="banned">Currently banned</option>
@@ -194,7 +194,7 @@
             <option value="failed">Failed checks</option>
           </select>
         </label>
-        <label>Sort
+        <label><span data-i18n="watchlist.sort">Sort</span>
           <select id="watchlistSort">
             <option value="default">Watchlist order</option>
             <option value="name">Name</option>

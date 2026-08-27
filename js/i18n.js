@@ -42,6 +42,17 @@ const TRANSLATIONS = {
     "watchlist.feed.title": "Your Watchlist Feed",
     "watchlist.feed.body":
       "Monitor ban states across every platform like a command desk. Use “Re-check” on any pilot when you need a fresh scan.",
+    "watchlist.account.title": "Watchlist account",
+    "watchlist.account.subtitle": "Optional sign-in for cross-device sync",
+    "watchlist.account.export": "Export my data",
+    "watchlist.account.sessions": "Sign out other sessions",
+    "watchlist.account.deleteLists": "Delete synced Watchlists",
+    "watchlist.account.deleteAccount": "Delete account data",
+    "watchlist.filter": "Filter",
+    "watchlist.sort": "Sort",
+    "watchlist.pause": "Pause",
+    "watchlist.stop": "Stop",
+    "watchlist.retry": "Retry failed checks",
     "updates.title": "PUBG Ban Checker - Updates",
     "links.hero.title": "Trusted PUBG Resources",
     "links.hero.lede":
@@ -650,8 +661,10 @@ const RTL_LANGS = new Set(["ar"]);
 function applyTranslations(lang) {
   document.documentElement.dir = RTL_LANGS.has(lang) ? "rtl" : "ltr";
   const dict = TRANSLATIONS[lang] || TRANSLATIONS.en;
+  let fallbackCount = 0;
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     const key = el.getAttribute("data-i18n");
+    if (lang !== "en" && !dict[key] && TRANSLATIONS.en[key]) fallbackCount += 1;
     const txt = dict[key] || TRANSLATIONS.en[key] || el.textContent;
     el.textContent = txt;
   });
@@ -660,6 +673,16 @@ function applyTranslations(lang) {
     const txt = dict[key] || TRANSLATIONS.en[key];
     if (txt) el.setAttribute("placeholder", txt);
   });
+  document.querySelectorAll(".i18n-fallback-note").forEach(note => note.remove());
+  if (fallbackCount > 0) {
+    document.querySelectorAll(".lang-switch").forEach(container => {
+      const note = document.createElement("small");
+      note.className = "i18n-fallback-note";
+      note.textContent = `${fallbackCount} newer label${fallbackCount === 1 ? "" : "s"} shown in English`;
+      note.setAttribute("role", "status");
+      container.appendChild(note);
+    });
+  }
 }
 
 function buildLangSelector() {

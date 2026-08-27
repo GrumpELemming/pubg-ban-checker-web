@@ -2,8 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; connect-src 'none'; frame-ancestors 'none'; base-uri 'self';">
   <title>SCHNEEFUCHS HATES SMGS</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="A fan-made PUBG-inspired arcade survival browser game." />
+  <link rel="icon" href="../img/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
 
   <style>
@@ -40,6 +43,8 @@
   </style>
 </head>
 <body>
+  <a href="../games.html" style="position:fixed;z-index:10;top:12px;right:12px;padding:8px 12px;border:2px solid #ffea00;background:#000;color:#ffea00;text-decoration:none;font:700 13px monospace">← Back to Games</a>
+  <small style="position:fixed;z-index:10;bottom:8px;left:50%;transform:translateX(-50%);color:#fff;font:12px monospace;white-space:nowrap">Fan project — not affiliated with PUBG or Krafton.</small>
   <div id="wrap"><canvas id="game" width="1280" height="720"></canvas></div>
 
   <!-- TITLE SCREEN -->

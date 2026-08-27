@@ -7,6 +7,14 @@
   margin-top: 6px;
 }
 
+.i18n-fallback-note {
+  display: block;
+  flex-basis: 100%;
+  color: #ffd25c;
+  font-size: .68rem;
+  text-align: center;
+}
+
 .lang-switch label {
   font-weight: 700;
   letter-spacing: 0.05em;

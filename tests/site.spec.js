@@ -49,3 +49,22 @@ test("watchlist exposes display and sweep controls", async ({ page }) => {
   await expect(page.locator("#deleteSyncedWatchlistsBtn")).toBeHidden();
   await expect(page.locator("#deleteAccountDataBtn")).toBeHidden();
 });
+
+test("incomplete translations visibly identify English fallbacks", async ({ page }) => {
+  await page.goto("/watchlist.html");
+  await page.evaluate(() => localStorage.setItem("siteLang", "de"));
+  await page.reload();
+  await expect(page.locator(".i18n-fallback-note")).toContainText("shown in English");
+});
+
+for (const path of ["/hangman.html", "/pubg-mini.html", "/bluemem/bluemem.html", "/shne/shne.html"]) {
+  test(`${path} has a consistent return link and fan notice`, async ({ page }) => {
+    const errors = [];
+    page.on("pageerror", error => errors.push(error.message));
+    await page.goto(path);
+    await expect(page.locator("a", { hasText: "Back to Games" })).toBeVisible();
+    await expect(page.getByText(/not affiliated with PUBG or Krafton/i)).toBeVisible();
+    await expect(page.locator("link[rel='icon']")).toHaveCount(1);
+    expect(errors).toEqual([]);
+  });
+}
