@@ -4,6 +4,12 @@
 
   const CARD_WIDTH = 1200;
   const CARD_HEIGHT = 675;
+  const CUSTOM_CARDS = {
+    "account.308b52a145fc425a92eb9d4fd17af37a": {
+      image: "img/ban-cards/bellebollo-account-banned.png",
+      filename: "PUBGBanChecker_Bellebollo_AccountBanned.png"
+    }
+  };
   const TIER_CONFIG = {
     bronze: { title: "BRONZE BOMBER", tagline: "Banned before escaping Bronze", color: "#c88752", accent: "#f0b47d", badge: "img/ban-cards/bronze.png" },
     silver: { title: "SWEATY SILVER", tagline: "The ban wave caught up", color: "#aeb9c5", accent: "#e4edf5", badge: "img/ban-cards/silver.png" },
@@ -126,6 +132,14 @@
 
   async function drawCard(data) {
     const ctx = canvas.getContext("2d");
+    const customCard = CUSTOM_CARDS[String(data.accountId || "").toLowerCase()];
+    if (customCard) {
+      const image = await loadImage(customCard.image);
+      ctx.clearRect(0, 0, CARD_WIDTH, CARD_HEIGHT);
+      ctx.drawImage(image, 0, 0, CARD_WIDTH, CARD_HEIGHT);
+      filename = customCard.filename;
+      return;
+    }
     const tier = data.mastery?.tier || "Unknown";
     const config = getTierConfig(tier);
     const stats = data.lifetime || {};
