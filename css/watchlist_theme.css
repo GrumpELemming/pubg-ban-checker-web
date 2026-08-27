@@ -240,25 +240,27 @@ body.watchlist .wl-hud-readout strong {
 body.watchlist .wl-console {
   position: relative;
   z-index: 2;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 28px;
-  margin-top: 24px;
+  width: min(1460px, calc(100% - 48px));
+  margin: 24px auto 0;
+  display: grid;
+  grid-template-columns: 310px minmax(0, 1fr);
+  align-items: start;
+  gap: 24px;
 }
 
 body.watchlist .wl-ops-column {
-  flex: 1 1 360px;
   display: flex;
   flex-direction: column;
-  gap: 22px;
-  max-width: 420px;
+  gap: 16px;
+  position: sticky;
+  top: 18px;
 }
 
 body.watchlist .wl-feed-column {
-  flex: 2 1 520px;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 16px;
 }
 
 body.watchlist .wl-module {
@@ -448,7 +450,7 @@ body.watchlist .platform-btn.active::before {
 body.watchlist .wl-feed-header {
   background: rgba(6, 18, 36, 0.9);
   border-radius: 20px;
-  padding: 28px;
+  padding: 24px 26px;
   border: 1px solid rgba(64, 175, 255, 0.35);
   box-shadow: 0 16px 40px rgba(3, 5, 18, 0.7);
 }
@@ -481,11 +483,15 @@ body.watchlist .wl-feed-live {
   position: relative;
   background: rgba(4, 16, 32, 0.88);
   border-radius: 24px;
-  padding: 26px;
+  padding: 18px;
   border: 1px solid rgba(58, 172, 255, 0.32);
   box-shadow: 0 20px 60px rgba(2, 7, 20, 0.9);
   overflow: hidden;
   min-height: 320px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 14px;
 }
 
 body.watchlist .wl-feed-live::before {
@@ -502,6 +508,7 @@ body.watchlist .wl-feed-live > * {
 }
 
 body.watchlist .wl-empty {
+  grid-column: 1 / -1;
   text-align: center;
   margin: 40px 0;
   color: #88bfe4;
@@ -511,31 +518,79 @@ body.watchlist .wl-empty {
 }
 
 /* Watchlist rows */
-body.watchlist .watchlist-player {
+body.watchlist div.watchlist-player {
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+  min-height: 260px;
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-direction: column;
+  gap: 16px;
   justify-content: space-between;
-  padding: 10px 14px;
-  border-radius: 12px;
-  background: rgba(7, 25, 47, 0.9);
-  border: 1px solid rgba(81, 192, 255, 0.2);
-  border-left: 4px solid rgba(81, 192, 255, 0.65);
-  box-shadow: 0 8px 20px rgba(1, 12, 24, 0.45);
-  margin-bottom: 8px;
+  padding: 20px;
+  border-radius: 18px;
+  background:
+    linear-gradient(145deg, rgba(12, 39, 61, 0.96), rgba(5, 17, 35, 0.96));
+  border: 1px solid rgba(81, 192, 255, 0.28);
+  border-top: 3px solid rgba(81, 192, 255, 0.72);
+  box-shadow: 0 14px 32px rgba(1, 8, 22, 0.55), inset 0 1px rgba(255, 255, 255, 0.04);
+  margin: 0;
   animation: wlRowReveal 0.4s ease forwards;
   opacity: 0;
-  overflow-wrap: anywhere;
-  word-break: break-word;
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-body.watchlist .watchlist-player > div {
+body.watchlist div.watchlist-player:hover {
+  border-color: rgba(87, 221, 255, 0.5);
+  box-shadow: 0 18px 40px rgba(1, 8, 22, 0.7), 0 0 24px rgba(46, 204, 255, 0.09);
+}
+
+body.watchlist div.watchlist-player::before {
+  content: "TRACK " attr(data-slot);
+  position: absolute;
+  top: 15px;
+  right: 18px;
+  z-index: -1;
+  color: rgba(141, 226, 255, 0.16);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+}
+
+body.watchlist div.watchlist-player::after {
+  content: "";
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  right: -70px;
+  bottom: -80px;
+  z-index: -1;
+  border: 1px solid rgba(73, 216, 255, 0.13);
+  border-radius: 50%;
+  box-shadow: 0 0 0 24px rgba(73, 216, 255, 0.035), 0 0 0 50px rgba(73, 216, 255, 0.02);
+}
+
+body.watchlist div.watchlist-player > div,
+body.watchlist .wl-player-content {
   min-width: 0;
 }
 
-body.watchlist .watchlist-player:nth-child(even) {
-  border-left-color: rgba(109, 80, 255, 0.7);
-  background: rgba(19, 18, 49, 0.85);
+body.watchlist div.watchlist-player:nth-child(even) {
+  border-top-color: rgba(126, 91, 255, 0.78);
+  background: linear-gradient(145deg, rgba(27, 25, 69, 0.96), rgba(8, 14, 38, 0.96));
+}
+
+body.watchlist div.watchlist-player.wl-player-status-temp {
+  border-top-color: #ffd558;
+}
+
+body.watchlist div.watchlist-player.wl-player-status-perm {
+  border-top-color: #ff6f78;
+}
+
+body.watchlist div.watchlist-player.wl-player-status-unknown {
+  border-top-color: #8995aa;
 }
 
 body.watchlist .wl-observation-notice {
@@ -583,14 +638,14 @@ body.watchlist .wl-btn:disabled {
   box-shadow: none;
 }
 
-body.watchlist .watchlist-player.wl-row-checking {
+body.watchlist div.watchlist-player.wl-row-checking {
   opacity: 1;
   animation: wlRowChecking 1.1s ease-in-out infinite;
   border-color: rgba(67, 255, 210, 0.8);
   box-shadow: 0 0 0 1px rgba(67, 255, 210, 0.18), 0 0 28px rgba(67, 255, 210, 0.22);
 }
 
-body.watchlist .watchlist-player.wl-row-complete {
+body.watchlist div.watchlist-player.wl-row-complete {
   opacity: 1;
   animation: wlRowComplete 0.65s ease both;
 }
@@ -642,7 +697,14 @@ body.watchlist .wl-name-line {
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
-  font-size: 1rem;
+  padding-right: 72px;
+  font-size: 1.05rem;
+}
+
+body.watchlist .wl-name-line > strong {
+  color: #f5fbff;
+  font-size: 1.08rem;
+  letter-spacing: 0.02em;
 }
 
 body.watchlist .wl-platform-badge {
@@ -660,19 +722,53 @@ body.watchlist .wl-card-buttons {
   gap: 8px;
   align-items: center;
   flex-wrap: wrap;
+  padding-top: 14px;
+  border-top: 1px solid rgba(108, 205, 255, 0.15);
+}
+
+body.watchlist .wl-card-buttons .wl-btn {
+  flex: 1 1 120px;
+  padding: 9px 12px;
 }
 
 body.watchlist .wl-meta {
-  margin-top: 5px;
+  margin-top: 16px;
   font-size: 0.82rem;
-  line-height: 1.3;
+  line-height: 1.25;
   color: #91bbd6;
-  display: flex;
-  flex-wrap: wrap;
-  column-gap: 14px;
-  row-gap: 2px;
-  overflow-wrap: anywhere;
-  word-break: break-word;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+body.watchlist .wl-meta-item {
+  min-width: 0;
+  padding: 9px 10px;
+  border: 1px solid rgba(96, 191, 236, 0.13);
+  border-radius: 10px;
+  background: rgba(0, 8, 22, 0.32);
+}
+
+body.watchlist .wl-meta-item small {
+  display: block;
+  margin-bottom: 4px;
+  color: #6598b8;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+body.watchlist .wl-meta-item strong {
+  display: block;
+  overflow: hidden;
+  color: #e9f8ff;
+  font-size: 0.76rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.watchlist .wl-meta-account {
+  grid-column: 1 / -1;
 }
 
 body.watchlist .wl-meta strong {
@@ -688,6 +784,9 @@ body.watchlist .wl-history {
   gap: 4px;
   overflow-wrap: anywhere;
   word-break: break-word;
+  padding: 8px 10px;
+  border-radius: 9px;
+  background: rgba(255, 213, 88, 0.06);
 }
 
 body.watchlist .wl-history-name {
@@ -788,14 +887,30 @@ body.watchlist.dark-mode .wl-feed-live::before {
 }
 
 /* Responsive */
-@media (max-width: 960px) {
+@media (max-width: 1050px) {
   body.watchlist {
     padding: 24px 20px 48px;
+  }
+
+  body.watchlist .wl-console {
+    width: min(820px, 100%);
+    grid-template-columns: 1fr;
   }
 
   body.watchlist .wl-ops-column,
   body.watchlist .wl-feed-column {
     max-width: 100%;
+  }
+
+  body.watchlist .wl-ops-column {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+
+  body.watchlist .wl-account-module {
+    grid-row: span 2;
   }
 
   body.watchlist .wl-feed-live {
@@ -805,7 +920,13 @@ body.watchlist.dark-mode .wl-feed-live::before {
 
 @media (max-width: 720px) {
   body.watchlist .wl-console {
-    flex-direction: column;
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
+
+  body.watchlist .wl-ops-column,
+  body.watchlist .wl-feed-live {
+    grid-template-columns: 1fr;
   }
 
   body.watchlist .wl-module-actions {
@@ -817,9 +938,8 @@ body.watchlist.dark-mode .wl-feed-live::before {
     width: 100%;
   }
 
-  body.watchlist .watchlist-player {
-    flex-direction: column;
-    align-items: flex-start;
+  body.watchlist div.watchlist-player {
+    min-height: 0;
   }
 
   body.watchlist .wl-card-buttons {

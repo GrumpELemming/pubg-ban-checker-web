@@ -270,13 +270,34 @@
     });
     if (existing) return;
 
+    const now = Date.now();
+    const signedIn = Boolean(window.PBCWatchlistStore?.getSession?.().authenticated);
+    const initialStatus = classifyStatus(platformLabel);
+    const observedStatus = initialStatus === "temp" ? "temporary" :
+      initialStatus === "perm" ? "permanent" :
+      initialStatus === "not" ? "innocent" : "";
+    const observationFields = signedIn && observedStatus ? {
+      schemaVersion: 2,
+      observations: [{ status: observedStatus, observedAt: now }],
+      effectiveStatus: observedStatus,
+      verificationState: "",
+      checkCount: 1,
+      tempBanCount: observedStatus === "temporary" ? 1 : 0,
+      firstWatchedAt: now,
+      lastStatusChangeAt: observedStatus === "innocent" ? 0 : now,
+      firstPermanentObservedAt: observedStatus === "permanent" ? now : 0,
+      consecutiveClearCount: 0,
+      clearCandidateSince: 0
+    } : {};
+
     list.push({
       player,
       accountId: accountId || "",
       clan: clan || "",
       platform,
       statusLabel: platformLabel || "",
-      lastChecked: Date.now()
+      lastChecked: now,
+      ...observationFields
     });
 
     saveWatchlist(platform, list);

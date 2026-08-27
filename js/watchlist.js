@@ -404,7 +404,8 @@
     const statusInfo = mapStatusToInfo(entry.statusLabel);
 
     const row = document.createElement("div");
-    row.className = "watchlist-player";
+    row.className = `watchlist-player wl-player-status-${statusInfo.code}`;
+    row.dataset.slot = String(index + 1).padStart(2, "0");
 
     // NAME LINE
     const nameLine = document.createElement("div");
@@ -432,10 +433,10 @@
     const meta = document.createElement("div");
     meta.className = "wl-meta";
     meta.innerHTML = `
-      <span>Clan: <strong>${escapeHtml(entry.clan || "none")}</strong></span>
-      <span>Account ID: <strong>${escapeHtml(entry.accountId || "unknown")}</strong></span>
-      <span>Status: ${escapeHtml(statusInfo.text)}</span>
-      <span>Last checked: ${escapeHtml(formatDateTime(entry.lastChecked))}</span>
+      <span class="wl-meta-item"><small>Clan</small><strong>${escapeHtml(entry.clan || "none")}</strong></span>
+      <span class="wl-meta-item wl-meta-account" title="${escapeHtml(entry.accountId || "unknown")}"><small>Account ID</small><strong>${escapeHtml(entry.accountId || "unknown")}</strong></span>
+      <span class="wl-meta-item"><small>Current signal</small><strong>${escapeHtml(statusInfo.text)}</strong></span>
+      <span class="wl-meta-item"><small>Last scan</small><strong>${escapeHtml(formatDateTime(entry.lastChecked))}</strong></span>
     `;
 
     // NAME HISTORY section (optional)
@@ -544,6 +545,7 @@
 
     // Assemble row
     const left = document.createElement("div");
+    left.className = "wl-player-content";
     left.appendChild(nameLine);
     left.appendChild(meta);
     if (historyEl) left.appendChild(historyEl);
