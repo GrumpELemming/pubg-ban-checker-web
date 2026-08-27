@@ -2,25 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self';
-    script-src 'self';
-    style-src 'self';
-    img-src 'self' data:;
-    font-src 'self';
-    connect-src 'self';
-    frame-ancestors 'none';
-    base-uri 'self';
-  ">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self';">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PUBG Ban Checker - Updates</title>
   <link rel="stylesheet" href="css/lang.css">
-  <link rel="stylesheet" href="css/updates.css">
+  <link rel="stylesheet" href="css/updates.css?v=20260827a">
   <script src="js/theme.js"></script>
   <link rel="stylesheet" href="css/themes.css">
   <link rel="stylesheet" href="css/site-layout.css?v=20260827a">
-  <script defer src="js/updates.js"></script>
-  <script defer src="js/i18n.js?v=20251228"></script>
+  <script defer src="js/email-reveal.js?v=20260827a"></script>
+  <script defer src="js/updates.js?v=20260827a"></script>
+  <script defer src="js/i18n.js?v=20260827a"></script>
 </head>
 <body>
   <div class="nav-panel">
@@ -50,58 +42,93 @@
     </div>
   </div>
 
-  <div class="container">
-    <h1 class="compact-title" data-i18n="updates.title">PUBG Ban Checker - Updates</h1>
-  </div>
+  <main class="updates-shell">
+    <header class="container updates-hero">
+      <p class="updates-eyebrow">Development log</p>
+      <h1 class="compact-title" data-i18n="updates.title">PUBG Ban Checker Updates</h1>
+      <p>A clear record of improvements to the checker, Watchlist, account sync, and the rest of the site.</p>
+    </header>
 
-  <!-- Latest Release -->
-  <div class="container">
-    <h2>LATEST RELEASE 2.1</h2>
-    <ul>
-      <li>Profile links added to ban results — quickly jump to a player's page on pubglookup.com and pubg-meta.com.</li>
-      <li>Watchlist notes — add a personal note to any watchlist entry so you always know why you're tracking someone.</li>
-      <li>Watchlist layout tightened up for a cleaner, less bulky appearance.</li>
-      <li>Multi-language support added: English, Korean, Chinese, German, Finnish, Polish, Russian, and Turkish. Request more via the header or email <a href="mailto:thegrumpylemming@gmail.com?subject=Language%20Request">thegrumpylemming@gmail.com</a>.</li>
-      <li>10 colour themes added — pick your style from the swatch buttons in the nav bar. Choice persists across sessions.</li>
-    </ul>
+    <section class="container latest-release" aria-labelledby="latestReleaseTitle">
+      <div class="release-heading">
+        <div>
+          <p class="updates-eyebrow">Latest release</p>
+          <h2 id="latestReleaseTitle">Version 2.2</h2>
+        </div>
+        <time datetime="2026-08-27">27 August 2026</time>
+      </div>
 
-    <div class="centered" style="margin-top:15px;">
-      <button id="toggleHistory" class="secondary-btn" type="button">
-        <span>Show Full Version History</span>
-      </button>
-    </div>
+      <div class="release-grid">
+        <article class="release-group">
+          <span class="release-number">01</span>
+          <h3>Watchlist refresh</h3>
+          <ul>
+            <li>Refresh All now checks players one at a time to protect the PUBG API from request bursts.</li>
+            <li>The active player displays a scanning animation and visible queue progress.</li>
+            <li>Each completed card updates individually without flashing or rebuilding the full list.</li>
+          </ul>
+        </article>
+        <article class="release-group">
+          <span class="release-number">02</span>
+          <h3>Observed history</h3>
+          <ul>
+            <li>Signed-in Watchlists retain check counts, status observations, name changes, and temporary-ban periods.</li>
+            <li>Conflicting PUBG responses are verified over time instead of immediately overwriting a known ban.</li>
+            <li>Possible permanent-ban reversals are supported and clearly described.</li>
+            <li>The search that adds a player now counts as their first observation.</li>
+          </ul>
+        </article>
+        <article class="release-group">
+          <span class="release-number">03</span>
+          <h3>New player dossiers</h3>
+          <ul>
+            <li>Wide player strips were replaced with compact, responsive dossier cards.</li>
+            <li>Status rails, structured metadata, expandable history, and consistent action footers improve scanning.</li>
+            <li>The design retains the cyan, violet, gold, and dark command-centre palette.</li>
+          </ul>
+        </article>
+        <article class="release-group">
+          <span class="release-number">04</span>
+          <h3>Site-wide polish</h3>
+          <ul>
+            <li>Navigation, page edges, content widths, gutters, and section spacing now share one layout system.</li>
+            <li>Core pages line up consistently at desktop, tablet, and mobile widths.</li>
+            <li>Responsive navigation now forms a clean grid without horizontal overflow.</li>
+          </ul>
+        </article>
+      </div>
 
-    <div id="history" class="history">
-      <p><strong>v1.0:</strong> Pivot to a GitHub-hosted website with a functional PC ban checker.</p>
-      <p><strong>v1.1:</strong> Multi-platform support (Steam, Xbox, PSN, Kakao) introduced.</p>
-      <p><strong>v1.2:</strong> Watchlist creation added (initially PC only).</p>
-      <p><strong>v1.2.1:</strong> Watchlist creation expanded to all platforms (Steam, Xbox, PSN, Kakao).</p>
-      <p><strong>v1.3:</strong> UX improvements across core flows.</p>
-      <p><strong>v1.4:</strong> Search by account ID added.</p>
-      <p><strong>v1.5:</strong> Security fixes delivered (thanks LOLhpO!).</p>
-      <p><strong>v1.6:</strong> Watchlist now flags when a player changes their name.</p>
-      <p><strong>v2.0:</strong> Full UX overhaul — command-center HUD theme, refreshed navigation, improved platform tiles, and dark mode polish.</p>
-    </div>
-  </div>
+      <div class="history-toggle">
+        <button id="toggleHistory" class="secondary-btn" type="button" aria-expanded="false" aria-controls="history">
+          <span>Show Version History</span>
+        </button>
+      </div>
+      <div id="history" class="history" aria-hidden="true">
+        <ol class="version-timeline">
+          <li><strong>v2.1</strong><span>Profile links, Watchlist notes, multilingual support, ten colour themes, and a tighter Watchlist layout.</span></li>
+          <li><strong>v2.0</strong><span>Command-centre visual overhaul, refreshed navigation, improved platform tiles, and dark-mode polish.</span></li>
+          <li><strong>v1.6</strong><span>Watchlist name-change detection.</span></li>
+          <li><strong>v1.5</strong><span>Security fixes delivered with thanks to LOLhpO!.</span></li>
+          <li><strong>v1.4</strong><span>Search by account ID.</span></li>
+          <li><strong>v1.3</strong><span>Core user-experience improvements.</span></li>
+          <li><strong>v1.2.1</strong><span>Watchlists expanded to Steam, Xbox, PSN, and Kakao.</span></li>
+          <li><strong>v1.2</strong><span>Initial PC Watchlist support.</span></li>
+          <li><strong>v1.1</strong><span>Multi-platform ban checking introduced.</span></li>
+          <li><strong>v1.0</strong><span>GitHub-hosted PUBG ban checker launched.</span></li>
+        </ol>
+      </div>
+    </section>
 
-  <!-- Socials -->
-  <div class="container">
-    <h2>About</h2>
-    <p class="about-credit">Created by <strong class="shimmer">Grump E Lemming</strong></p>
-    <div class="social-buttons">
-      <a href="https://www.youtube.com/@grumpelemming" target="_blank" rel="noopener noreferrer" class="social-btn youtube" data-tooltip="YouTube">
-        <img src="img/youtube.svg" alt="YouTube">
-      </a>
-      <a href="https://twitter.com/grumpelemming" target="_blank" rel="noopener noreferrer" class="social-btn x" data-tooltip="X (Twitter)">
-        <img src="img/x.svg" alt="X (Twitter)">
-      </a>
-      <a href="https://www.instagram.com/grumpelemming" target="_blank" rel="noopener noreferrer" class="social-btn instagram" data-tooltip="Instagram">
-        <img src="img/instagram.svg" alt="Instagram">
-      </a>
-      <a href="https://www.tiktok.com/@grumpelemming" target="_blank" rel="noopener noreferrer" class="social-btn tiktok" data-tooltip="TikTok">
-         <img src="tiktok/instagram.svg" alt="TikTok">
-      </a>
-    </div>
-  </div>
+    <section class="container updates-about">
+      <h2>About</h2>
+      <p class="about-credit">Created by <strong class="shimmer">Grump E Lemming</strong></p>
+      <div class="social-buttons">
+        <a href="https://www.youtube.com/@grumpelemming" target="_blank" rel="noopener noreferrer" class="social-btn youtube" data-tooltip="YouTube"><img src="img/youtube.svg" alt="YouTube"></a>
+        <a href="https://twitter.com/grumpelemming" target="_blank" rel="noopener noreferrer" class="social-btn x" data-tooltip="X (Twitter)"><img src="img/x.svg" alt="X (Twitter)"></a>
+        <a href="https://www.instagram.com/grumpelemming" target="_blank" rel="noopener noreferrer" class="social-btn instagram" data-tooltip="Instagram"><img src="img/instagram.svg" alt="Instagram"></a>
+        <a href="https://www.tiktok.com/@grumpelemming" target="_blank" rel="noopener noreferrer" class="social-btn tiktok" data-tooltip="TikTok"><img src="img/tiktok.svg" alt="TikTok"></a>
+      </div>
+    </section>
+  </main>
 </body>
 </html>

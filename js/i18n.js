@@ -688,8 +688,7 @@ function buildLangSelector() {
 
     if (requestBtn) {
       requestBtn.addEventListener("click", () => {
-        window.location.href =
-          "mailto:thegrumpylemming@gmail.com?subject=Language%20request";
+        window.PBCEmailReveal?.reveal(requestBtn, "Language request");
       });
     }
   });

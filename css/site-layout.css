@@ -92,6 +92,44 @@ h1, h2, h3, p, li {
   overflow-wrap: break-word;
 }
 
+.email-reveal-btn {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px dashed currentColor;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #55e8ff;
+  font: inherit;
+  font-weight: 700;
+  letter-spacing: inherit;
+  text-transform: none;
+  cursor: pointer;
+}
+
+.email-reveal-btn:hover,
+.email-reveal-btn:focus-visible {
+  outline: none;
+  color: #43ffd2;
+  box-shadow: none;
+}
+
+.email-revealed-link {
+  color: #43ffd2;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.lang-switch .email-revealed-link {
+  padding: 8px 10px;
+  border: 1px solid rgba(67, 255, 210, 0.4);
+  border-radius: 10px;
+  background: rgba(67, 255, 210, 0.08);
+  text-decoration: none;
+}
+
 @media (max-width: 720px) {
   :root {
     --site-gutter: 14px;
