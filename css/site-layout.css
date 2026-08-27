@@ -51,6 +51,56 @@ body > .nav-panel {
   text-decoration: none;
 }
 
+.nav-panel-buttons .nav-button {
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+  padding: 10px 18px;
+  border: 1px solid var(--accent, #2ee9d3);
+  border-radius: 999px;
+  color: inherit;
+  background: rgba(5, 16, 31, 0.72);
+  font: inherit;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-align: center;
+  text-transform: uppercase;
+  transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
+}
+
+.nav-panel-buttons .nav-button:hover,
+.nav-panel-buttons .nav-button[aria-current="page"] {
+  border-color: var(--accent2, #55e8ff);
+  background: rgba(46, 233, 211, .12);
+  box-shadow: 0 0 18px rgba(46, 233, 211, .2);
+}
+
+:where(a, button, select, input, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--accent2, #55e8ff);
+  outline-offset: 3px;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
 .nav-panel-buttons > a > button {
   height: 100%;
   margin: 0;
@@ -147,7 +197,7 @@ h1, h2, h3, p, li {
   }
 
   .nav-panel-buttons > a,
-  .nav-panel-buttons > a > button {
+  .nav-panel-buttons .nav-button {
     width: 100%;
     min-width: 0;
   }

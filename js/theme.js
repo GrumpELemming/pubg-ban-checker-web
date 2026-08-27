@@ -14,7 +14,9 @@
     if (name !== DEFAULT) html.classList.add('theme-' + name);
     try { localStorage.setItem(STORAGE_KEY, name); } catch (e) {}
     document.querySelectorAll('.theme-swatch').forEach(function(btn) {
-      btn.classList.toggle('active', btn.dataset.theme === name);
+      var selected = btn.dataset.theme === name;
+      btn.classList.toggle('active', selected);
+      btn.setAttribute('aria-pressed', String(selected));
     });
   }
 
@@ -25,7 +27,11 @@
   document.addEventListener('DOMContentLoaded', function () {
     // Set initial active state
     document.querySelectorAll('.theme-swatch').forEach(function(btn) {
-      btn.classList.toggle('active', btn.dataset.theme === saved);
+      var label = btn.getAttribute('title') || btn.dataset.theme || 'Theme';
+      var selected = btn.dataset.theme === saved;
+      btn.classList.toggle('active', selected);
+      btn.setAttribute('aria-label', 'Use ' + label + ' theme');
+      btn.setAttribute('aria-pressed', String(selected));
       btn.addEventListener('click', function () {
         applyTheme(this.dataset.theme);
       });

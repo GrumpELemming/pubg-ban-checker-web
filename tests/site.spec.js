@@ -1,0 +1,38 @@
+const { test, expect } = require("@playwright/test");
+
+const pages = ["/", "/watchlist.html", "/links.html", "/updates.html", "/games.html", "/privacy.html"];
+
+for (const path of pages) {
+  test(`${path} opens without errors or horizontal overflow`, async ({ page }) => {
+    const errors = [];
+    page.on("pageerror", error => errors.push(error.message));
+    await page.goto(path);
+    await expect(page.locator("h1")).toHaveCount(1);
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(1);
+    expect(errors).toEqual([]);
+  });
+}
+
+test("navigation uses valid links and identifies the current page", async ({ page }) => {
+  await page.goto("/watchlist.html");
+  await expect(page.locator(".nav-panel-buttons a[aria-current='page']")).toHaveText("Watchlist");
+  await expect(page.locator(".nav-panel-buttons a button")).toHaveCount(0);
+  await page.locator(".nav-panel-buttons a", { hasText: "Games" }).click();
+  await expect(page).toHaveURL(/games\.html$/);
+});
+
+test("theme choice persists", async ({ page }) => {
+  await page.goto("/");
+  await page.locator(".theme-swatch[data-theme='gold']").click();
+  await page.reload();
+  await expect(page.locator("html")).toHaveClass(/theme-gold/);
+  await expect(page.locator(".theme-swatch[data-theme='gold']")).toHaveAttribute("aria-pressed", "true");
+});
+
+test("email address is hidden until requested", async ({ page }) => {
+  await page.goto("/privacy.html");
+  await expect(page.locator("a[href^='mailto:']")).toHaveCount(0);
+  await page.locator("[data-reveal-email]").first().click();
+  await expect(page.locator("a[href^='mailto:']").first()).toBeVisible();
+});

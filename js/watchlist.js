@@ -17,7 +17,12 @@
   const BAN_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
   const TEMP_CLEAR_CONFIRMATION_MS = 60 * 60 * 1000;
   const PERMANENT_REVERSAL_CONFIRMATION_MS = 24 * 60 * 60 * 1000;
+  const STALE_AFTER_MS = 48 * 60 * 60 * 1000;
+  const DISPLAY_PREFS_KEY = "pbcWatchlistDisplay";
   let refreshAllInProgress = false;
+  let sweepPaused = false;
+  let sweepStopped = false;
+  let retryFailedOnly = false;
 
   // --------------------------------------------------------------------
   // Helpers
@@ -108,6 +113,20 @@
 
   function isNotBanned(statusText) {
     return (statusText || "").toLowerCase().trim() === "not banned";
+  }
+
+  function isStale(entry) {
+    return !entry.lastChecked || Date.now() - Number(entry.lastChecked) >= STALE_AFTER_MS;
+  }
+
+  function displayPreferences() {
+    try { return JSON.parse(localStorage.getItem(DISPLAY_PREFS_KEY)) || {}; } catch { return {}; }
+  }
+
+  function saveDisplayPreferences() {
+    const filter = document.getElementById("watchlistFilter")?.value || "all";
+    const sort = document.getElementById("watchlistSort")?.value || "default";
+    try { localStorage.setItem(DISPLAY_PREFS_KEY, JSON.stringify({ filter, sort })); } catch {}
   }
 
   function isSignedIn() {
@@ -438,6 +457,13 @@
       <span class="wl-meta-item"><small>Current signal</small><strong>${escapeHtml(statusInfo.text)}</strong></span>
       <span class="wl-meta-item"><small>Last scan</small><strong>${escapeHtml(formatDateTime(entry.lastChecked))}</strong></span>
     `;
+    if (isStale(entry)) {
+      const stale = document.createElement("span");
+      stale.className = "wl-stale-badge";
+      stale.textContent = "STALE";
+      stale.title = "This status has not been checked in at least 48 hours";
+      meta.lastElementChild?.appendChild(stale);
+    }
 
     // NAME HISTORY section (optional)
     let historyEl = null;
@@ -586,14 +612,29 @@
 
     container.innerHTML = "";
 
-    const list = baseList || getWatchlist(getPlatform());
+    const source = baseList || getWatchlist(getPlatform());
+    const filter = document.getElementById("watchlistFilter")?.value || "all";
+    const sort = document.getElementById("watchlistSort")?.value || "default";
+    let list = source.map((entry, originalIndex) => ({ entry, originalIndex }));
+    list = list.filter(({ entry }) => {
+      const status = mapStatusToInfo(entry.statusLabel).code;
+      if (filter === "banned") return status === "perm" || status === "temp";
+      if (filter === "temporary") return Number(entry.tempBanCount) > 0;
+      if (filter === "stale") return isStale(entry);
+      if (filter === "failed") return Boolean(entry.lastCheckFailed);
+      return true;
+    });
+    if (sort === "name") list.sort((a, b) => a.entry.player.localeCompare(b.entry.player));
+    if (sort === "recent") list.sort((a, b) => Number(b.entry.lastChecked || 0) - Number(a.entry.lastChecked || 0));
+    if (sort === "oldest") list.sort((a, b) => Number(a.entry.lastChecked || 0) - Number(b.entry.lastChecked || 0));
+    if (sort === "temporary") list.sort((a, b) => Number(b.entry.tempBanCount || 0) - Number(a.entry.tempBanCount || 0));
     if (!list.length) {
-      container.innerHTML = `<p class="wl-empty">No players in your watchlist yet.</p>`;
+      container.innerHTML = `<p class="wl-empty">No players match this view.</p>`;
       return;
     }
 
-    list.forEach((entry, idx) => {
-      const row = buildWatchlistRow(entry, idx);
+    list.forEach(({ entry, originalIndex }) => {
+      const row = buildWatchlistRow(entry, originalIndex);
       if (options.animate === false) row.classList.add("wl-row-static");
       container.appendChild(row);
     });
@@ -695,7 +736,9 @@
     if (!match) return;
 
     const container = document.getElementById("watchlistContainer");
-    const row = container?.children[index];
+    const row = Array.from(container?.children || []).find(item =>
+      item.querySelector(".wl-name-line strong")?.textContent?.toLowerCase() === playerName.toLowerCase()
+    );
     if (row?.getAttribute("aria-busy") === "true") return;
     markRowChecking(row, 1, 1);
     row?.querySelectorAll(".wl-btn").forEach(button => {
@@ -714,9 +757,17 @@
 
     try {
       const updated = await updateEntryFromBan(match, platform);
+      match.lastCheckFailed = false;
       if (updated) saveWatchlist(platform, list);
     } catch (err) {
       console.error("Recheck error", err);
+      match.lastCheckFailed = true;
+      saveWatchlist(platform, list);
+      const summary = document.getElementById("sweepSummary");
+      if (summary) {
+        summary.hidden = false;
+        summary.textContent = `Check failed for ${match.player}. The PUBG API may be unavailable, rate limited, offline, or timed out.`;
+      }
     } finally {
       replaceRefreshedRow(row, match, index);
     }
@@ -727,42 +778,74 @@
 
     const platform = getPlatform();
     const list = getWatchlist(platform);
-    if (!list.length) return;
+    const targets = retryFailedOnly ? list.filter(entry => entry.lastCheckFailed) : list;
+    retryFailedOnly = false;
+    if (!targets.length) return;
 
     const refreshAllBtn = document.getElementById("refreshAllBtn");
     const container = document.getElementById("watchlistContainer");
     refreshAllInProgress = true;
+    sweepPaused = false;
+    sweepStopped = false;
+    const pauseBtn = document.getElementById("pauseSweepBtn");
+    const stopBtn = document.getElementById("stopSweepBtn");
+    const summary = document.getElementById("sweepSummary");
+    const retryBtn = document.getElementById("retryFailedBtn");
+    if (pauseBtn) { pauseBtn.hidden = false; pauseBtn.textContent = "Pause"; }
+    if (stopBtn) stopBtn.hidden = false;
+    if (summary) summary.hidden = true;
+    if (retryBtn) retryBtn.hidden = true;
+    const totals = { checked: 0, changed: 0, renamed: 0, failed: 0 };
     setRefreshControlsLocked(true);
     container?.setAttribute("aria-busy", "true");
 
     try {
-      for (let index = 0; index < list.length; index += 1) {
-        const entry = list[index];
-        const row = container?.children[index];
-        markRowChecking(row, index + 1, list.length);
+      for (let index = 0; index < targets.length; index += 1) {
+        while (sweepPaused && !sweepStopped) await wait(200);
+        if (sweepStopped) break;
+        const entry = targets[index];
+        const originalName = entry.player;
+        const originalStatus = entry.statusLabel;
+        const row = Array.from(container?.children || []).find(item => item.querySelector(".wl-name-line strong")?.textContent === originalName);
+        markRowChecking(row, index + 1, targets.length);
         if (refreshAllBtn) {
-          refreshAllBtn.textContent = `Checking ${index + 1} / ${list.length}`;
+          refreshAllBtn.textContent = `Checking ${index + 1} / ${targets.length}`;
         }
 
         let updated = false;
         try {
           updated = await updateEntryFromBan(entry, platform);
+          entry.lastCheckFailed = false;
+          totals.checked += 1;
+          if (entry.player !== originalName) totals.renamed += 1;
+          if (entry.statusLabel !== originalStatus) totals.changed += 1;
         } catch (err) {
           console.error("Recheck-all error", err);
+          entry.lastCheckFailed = true;
+          totals.failed += 1;
         }
 
         if (updated) saveWatchlist(platform, list);
-        replaceRefreshedRow(row, entry, index);
+        replaceRefreshedRow(row, entry, list.indexOf(entry));
 
-        if (index < list.length - 1) await wait(REFRESH_BATCH_DELAY);
+        if (index < targets.length - 1 && !sweepStopped) await wait(REFRESH_BATCH_DELAY);
       }
 
       saveWatchlist(platform, list);
     } finally {
       refreshAllInProgress = false;
+      sweepPaused = false;
       container?.setAttribute("aria-busy", "false");
       setRefreshControlsLocked(false);
       if (refreshAllBtn) refreshAllBtn.textContent = "Refresh All";
+      if (pauseBtn) pauseBtn.hidden = true;
+      if (stopBtn) stopBtn.hidden = true;
+      if (summary) {
+        summary.hidden = false;
+        summary.textContent = `${sweepStopped ? "Sweep stopped" : "Sweep complete"}: ${totals.checked} checked · ${totals.changed} status change${totals.changed === 1 ? "" : "s"} · ${totals.renamed} renamed · ${totals.failed} failed`;
+      }
+      if (retryBtn) retryBtn.hidden = totals.failed === 0;
+      renderWatchlist(undefined, { animate: false });
     }
   }
 
@@ -802,6 +885,27 @@
         recheckAll();
       });
     }
+
+    const pauseBtn = document.getElementById("pauseSweepBtn");
+    pauseBtn?.addEventListener("click", () => {
+      sweepPaused = !sweepPaused;
+      pauseBtn.textContent = sweepPaused ? "Resume" : "Pause";
+    });
+    document.getElementById("stopSweepBtn")?.addEventListener("click", () => { sweepStopped = true; });
+    document.getElementById("retryFailedBtn")?.addEventListener("click", () => {
+      retryFailedOnly = true;
+      recheckAll();
+    });
+
+    const preferences = displayPreferences();
+    const filterSelect = document.getElementById("watchlistFilter");
+    const sortSelect = document.getElementById("watchlistSort");
+    if (filterSelect && preferences.filter) filterSelect.value = preferences.filter;
+    if (sortSelect && preferences.sort) sortSelect.value = preferences.sort;
+    [filterSelect, sortSelect].forEach(select => select?.addEventListener("change", () => {
+      saveDisplayPreferences();
+      renderWatchlist(undefined, { animate: false });
+    }));
 
     const clearBtn = document.getElementById("clearWatchlistBtn");
     if (clearBtn) {

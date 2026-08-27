@@ -232,6 +232,7 @@
       firstPermanentObservedAt: timestamp(raw.firstPermanentObservedAt),
       consecutiveClearCount: Math.max(0, Math.floor(Number(raw.consecutiveClearCount) || 0)),
       clearCandidateSince: timestamp(raw.clearCandidateSince),
+      lastCheckFailed: Boolean(raw.lastCheckFailed),
       createdAt,
       updatedAt: timestamp(raw.updatedAt, timestamp(raw.lastChecked, createdAt))
     };
@@ -378,7 +379,8 @@
       lastStatusChangeAt: entry.lastStatusChangeAt,
       firstPermanentObservedAt: entry.firstPermanentObservedAt,
       consecutiveClearCount: entry.consecutiveClearCount,
-      clearCandidateSince: entry.clearCandidateSince
+      clearCandidateSince: entry.clearCandidateSince,
+      lastCheckFailed: entry.lastCheckFailed
     };
   }
 
@@ -406,7 +408,8 @@
       lastStatusChangeAt: entry.lastStatusChangeAt,
       firstPermanentObservedAt: entry.firstPermanentObservedAt,
       consecutiveClearCount: entry.consecutiveClearCount,
-      clearCandidateSince: entry.clearCandidateSince
+      clearCandidateSince: entry.clearCandidateSince,
+      lastCheckFailed: entry.lastCheckFailed
     });
   }
 

@@ -345,6 +345,11 @@
       status !== "unknown";
 
     const isLoading = statusText === "Checking...";
+    const confidenceText = isLoading
+      ? "Checking PUBG now"
+      : status === "unknown"
+        ? "PUBG response could not be confirmed"
+        : "Reported by PUBG now";
     const profileLinks =
       !isLoading && platform
         ? `<div class="profile-links">
@@ -359,6 +364,7 @@
       ID: ${escapeHtml(accountId || "unknown")}<br>
       Clan: ${escapeHtml(clan || "none")}<br>
       Status: <span class="ban-label">${escapeHtml(label)}</span>
+      <div class="status-detail">${escapeHtml(confidenceText)}</div>
       ${
         showDetail
           ? `<div class="status-detail">${escapeHtml(statusText)}</div>`
