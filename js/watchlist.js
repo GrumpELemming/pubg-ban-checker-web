@@ -580,7 +580,7 @@
   // Watchlist Rendering
   // --------------------------------------------------------------------
 
-  function renderWatchlist(baseList) {
+  function renderWatchlist(baseList, options = {}) {
     const container = document.getElementById("watchlistContainer");
     if (!container) return;
 
@@ -593,7 +593,9 @@
     }
 
     list.forEach((entry, idx) => {
-      container.appendChild(buildWatchlistRow(entry, idx));
+      const row = buildWatchlistRow(entry, idx);
+      if (options.animate === false) row.classList.add("wl-row-static");
+      container.appendChild(row);
     });
   }
 
@@ -607,7 +609,6 @@
 
   function markRowChecking(row, position, total) {
     if (!row) return;
-    row.classList.remove("wl-row-complete");
     row.classList.add("wl-row-checking");
     row.setAttribute("aria-busy", "true");
 
@@ -622,7 +623,7 @@
   function replaceRefreshedRow(row, entry, index) {
     if (!row) return;
     const refreshed = buildWatchlistRow(entry, index);
-    refreshed.classList.add("wl-row-complete");
+    refreshed.classList.add("wl-row-static");
     refreshed.setAttribute("aria-busy", "false");
     row.replaceWith(refreshed);
     if (refreshAllInProgress) {
@@ -630,7 +631,6 @@
         button.disabled = true;
       });
     }
-    setTimeout(() => refreshed.classList.remove("wl-row-complete"), 700);
   }
 
   function removeFromWatchlist(index) {
@@ -690,27 +690,35 @@
     const platform = getPlatform();
     const list = getWatchlist(platform);
 
-    const match = list.find(e => e.player.toLowerCase() === playerName.toLowerCase());
+    const index = list.findIndex(e => e.player.toLowerCase() === playerName.toLowerCase());
+    const match = list[index];
     if (!match) return;
 
-    // Apply any cached status instantly for responsiveness
+    const container = document.getElementById("watchlistContainer");
+    const row = container?.children[index];
+    if (row?.getAttribute("aria-busy") === "true") return;
+    markRowChecking(row, 1, 1);
+    row?.querySelectorAll(".wl-btn").forEach(button => {
+      button.disabled = true;
+    });
+
+    // Guests may use cached data while the fresh request is running, but the
+    // selected row is replaced only once when the check finishes.
     const cached = getCachedBan(platform, playerName);
     if (cached && !isSignedIn()) {
       match.accountId = cached.accountId || match.accountId;
       match.clan = cached.clan || match.clan;
       match.statusLabel = cached.statusText || match.statusLabel;
       match.lastChecked = match.lastChecked || Date.now();
-      renderWatchlist(list);
     }
 
     try {
       const updated = await updateEntryFromBan(match, platform);
-      if (updated) {
-        saveWatchlist(platform, list);
-        renderWatchlist(list);
-      }
+      if (updated) saveWatchlist(platform, list);
     } catch (err) {
       console.error("Recheck error", err);
+    } finally {
+      replaceRefreshedRow(row, match, index);
     }
   }
 
@@ -766,7 +774,7 @@
     const detail = event.detail || {};
     if (detail.source === "local") return;
     if (detail.platform && detail.platform !== getPlatform()) return;
-    renderWatchlist();
+    renderWatchlist(undefined, { animate: false });
   });
 
   function updateObservationNotice() {
