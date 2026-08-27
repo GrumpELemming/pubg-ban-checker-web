@@ -1,0 +1,126 @@
+/* Shared page geometry. Individual pages keep their own colours and components. */
+:root {
+  --site-shell-width: 1120px;
+  --site-gutter: clamp(16px, 3vw, 32px);
+  --site-section-gap: 20px;
+}
+
+html {
+  box-sizing: border-box;
+  scrollbar-gutter: stable;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+}
+
+body > .nav-panel,
+body > .container,
+body > main.layout,
+body > main.links-shell,
+body > main.clan-shell,
+body.watchlist > main.wl-console {
+  width: min(var(--site-shell-width), calc(100% - (var(--site-gutter) * 2)));
+  max-width: none;
+  margin-inline: auto;
+}
+
+body.watchlist {
+  --site-shell-width: 1280px;
+}
+
+body > .nav-panel {
+  margin-bottom: 24px;
+}
+
+.nav-panel-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.nav-panel-buttons > a {
+  display: flex;
+  min-width: 0;
+  text-decoration: none;
+}
+
+.nav-panel-buttons > a > button {
+  height: 100%;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.theme-switcher,
+.lang-switch {
+  justify-content: center;
+}
+
+body > .container + .container {
+  margin-top: var(--site-section-gap);
+}
+
+body > main.layout,
+body > main.links-shell,
+body > main.clan-shell {
+  margin-top: 0;
+}
+
+body > main.links-shell {
+  padding-inline: 0;
+}
+
+body > main.layout > .container {
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+}
+
+img,
+svg,
+canvas {
+  max-width: 100%;
+}
+
+h1, h2, h3, p, li {
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 720px) {
+  :root {
+    --site-gutter: 14px;
+    --site-section-gap: 14px;
+  }
+
+  body > .nav-panel {
+    margin-bottom: 16px;
+  }
+
+  .nav-panel-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .nav-panel-buttons > a,
+  .nav-panel-buttons > a > button {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .lang-switch {
+    width: 100%;
+  }
+}
+
+@media (max-width: 380px) {
+  .nav-panel-buttons {
+    grid-template-columns: 1fr;
+  }
+}
