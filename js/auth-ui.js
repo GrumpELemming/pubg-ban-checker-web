@@ -32,6 +32,9 @@
     const signOutButton = document.getElementById("watchlistSignOutBtn");
     const exportButton = document.getElementById("exportWatchlistBtn");
     const diagnostics = document.getElementById("watchlistSyncDiagnostics");
+    const revokeSessionsButton = document.getElementById("revokeSessionsBtn");
+    const deleteWatchlistsButton = document.getElementById("deleteSyncedWatchlistsBtn");
+    const deleteAccountButton = document.getElementById("deleteAccountDataBtn");
 
     if (!panel || !summary || !accountName || !description || !status || !signInButton || !signOutButton) {
       return;
@@ -90,6 +93,9 @@
       signInButton.hidden = authenticated;
       signOutButton.hidden = !authenticated;
       if (exportButton) exportButton.hidden = !authenticated;
+      [revokeSessionsButton, deleteWatchlistsButton, deleteAccountButton].forEach(button => {
+        if (button) button.hidden = !authenticated;
+      });
       renderDiagnostics(authenticated);
 
       if (actionPending) {
@@ -291,6 +297,45 @@
       setStatus("Watchlist data exported", "success");
     }
 
+    async function accountRequest(url, options = {}) {
+      const response = await fetch(url, {
+        method: options.method || "POST",
+        credentials: "same-origin",
+        headers: { "Accept": "application/json", "Content-Type": "application/json", "X-CSRF-Token": session.csrfToken },
+        body: options.body ? JSON.stringify(options.body) : undefined
+      });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(body?.error?.message || "The account request could not be completed");
+      return body;
+    }
+
+    async function revokeOtherSessions() {
+      if (!window.confirm("Sign out every other browser and device? This device will stay signed in.")) return;
+      try {
+        const result = await accountRequest("/api/auth/logout-others");
+        setStatus(`${result.sessionsRevoked || 0} other session${result.sessionsRevoked === 1 ? "" : "s"} signed out`, "success");
+      } catch (error) { setStatus(error.message, "error"); }
+    }
+
+    async function deleteSyncedWatchlists() {
+      if (!window.confirm("Permanently delete every synchronized Watchlist? This cannot be undone.")) return;
+      try {
+        await accountRequest("/api/account/watchlists", { method: "DELETE" });
+        const store = window.PBCWatchlistStore;
+        for (const platform of store?.platforms || []) await Promise.resolve(store.save(platform, []));
+        setStatus("Synchronized Watchlists deleted", "success");
+      } catch (error) { setStatus(error.message, "error"); }
+    }
+
+    async function deleteAccountData() {
+      const confirmation = window.prompt("This permanently deletes your synchronized Watchlists, account record, and sessions. Type DELETE to continue.");
+      if (confirmation !== "DELETE") return;
+      try {
+        await accountRequest("/api/account", { method: "DELETE", body: { confirmation } });
+        window.location.reload();
+      } catch (error) { setStatus(error.message, "error"); }
+    }
+
     signInButton.addEventListener("click", function () {
       if (signInButton.disabled) return;
       actionPending = true;
@@ -304,6 +349,9 @@
 
     signOutButton.addEventListener("click", signOut);
     exportButton?.addEventListener("click", exportWatchlistData);
+    revokeSessionsButton?.addEventListener("click", revokeOtherSessions);
+    deleteWatchlistsButton?.addEventListener("click", deleteSyncedWatchlists);
+    deleteAccountButton?.addEventListener("click", deleteAccountData);
     window.addEventListener("pbc:watchlist-session", onSession);
     window.addEventListener("pbc:watchlist-sync", onSync);
     window.addEventListener("online", render);

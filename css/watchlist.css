@@ -1027,6 +1027,8 @@ body.watchlist .wl-account-status[data-tone="error"] {
   gap: 8px;
   margin: 12px 0 0;
 }
+.wl-btn-danger { border-color: rgba(255, 91, 105, .7); color: #ff9ca6; }
+.wl-btn-danger:hover { background: rgba(255, 91, 105, .14); }
 
 .wl-sync-diagnostics[hidden] { display: none; }
 .wl-sync-diagnostics div {

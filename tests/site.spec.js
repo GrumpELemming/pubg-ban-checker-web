@@ -45,4 +45,7 @@ test("watchlist exposes display and sweep controls", async ({ page }) => {
   await expect(page.locator("#stopSweepBtn")).toBeHidden();
   await expect(page.locator("#watchlistSyncDiagnostics")).toBeHidden();
   await expect(page.locator("#exportWatchlistBtn")).toBeHidden();
+  await expect(page.locator("#revokeSessionsBtn")).toBeHidden();
+  await expect(page.locator("#deleteSyncedWatchlistsBtn")).toBeHidden();
+  await expect(page.locator("#deleteAccountDataBtn")).toBeHidden();
 });
