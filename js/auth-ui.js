@@ -349,14 +349,22 @@
         return;
       }
       const platformCount = prepared.filter(item => item.entries.length).length;
-      if (!window.confirm(`Import ${playerCount} player record${playerCount === 1 ? "" : "s"} across ${platformCount} platform${platformCount === 1 ? "" : "s"}? Existing records will be merged and kept.`)) return;
+      let newCount = 0;
+      prepared.forEach(item => {
+        const current = store.get(item.platform);
+        item.merged = store.mergeEntries(current, item.entries, item.platform);
+        newCount += Math.max(0, item.merged.length - current.length);
+      });
+      const mergeCount = Math.max(0, playerCount - newCount);
+      const preview = `${newCount} new · ${mergeCount} merged with existing`;
+      if (!window.confirm(`Import ${playerCount} player record${playerCount === 1 ? "" : "s"} across ${platformCount} platform${platformCount === 1 ? "" : "s"}?\n\n${preview}\n\nExisting records will be kept.`)) return;
 
       actionPending = true;
       render();
       try {
         let finalCount = 0;
         for (const item of prepared) {
-          const merged = store.mergeEntries(store.get(item.platform), item.entries, item.platform);
+          const merged = item.merged;
           finalCount += merged.length;
           await Promise.resolve(store.save(item.platform, merged));
         }

@@ -170,6 +170,14 @@ test("filters, sorting, removing, and clearing keep storage and cards aligned", 
   ]);
 
   await expect(page.locator(".wl-stale-badge")).toHaveCount(2);
+  await expect(page.locator("#watchlistResultCount")).toHaveText("4 players");
+  await page.locator("#watchlistSearch").fill("alp");
+  await expect(page.locator(".watchlist-player")).toHaveCount(1);
+  await expect(page.locator("#watchlistResultCount")).toHaveText("1 of 4 players");
+  await page.locator("#watchlistSearch").fill("");
+  await page.locator("#watchlistStaleHours").selectOption("168");
+  await expect(page.locator(".wl-stale-badge")).toHaveCount(1);
+  await page.locator("#watchlistStaleHours").selectOption("48");
   await page.locator("#watchlistFilter").selectOption("never");
   await expect(page.locator(".watchlist-player")).toHaveCount(1);
   await expect(page.locator(".wl-name-line strong")).toHaveText("Never");
@@ -247,7 +255,10 @@ test("signed-in users can export and restore a merged Watchlist backup", async (
   expect(exported.account).toMatchObject({ id: "123", username: "tester" });
   expect(exported.watchlists.steam).toHaveLength(1);
 
-  page.once("dialog", dialog => dialog.accept());
+  page.once("dialog", dialog => {
+    expect(dialog.message()).toContain("2 new · 1 merged with existing");
+    dialog.accept();
+  });
   await page.locator("#importWatchlistFile").setInputFiles({
     name: "watchlist-backup.json",
     mimeType: "application/json",

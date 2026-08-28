@@ -17,7 +17,7 @@
   const BAN_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
   const TEMP_CLEAR_CONFIRMATION_MS = 60 * 60 * 1000;
   const PERMANENT_REVERSAL_CONFIRMATION_MS = 24 * 60 * 60 * 1000;
-  const STALE_AFTER_MS = 48 * 60 * 60 * 1000;
+  const DEFAULT_STALE_HOURS = 48;
   const DISPLAY_PREFS_KEY = "pbcWatchlistDisplay";
   let refreshAllInProgress = false;
   let sweepPaused = false;
@@ -115,8 +115,13 @@
     return (statusText || "").toLowerCase().trim() === "not banned";
   }
 
+  function staleHours() {
+    const selected = Number(document.getElementById("watchlistStaleHours")?.value);
+    return [24, 48, 72, 168].includes(selected) ? selected : DEFAULT_STALE_HOURS;
+  }
+
   function isStale(entry) {
-    return !entry.lastChecked || Date.now() - Number(entry.lastChecked) >= STALE_AFTER_MS;
+    return !entry.lastChecked || Date.now() - Number(entry.lastChecked) >= staleHours() * 60 * 60 * 1000;
   }
 
   function displayPreferences() {
@@ -126,7 +131,9 @@
   function saveDisplayPreferences() {
     const filter = document.getElementById("watchlistFilter")?.value || "all";
     const sort = document.getElementById("watchlistSort")?.value || "default";
-    try { localStorage.setItem(DISPLAY_PREFS_KEY, JSON.stringify({ filter, sort })); } catch {}
+    const search = document.getElementById("watchlistSearch")?.value || "";
+    const staleHours = document.getElementById("watchlistStaleHours")?.value || String(DEFAULT_STALE_HOURS);
+    try { localStorage.setItem(DISPLAY_PREFS_KEY, JSON.stringify({ filter, sort, search, staleHours })); } catch {}
   }
 
   function isSignedIn() {
@@ -470,7 +477,7 @@
       const stale = document.createElement("span");
       stale.className = "wl-stale-badge";
       stale.textContent = "STALE";
-      stale.title = "This status has not been checked in at least 48 hours";
+      stale.title = `This status has not been checked in at least ${staleHours()} hours`;
       meta.lastElementChild?.appendChild(stale);
     }
 
@@ -651,8 +658,13 @@
     const source = baseList || getWatchlist(getPlatform());
     const filter = document.getElementById("watchlistFilter")?.value || "all";
     const sort = document.getElementById("watchlistSort")?.value || "default";
+    const search = (document.getElementById("watchlistSearch")?.value || "").trim().toLowerCase();
     let list = source.map((entry, originalIndex) => ({ entry, originalIndex }));
     list = list.filter(({ entry }) => {
+      const searchableNames = [entry.player, ...(Array.isArray(entry.history) ? entry.history : [])]
+        .join(" ")
+        .toLowerCase();
+      if (search && !searchableNames.includes(search)) return false;
       const status = mapStatusToInfo(entry.statusLabel).code;
       if (filter === "banned") return status === "perm" || status === "temp";
       if (filter === "temporary") return Number(entry.tempBanCount) > 0;
@@ -666,6 +678,12 @@
     if (sort === "changed") list.sort((a, b) => Number(b.entry.lastStatusChangeAt || 0) - Number(a.entry.lastStatusChangeAt || 0));
     if (sort === "oldest") list.sort((a, b) => Number(a.entry.lastChecked || 0) - Number(b.entry.lastChecked || 0));
     if (sort === "temporary") list.sort((a, b) => Number(b.entry.tempBanCount || 0) - Number(a.entry.tempBanCount || 0));
+    const resultCount = document.getElementById("watchlistResultCount");
+    if (resultCount) {
+      resultCount.textContent = list.length === source.length
+        ? `${source.length} player${source.length === 1 ? "" : "s"}`
+        : `${list.length} of ${source.length} players`;
+    }
     if (!list.length) {
       container.innerHTML = `<p class="wl-empty">No players match this view.</p>`;
       return;
@@ -938,12 +956,20 @@
     const preferences = displayPreferences();
     const filterSelect = document.getElementById("watchlistFilter");
     const sortSelect = document.getElementById("watchlistSort");
+    const searchInput = document.getElementById("watchlistSearch");
+    const staleSelect = document.getElementById("watchlistStaleHours");
     if (filterSelect && preferences.filter) filterSelect.value = preferences.filter;
     if (sortSelect && preferences.sort) sortSelect.value = preferences.sort;
-    [filterSelect, sortSelect].forEach(select => select?.addEventListener("change", () => {
+    if (searchInput && preferences.search) searchInput.value = preferences.search;
+    if (staleSelect && preferences.staleHours) staleSelect.value = preferences.staleHours;
+    [filterSelect, sortSelect, staleSelect].forEach(select => select?.addEventListener("change", () => {
       saveDisplayPreferences();
       renderWatchlist(undefined, { animate: false });
     }));
+    searchInput?.addEventListener("input", () => {
+      saveDisplayPreferences();
+      renderWatchlist(undefined, { animate: false });
+    });
 
     const clearBtn = document.getElementById("clearWatchlistBtn");
     if (clearBtn) {

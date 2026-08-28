@@ -21,7 +21,7 @@
   <meta property="og:url" content="https://pubgbanchecker.com/watchlist.html" />
   <title>PUBG Ban Checker – Watchlist</title>
 
-  <link rel="preload" href="css/watchlist.css?v=20260827c" as="style">
+  <link rel="preload" href="css/watchlist.css?v=20260829a" as="style">
   <link rel="preload" href="css/watchlist_theme.css?v=20260827d" as="style">
   <link rel="stylesheet" href="css/lang.css">
   <link rel="preload" href="img/steam.svg" as="image" type="image/svg+xml">
@@ -30,7 +30,7 @@
   <link rel="preload" href="img/kakao.svg" as="image" type="image/svg+xml">
 
   <!-- Main site styles -->
-<link rel="stylesheet" href="css/watchlist.css?v=20260827c">
+<link rel="stylesheet" href="css/watchlist.css?v=20260829a">
 
   <!-- NEW isolated watchlist theme -->
 <link rel="stylesheet" href="css/watchlist_theme.css?v=20260827d">
@@ -41,7 +41,7 @@
   <script defer src="js/ban-card.js?v=20260821b"></script>
   <script defer src="js/watchlist-store.js?v=20260827c"></script>
   <script defer src="js/auth-ui.js?v=20260829a"></script>
-  <script defer src="js/watchlist.js?v=20260827f"></script>
+  <script defer src="js/watchlist.js?v=20260829a"></script>
   <script defer src="js/i18n.js?v=20260829a"></script>
 </head>
 
@@ -189,12 +189,15 @@
       </div>
 
       <div class="wl-feed-tools" aria-label="Watchlist display controls">
+        <label><span>Find player</span>
+          <input id="watchlistSearch" type="search" placeholder="Search names" autocomplete="off" />
+        </label>
         <label><span data-i18n="watchlist.filter">Filter</span>
           <select id="watchlistFilter">
             <option value="all">All players</option>
             <option value="banned">Currently banned</option>
             <option value="temporary">Temporary bans observed</option>
-            <option value="stale">Stale (48+ hours)</option>
+            <option value="stale">Stale by preference</option>
             <option value="never">Never checked</option>
             <option value="failed">Failed checks</option>
           </select>
@@ -209,6 +212,15 @@
             <option value="temporary">Temporary bans observed</option>
           </select>
         </label>
+        <label><span>Stale after</span>
+          <select id="watchlistStaleHours">
+            <option value="24">24 hours</option>
+            <option value="48" selected>48 hours</option>
+            <option value="72">72 hours</option>
+            <option value="168">7 days</option>
+          </select>
+        </label>
+        <p id="watchlistResultCount" class="wl-result-count" role="status" aria-live="polite">0 players</p>
       </div>
 
       <aside class="wl-observation-notice" id="watchlistObservationNotice" hidden>

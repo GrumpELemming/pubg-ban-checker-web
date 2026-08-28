@@ -1005,13 +1005,41 @@ body.watchlist .wl-account-status[data-tone="error"] {
   text-transform: uppercase;
 }
 
-.wl-feed-tools select {
+.wl-feed-tools select,
+.wl-feed-tools input {
   min-width: 180px;
   padding: 8px 10px;
   border: 1px solid rgba(93, 218, 255, .3);
   border-radius: 9px;
   background: #071426;
   color: #e8f6ff;
+}
+
+.wl-feed-tools input::placeholder {
+  color: #7893aa;
+}
+
+.wl-result-count {
+  align-self: end;
+  margin: 0 0 9px auto;
+  color: #9ff7df;
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 620px) {
+  .wl-feed-tools label,
+  .wl-feed-tools select,
+  .wl-feed-tools input {
+    width: 100%;
+  }
+
+  .wl-result-count {
+    width: 100%;
+    margin-left: 0;
+  }
 }
 
 .wl-sweep-summary {
