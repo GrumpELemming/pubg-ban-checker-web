@@ -34,6 +34,36 @@ async function mockBanChecks(page, handler) {
   await page.route("**/api/check-ban-clan?**", handler);
 }
 
+async function openSignedInWatchlist(page, watchlists = {}) {
+  await page.route("**/api/auth/session", route => route.fulfill({
+    status: 200,
+    contentType: "application/json",
+    body: JSON.stringify({
+      available: true,
+      authenticated: true,
+      csrfToken: "test-csrf",
+      user: { id: "123", username: "tester", displayName: "Test User" }
+    })
+  }));
+  await page.route("**/api/watchlist", route => route.fulfill({
+    status: 200,
+    contentType: "application/json",
+    body: JSON.stringify({ watchlists })
+  }));
+  await page.route("**/api/watchlist/**", async route => {
+    const request = route.request();
+    const platform = new URL(request.url()).pathname.split("/").pop();
+    const body = request.postDataJSON();
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ watchlist: { platform, entries: body.entries, revision: Number(body.expectedRevision || 0) + 1 } })
+    });
+  });
+  await page.goto("/watchlist.html");
+  await expect(page.locator("#watchlistAccountSummary")).toHaveAttribute("data-auth-state", "signed-in");
+}
+
 test("a single re-check updates only its selected card", async ({ page }) => {
   await openGuestWatchlist(page, [entry("Alpha"), entry("Bravo")]);
   let requests = 0;
@@ -133,20 +163,26 @@ test("failed checks are retained and can be retried", async ({ page }) => {
 
 test("filters, sorting, removing, and clearing keep storage and cards aligned", async ({ page }) => {
   await openGuestWatchlist(page, [
-    entry("Zulu", { statusLabel: "Permanently banned", lastChecked: now - 3 * 24 * 60 * 60 * 1000 }),
+    entry("Zulu", { statusLabel: "Permanently banned", lastChecked: now - 3 * 24 * 60 * 60 * 1000, lastStatusChangeAt: now - 20_000 }),
     entry("Alpha", { tempBanCount: 2 }),
-    entry("Mike", { statusLabel: "Temporarily banned", lastChecked: now - 1000 })
+    entry("Mike", { statusLabel: "Temporarily banned", lastChecked: now - 1000, lastStatusChangeAt: now - 10_000 }),
+    entry("Never", { lastChecked: 0 })
   ]);
 
-  await expect(page.locator(".wl-stale-badge")).toHaveCount(1);
+  await expect(page.locator(".wl-stale-badge")).toHaveCount(2);
+  await page.locator("#watchlistFilter").selectOption("never");
+  await expect(page.locator(".watchlist-player")).toHaveCount(1);
+  await expect(page.locator(".wl-name-line strong")).toHaveText("Never");
   await page.locator("#watchlistFilter").selectOption("banned");
   await expect(page.locator(".watchlist-player")).toHaveCount(2);
   await page.locator("#watchlistFilter").selectOption("all");
+  await page.locator("#watchlistSort").selectOption("changed");
+  await expect(page.locator(".wl-name-line strong").first()).toHaveText("Mike");
   await page.locator("#watchlistSort").selectOption("name");
-  await expect(page.locator(".wl-name-line strong")).toHaveText(["Alpha", "Mike", "Zulu"]);
+  await expect(page.locator(".wl-name-line strong")).toHaveText(["Alpha", "Mike", "Never", "Zulu"]);
 
   await page.locator(".watchlist-player", { hasText: "Mike" }).getByRole("button", { name: "Remove" }).click();
-  await expect(page.locator(".watchlist-player")).toHaveCount(2);
+  await expect(page.locator(".watchlist-player")).toHaveCount(3);
   await page.getByRole("button", { name: "Clear All" }).click();
   await expect(page.locator("#watchlistContainer")).toContainText("No players match this view");
   const stored = await page.evaluate(() => JSON.parse(localStorage.getItem("watchlist_steam")));
@@ -194,6 +230,83 @@ test("signed-in history shows recent observations and expands older ones", async
   await expect(page.locator(".wl-observed-history details > summary")).toContainText("Show 2 earlier observations");
   await page.locator(".wl-observed-history details > summary").click();
   await expect(page.locator(".wl-observed-history details li")).toHaveCount(2);
+});
+
+test("signed-in users can export and restore a merged Watchlist backup", async ({ page }) => {
+  await openSignedInWatchlist(page, {
+    steam: { entries: [entry("Alpha", { notes: "Existing note" })], revision: 1 }
+  });
+
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export my data" }).click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toMatch(/^pubg-ban-checker-watchlist-\d{4}-\d{2}-\d{2}\.json$/);
+  const chunks = [];
+  for await (const chunk of await download.createReadStream()) chunks.push(chunk);
+  const exported = JSON.parse(Buffer.concat(chunks).toString("utf8"));
+  expect(exported.account).toMatchObject({ id: "123", username: "tester" });
+  expect(exported.watchlists.steam).toHaveLength(1);
+
+  page.once("dialog", dialog => dialog.accept());
+  await page.locator("#importWatchlistFile").setInputFiles({
+    name: "watchlist-backup.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify({
+      exportedAt: new Date().toISOString(),
+      watchlists: {
+        steam: [entry("Alpha", { notes: "Imported note" }), entry("Bravo", { statusLabel: "Temporarily banned" })],
+        xbox: [entry("ConsolePlayer", { platform: "xbox" })],
+        psn: [],
+        kakao: []
+      }
+    }))
+  });
+
+  await expect(page.locator("#watchlistAccountStatus")).toContainText("Backup imported successfully");
+  const restored = await page.evaluate(() => ({
+    steam: window.PBCWatchlistStore.get("steam"),
+    xbox: window.PBCWatchlistStore.get("xbox")
+  }));
+  expect(restored.steam).toHaveLength(2);
+  expect(restored.steam.map(item => item.player).sort()).toEqual(["Alpha", "Bravo"]);
+  expect(restored.xbox).toHaveLength(1);
+  expect(restored.xbox[0].player).toBe("ConsolePlayer");
+});
+
+test("invalid backup files are rejected without changing Watchlist data", async ({ page }) => {
+  await openSignedInWatchlist(page, {
+    steam: { entries: [entry("Alpha")], revision: 1 }
+  });
+  await page.locator("#importWatchlistFile").setInputFiles({
+    name: "invalid.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify({ unrelated: true }))
+  });
+
+  await expect(page.locator("#watchlistAccountStatus")).toContainText("does not contain Watchlist backup data");
+  const players = await page.evaluate(() => window.PBCWatchlistStore.get("steam").map(item => item.player));
+  expect(players).toEqual(["Alpha"]);
+});
+
+test("signing out other sessions requires confirmation and sends CSRF protection", async ({ page }) => {
+  let requestDetails = null;
+  await page.route("**/api/auth/logout-others", route => {
+    requestDetails = {
+      method: route.request().method(),
+      csrf: route.request().headers()["x-csrf-token"]
+    };
+    return route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ sessionsRevoked: 2 })
+    });
+  });
+  await openSignedInWatchlist(page);
+  page.once("dialog", dialog => dialog.accept());
+  await page.getByRole("button", { name: "Sign out other sessions" }).click();
+
+  await expect(page.locator("#watchlistAccountStatus")).toContainText("2 other sessions signed out");
+  expect(requestDetails).toEqual({ method: "POST", csrf: "test-csrf" });
 });
 
 test("primary pages have no serious or critical automated accessibility violations", async ({ page }) => {

@@ -45,6 +45,7 @@ const TRANSLATIONS = {
     "watchlist.account.title": "Watchlist account",
     "watchlist.account.subtitle": "Optional sign-in for cross-device sync",
     "watchlist.account.export": "Export my data",
+    "watchlist.account.import": "Import backup",
     "watchlist.account.sessions": "Sign out other sessions",
     "watchlist.account.deleteLists": "Delete synced Watchlists",
     "watchlist.account.deleteAccount": "Delete account data",

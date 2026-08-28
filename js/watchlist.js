@@ -657,11 +657,13 @@
       if (filter === "banned") return status === "perm" || status === "temp";
       if (filter === "temporary") return Number(entry.tempBanCount) > 0;
       if (filter === "stale") return isStale(entry);
+      if (filter === "never") return !Number(entry.lastChecked);
       if (filter === "failed") return Boolean(entry.lastCheckFailed);
       return true;
     });
     if (sort === "name") list.sort((a, b) => a.entry.player.localeCompare(b.entry.player));
     if (sort === "recent") list.sort((a, b) => Number(b.entry.lastChecked || 0) - Number(a.entry.lastChecked || 0));
+    if (sort === "changed") list.sort((a, b) => Number(b.entry.lastStatusChangeAt || 0) - Number(a.entry.lastStatusChangeAt || 0));
     if (sort === "oldest") list.sort((a, b) => Number(a.entry.lastChecked || 0) - Number(b.entry.lastChecked || 0));
     if (sort === "temporary") list.sort((a, b) => Number(b.entry.tempBanCount || 0) - Number(a.entry.tempBanCount || 0));
     if (!list.length) {

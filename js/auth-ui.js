@@ -31,6 +31,8 @@
     const signInButton = document.getElementById("watchlistSignInBtn");
     const signOutButton = document.getElementById("watchlistSignOutBtn");
     const exportButton = document.getElementById("exportWatchlistBtn");
+    const importButton = document.getElementById("importWatchlistBtn");
+    const importFile = document.getElementById("importWatchlistFile");
     const diagnostics = document.getElementById("watchlistSyncDiagnostics");
     const revokeSessionsButton = document.getElementById("revokeSessionsBtn");
     const deleteWatchlistsButton = document.getElementById("deleteSyncedWatchlistsBtn");
@@ -93,6 +95,7 @@
       signInButton.hidden = authenticated;
       signOutButton.hidden = !authenticated;
       if (exportButton) exportButton.hidden = !authenticated;
+      if (importButton) importButton.hidden = !authenticated;
       [revokeSessionsButton, deleteWatchlistsButton, deleteAccountButton].forEach(button => {
         if (button) button.hidden = !authenticated;
       });
@@ -297,6 +300,75 @@
       setStatus("Watchlist data exported", "success");
     }
 
+    async function importWatchlistData(file) {
+      const store = window.PBCWatchlistStore;
+      if (!session.authenticated || !store?.get || !store?.save || !store?.mergeEntries) return;
+      if (!file) return;
+      if (file.size > 5 * 1024 * 1024) {
+        setStatus("That backup is larger than the 5 MB import limit", "error");
+        return;
+      }
+
+      let payload;
+      try {
+        payload = JSON.parse(await file.text());
+      } catch {
+        setStatus("Import failed: select a valid PUBG Ban Checker JSON backup", "error");
+        return;
+      }
+
+      const watchlists = payload && typeof payload === "object" ? payload.watchlists : null;
+      const platforms = store.platforms || ["steam", "xbox", "psn", "kakao"];
+      if (!watchlists || typeof watchlists !== "object" || Array.isArray(watchlists)) {
+        setStatus("Import failed: this file does not contain Watchlist backup data", "error");
+        return;
+      }
+
+      const prepared = [];
+      for (const platform of platforms) {
+        if (watchlists[platform] === undefined) continue;
+        if (!Array.isArray(watchlists[platform])) {
+          setStatus(`Import failed: ${platform} Watchlist data is not a list`, "error");
+          return;
+        }
+        const normalized = store.mergeEntries(watchlists[platform], platform);
+        if (normalized.length > 500) {
+          setStatus(`Import failed: ${platform} contains more than 500 players`, "error");
+          return;
+        }
+        if (watchlists[platform].length && !normalized.length) {
+          setStatus(`Import failed: ${platform} contains no valid player records`, "error");
+          return;
+        }
+        prepared.push({ platform, entries: normalized });
+      }
+
+      const playerCount = prepared.reduce((total, item) => total + item.entries.length, 0);
+      if (!prepared.length || !playerCount) {
+        setStatus("Import stopped: the backup contains no players", "warning");
+        return;
+      }
+      const platformCount = prepared.filter(item => item.entries.length).length;
+      if (!window.confirm(`Import ${playerCount} player record${playerCount === 1 ? "" : "s"} across ${platformCount} platform${platformCount === 1 ? "" : "s"}? Existing records will be merged and kept.`)) return;
+
+      actionPending = true;
+      render();
+      try {
+        let finalCount = 0;
+        for (const item of prepared) {
+          const merged = store.mergeEntries(store.get(item.platform), item.entries, item.platform);
+          finalCount += merged.length;
+          await Promise.resolve(store.save(item.platform, merged));
+        }
+        notice = { message: `Backup imported successfully. ${finalCount} Watchlist record${finalCount === 1 ? "" : "s"} now available.`, tone: "success", sticky: true };
+      } catch {
+        notice = { message: "Import could not finish. Existing Watchlist data has been kept.", tone: "error" };
+      } finally {
+        actionPending = false;
+        render();
+      }
+    }
+
     async function accountRequest(url, options = {}) {
       const response = await fetch(url, {
         method: options.method || "POST",
@@ -349,6 +421,15 @@
 
     signOutButton.addEventListener("click", signOut);
     exportButton?.addEventListener("click", exportWatchlistData);
+    importButton?.addEventListener("click", () => importFile?.click());
+    importFile?.addEventListener("change", async () => {
+      const file = importFile.files?.[0];
+      try {
+        await importWatchlistData(file);
+      } finally {
+        importFile.value = "";
+      }
+    });
     revokeSessionsButton?.addEventListener("click", revokeOtherSessions);
     deleteWatchlistsButton?.addEventListener("click", deleteSyncedWatchlists);
     deleteAccountButton?.addEventListener("click", deleteAccountData);
