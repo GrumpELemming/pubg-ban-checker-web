@@ -312,7 +312,8 @@
           return updateEntryFromBan(entry, platform, true);
         }
       }
-      return false;
+      const message = data?.error || data?.message || `Watchlist check failed (${resp.status || "no response"})`;
+      throw new Error(message);
     }
 
     const normalized = lookupName.toLowerCase();
