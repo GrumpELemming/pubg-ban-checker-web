@@ -114,3 +114,41 @@ test("account ID lookup resolves a name before checking its status", async ({ pa
   await expect(result.getByRole("button", { name: "Generate Ban Card" })).toBeVisible();
   expect(calls).toEqual(["resolve:account.lookup-test", "check:ResolvedPlayer"]);
 });
+
+test("abualixx uses the custom artwork with live ban-card stats", async ({ page }) => {
+  const accountId = "account.6d96eb34e42046af9e9befba6e81df8b";
+  let customArtworkRequested = false;
+  page.on("request", request => {
+    if (request.url().includes("/img/ban-cards/abualixx-ban-hammer.png")) customArtworkRequested = true;
+  });
+  await page.route("**/api/ban-card-data?**", route => route.fulfill({
+    status: 200,
+    contentType: "application/json",
+    body: JSON.stringify({
+      player: "abualixx",
+      accountId,
+      banStatus: "permanently_banned",
+      checkedAt: "2026-09-06T12:00:00Z",
+      mastery: { level: 214, tier: "Silver", tierNumber: 2 },
+      lifetime: { matches: 1234, kills: 2468, wins: 57, losses: 1177, kd: 2.097, timeSurvived: 720000 },
+      clan: "SZVXY",
+      ranked: { highest: { label: "Diamond 3" } }
+    })
+  }));
+  await openChecker(page);
+
+  await page.evaluate(options => window.BanCard.open(options), {
+    player: "abualixx",
+    accountId,
+    platform: "steam"
+  });
+
+  await expect(page.locator("#banCardCanvas")).toBeVisible();
+  await expect(page.locator("#downloadBanCardBtn")).toBeEnabled();
+  expect(customArtworkRequested).toBe(true);
+  const overlayPixel = await page.locator("#banCardCanvas").evaluate(canvas =>
+    Array.from(canvas.getContext("2d").getImageData(1, 480, 1, 1).data)
+  );
+  expect(overlayPixel[0]).toBeGreaterThan(100);
+  expect(overlayPixel[1]).toBeLessThan(130);
+});

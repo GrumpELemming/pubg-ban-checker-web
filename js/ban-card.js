@@ -5,6 +5,12 @@
   const CARD_WIDTH = 1200;
   const CARD_HEIGHT = 675;
   const CUSTOM_CARDS = {
+    "account.6d96eb34e42046af9e9befba6e81df8b": {
+      image: "img/ban-cards/abualixx-ban-hammer.png?v=20260906a",
+      filename: "PUBGBanChecker_abualixx_BannedBySZVXY.png",
+      title: "BANNED BY SZVXY",
+      accent: "#ff4b43"
+    },
     "account.308b52a145fc425a92eb9d4fd17af37a": {
       image: "img/ban-cards/bellebollo-account-banned.png?v=20260827b",
       filename: "PUBGBanChecker_bellebollo_AccountBanned.png"
@@ -104,6 +110,70 @@
     });
   }
 
+  function drawCoverImage(ctx, image) {
+    const scale = Math.max(CARD_WIDTH / image.naturalWidth, CARD_HEIGHT / image.naturalHeight);
+    const width = image.naturalWidth * scale;
+    const height = image.naturalHeight * scale;
+    ctx.drawImage(image, (CARD_WIDTH - width) / 2, (CARD_HEIGHT - height) / 2, width, height);
+  }
+
+  function drawCustomCardStats(ctx, data, customCard) {
+    const stats = data.lifetime || {};
+    const timePlayedHours = stats.timeSurvived === undefined || stats.timeSurvived === null
+      ? null
+      : safeNumber(stats.timeSurvived) / 3600;
+    const highestRank = data.ranked?.highest?.label || "Unranked";
+    const tierNumber = safeNumber(data.mastery?.tierNumber);
+    const level = safeNumber(data.mastery?.level);
+    const checkedDate = new Date(data.checkedAt);
+    const formattedDate = Number.isNaN(checkedDate.getTime())
+      ? "Date unavailable"
+      : `Checked ${checkedDate.toLocaleDateString("en-GB", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" })}`;
+
+    const panel = ctx.createLinearGradient(0, 480, 0, CARD_HEIGHT);
+    panel.addColorStop(0, "rgba(4, 7, 12, 0.80)");
+    panel.addColorStop(1, "rgba(4, 7, 12, 0.97)");
+    ctx.fillStyle = panel;
+    ctx.fillRect(0, 478, CARD_WIDTH, CARD_HEIGHT - 478);
+    ctx.fillStyle = customCard.accent || "#ff4b43";
+    ctx.fillRect(0, 478, CARD_WIDTH, 5);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "900 29px Arial, sans-serif";
+    ctx.fillText(customCard.title || "PERMANENTLY BANNED", 42, 522);
+    ctx.fillStyle = "#aab4c3";
+    ctx.font = "700 14px Arial, sans-serif";
+    ctx.fillText(`SURVIVAL  Tier ${tierNumber || "?"} · Level ${level}/500`, 42, 554);
+    ctx.fillText(`CLAN  ${data.clan || "No clan"}`, 355, 554);
+    ctx.fillText(`HIGHEST RANK  ${highestRank}`, 620, 554);
+
+    const statItems = [
+      ["MATCHES", safeNumber(stats.matches).toLocaleString("en-GB")],
+      ["KILLS", safeNumber(stats.kills).toLocaleString("en-GB")],
+      ["WINS", safeNumber(stats.wins).toLocaleString("en-GB")],
+      ["K/D", safeNumber(stats.losses) === 0 ? "—" : safeNumber(stats.kd).toFixed(2)],
+      ["PLAYTIME", timePlayedHours === null ? "—" : `${timePlayedHours.toLocaleString("en-GB", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}h`]
+    ];
+    statItems.forEach(([label, value], index) => {
+      const x = 42 + index * 155;
+      ctx.fillStyle = "#8f9bab";
+      ctx.font = "700 13px Arial, sans-serif";
+      ctx.fillText(label, x, 591);
+      ctx.fillStyle = index === 3 ? (customCard.accent || "#ff4b43") : "#ffffff";
+      ctx.font = "900 25px Arial, sans-serif";
+      ctx.fillText(String(value), x, 622);
+    });
+
+    ctx.textAlign = "right";
+    ctx.fillStyle = "#c9d1dc";
+    ctx.font = "600 14px Arial, sans-serif";
+    ctx.fillText(String(data.accountId || ""), 1158, 591);
+    ctx.fillStyle = "#8f9bab";
+    ctx.fillText(formattedDate, 1158, 620);
+    ctx.fillText("pubgbanchecker.com by @Grump-E-Lemming", 1158, 649);
+    ctx.textAlign = "left";
+  }
+
   function drawFallbackBadge(ctx, config) {
     ctx.save();
     ctx.translate(230, 345);
@@ -136,7 +206,8 @@
     if (customCard) {
       const image = await loadImage(customCard.image);
       ctx.clearRect(0, 0, CARD_WIDTH, CARD_HEIGHT);
-      ctx.drawImage(image, 0, 0, CARD_WIDTH, CARD_HEIGHT);
+      drawCoverImage(ctx, image);
+      drawCustomCardStats(ctx, data, customCard);
       filename = customCard.filename;
       return;
     }
