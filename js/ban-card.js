@@ -5,6 +5,12 @@
   const CARD_WIDTH = 1200;
   const CARD_HEIGHT = 675;
   const CUSTOM_CARDS = {
+    "account.7fb85c5eae014598acff30755431e4fa": {
+      image: "img/ban-cards/dmbqpdcr7vsxi7-nooob-radar.png?v=20260909a",
+      filename: "PUBGBanChecker_DMBqPdCr7VsXI7_ExposedByNooobRadar.png",
+      title: "Exposed by nooob radar",
+      accent: "#f0b47d"
+    },
     "account.6d96eb34e42046af9e9befba6e81df8b": {
       image: "img/ban-cards/abualixx-ban-hammer.png?v=20260906a",
       filename: "PUBGBanChecker_abualixx_BannedBySZVXY.png",
