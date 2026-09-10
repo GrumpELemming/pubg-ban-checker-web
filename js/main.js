@@ -224,6 +224,24 @@
   }
 
   async function getBanStatus(platform, playerName) {
+    const normalized = playerName.trim().replace(/\\_/g, "_").toLowerCase();
+    const knownAccountId = "account.3da63b18cb7b4e369f9d7dc5136f93bd";
+    const isKnownAlias = platform === "steam" &&
+      ["xnemesisx-_-", "griimlreaperr"].includes(normalized);
+    if (isKnownAlias || /^account\.[a-f0-9]{32}$/.test(normalized)) {
+      const id = isKnownAlias ? knownAccountId : normalized;
+      const resolved = await resolveById(id, platform);
+      if (resolved.error || !resolved.currentName) {
+        return {
+          player: playerName,
+          accountId: id,
+          clan: "",
+          statusText: resolved.error || "Player not found",
+          errorCode: "player_not_found"
+        };
+      }
+      playerName = resolved.currentName;
+    }
     const first = await fetchBanOnce(platform, playerName);
     if (!isNotBanned(first.statusText)) {
       return first;

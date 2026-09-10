@@ -1,5 +1,40 @@
 const { test, expect } = require("@playwright/test");
 
+for (const query of ["XNEMESISX-_-", "XNEMESISX-\\_-", "GRIIMlREAPERR", "account.3da63b18cb7b4e369f9d7dc5136f93bd"]) {
+  test(`custom card account search resolves ${query}`, async ({ page }) => {
+    const accountId = "account.3da63b18cb7b4e369f9d7dc5136f93bd";
+    let artworkRequested = false;
+    page.on("request", request => {
+      if (request.url().includes("/img/ban-cards/xnemesisx-pubgtogether.png")) artworkRequested = true;
+    });
+    await page.route("**/api/ban-card-data?**", route => {
+      expect(new URL(route.request().url()).searchParams.get("accountId")).toBe(accountId);
+      return route.fulfill({ json: {
+        accountId, player: "XNEMESISX-_-", banStatus: "permanently_banned",
+        mastery: { level: 100, tier: "Diamond" }, lifetime: {}
+      } });
+    });
+    await page.route("**/api/resolve?**", route => {
+      expect(new URL(route.request().url()).searchParams.get("id")).toBe(accountId);
+      return route.fulfill({ json: { accountId, currentName: "XNEMESISX-_-" } });
+    });
+    await page.route("**/api/check-ban-clan?**", route => {
+      expect(new URL(route.request().url()).searchParams.get("player")).toBe("XNEMESISX-_-");
+      return route.fulfill({ json: { results: [{ player: "XNEMESISX-_-", accountId, banStatus: "Permanently banned" }] } });
+    });
+    await openChecker(page);
+    await page.locator("#playerInput").fill(query);
+    await page.locator("#checkBanBtn").click();
+    const row = page.locator("#results .player-row");
+    await expect(row).toContainText(accountId);
+    await expect(row.locator(".ban-label")).toHaveText("Permanently Banned");
+    await row.getByRole("button", { name: "Generate Ban Card" }).click();
+    await expect(page.locator("#banCardCanvas")).toBeVisible();
+    await expect(page.locator("#downloadBanCardBtn")).toBeEnabled();
+    expect(artworkRequested).toBe(true);
+  });
+}
+
 async function openChecker(page) {
   await page.route("**/api/auth/session", route => route.fulfill({
     status: 200,
