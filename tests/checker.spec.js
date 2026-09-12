@@ -187,3 +187,27 @@ test("abualixx uses the custom artwork with live ban-card stats", async ({ page 
   expect(overlayPixel[0]).toBeGreaterThan(100);
   expect(overlayPixel[1]).toBeLessThan(130);
 });
+
+test("sibarsaakiiya uses the GrindisReaaal custom ban card", async ({ page }) => {
+  const accountId = "account.bb1ee7c376114fd6badf69eda4b016b0";
+  let customArtworkRequested = false;
+  page.on("request", request => {
+    if (request.url().includes("/img/ban-cards/grindisreaaal-naruto.webp")) customArtworkRequested = true;
+  });
+  await page.route("**/api/ban-card-data?**", route => route.fulfill({ json: {
+    player: "sibarsaakiiya",
+    accountId,
+    banStatus: "permanently_banned",
+    checkedAt: "2026-09-12T12:00:00Z",
+    mastery: { level: 100, tier: "Gold", tierNumber: 2 },
+    lifetime: { matches: 20, kills: 40, wins: 1, losses: 19, kd: 2.1, timeSurvived: 72000 }
+  } }));
+  await openChecker(page);
+  await page.evaluate(options => window.BanCard.open(options), {
+    player: "sibarsaakiiya", accountId, platform: "steam"
+  });
+
+  await expect(page.locator("#banCardCanvas")).toBeVisible();
+  await expect(page.locator("#downloadBanCardBtn")).toBeEnabled();
+  expect(customArtworkRequested).toBe(true);
+});

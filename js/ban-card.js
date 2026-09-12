@@ -5,6 +5,24 @@
   const CARD_WIDTH = 1200;
   const CARD_HEIGHT = 675;
   const CUSTOM_CARDS = {
+    "account.bb1ee7c376114fd6badf69eda4b016b0": {
+      image: "img/ban-cards/grindisreaaal-naruto.webp?v=20260912a",
+      filename: "PUBGBanChecker_sibarsaakiiya_BannedByGrindisReaaal.png",
+      title: "BANNED BY GrindisReaaal",
+      accent: "#77d9ff"
+    },
+    "account.07e7ed72079a4af493991f4cba46f3cd": {
+      image: "img/ban-cards/grindisreaaal-naruto.webp?v=20260912a",
+      filename: "PUBGBanChecker_godgimchi8024_BannedByGrindisReaaal.png",
+      title: "BANNED BY GrindisReaaal",
+      accent: "#77d9ff"
+    },
+    "account.474cb9d0291443b0b97213e5c6ffccf9": {
+      image: "img/ban-cards/grindisreaaal-naruto.webp?v=20260912a",
+      filename: "PUBGBanChecker_sha2wosimA_BannedByGrindisReaaal.png",
+      title: "BANNED BY GrindisReaaal",
+      accent: "#77d9ff"
+    },
     "account.3da63b18cb7b4e369f9d7dc5136f93bd": {
       image: "img/ban-cards/xnemesisx-pubgtogether.png?v=20260910a",
       filename: "PUBGBanChecker_XNEMESISX_GRIIMlREAPERR_BannedByPUBGTogether.png",
