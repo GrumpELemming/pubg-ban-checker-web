@@ -155,6 +155,8 @@
     const highestRank = data.ranked?.highest?.label || "Unranked";
     const tierNumber = safeNumber(data.mastery?.tierNumber);
     const level = safeNumber(data.mastery?.level);
+    const player = String(data.player || "Unknown player");
+    const tierConfig = getTierConfig(data.mastery?.tier);
     const checkedDate = new Date(data.checkedAt);
     const formattedDate = Number.isNaN(checkedDate.getTime())
       ? "Date unavailable"
@@ -168,14 +170,22 @@
     ctx.fillStyle = customCard.accent || "#ff4b43";
     ctx.fillRect(0, 478, CARD_WIDTH, 5);
 
+    fitText(ctx, player, 620, 34, 24, 900);
     ctx.fillStyle = "#ffffff";
-    ctx.font = "900 29px Arial, sans-serif";
-    ctx.fillText(customCard.title || "PERMANENTLY BANNED", 42, 522);
+    ctx.fillText(ellipsize(ctx, player, 620), 42, 518);
+    ctx.fillStyle = customCard.accent || "#ff4b43";
+    ctx.font = "900 19px Arial, sans-serif";
+    ctx.fillText(customCard.title || "PERMANENTLY BANNED", 42, 547);
+    ctx.textAlign = "right";
+    ctx.fillStyle = "#ffffff";
+    fitText(ctx, tierConfig.title, 480, 22, 16, 900);
+    ctx.fillText(ellipsize(ctx, tierConfig.title, 480), 770, 547);
+    ctx.textAlign = "left";
     ctx.fillStyle = "#aab4c3";
     ctx.font = "700 14px Arial, sans-serif";
-    ctx.fillText(`SURVIVAL  Tier ${tierNumber || "?"} · Level ${level}/500`, 42, 554);
-    ctx.fillText(`CLAN  ${data.clan || "No clan"}`, 355, 554);
-    ctx.fillText(`HIGHEST RANK  ${highestRank}`, 620, 554);
+    ctx.fillText(`SURVIVAL  Tier ${tierNumber || "?"} · Level ${level}/500`, 42, 575);
+    ctx.fillText(`CLAN  ${data.clan || "No clan"}`, 355, 575);
+    ctx.fillText(`HIGHEST RANK  ${highestRank}`, 620, 575);
 
     const statItems = [
       ["MATCHES", safeNumber(stats.matches).toLocaleString("en-GB")],
@@ -188,19 +198,19 @@
       const x = 42 + index * 155;
       ctx.fillStyle = "#8f9bab";
       ctx.font = "700 13px Arial, sans-serif";
-      ctx.fillText(label, x, 591);
+      ctx.fillText(label, x, 610);
       ctx.fillStyle = index === 3 ? (customCard.accent || "#ff4b43") : "#ffffff";
       ctx.font = "900 25px Arial, sans-serif";
-      ctx.fillText(String(value), x, 622);
+      ctx.fillText(String(value), x, 641);
     });
 
     ctx.textAlign = "right";
     ctx.fillStyle = "#c9d1dc";
     ctx.font = "600 14px Arial, sans-serif";
-    ctx.fillText(String(data.accountId || ""), 1158, 591);
+    ctx.fillText(String(data.accountId || ""), 1158, 610);
     ctx.fillStyle = "#8f9bab";
-    ctx.fillText(formattedDate, 1158, 620);
-    ctx.fillText("pubgbanchecker.com by @Grump-E-Lemming", 1158, 649);
+    ctx.fillText(formattedDate, 1158, 638);
+    ctx.fillText("pubgbanchecker.com by @Grump-E-Lemming", 1158, 664);
     ctx.textAlign = "left";
   }
 

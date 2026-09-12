@@ -203,6 +203,14 @@ test("sibarsaakiiya uses the GrindisReaaal custom ban card", async ({ page }) =>
     lifetime: { matches: 20, kills: 40, wins: 1, losses: 19, kd: 2.1, timeSurvived: 72000 }
   } }));
   await openChecker(page);
+  await page.evaluate(() => {
+    window.__banCardText = [];
+    const originalFillText = CanvasRenderingContext2D.prototype.fillText;
+    CanvasRenderingContext2D.prototype.fillText = function fillText(text, ...args) {
+      window.__banCardText.push(String(text));
+      return originalFillText.call(this, text, ...args);
+    };
+  });
   await page.evaluate(options => window.BanCard.open(options), {
     player: "sibarsaakiiya", accountId, platform: "steam"
   });
@@ -210,4 +218,9 @@ test("sibarsaakiiya uses the GrindisReaaal custom ban card", async ({ page }) =>
   await expect(page.locator("#banCardCanvas")).toBeVisible();
   await expect(page.locator("#downloadBanCardBtn")).toBeEnabled();
   expect(customArtworkRequested).toBe(true);
+  await expect.poll(() => page.evaluate(() => window.__banCardText)).toEqual(expect.arrayContaining([
+    "sibarsaakiiya",
+    "BANNED BY GrindisReaaal",
+    "BRAINDEAD BOT"
+  ]));
 });
