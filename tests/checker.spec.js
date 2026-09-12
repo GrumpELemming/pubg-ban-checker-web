@@ -227,6 +227,10 @@ test("sibarsaakiiya uses the GrindisReaaal custom ban card", async ({ page }) =>
 
 test("ABU-ABD receives the Shady Knights salt-the-whale ban card", async ({ page }) => {
   const accountId = "account.58f05022e6244ad8823fdeab7066c86a";
+  let customArtworkRequested = false;
+  page.on("request", request => {
+    if (request.url().includes("/img/ban-cards/abu-abd-shady-knights-salty-whale.png")) customArtworkRequested = true;
+  });
   await page.route("**/api/ban-card-data?**", route => route.fulfill({ json: {
     player: "ABU-ABD",
     accountId,
@@ -250,13 +254,10 @@ test("ABU-ABD receives the Shady Knights salt-the-whale ban card", async ({ page
 
   await expect(page.locator("#banCardCanvas")).toBeVisible();
   await expect(page.locator("#downloadBanCardBtn")).toBeEnabled();
+  expect(customArtworkRequested).toBe(true);
   await expect.poll(() => page.evaluate(() => window.__banCardText)).toEqual(expect.arrayContaining([
     "ABU-ABD",
     "BANNED BY SHADY KNIGHTS",
     "SALTY WHALE"
   ]));
-  const saltPixel = await page.locator("#banCardCanvas").evaluate(canvas =>
-    Array.from(canvas.getContext("2d").getImageData(600, 217, 1, 1).data)
-  );
-  expect(saltPixel[0]).toBeGreaterThan(saltPixel[2]);
 });

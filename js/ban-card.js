@@ -6,7 +6,7 @@
   const CARD_HEIGHT = 675;
   const CUSTOM_CARDS = {
     "account.58f05022e6244ad8823fdeab7066c86a": {
-      renderer: "shady-knights",
+      image: "img/ban-cards/abu-abd-shady-knights-salty-whale.png?v=20260912b",
       filename: "PUBGBanChecker_ABU-ABD_BannedByShadyKnights.png",
       title: "BANNED BY SHADY KNIGHTS",
       accent: "#f2cb63"
