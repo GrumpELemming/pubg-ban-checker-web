@@ -224,3 +224,39 @@ test("sibarsaakiiya uses the GrindisReaaal custom ban card", async ({ page }) =>
     "BRAINDEAD BOT"
   ]));
 });
+
+test("ABU-ABD receives the Shady Knights salt-the-whale ban card", async ({ page }) => {
+  const accountId = "account.58f05022e6244ad8823fdeab7066c86a";
+  await page.route("**/api/ban-card-data?**", route => route.fulfill({ json: {
+    player: "ABU-ABD",
+    accountId,
+    banStatus: "permanently_banned",
+    checkedAt: "2026-09-12T12:00:00Z",
+    mastery: { level: 320, tier: "Diamond", tierNumber: 5 },
+    lifetime: { matches: 42, kills: 99, wins: 3, losses: 39, kd: 2.54, timeSurvived: 108000 }
+  } }));
+  await openChecker(page);
+  await page.evaluate(() => {
+    window.__banCardText = [];
+    const originalFillText = CanvasRenderingContext2D.prototype.fillText;
+    CanvasRenderingContext2D.prototype.fillText = function fillText(text, ...args) {
+      window.__banCardText.push(String(text));
+      return originalFillText.call(this, text, ...args);
+    };
+  });
+  await page.evaluate(options => window.BanCard.open(options), {
+    player: "ABU-ABD", accountId, platform: "steam"
+  });
+
+  await expect(page.locator("#banCardCanvas")).toBeVisible();
+  await expect(page.locator("#downloadBanCardBtn")).toBeEnabled();
+  await expect.poll(() => page.evaluate(() => window.__banCardText)).toEqual(expect.arrayContaining([
+    "ABU-ABD",
+    "BANNED BY SHADY KNIGHTS",
+    "SALTY WHALE"
+  ]));
+  const saltPixel = await page.locator("#banCardCanvas").evaluate(canvas =>
+    Array.from(canvas.getContext("2d").getImageData(600, 217, 1, 1).data)
+  );
+  expect(saltPixel[0]).toBeGreaterThan(saltPixel[2]);
+});

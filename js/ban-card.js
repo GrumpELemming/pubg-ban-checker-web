@@ -5,6 +5,12 @@
   const CARD_WIDTH = 1200;
   const CARD_HEIGHT = 675;
   const CUSTOM_CARDS = {
+    "account.58f05022e6244ad8823fdeab7066c86a": {
+      renderer: "shady-knights",
+      filename: "PUBGBanChecker_ABU-ABD_BannedByShadyKnights.png",
+      title: "BANNED BY SHADY KNIGHTS",
+      accent: "#f2cb63"
+    },
     "account.bb1ee7c376114fd6badf69eda4b016b0": {
       image: "img/ban-cards/grindisreaaal-naruto.webp?v=20260912a",
       filename: "PUBGBanChecker_sibarsaakiiya_BannedByGrindisReaaal.png",
@@ -214,6 +220,98 @@
     ctx.textAlign = "left";
   }
 
+  function drawShadyKnightsArtwork(ctx) {
+    const sky = ctx.createLinearGradient(0, 0, CARD_WIDTH, CARD_HEIGHT);
+    sky.addColorStop(0, "#071119");
+    sky.addColorStop(0.55, "#173b4b");
+    sky.addColorStop(1, "#061018");
+    ctx.fillStyle = sky;
+    ctx.fillRect(0, 0, CARD_WIDTH, CARD_HEIGHT);
+
+    // Moonlight, waves, and a deliberately theatrical salt storm.
+    ctx.fillStyle = "rgba(255, 232, 158, 0.18)";
+    ctx.beginPath();
+    ctx.arc(890, 155, 142, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "rgba(126, 218, 237, 0.28)";
+    ctx.lineWidth = 10;
+    for (let y = 310; y < 490; y += 38) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.bezierCurveTo(150, y - 26, 300, y + 28, 475, y);
+      ctx.bezierCurveTo(670, y - 24, 860, y + 24, 1200, y - 6);
+      ctx.stroke();
+    }
+
+    // Whale emerging from the sea on the right.
+    ctx.save();
+    ctx.translate(885, 343);
+    ctx.rotate(-0.14);
+    ctx.fillStyle = "#60778c";
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 225, 104, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#42596d";
+    ctx.beginPath();
+    ctx.moveTo(180, -12); ctx.lineTo(290, -95); ctx.lineTo(254, 18); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#aac0c9";
+    ctx.beginPath();
+    ctx.ellipse(-12, 47, 146, 36, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#f4fbef";
+    ctx.beginPath();
+    ctx.arc(-74, -22, 9, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#0c1720";
+    ctx.beginPath();
+    ctx.arc(-74, -22, 4, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+
+    // Armoured bear inspired by the supplied reference: helmet, brown fur, red eyes.
+    ctx.save();
+    ctx.translate(350, 278);
+    ctx.fillStyle = "#452516";
+    ctx.beginPath(); ctx.arc(-116, -94, 52, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(116, -94, 52, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#6b3b22";
+    ctx.beginPath(); ctx.ellipse(0, 12, 157, 190, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#9a6038";
+    ctx.beginPath(); ctx.ellipse(0, 42, 79, 74, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#27140e";
+    ctx.beginPath(); ctx.ellipse(0, 12, 33, 24, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#d52a22";
+    [-54, 54].forEach(x => { ctx.beginPath(); ctx.arc(x, -24, 14, 0, Math.PI * 2); ctx.fill(); });
+    ctx.fillStyle = "#ffd258";
+    [-54, 54].forEach(x => { ctx.beginPath(); ctx.arc(x, -24, 5, 0, Math.PI * 2); ctx.fill(); });
+    ctx.fillStyle = "#b08a43";
+    ctx.beginPath(); ctx.ellipse(0, -140, 126, 66, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#493716";
+    ctx.fillRect(-122, -143, 244, 24);
+    ctx.fillStyle = "#d3ae5c";
+    ctx.beginPath(); ctx.moveTo(0, -237); ctx.lineTo(34, -175); ctx.lineTo(-34, -175); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#85472b";
+    ctx.beginPath(); ctx.moveTo(-160, 130); ctx.lineTo(-205, 270); ctx.lineTo(-94, 252); ctx.lineTo(-48, 143); ctx.closePath(); ctx.fill();
+    ctx.restore();
+
+    // The raised paw and a stream of salt falling over the whale.
+    ctx.fillStyle = "#6b3b22";
+    ctx.beginPath(); ctx.ellipse(550, 105, 60, 78, -0.45, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#e9d8b0";
+    for (let i = 0; i < 115; i += 1) {
+      const progress = i / 114;
+      const x = 587 + progress * 225 + Math.sin(i * 2.9) * (18 + progress * 55);
+      const y = 158 + progress * 210 + (i % 7) * 9;
+      const size = 2 + (i % 4);
+      ctx.fillRect(x, y, size, size);
+    }
+    ctx.fillStyle = "rgba(4, 11, 16, 0.76)";
+    ctx.fillRect(0, 0, CARD_WIDTH, CARD_HEIGHT);
+    const vignette = ctx.createRadialGradient(600, 270, 90, 600, 270, 720);
+    vignette.addColorStop(0, "rgba(0, 0, 0, 0)");
+    vignette.addColorStop(1, "rgba(0, 0, 0, 0.54)");
+    ctx.fillStyle = vignette;
+    ctx.fillRect(0, 0, CARD_WIDTH, CARD_HEIGHT);
+  }
+
   function drawFallbackBadge(ctx, config) {
     ctx.save();
     ctx.translate(230, 345);
@@ -244,9 +342,13 @@
     const ctx = canvas.getContext("2d");
     const customCard = CUSTOM_CARDS[String(data.accountId || "").toLowerCase()];
     if (customCard) {
-      const image = await loadImage(customCard.image);
       ctx.clearRect(0, 0, CARD_WIDTH, CARD_HEIGHT);
-      drawCoverImage(ctx, image);
+      if (customCard.renderer === "shady-knights") {
+        drawShadyKnightsArtwork(ctx);
+      } else {
+        const image = await loadImage(customCard.image);
+        drawCoverImage(ctx, image);
+      }
       drawCustomCardStats(ctx, data, customCard);
       filename = customCard.filename;
       return;
