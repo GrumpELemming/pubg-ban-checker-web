@@ -73,6 +73,12 @@ body.ban-card-open { overflow: hidden; }
   transition: opacity 0.15s;
 }
 .profile-links a:hover { opacity: 1; text-decoration: underline; }
+.teammate-btn[hidden], .teammate-report[hidden] { display: none; }
+.teammate-report { margin-top: 18px; max-width: 650px; overflow-wrap: anywhere; }
+.teammate-report p { font-size: 0.85rem; }
+.teammate-report ol { padding-left: 24px; }
+.teammate-report li { margin: 12px 0; }
+.teammate-report .profile-links { display: inline-flex; margin-left: 10px; }
 
 @media (max-width: 640px) {
   .control-buttons { flex-direction: column; align-items: stretch; }

@@ -447,9 +447,78 @@
       actions.append(cardBtn);
     }
 
+    if ((status === "perm" || status === "temp") && accountId) {
+      const teammateBtn = document.createElement("button");
+      teammateBtn.type = "button";
+      teammateBtn.className = "secondary-btn teammate-btn";
+      teammateBtn.textContent = "Generate teammate report";
+      const report = document.createElement("section");
+      report.className = "teammate-report";
+      report.setAttribute("aria-label", `Frequent teammates of ${player}`);
+      report.setAttribute("aria-live", "polite");
+      report.hidden = true;
+      let controller;
+      const signedIn = () => Boolean(window.PBCWatchlistStore?.getSession?.().authenticated);
+      row.updateTeammateSession = () => {
+        teammateBtn.hidden = !signedIn();
+        if (!signedIn()) {
+          controller?.abort();
+          report.hidden = true;
+          report.replaceChildren();
+        }
+      };
+      row.updateTeammateSession();
+      teammateBtn.addEventListener("click", async () => {
+        if (!signedIn()) return;
+        controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 35000);
+        teammateBtn.disabled = true;
+        report.hidden = false;
+        report.textContent = "Checking recent matches for teammates...";
+        try {
+          const response = await fetch(`${BASE_URL}/teammates?platform=${encodeURIComponent(platform)}&accountId=${encodeURIComponent(accountId)}`, {
+            credentials: "same-origin", signal: controller.signal
+          });
+          const data = await response.json();
+          if (!signedIn() || !row.isConnected) return;
+          if (!response.ok) throw new Error(data?.error?.message || (response.status === 429 ? "Too many reports. Wait a minute and try again." : "Could not generate the report. Please try again."));
+          report.innerHTML = `<h3>Most frequent teammates</h3>
+            <p>Based on ${escapeHtml(data.matchesAnalyzed)} of ${escapeHtml(data.matchesAvailable)} available matches (up to ${escapeHtml(data.matchLimit)} checked). PUBG match history covers the past 14 days; these are not lifetime counts.</p>
+            ${data.matchesSkipped ? `<p>${escapeHtml(data.matchesSkipped)} matches could not be read. Counts are incomplete.</p>` : ""}`;
+          if (!data.teammates?.length) {
+            const empty = document.createElement("p");
+            empty.textContent = data.matchesAvailable ? "No teammates found in the analyzed matches." : "No recent matches are available for this player.";
+            report.append(empty);
+          } else {
+            const list = document.createElement("ol");
+            for (const mate of data.teammates) {
+              const item = document.createElement("li");
+              item.innerHTML = `<strong>${escapeHtml(mate.player)}</strong> — ${escapeHtml(mate.games)} ${mate.games === 1 ? "game" : "games"}
+                <span class="profile-links">
+                  <a href="https://pubglookup.com/players/${encodeURIComponent(platform)}/${encodeURIComponent(mate.player)}" target="_blank" rel="noopener noreferrer">PUBGLookup</a>
+                  <a href="https://www.pubg-meta.com/player-stats/${encodeURIComponent(platform)}/${encodeURIComponent(mate.player)}/profile" target="_blank" rel="noopener noreferrer">PUBG Meta</a>
+                </span>`;
+              list.append(item);
+            }
+            report.append(list);
+          }
+        } catch (error) {
+          if (signedIn() && row.isConnected) report.textContent = error.name === "AbortError" ? "Report timed out. Please try again." : error.message;
+        } finally {
+          clearTimeout(timeout);
+          teammateBtn.disabled = false;
+        }
+      });
+      actions.append(teammateBtn);
+      info.append(report);
+    }
     row.append(info, actions);
     return row;
   }
+
+  window.addEventListener("pbc:watchlist-session", () => {
+    document.querySelectorAll(".player-row").forEach(row => row.updateTeammateSession?.());
+  });
 
   async function runWithConcurrency(items, limit, worker) {
     const queue = [...items];
