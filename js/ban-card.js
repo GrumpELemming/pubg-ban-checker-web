@@ -41,6 +41,12 @@
       title: "Exposed by nooob radar",
       accent: "#f0b47d"
     },
+    "account.6e46ef475f0b4cf3a0996083a1d7b260": {
+      image: "img/ban-cards/dmbqpdcr7vsxi7-nooob-radar.png?v=20260909a",
+      filename: "PUBGBanChecker_k0S_Am_Syria_ExposedByNooobRadar.png",
+      title: "Exposed by nooob radar",
+      accent: "#f0b47d"
+    },
     "account.6d96eb34e42046af9e9befba6e81df8b": {
       image: "img/ban-cards/abualixx-ban-hammer.png?v=20260906a",
       filename: "PUBGBanChecker_abualixx_BannedBySZVXY.png",
