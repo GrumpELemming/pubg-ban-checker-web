@@ -42,7 +42,7 @@
       accent: "#f0b47d"
     },
     "account.6e46ef475f0b4cf3a0996083a1d7b260": {
-      image: "img/ban-cards/dmbqpdcr7vsxi7-nooob-radar.png?v=20260909a",
+      image: "img/ban-cards/k0s-am-syria-nooob-radar.png?v=20260921a",
       filename: "PUBGBanChecker_k0S_Am_Syria_ExposedByNooobRadar.png",
       title: "Exposed by nooob radar",
       accent: "#f0b47d"
