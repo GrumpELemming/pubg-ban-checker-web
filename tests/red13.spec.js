@@ -32,6 +32,20 @@ async function openGame(page) {
       window.gameTest = {
         freeze() { cancelAnimationFrame(frameId); },
         draw() { drawBackground(testNow); drawHUD(testNow); drawTryHard(testNow); drawPlayer(testNow); drawPlayerShots(); },
+        renderedPlayer() {
+          const original = ctx.drawImage;
+          const originalRotate = ctx.rotate;
+          let result = {};
+          ctx.drawImage = (sprite, ...args) => {
+            result.sprite = sprite === raptureJammerMovementSprite ? "jammer" :
+              sprite === raptureMovementSprite ? "rapture" : "red13";
+            result.bounds = args;
+            original.call(ctx, sprite, ...args);
+          };
+          ctx.rotate = angle => { result.angle = angle; originalRotate.call(ctx, angle); };
+          try { drawPlayer(testNow); } finally { ctx.drawImage = original; ctx.rotate = originalRotate; }
+          return result;
+        },
         enemy(x = 700) {
           Math.random = () => 0.99;
           state.px = 27; state.py = 17;
@@ -80,6 +94,7 @@ async function openGame(page) {
         },
         snapshot() { return { character: state.character, active: tryHardActive,
           facingAngle: state.facingAngle, movementSpriteLoaded: !!raptureMovementSprite,
+          jammerSpriteLoaded: !!raptureJammerMovementSprite,
           enemySpriteLoaded: tryHardSprite.complete && tryHardSprite.naturalWidth > 0,
           gcoin: state.gcoin, loot: state.items.filter(item => item.type === "G" && item.amount === 5),
           enemy: tryHard && { x: tryHard.x, hp: tryHard.hp, slowedUntil: tryHard.slowedUntil },
@@ -229,6 +244,37 @@ test("separate browser players have independent Jammer rolls and protection", as
   } finally {
     await otherContext.close();
   }
+});
+
+test("Rapture switches to the Jammer sprite, rotates in eight directions and restores her normal sprite", async ({ page }, testInfo) => {
+  await openGame(page);
+  await start(page, "rapture");
+  await expect.poll(async () => (await page.evaluate(() => window.gameTest.snapshot())).jammerSpriteLoaded).toBe(true);
+  const normal = await page.evaluate(() => window.gameTest.renderedPlayer());
+  expect(normal.sprite).toBe("rapture");
+  await page.evaluate(() => { window.gameTest.collectJammer(); window.gameTest.blueDamage(); });
+  const directions = [["w", 0], ["wd", Math.PI / 4], ["d", Math.PI / 2],
+    ["sd", 3 * Math.PI / 4], ["s", Math.PI], ["sa", 5 * Math.PI / 4],
+    ["a", 3 * Math.PI / 2], ["wa", -Math.PI / 4]];
+  for (const [keys, angle] of directions) {
+    for (const key of keys) await page.keyboard.down(key);
+    await page.evaluate(() => window.gameTest.advance(120));
+    const equipped = await page.evaluate(() => window.gameTest.renderedPlayer());
+    expect(equipped.sprite).toBe("jammer");
+    expect(equipped.angle).toBeCloseTo(angle);
+    expect(equipped.bounds[0]).toBe(normal.bounds[0]);
+    expect(equipped.bounds[1]).toBe(normal.bounds[1]);
+    expect(equipped.bounds[2]).toBe(normal.bounds[2]);
+    for (const key of keys) await page.keyboard.up(key);
+    await page.evaluate(() => window.gameTest.advance(120));
+    expect((await page.evaluate(() => window.gameTest.renderedPlayer())).angle).toBeCloseTo(angle);
+  }
+  await page.evaluate(() => window.gameTest.draw());
+  await page.screenshot({ path: testInfo.outputPath("rapture-jammer-equipped.png") });
+  await page.evaluate(() => window.gameTest.advance(20_000));
+  expect((await page.evaluate(() => window.gameTest.renderedPlayer())).sprite).toBe("rapture");
+  await page.evaluate(() => { window.gameTest.collectJammer(); window.startGameFixed(); window.gameTest.freeze(); });
+  expect((await page.evaluate(() => window.gameTest.renderedPlayer())).sprite).toBe("rapture");
 });
 
 test("Rapture's reference sprite faces all eight movement directions and keeps its idle facing", async ({ page }) => {

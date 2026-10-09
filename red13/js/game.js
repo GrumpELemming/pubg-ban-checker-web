@@ -36,6 +36,19 @@
     raptureMovementSprite = trimmed;
   };
   raptureSprite.src = "assets/rapture-top-down.png";
+  const raptureJammerSprite = new Image();
+  let raptureJammerMovementSprite = null;
+  raptureJammerSprite.onload = () => {
+    // Same framing as the normal sprite, extended below to include the pack.
+    // Keep pixel reads out of the browser so local HTML files work too.
+    const trimmed = document.createElement("canvas");
+    trimmed.width = 744;
+    trimmed.height = 1471;
+    trimmed.getContext("2d").drawImage(raptureJammerSprite, 1554, 79, 744, 1471,
+      0, 0, trimmed.width, trimmed.height);
+    raptureJammerMovementSprite = trimmed;
+  };
+  raptureJammerSprite.src = "assets/rapture-jammer-top-down.png";
   const red13Sprite = new Image();
   red13Sprite.src = "assets/red13.png";
   const tryHardSprite = new Image();
@@ -488,12 +501,16 @@ function drawPlayer(now) {
   const bounce = Math.sin(now / 120) * 2;
   const px = state.px * CELL, py = state.py * CELL;
   if (state.character === "rapture" && raptureMovementSprite) {
-    const height = 72;
-    const width = height * raptureMovementSprite.width / raptureMovementSprite.height;
+    const movementSprite = now < state.jammerUntil && raptureJammerMovementSprite
+      ? raptureJammerMovementSprite : raptureMovementSprite;
+    // Preserve character size and rotation pivot when the pack is equipped.
+    const scale = 72 / raptureMovementSprite.height;
+    const height = movementSprite.height * scale;
+    const width = movementSprite.width * scale;
     ctx.save();
     ctx.translate(px + CELL, HUD_H + py + CELL);
     ctx.rotate(state.facingAngle);
-    ctx.drawImage(raptureMovementSprite, -width / 2, -height / 2, width, height);
+    ctx.drawImage(movementSprite, -width / 2, -36, width, height);
     ctx.restore();
     return;
   }
