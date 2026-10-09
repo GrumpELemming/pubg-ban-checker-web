@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self';">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PUBG Ban Checker - Updates</title>
-  <meta name="description" content="Release notes, project information, privacy highlights, and recent improvements to PUBG Ban Checker." />
+  <title>PUBG Ban Checker - About</title>
+  <meta name="description" content="Check PUBG account ban status and save a watchlist with Discord." />
   <link rel="canonical" href="https://pubgbanchecker.com/updates.html" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="PUBG Ban Checker Updates" />
-  <meta property="og:description" content="Recent releases and improvements to PUBG Ban Checker." />
+  <meta property="og:title" content="About PUBG Ban Checker" />
+  <meta property="og:description" content="Check PUBG account ban status and save a watchlist with Discord." />
   <meta property="og:url" content="https://pubgbanchecker.com/updates.html" />
   <link rel="stylesheet" href="css/lang.css">
   <link rel="stylesheet" href="css/command-center.css?v=20260828a">
@@ -17,7 +17,6 @@
   <script src="js/theme.js?v=20260827b"></script>
   <link rel="stylesheet" href="css/themes.css">
   <link rel="stylesheet" href="css/site-layout.css?v=20260827b">
-  <script defer src="js/updates.js?v=20260827a"></script>
   <script defer src="js/i18n.js?v=20260827a"></script>
 </head>
 <body>
@@ -50,85 +49,9 @@
   </div>
 
   <main class="updates-shell">
-    <header class="container updates-hero">
-      <p class="updates-eyebrow">Development log</p>
-      <h1 class="compact-title" data-i18n="updates.title">PUBG Ban Checker Updates</h1>
-      <p>A clear record of improvements to the checker, Watchlist, account sync, and the rest of the site.</p>
-    </header>
-
-    <section class="container latest-release" aria-labelledby="latestReleaseTitle">
-      <div class="release-heading">
-        <div>
-          <p class="updates-eyebrow">Latest release</p>
-          <h2 id="latestReleaseTitle">Version 2.2</h2>
-        </div>
-        <time datetime="2026-08-27">27 August 2026</time>
-      </div>
-
-      <div class="release-grid">
-        <article class="release-group">
-          <span class="release-number">01</span>
-          <h3>Watchlist refresh</h3>
-          <ul>
-            <li>Refresh All now checks players one at a time to protect the PUBG API from request bursts.</li>
-            <li>The active player displays a scanning animation and visible queue progress.</li>
-            <li>Each completed card updates individually without flashing or rebuilding the full list.</li>
-          </ul>
-        </article>
-        <article class="release-group">
-          <span class="release-number">02</span>
-          <h3>Observed history</h3>
-          <ul>
-            <li>Signed-in Watchlists retain check counts, status observations, name changes, and temporary-ban periods.</li>
-            <li>Conflicting PUBG responses are verified over time instead of immediately overwriting a known ban.</li>
-            <li>Possible permanent-ban reversals are supported and clearly described.</li>
-            <li>The search that adds a player now counts as their first observation.</li>
-          </ul>
-        </article>
-        <article class="release-group">
-          <span class="release-number">03</span>
-          <h3>New player dossiers</h3>
-          <ul>
-            <li>Wide player strips were replaced with compact, responsive dossier cards.</li>
-            <li>Status rails, structured metadata, expandable history, and consistent action footers improve scanning.</li>
-            <li>The design retains the cyan, violet, gold, and dark command-centre palette.</li>
-          </ul>
-        </article>
-        <article class="release-group">
-          <span class="release-number">04</span>
-          <h3>Site-wide polish</h3>
-          <ul>
-            <li>Navigation, page edges, content widths, gutters, and section spacing now share one layout system.</li>
-            <li>Core pages line up consistently at desktop, tablet, and mobile widths.</li>
-            <li>Responsive navigation now forms a clean grid without horizontal overflow.</li>
-          </ul>
-        </article>
-      </div>
-
-      <div class="history-toggle">
-        <button id="toggleHistory" class="secondary-btn" type="button" aria-expanded="false" aria-controls="history">
-          <span>Show Version History</span>
-        </button>
-      </div>
-      <div id="history" class="history" aria-hidden="true">
-        <ol class="version-timeline">
-          <li><strong>v2.1</strong><span>Profile links, Watchlist notes, multilingual support, ten colour themes, and a tighter Watchlist layout.</span></li>
-          <li><strong>v2.0</strong><span>Command-centre visual overhaul, refreshed navigation, improved platform tiles, and dark-mode polish.</span></li>
-          <li><strong>v1.6</strong><span>Watchlist name-change detection.</span></li>
-          <li><strong>v1.5</strong><span>Security fixes delivered with thanks to LOLhpO!.</span></li>
-          <li><strong>v1.4</strong><span>Search by account ID.</span></li>
-          <li><strong>v1.3</strong><span>Core user-experience improvements.</span></li>
-          <li><strong>v1.2.1</strong><span>Watchlists expanded to Steam, Xbox, PSN, and Kakao.</span></li>
-          <li><strong>v1.2</strong><span>Initial PC Watchlist support.</span></li>
-          <li><strong>v1.1</strong><span>Multi-platform ban checking introduced.</span></li>
-          <li><strong>v1.0</strong><span>GitHub-hosted PUBG ban checker launched.</span></li>
-        </ol>
-      </div>
-    </section>
-
-    <section class="container updates-about">
-      <h2>About</h2>
-      <p>PUBG Ban Checker provides account ban checks and watchlist saving across supported platforms.</p>
+    <section class="container updates-hero" aria-labelledby="aboutTitle">
+      <h1 id="aboutTitle" class="compact-title">About PUBG Ban Checker</h1>
+      <p>PUBG Ban Checker lets you check the ban status of PUBG accounts on Steam, Xbox, PlayStation and Kakao using a player name or account ID. You can add accounts to a watchlist and re-check them one at a time, with optional Discord sign-in to save your watchlist across devices. Ban results reflect the information returned by PUBG at the time of each check.</p>
     </section>
   </main>
 </body>
