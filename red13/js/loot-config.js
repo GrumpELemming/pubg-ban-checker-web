@@ -2,7 +2,8 @@
 (() => {
   const BZR = (window.BZR = window.BZR || {});
   BZR.lootConfig = {
-    jammerSpawnChance: 0.05,
+    jammerSpawnChance: 0.10,
+    blueChipSpawnChance: 0.05,
     jammerProtectionMs: 20_000,
     debugLootRolls: true
   };

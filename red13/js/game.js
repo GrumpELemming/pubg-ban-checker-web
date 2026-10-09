@@ -117,8 +117,14 @@ for (const event of ["pointerup", "pointercancel", "lostpointercapture"]) {
 
 // Restart key (R)
 window.addEventListener("keydown", e => {
-  if (!gameActive) return;
-  if (e.key.toLowerCase() === "r") {
+  if (e.key.toLowerCase() === "r" && !e.repeat) {
+    if (state?.dead && state.character === "red13" && state.hasBlueChip &&
+        document.getElementById("gameOverPopup")?.style.display === "grid") {
+      e.preventDefault();
+      respawnWithBlueChip();
+      return;
+    }
+    if (!gameActive) return;
     e.preventDefault();
     startGameFixed();
   }
@@ -162,7 +168,7 @@ window.addEventListener("keydown", e => {
       character: window.selectedCharacter === "rapture" ? "rapture" : "red13",
       px: Math.floor(COLS/2),
       py: Math.floor(ROWS/2),
-      hp: START_HP, bp, gcoin: gc, jammerUntil: 0,
+      hp: START_HP, bp, gcoin: gc, jammerUntil: 0, hasBlueChip: false,
       dir: "down", facingAngle: Math.PI, phase: 1,
       nextPhaseAt: now + PHASE_LEN_MS,
       nextDmgAt: now + DMG_INTERVAL_MS,
@@ -312,9 +318,9 @@ window.addEventListener("keydown", e => {
     }
     if (!available.length) return;
     const { x, y } = available[Math.floor(Math.random() * available.length)];
-    const jammer = window.BZR.loot.rollJammer({ x, y });
+    const specialLoot = window.BZR.loot.rollSpecialLoot({ x, y }, state.character);
     const r=Math.random();
-    const type=jammer?"J":r<.4?"B":r<.7?"F":r<.9?"M":"G";
+    const type=specialLoot || (r<.4?"B":r<.7?"F":r<.9?"M":"G");
     const cx=x*CELL+CELL/2;
     const cy=HUD_H+y*CELL+CELL/2;
     const fallDur=550+Math.random()*150;
@@ -341,7 +347,7 @@ window.addEventListener("keydown", e => {
     }
   }
   function drawItem(it){
-    const f=it.type==="B"?COLORS.item:it.type==="F"?COLORS.itemF:it.type==="M"?COLORS.itemM:it.type==="J"?COLORS.itemJ:COLORS.itemG;
+    const f=it.type==="B"?COLORS.item:it.type==="F"?COLORS.itemF:it.type==="M"?COLORS.itemM:it.type==="J"?COLORS.itemJ:it.type==="BCD"?"#79c5ff":COLORS.itemG;
     ctx.save();ctx.translate(0,HUD_H);
     if(it.falling){
       for(let i=4;i>=1;i--){const gy=it.py-i*14,a=.06*i;
@@ -350,13 +356,13 @@ window.addEventListener("keydown", e => {
       }
       ctx.fillStyle=rgba(f,.82);
       ctx.fillRect(it.px-CELL/2+3,it.py-CELL/2+3,CELL-6,CELL-6);
-      ctx.fillStyle="#0b0c10";ctx.font="bold 12px monospace";
-      ctx.fillText(it.type,it.px-4,it.py+4);
+      ctx.fillStyle="#0b0c10";ctx.font=it.type==="BCD"?"bold 8px monospace":"bold 12px monospace";
+      ctx.fillText(it.type,it.px-(it.type==="BCD"?7:4),it.py+4);
     }else{
       const x=it.x*CELL,y=it.y*CELL;
       ctx.fillStyle=f;ctx.fillRect(x+3,y+3,CELL-6,CELL-6);
-      ctx.fillStyle="#0b0c10";ctx.font="bold 12px monospace";
-      ctx.fillText(it.type === "G" && it.amount === 5 ? "5G" : it.type, x+(it.amount === 5 ? 3 : 7), y+14);
+      ctx.fillStyle="#0b0c10";ctx.font=it.type==="BCD"?"bold 8px monospace":"bold 12px monospace";
+      ctx.fillText(it.type === "G" && it.amount === 5 ? "5G" : it.type, x+(it.type==="BCD"?3:it.amount === 5 ? 3 : 7), y+14);
     }
     ctx.restore();
   }
@@ -369,6 +375,7 @@ window.addEventListener("keydown", e => {
         if(it.type==="F"){if(state.hp<75)state.hp=75;state.bp+=200;}
         if(it.type==="M"){state.hp=MAX_HP;state.bp+=400;}
         if(it.type==="G"){state.gcoin+=it.amount || 1;}
+        if(it.type==="BCD"&&state.character==="red13"){state.hasBlueChip=true;}
         // Refresh protection, never stack durations or carry it into another run.
         if(it.type==="J"){state.jammerUntil=now+window.BZR.lootConfig.jammerProtectionMs;}
         saveStats(state.bp,state.gcoin);
@@ -486,6 +493,10 @@ function drawHUD(now) {
   if (now < state.jammerUntil) {
     ctx.fillStyle = COLORS.itemJ;
     ctx.fillText(`Jammer: ${Math.ceil((state.jammerUntil - now) / 1000)}s`, 270, 33);
+  }
+  if (state.character === "red13" && state.hasBlueChip) {
+    ctx.fillStyle = "#79c5ff";
+    ctx.fillText("BCD ready", 520, 33);
   }
   ctx.fillStyle = state.character === "rapture" ? "#d5afff" : COLORS.text;
   ctx.fillText(state.character === "rapture" ? "Rapture · Space to shoot" : "Red13", 700, 24);
@@ -638,9 +649,10 @@ if(!tryHardActive && (state.phase === 5 || state.phase >= 10)) {
     updateTryHard(now,dt);
 
     if(state.hp<=0&&!state.dead){
-      state.dead=true;stopGame();
+      state.dead=true;state.diedAt=now;stopGame();
       saveStats(state.bp,state.gcoin);
-      showGameOverPopup("You died!");
+      showGameOverPopup(state.character === "red13" && state.hasBlueChip
+        ? "You died! press r to send the bluechip to emily" : "You died!");
     }
   }
 
@@ -692,6 +704,29 @@ if(!tryHardActive && (state.phase === 5 || state.phase >= 10)) {
   }
 
   // ====== Public API ======
+  function respawnWithBlueChip(){
+    if (!state.dead || !state.hasBlueChip || state.character !== "red13") return;
+    stopGame();
+    const now = performance.now();
+    const paused = Math.max(0, now - state.diedAt);
+    state.hasBlueChip = false;
+    state.hp = MAX_HP;
+    state.dead = false;
+    state.px = Math.floor(COLS / 2); state.py = Math.floor(ROWS / 2);
+    state.nextPhaseAt += paused;
+    state._nextItemAt += paused;
+    for (const item of state.items) { item.born += paused; item.landTime += paused; }
+    state.nextDmgAt = now + DMG_INTERVAL_MS;
+    state.lastFrame = now; state._moveAcc = 0;
+    state.jammerUntil = 0;
+    RED.zones = []; RED.nextSpawnAt = now + 900;
+    tryHardActive = false; tryHard = null; hideTryHardAlert();
+    keysDown.clear(); playerShots = [];
+    hideGameOverPopup();
+    gameActive = true; window.gameActive = true;
+    canvas.setAttribute("aria-label", "Red13 respawned with full health: bluechip sent to emily");
+    frameId = requestAnimationFrame(loop);
+  }
   function startGameFixed(){
     stopGame();
     reset();

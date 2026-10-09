@@ -66,6 +66,10 @@ async function openGame(page) {
         hp(value) { state.hp = value; },
         spawnLoot() { spawnItemNow(testNow); return state.items.map(item => ({ ...item })); },
         clearLoot() { state.items = []; },
+        collectBlueChip() {
+          state.items = [{ type: "BCD", x: state.px, y: state.py, falling: false }];
+          pickupNearby(testNow);
+        },
         collectJammer() {
           state.items = [{ type: "J", x: state.px, y: state.py, falling: false }];
           pickupNearby(testNow);
@@ -93,6 +97,7 @@ async function openGame(page) {
           if (loot) { state.px = loot.x; state.py = loot.y; pickupNearby(); }
         },
         snapshot() { return { character: state.character, active: tryHardActive,
+          hp: state.hp, bp: state.bp, phase: state.phase, dead: state.dead, hasBlueChip: state.hasBlueChip,
           facingAngle: state.facingAngle, movementSpriteLoaded: !!raptureMovementSprite,
           jammerSpriteLoaded: !!raptureJammerMovementSprite,
           enemySpriteLoaded: tryHardSprite.complete && tryHardSprite.naturalWidth > 0,
@@ -146,6 +151,8 @@ test("eligible loot rolls independently replace normal loot with one Jammer and 
   await page.evaluate(() => {
     window.gameTest.clearLoot();
     window.lootRollCount = 0;
+    window.BZR.lootConfig.jammerSpawnChance = 0.05;
+    window.BZR.lootConfig.blueChipSpawnChance = 0;
     // Nearest 32-bit values below/above 5%, then another success. Test copy only.
     const values = [214748364, 214748365, 0];
     window.crypto.getRandomValues = array => {
@@ -176,6 +183,7 @@ test("Jammer rolls have no pity guarantee, support configured probabilities and 
   const results = await page.evaluate(() => {
     window.crypto.getRandomValues = array => { array[0] = 0xffffffff; return array; };
     window.BZR.lootConfig.debugLootRolls = false;
+    window.BZR.lootConfig.blueChipSpawnChance = 0;
     const failures = [];
     for (let i = 0; i < 100; i++) {
       window.gameTest.clearLoot();
@@ -198,7 +206,7 @@ test("Jammer rolls have no pity guarantee, support configured probabilities and 
   expect(results.disabled).not.toBe("J");
   expect(results.invalidRejected).toBe(true);
   await page.reload();
-  expect(await page.evaluate(() => window.BZR.lootConfig.jammerSpawnChance)).toBe(0.05);
+  expect(await page.evaluate(() => window.BZR.lootConfig.jammerSpawnChance)).toBe(0.10);
 });
 
 for (const character of ["red13", "rapture"]) {
@@ -244,6 +252,52 @@ test("separate browser players have independent Jammer rolls and protection", as
   } finally {
     await otherContext.close();
   }
+});
+
+test("default loot gives 10% Jammer and 5% BCD only to Red13", async ({ page }) => {
+  await openGame(page);
+  await start(page, "red13");
+  const redTypes = await page.evaluate(() => {
+    const values = [0, 429496729, 429496730, 644245094, 644245095, 0xffffffff];
+    window.crypto.getRandomValues = array => { array[0] = values.shift(); return array; };
+    Math.random = () => 0;
+    return values.slice().map(() => { window.gameTest.clearLoot(); return window.gameTest.spawnLoot()[0].type; });
+  });
+  expect(redTypes).toEqual(["J", "J", "BCD", "BCD", "B", "B"]);
+  await page.evaluate(() => { window.selectedCharacter = "rapture"; window.startGameFixed(); window.gameTest.freeze(); });
+  const raptureType = await page.evaluate(() => {
+    window.crypto.getRandomValues = array => { array[0] = 500000000; return array; };
+    window.gameTest.clearLoot(); return window.gameTest.spawnLoot()[0].type;
+  });
+  expect(raptureType).toBe("B");
+});
+
+test("BCD death prompt consumes one charge and R respawns Red13 at full health in the same run", async ({ page }) => {
+  await openGame(page);
+  await start(page, "red13");
+  await page.evaluate(() => {
+    window.gameTest.phase(3);
+    window.gameTest.collectBlueChip();
+    window.gameTest.collectBlueChip();
+    window.gameTest.hp(0);
+    window.gameTest.advance(1);
+  });
+  const before = await page.evaluate(() => window.gameTest.snapshot());
+  await expect(page.locator("#goText")).toHaveText("You died! press r to send the bluechip to emily");
+  await page.keyboard.press("r");
+  await page.evaluate(() => window.gameTest.freeze());
+  const after = await page.evaluate(() => window.gameTest.snapshot());
+  expect(after.hp).toBe(100);
+  expect(after.dead).toBe(false);
+  expect(after.hasBlueChip).toBe(false);
+  expect(after.phase).toBe(3);
+  expect(after.bp).toBe(before.bp);
+  expect(after.gcoin).toBe(before.gcoin);
+  await expect(page.locator("#gameOverPopup")).toBeHidden();
+  await page.evaluate(() => { window.gameTest.hp(0); window.gameTest.advance(1); });
+  await expect(page.locator("#goText")).toHaveText("You died!");
+  await page.keyboard.press("r");
+  expect((await page.evaluate(() => window.gameTest.snapshot())).dead).toBe(true);
 });
 
 test("Rapture switches to the Jammer sprite, rotates in eight directions and restores her normal sprite", async ({ page }, testInfo) => {
