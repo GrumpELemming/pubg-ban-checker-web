@@ -1,4 +1,7 @@
 #crates { position: fixed; flex-direction: column; justify-content: flex-start; gap: 16px; padding: 24px 16px; overflow-y: auto; }
+#about .panel { box-sizing: border-box; width: min(92vw, 760px); max-height: 90vh; overflow-y: auto; padding: clamp(20px, 5vw, 40px); }
+.game-updates { text-align: left; }
+.game-updates li { margin: 8px 0; line-height: 1.45; }
 #crates .crate-hud { position: relative; top: auto; right: auto; flex-shrink: 0; }
 #crates:not(.hidden) .crate-options, #crates .crate-options { position: relative; top: auto; left: auto; transform: none; gap: 12px; order: 1; flex-shrink: 0; }
 #crates .crate-stage { position: relative; width: min(100%, 620px); min-height: 230px; order: 2; flex-shrink: 0; text-align: center; }

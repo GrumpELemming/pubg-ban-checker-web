@@ -22,7 +22,6 @@ const TRANSLATIONS = {
     "nav.about": "About",
     "nav.games": "Games",
     "nav.crate": "Crate Simulator",
-    "nav.request": "Request language",
     "nav.lang": "Language",
     "hero.index.title": "PUBG Ban Checker",
     "hero.index.platform": "Select Platform",
@@ -92,7 +91,6 @@ const TRANSLATIONS = {
     "nav.about": "Մասին",
     "nav.games": "Խաղեր",
     "nav.crate": "Տուբ",
-    "nav.request": "Խնդրիր լէզու",
     "nav.lang": "Լեզու",
     "hero.index.title": "PUBG արգելութիւն ստուգել",
     "hero.index.platform": "Ընտրել բլադֆորմ",
@@ -147,7 +145,6 @@ const TRANSLATIONS = {
     "nav.about": "소개",
     "nav.games": "게임",
     "nav.crate": "상자 시뮬레이터",
-    "nav.request": "언어추가 문의",
     "nav.lang": "언어",
     "hero.index.title": "PUBG 밴 확인",
     "hero.index.platform": "플랫폼 선택",
@@ -205,7 +202,6 @@ const TRANSLATIONS = {
     "nav.about": "关于",
     "nav.games": "游戏",
     "nav.crate": "箱子模拟器",
-    "nav.request": "请求语言",
     "nav.lang": "语言",
     "hero.index.title": "PUBG 封禁查询",
     "hero.index.platform": "选择平台",
@@ -257,7 +253,6 @@ const TRANSLATIONS = {
     "nav.about": "Info",
     "nav.games": "Spiele",
     "nav.crate": "Kisten-Simulator",
-    "nav.request": "Sprache anfragen",
     "nav.lang": "Sprache",
     "hero.index.title": "PUBG Ban-Checker",
     "hero.index.platform": "Plattform auswählen",
@@ -315,7 +310,6 @@ const TRANSLATIONS = {
     "nav.about": "Tietoja",
     "nav.games": "Pelit",
     "nav.crate": "Laatikkomallinnin",
-    "nav.request": "Pyydä kieltä",
     "nav.lang": "Kieli",
     "hero.index.title": "PUBG-ban-tarkistin",
     "hero.index.platform": "Valitse alusta",
@@ -373,7 +367,6 @@ const TRANSLATIONS = {
     "nav.about": "O nas",
     "nav.games": "Gry",
     "nav.crate": "Symulator skrzynek",
-    "nav.request": "Poproś o język",
     "nav.lang": "Język",
     "hero.index.title": "Sprawdzanie bana w PUBG",
     "hero.index.platform": "Wybierz platformę",
@@ -431,7 +424,6 @@ const TRANSLATIONS = {
     "nav.about": "О сайте",
     "nav.games": "Игры",
     "nav.crate": "Симулятор ящиков",
-    "nav.request": "Запросить язык",
     "nav.lang": "Язык",
     "hero.index.title": "Проверка бана PUBG",
     "hero.index.platform": "Выберите платформу",
@@ -489,7 +481,6 @@ const TRANSLATIONS = {
     "nav.about": "Hakkında",
     "nav.games": "Oyunlar",
     "nav.crate": "Kasa Simülatörü",
-    "nav.request": "Dil talep et",
     "nav.lang": "Dil",
     "hero.index.title": "PUBG Ban Kontrol",
     "hero.index.platform": "Platform seçin",
@@ -547,7 +538,6 @@ const TRANSLATIONS = {
     "nav.about": "حول",
     "nav.games": "ألعاب",
     "nav.crate": "محاكي الصناديق",
-    "nav.request": "طلب لغة",
     "nav.lang": "اللغة",
     "hero.index.title": "فاحص حظر PUBG",
     "hero.index.platform": "اختر المنصة",
@@ -653,7 +643,6 @@ function buildLangSelector() {
 
   containerList.forEach((container) => {
     const select = container.querySelector("select");
-    const requestBtn = container.querySelector(".request-lang-btn");
 
     if (select) {
       select.innerHTML = "";
@@ -671,11 +660,6 @@ function buildLangSelector() {
       });
     }
 
-    if (requestBtn) {
-      requestBtn.addEventListener("click", () => {
-        window.PBCEmailReveal?.reveal(requestBtn, "Language request");
-      });
-    }
   });
 
   applyTranslations(current);
