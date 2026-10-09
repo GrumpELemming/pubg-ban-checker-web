@@ -1,4 +1,4 @@
-﻿// Simple i18n helper for static pages (excluding clan tracker)
+// Simple i18n helper for static pages (excluding clan tracker)
 // Languages: English (default), Korean, Chinese, German, Finnish, Polish, Russian, Turkish, Armenian
 
 const LANGS = {
@@ -70,8 +70,6 @@ const TRANSLATIONS = {
       "Detailed heatmaps and timelines in 2D. Great for reviewing engagements and positioning across the entire lobby.",
     "links.shady":
       "Exposes cheaters with polished breakdowns and commentary. A solid pulse-check on the state of fair play.",
-    "links.stupid":
-      "Light-hearted takedowns of perm-banned cheaters—proof that justice lands and worth a laugh between matches.",
     "crate.hero.title": "Hideout Crate Simulator",
     "crate.hero.subtitle": "Winter Eclipse",
     "crate.hero.lede":
@@ -131,8 +129,6 @@ const TRANSLATIONS = {
       "Մանրամասն ջերմային քարտեզներ եւ ժամանակացոյցեր 2D-ով: Նայեւ կըրնաք գործածել որ ձեր սխալները սորվելու համար:",
     "links.shady":
       "Բացահայտում է խաբեբաներին՝ հղկուած մեկնաբանությիւններով եւ վերլուծութիւններով։",
-    "links.stupid":
-      "Մշտական ​​արգելք ստացած խաբեբայ խաղցողների թեթեւ քննադատութիւնները՝ ապացույց այն բանի, որ արդարությունը հաղթանակ կը տանի, եւ կը արժէ խնդալ խաղերի միջեւ։",
     "crate.hero.title": "Տուփիկ բանալու խաղ",
     "crate.hero.subtitle": "Վինթր Էքլիփս",
     "crate.hero.lede": "Բաց 10 հատ տուբ միաժամանակ 1800GCի գինով.",
@@ -191,8 +187,6 @@ const TRANSLATIONS = {
       "상세 히트맵과 타임라인 제공. 교전과 포지셔닝을 전체 로비 관점에서 검토하기 좋습니다.",
     "links.shady":
       "치터를 세련된 분석과 해설로 드러냅니다. 공정성 상태를 확인하기 좋은 채널입니다.",
-    "links.stupid":
-      "영구 밴된 치터를 유쾌하게 다룹니다. 정의가 실현된 사례를 보며 웃을 수 있습니다.",
     "crate.hero.title": "하이도트 상자 시뮬레이터",
     "crate.hero.subtitle": "윈터 이클립스",
     "crate.hero.lede":
@@ -249,7 +243,6 @@ const TRANSLATIONS = {
       "快速、简洁的 2D 回放——查看跳点、转点和队伍路线，发现模式或可疑动线。",
     "links.chicken": "详细热力图和时间线。适合整体视角回顾交战和站位。",
     "links.shady": "用精炼的解说揭露作弊者。了解公平性状态的好渠道。",
-    "links.stupid": "戏谑永封作弊者，展示制裁成果，轻松一笑。",
     "crate.hero.title": "藏身处箱子模拟器",
     "crate.hero.subtitle": "冬日蚀月",
     "crate.hero.lede": "每 10 包花费 1800 G-Coin，翻牌查看掉落并记录花费。",
@@ -308,8 +301,6 @@ const TRANSLATIONS = {
       "Detailierte Heatmaps und Zeitachsen. Gut für Engagement- und Positions-Review.",
     "links.shady":
       "Deckt Cheater mit Analysen und Kommentaren auf. Ein guter Puls zur Fairness-Lage.",
-    "links.stupid":
-      "Humorvolle Videos zu permagebanten Cheatern—zeigt, dass Gerechtigkeit wirkt.",
     "crate.hero.title": "Versteck-Kistensimulator",
     "crate.hero.subtitle": "Winter Eclipse",
     "crate.hero.lede":
@@ -370,8 +361,6 @@ const TRANSLATIONS = {
       "Yksityiskohtaiset lämpökartat ja aikajanat. Hyvä taistelujen ja sijoittumisen tarkasteluun.",
     "links.shady":
       "Paljastaa huijareita analyysein ja kommentein. Hyvä tilannetaju reiluudesta.",
-    "links.stupid":
-      "Humoristiset videot pysyvästi bannatuista huijareista—osoittaa, että oikeus toteutuu.",
     "crate.hero.title": "Piilopaikan laatikkosimulaattori",
     "crate.hero.subtitle": "Winter Eclipse",
     "crate.hero.lede":
@@ -432,8 +421,6 @@ const TRANSLATIONS = {
       "Szczegółowe heatmapy i osie czasu. Dobre do przeglądu starć i pozycji w całej lobby.",
     "links.shady":
       "Demaskuje cheaterów z komentarzem. Dobry pulsometr stanu fair play.",
-    "links.stupid":
-      "Humorystyczne materiały o permabannowanych cheaterach—dowód, że sprawiedliwość działa.",
     "crate.hero.title": "Symulator skrzynki z kryjówki",
     "crate.hero.subtitle": "Winter Eclipse",
     "crate.hero.lede":
@@ -494,8 +481,6 @@ const TRANSLATIONS = {
       "Детальные тепловые карты и таймлайны. Отлично для обзора перестрелок и позиций.",
     "links.shady":
       "Разоблачает читеров с анализом и комментариями. Хороший индикатор состояния честной игры.",
-    "links.stupid":
-      "С юмором о пермабанах читеров — наглядно показывает торжество справедливости.",
     "crate.hero.title": "Симулятор ящиков Hideout",
     "crate.hero.subtitle": "Winter Eclipse",
     "crate.hero.lede":
@@ -556,8 +541,6 @@ const TRANSLATIONS = {
       "Detaylı ısı haritaları ve zaman çizelgeleri. Çatışmaları ve pozisyonları tüm lobide incelemek için ideal.",
     "links.shady":
       "Analiz ve yorumla hilecileri ifşa eder. Adil oyun durumunun iyi bir göstergesi.",
-    "links.stupid":
-      "Kalıcı ban alan hilecilerle ilgili eğlenceli videolar—adaletin işlediğini gösterir.",
     "crate.hero.title": "Saklanma Kasa Simülatörü",
     "crate.hero.subtitle": "Winter Eclipse",
     "crate.hero.lede":
@@ -618,8 +601,6 @@ const TRANSLATIONS = {
       "خرائط حرارية تفصيلية وجداول زمنية. مثالي لمراجعة الاشتباكات والمواقع.",
     "links.shady":
       "يكشف الغشاشين بتحليلات وتعليقات متقنة. نبض جيد على حالة اللعب النظيف.",
-    "links.stupid":
-      "مقاطع خفيفة عن الغشاشين المحظورين دائمًا — دليل على أن العدالة تنتصر.",
     "crate.hero.title": "محاكي صناديق Hideout",
     "crate.hero.subtitle": "Winter Eclipse",
     "crate.hero.lede":
