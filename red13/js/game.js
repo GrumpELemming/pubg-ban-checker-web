@@ -23,6 +23,12 @@
 
   const canvas = document.getElementById("game");
   const ctx = canvas.getContext("2d");
+  const raptureSprite = new Image();
+  raptureSprite.src = "assets/rapture.png";
+  const shootButton = document.getElementById("shootBtn");
+  let shooting = false;
+  let lastShotAt = -Infinity;
+  let playerShots = [];
   canvas.width = CANVAS_W;
   canvas.height = CANVAS_H;
   canvas.style.outline = "none";
@@ -48,6 +54,7 @@ function normalizeKey(key) {
 
 // Movement input
 window.addEventListener("keydown", e => {
+  if (!gameActive) return;
   const k = normalizeKey(e.key);
   if (!k) return;
   e.preventDefault();
@@ -62,8 +69,23 @@ window.addEventListener("keyup", e => {
 
 // Prevent spacebar scroll / zoom
 window.addEventListener("keydown", e => {
-  if (e.key === " " || e.code === "Space") e.preventDefault();
+  if (gameActive && (e.key === " " || e.code === "Space")) {
+    e.preventDefault();
+    shooting = true;
+  }
 });
+window.addEventListener("keyup", e => {
+  if (e.code === "Space" || e.key === " ") shooting = false;
+});
+window.addEventListener("blur", () => { keysDown.clear(); shooting = false; });
+shootButton?.addEventListener("pointerdown", e => {
+  e.preventDefault();
+  shootButton.setPointerCapture(e.pointerId);
+  shooting = true;
+});
+for (const event of ["pointerup", "pointercancel", "lostpointercapture"]) {
+  shootButton?.addEventListener(event, () => { shooting = false; });
+}
 
 // Restart key (R)
 window.addEventListener("keydown", e => {
@@ -89,11 +111,6 @@ window.addEventListener("keydown", e => {
 });
 */
 
-  // Prevent space zoom/scroll
-  window.addEventListener("keydown", e => {
-    if (e.key === " " || e.code === "Space") e.preventDefault();
-  });
-
   // ====== Persistent Stats ======
   const LS_BP = "red13_bp", LS_GC = "red13_gc";
   function saveStats(bp,gc){
@@ -114,6 +131,7 @@ window.addEventListener("keydown", e => {
     const { bp, gc } = loadStats();
     const now = performance.now();
     state = {
+      character: window.selectedCharacter === "rapture" ? "rapture" : "red13",
       px: Math.floor(COLS/2),
       py: Math.floor(ROWS/2),
       hp: START_HP, bp, gcoin: gc,
@@ -128,6 +146,13 @@ window.addEventListener("keydown", e => {
     RED.nextSpawnAt = now + 900;
     hideTryHardAlert();
     tryHardActive = false;
+    tryHard = null;
+    tryHardPhaseTriggered = false;
+    keysDown.clear();
+    shooting = false;
+    lastShotAt = -Infinity;
+    playerShots = [];
+    canvas.setAttribute("aria-label", `${state.character === "rapture" ? "Rapture" : "Red13"} blue zone survival game`);
   }
 
   // ====== Utils ======
@@ -145,7 +170,7 @@ window.addEventListener("keydown", e => {
   function showTryHardAlert(){
     const alert=document.createElement("div");
     alert.id="tryHardAlert";
-    alert.textContent="HACKER DETECTED IN BLUE ZONE HACKER DETECTED IN BLUE ZONE";
+    alert.textContent="SWEATY TRY HARD IN THE BLUE ZONE";
     Object.assign(alert.style,{
       position:"fixed",top:"0",left:"0",width:"100%",padding:"16px 0",
       background:"linear-gradient(90deg,#ff4d4d,#ffd64d)",
@@ -171,7 +196,8 @@ window.addEventListener("keydown", e => {
     const startX = direction === 1 ? -CELL*3 : CANVAS_W + CELL*3;
     const y = HUD_H + Math.floor(ROWS/2)*CELL;
     tryHard = {
-      x: startX, y, vx: 4*direction, bullets: [], hue: 0, dir: direction
+      x: startX, y, vx: 100*direction, bullets: [], hue: 0, dir: direction,
+      hp: 3, slowedUntil: 0
     };
     showTryHardAlert();
   }
@@ -179,11 +205,11 @@ window.addEventListener("keydown", e => {
   function updateTryHard(now,dt){
     if(!tryHardActive||!tryHard) return;
     tryHard.hue = (tryHard.hue + dt*0.1) % 360;
-    tryHard.x += tryHard.vx;
+    tryHard.x += tryHard.vx * (now < tryHard.slowedUntil ? 0.4 : 1) * dt / 1000;
     // fire bullets randomly
-    if(Math.random()<0.15){
+    if(Math.random()<1-Math.exp(-4*dt/1000)){
       const ang = Math.random() * Math.PI * 2; // full 360° spread<.5?-1:1);
-      const spd = 6+Math.random()*3;
+      const spd = 300+Math.random()*150;
       tryHard.bullets.push({
         x: tryHard.x, y: tryHard.y, vx: Math.cos(ang)*spd, vy: Math.sin(ang)*spd,
         hue: Math.random()*360
@@ -191,8 +217,8 @@ window.addEventListener("keydown", e => {
     }
     // update bullets
     for(const b of tryHard.bullets){
-      b.x += b.vx;
-      b.y += b.vy;
+      b.x += b.vx * dt / 1000;
+      b.y += b.vy * dt / 1000;
     }
     tryHard.bullets = tryHard.bullets.filter(b=>b.x>-20&&b.x<CANVAS_W+20&&b.y>HUD_H-20&&b.y<CANVAS_H+20);
     // collision check
@@ -203,7 +229,7 @@ window.addEventListener("keydown", e => {
         state.dead=true;
         stopGame();
         hideTryHardAlert();
-        showGameOverPopup("Oh No The Cheater Got You");
+        showGameOverPopup("The Sweaty Try Hard got you!");
         saveStats(state.bp,state.gcoin);
         return;
       }
@@ -225,6 +251,11 @@ window.addEventListener("keydown", e => {
     ctx.fillRect(tryHard.x-CELL,tryHard.y-HUD_H-CELL, CELL*2, CELL*2);
     // head
     ctx.fillRect(tryHard.x-CELL*0.3,tryHard.y-HUD_H-CELL*1.6,CELL*0.6,CELL*0.6);
+    ctx.font = "bold 12px system-ui";
+    ctx.textAlign = "center";
+    ctx.fillStyle = now < tryHard.slowedUntil ? "#d5afff" : "#fff";
+    ctx.fillText(now < tryHard.slowedUntil ? "Sweaty Try Hard · slowed" : "Sweaty Try Hard", tryHard.x, tryHard.y-HUD_H-40);
+    ctx.fillRect(tryHard.x-20, tryHard.y-HUD_H-30, 40*tryHard.hp/3, 4);
     // bullets
     for(const b of tryHard.bullets){
       ctx.fillStyle=`hsl(${b.hue},100%,70%)`;
@@ -233,9 +264,6 @@ window.addEventListener("keydown", e => {
       ctx.restore(); // restores to source-over
 }  // <— close drawBackground properly
 
-function drawHUD(now){
-
-  }
   // ====== Items + Red Zones (same as v1.0 Stable) ======
   function spawnItemNow(now){
     if(state.items.length>=7) return;
@@ -397,47 +425,6 @@ function drawBackground(now = performance.now()) {
   ctx.restore();
 }
 
-function drawHUD(now){
-  ctx.fillStyle = COLORS.hud;
-  ctx.fillRect(0, 0, CANVAS_W, HUD_H);
-  ctx.fillStyle = COLORS.text;
-  ctx.font = "14px monospace";
-
-  const remain = Math.max(0, state.nextPhaseAt - now);
-  ctx.fillText(`HP:${state.hp}`, 10, 15);
-  ctx.fillText(`BP:${state.bp}`, 270, 15);
-  ctx.fillText(`PH:${state.phase}`, 360, 15);
-  ctx.fillText(`GC:${state.gcoin}`, 430, 15);
-  ctx.fillText(`Next:${(remain / 1000).toFixed(1)}s`, 520, 15);
-
-  const barW = 180, barH = 10, x0 = 70, y0 = 18;
-  ctx.fillStyle = "#2b2f36";
-  ctx.fillRect(x0, y0, barW, barH);
-  ctx.fillStyle = COLORS.hp;
-  ctx.fillRect(x0, y0, barW * (state.hp / MAX_HP), barH);
-}
-
-function drawPlayer(now){
-  const bounce = Math.sin(now/120) * 2;
-  const px = state.px*CELL, py = state.py*CELL;
-  ctx.save(); ctx.translate(0, HUD_H);
-  ctx.fillStyle = COLORS.playerBody;
-  ctx.fillRect(px + CELL*0.2, py + CELL*0.6 - bounce, CELL*1.6, CELL*1.4);
-  ctx.fillStyle = COLORS.playerFeet;
-  ctx.fillRect(px + CELL*0.25, py + CELL*1.9 - bounce, CELL*1.5, CELL*0.3);
-  let hx = px + CELL*0.6, hy = py + CELL*0.1 - bounce;
-  switch (state.dir){
-    case "up":    hy = py - CELL*0.35 - bounce; break;
-    case "down":  hy = py + CELL*0.9  - bounce; break;
-    case "left":  hx = px - CELL*0.45; hy = py + CELL*0.55 - bounce; break;
-    case "right": hx = px + CELL*1.15; hy = py + CELL*0.55 - bounce; break;
-  }
-  ctx.fillStyle = COLORS.playerHead;
-  ctx.fillRect(hx, hy, CELL*0.8, CELL*0.8);
-  ctx.restore();
-}
-
-
 function drawHUD(now) {
   ctx.fillStyle = COLORS.hud;
   ctx.fillRect(0, 0, CANVAS_W, HUD_H);
@@ -450,6 +437,8 @@ function drawHUD(now) {
   ctx.fillText(`PH:${state.phase}`, 360, 15);
   ctx.fillText(`GC:${state.gcoin}`, 430, 15);
   ctx.fillText(`Next:${(remain / 1000).toFixed(1)}s`, 520, 15);
+  ctx.fillStyle = state.character === "rapture" ? "#d5afff" : COLORS.text;
+  ctx.fillText(state.character === "rapture" ? "Rapture · Space to shoot" : "Red13", 700, 24);
 
   const barW = 180, barH = 10, x0 = 70, y0 = 18;
   ctx.fillStyle = "#2b2f36";
@@ -461,6 +450,10 @@ function drawHUD(now) {
 function drawPlayer(now) {
   const bounce = Math.sin(now / 120) * 2;
   const px = state.px * CELL, py = state.py * CELL;
+  if (state.character === "rapture" && raptureSprite.complete && raptureSprite.naturalWidth) {
+    ctx.drawImage(raptureSprite, px - 8, HUD_H + py - 20 - bounce, 56, 72);
+    return;
+  }
   ctx.save();
   ctx.translate(0, HUD_H);
   ctx.fillStyle = COLORS.playerBody;
@@ -479,6 +472,53 @@ function drawPlayer(now) {
   ctx.restore();
 }
   // ====== Main Loop ======
+  function updatePlayerShots(now, dt) {
+    if (state.character !== "rapture") return;
+    if (shooting && now - lastShotAt >= 350) {
+      const x = state.px * CELL + CELL;
+      const y = HUD_H + state.py * CELL + CELL;
+      const direction = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[state.dir];
+      let [dx, dy] = direction;
+      if (tryHardActive && tryHard) {
+        const distance = Math.hypot(tryHard.x - x, tryHard.y - y);
+        if (distance > 0) { dx = (tryHard.x - x) / distance; dy = (tryHard.y - y) / distance; }
+      }
+      playerShots.push({ x, y, vx: dx * 720, vy: dy * 720 });
+      lastShotAt = now;
+    }
+    playerShots = playerShots.filter(shot => {
+      const previousX = shot.x, previousY = shot.y;
+      shot.x += shot.vx * dt / 1000;
+      shot.y += shot.vy * dt / 1000;
+      if (tryHardActive && tryHard) {
+        const dx = shot.x - previousX, dy = shot.y - previousY;
+        const lengthSquared = dx * dx + dy * dy;
+        const t = lengthSquared ? clamp(((tryHard.x - previousX) * dx + (tryHard.y - previousY) * dy) / lengthSquared, 0, 1) : 0;
+        if (Math.hypot(previousX + t * dx - tryHard.x, previousY + t * dy - tryHard.y) <= CELL * 1.2) {
+          tryHard.hp -= 1;
+          tryHard.slowedUntil = now + 2000;
+          if (tryHard.hp <= 0) {
+            tryHardActive = false;
+            tryHard.bullets = [];
+            hideTryHardAlert();
+            canvas.setAttribute("aria-label", "Sweaty Try Hard defeated by Rapture");
+          }
+          return false;
+        }
+      }
+      return shot.x > -10 && shot.x < CANVAS_W + 10 && shot.y > HUD_H - 10 && shot.y < CANVAS_H + 10;
+    });
+  }
+
+  function drawPlayerShots() {
+    ctx.save();
+    ctx.fillStyle = "#ead7ff";
+    ctx.shadowColor = "#b98aff";
+    ctx.shadowBlur = 10;
+    for (const shot of playerShots) { ctx.beginPath(); ctx.arc(shot.x, shot.y, 4, 0, Math.PI * 2); ctx.fill(); }
+    ctx.restore();
+  }
+
   function update(dt,now){
     if(!gameActive||state.dead)return;
     const stepMs=120;
@@ -516,6 +556,7 @@ if(!tryHardActive && state.phase >= 10) {
 }
 
 
+    updatePlayerShots(now,dt);
     updateTryHard(now,dt);
 
     if(state.hp<=0&&!state.dead){
@@ -536,6 +577,7 @@ if(!tryHardActive && state.phase >= 10) {
     drawTryHard(now);
     for(const it of state.items) drawItem(it);
     drawPlayer(now);
+    drawPlayerShots();
     frameId=requestAnimationFrame(loop);
   }
 
@@ -573,17 +615,21 @@ if(!tryHardActive && state.phase >= 10) {
 
   // ====== Public API ======
   function startGameFixed(){
+    stopGame();
     reset();
     hideGameOverPopup();
     gameActive=true;
     window.gameActive=true;
     window.uiScreen="game";
+    if (shootButton) shootButton.hidden = state.character !== "rapture";
     setScreen("game");
-    requestAnimationFrame(loop);
+    frameId=requestAnimationFrame(loop);
   }
   function stopGame(){
     gameActive=false;
     window.gameActive=false;
+    shooting = false;
+    if (shootButton) shootButton.hidden = true;
     if(frameId)cancelAnimationFrame(frameId);
   }
 

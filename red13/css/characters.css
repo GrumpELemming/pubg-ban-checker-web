@@ -1,0 +1,11 @@
+.character-picker { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0; padding: 12px; border: 1px solid #74708d; border-radius: 10px; }
+.character-picker legend { padding: 0 8px; color: #ffe680; }
+.character-choice { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid #535261; border-radius: 8px; cursor: pointer; min-width: 0; }
+.character-choice:has(input:checked) { border-color: #d5afff; background: #312840; }
+.character-choice:focus-within { outline: 2px solid #d5afff; outline-offset: 2px; }
+.character-choice img { width: 42px; height: 70px; object-fit: contain; }
+.character-choice strong, .character-choice small { display: block; }
+.character-choice small { margin-top: 5px; color: #d0ccd8; line-height: 1.4; }
+#shootBtn { position: fixed; bottom: 20px; right: 20px; z-index: 10; padding: 16px 24px; color: #fff; background: #594277; border: 2px solid #d5afff; border-radius: 12px; font: bold 16px system-ui; touch-action: none; }
+#shootBtn[hidden] { display: none; }
+@media (max-width: 540px) { .character-picker { grid-template-columns: 1fr; } .ops-panel { padding: 14px; } .ops-shell { max-height: 95dvh; overflow-y: auto; } }

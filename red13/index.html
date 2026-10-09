@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/ui.css">
 <link rel="stylesheet" href="css/crate-layout.css">
+<link rel="stylesheet" href="css/characters.css?v=20261009a">
 </head>
 <body>
   <img id="crateImg" src="assets/weaponcrate.png" alt="crate" style="display:none">
@@ -40,6 +41,18 @@
     <div class="ops-title">RED13 — BLUE ZONE RUNNER</div>
 
     <div class="ops-panel">
+      <fieldset class="character-picker">
+        <legend>Choose your character</legend>
+        <label class="character-choice">
+          <input type="radio" name="character" value="red13" checked>
+          <span><strong>Red13</strong><small>Classic blue zone survival</small></span>
+        </label>
+        <label class="character-choice">
+          <input type="radio" name="character" value="rapture">
+          <img src="assets/rapture.png" alt="Rapture in her dark tactical outfit">
+          <span><strong>Rapture</strong><small>Shoot to slow and defeat the Sweaty Try Hard</small></span>
+        </label>
+      </fieldset>
       <button id="btnStart" class="ops-btn primary">▶ Start Run</button>
       <button id="btnCrates" class="ops-btn accent">🎁 Open Crates</button>
 
@@ -93,6 +106,7 @@
       <span style="color:#58a6ff;">WASD</span> or
       <span style="color:#58a6ff;">Arrow Keys</span> to move
     </p>
+    <p>Choose Red13 or Rapture before starting. As Rapture, hold <strong>Space</strong> or the <strong>Shoot</strong> button to fire. Shots aim at the Sweaty Try Hard while it crosses the screen; each hit slows it for two seconds, and three hits defeat it. It arrives from phase 10. Press <strong>R</strong> to restart.</p>
 
     <p><strong>Item Types:</strong></p>
     <ul style="list-style:none;padding:0;text-align:left;line-height:1.6em;">
@@ -119,9 +133,11 @@
 </div>
 
 <!-- SCRIPTS -->
+<button id="shootBtn" type="button" hidden aria-label="Shoot as Rapture">Shoot · Space</button>
+<script src="js/characters.js?v=20261009a"></script>
 <script src="js/utils.js"></script>
 <script src="js/crates.js"></script>
-<script src="js/game.js"></script>
+<script src="js/game.js?v=20261009a"></script>
 <script src="js/main.js"></script>
 
 <script>
