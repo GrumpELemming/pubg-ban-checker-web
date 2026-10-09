@@ -56,8 +56,6 @@ const TRANSLATIONS = {
     "watchlist.retry": "Retry failed checks",
     "updates.title": "PUBG Ban Checker - Updates",
     "links.hero.title": "Trusted PUBG Resources",
-    "links.hero.lede":
-      "Report cheaters, review stats, watch 2D replays, and follow creators who expose bad actors. These are the go-to destinations we recommend.",
     "links.pubgtogether":
       "Vote on community clips and send evidence straight to PUBG Support. Crowd-sourced verdicts make reports clear and credible.",
     "links.lookup":
@@ -116,8 +114,6 @@ const TRANSLATIONS = {
       "Ստուգել արգելութիւններ բոլոր բլադֆորմներում. թարմացնելու համար կոխեցեք Re-check կոճակը",
     "updates.title": "PUBG արգելութիւն ստուգման Նորութիւնները",
     "links.hero.title": "Վսդահելի PUBGի ռեսուրսմեր",
-    "links.hero.lede":
-      "Հաղորդեք խաբեբաներ, դիտեք խաղերի կրկնությունները 2Dով  եւ հետեւեք չարագործներին բացահայտող ստեղծողներին: Ձեզի խորհուրդ կուտանք որ այս հղումներին նայիք եթէ նման բաներ կը հետաքրքրեն ձէզի:",
     "links.pubgtogether":
       "Քուեարկէլ տեսանիութներիվրայ ու ապացուցէլ PUBG Օգնուդիանին խաբեբալ խաղցողների համար: Հաշվետվութիւնները կհաստատուեն ամբոխի քվեարկութիամբ։",
     "links.lookup":
@@ -173,8 +169,6 @@ const TRANSLATIONS = {
       '모든 플랫폼의 밴 상태를 지휘실처럼 모니터링하세요. 새로 확인이 필요하면 해당 파일럿의 "재확인"을 사용하세요.',
     "updates.title": "PUBG 밴 확인 - 업데이트",
     "links.hero.title": "신뢰할 수 있는 PUBG 리소스",
-    "links.hero.lede":
-      "치터 신고, 스탯 확인, 2D 리플레이, 공정성 채널 등을 위한 추천 목적지입니다.",
     "links.pubgtogether":
       "커뮤니티 클립에 투표하고 증거를 PUBG 지원팀에 전달합니다. 군중 평결로 신고가 명확해집니다.",
     "links.lookup":
@@ -232,8 +226,6 @@ const TRANSLATIONS = {
       "像指挥台一样监控所有平台的封禁状态。需要刷新时，对任意玩家使用“重新检查”。",
     "updates.title": "PUBG 封禁查询 - 更新",
     "links.hero.title": "可信的 PUBG 资源",
-    "links.hero.lede":
-      "举报作弊、查看数据、观看 2D 回放、关注揭露作弊的创作者。推荐这些目的地。",
     "links.pubgtogether":
       "为社区视频投票，并将证据直接发送给 PUBG 支持。群体裁决让举报更明确。",
     "links.lookup": "深度个人统计、排行榜和比赛记录——用于自查或查看他人表现。",
@@ -287,8 +279,6 @@ const TRANSLATIONS = {
       "Überwache Ban-Status auf allen Plattformen wie am Kommandotisch. Nutze „Erneut prüfen“, wenn du einen frischen Scan brauchst.",
     "updates.title": "PUBG Ban Checker - Updates",
     "links.hero.title": "Vertrauenswürdige PUBG-Ressourcen",
-    "links.hero.lede":
-      "Cheater melden, Stats prüfen, 2D-Replays ansehen und Creator folgen, die Cheater aufdecken.",
     "links.pubgtogether":
       "Stimme über Clips ab und sende Beweise direkt an PUBG Support. Crowd-Verdikte machen Meldungen klarer.",
     "links.lookup":
@@ -347,8 +337,6 @@ const TRANSLATIONS = {
       'Seuraa ban-statuksia kaikilla alustoilla kuin komentokeskus. Käytä "Tarkista uudelleen" kun tarvitset tuoreen tarkastuksen.',
     "updates.title": "PUBG-ban-tarkistin - päivitykset",
     "links.hero.title": "Luotettavat PUBG-resurssit",
-    "links.hero.lede":
-      "Ilmoita huijareista, tarkista tilastot, katso 2D-uusintoja ja seuraa huijareita paljastavia tekijöitä.",
     "links.pubgtogether":
       "Äänestä klippejä ja lähetä todisteet suoraan PUBG-tukeen. Yhteisötuomiot selkeyttävät ilmoituksia.",
     "links.lookup":
@@ -407,8 +395,6 @@ const TRANSLATIONS = {
       "Monitoruj bany na każdej platformie niczym na stanowisku dowodzenia. Użyj „Ponownie sprawdź”, gdy potrzebujesz świeżego skanu.",
     "updates.title": "Sprawdzanie bana w PUBG - Aktualizacje",
     "links.hero.title": "Zaufane zasoby PUBG",
-    "links.hero.lede":
-      "Zgłaszaj cheaterów, sprawdzaj statystyki, oglądaj 2D replaye i śledź twórców ujawniających oszustów.",
     "links.pubgtogether":
       "Głosuj na klipy społeczności i wysyłaj dowody bezpośrednio do wsparcia PUBG. Werdykty społeczności uwiarygadniają zgłoszenia.",
     "links.lookup":
@@ -467,8 +453,6 @@ const TRANSLATIONS = {
       "Следи за статусом банов на всех платформах как на командном пункте. Нажимай «Проверить снова» для обновленного скана.",
     "updates.title": "Проверка бана PUBG - обновления",
     "links.hero.title": "Надежные ресурсы по PUBG",
-    "links.hero.lede":
-      "Сообщайте о читерах, смотрите статистику, 2D-повторы и каналы, разоблачающие нарушителей. Эти ресурсы мы рекомендуем.",
     "links.pubgtogether":
       "Голосуйте за клипы и отправляйте доказательства в PUBG Support. Решения сообщества усиливают заявки.",
     "links.lookup":
@@ -527,8 +511,6 @@ const TRANSLATIONS = {
       "Tüm platformlardaki ban durumlarını komuta masasındaymış gibi izle. Taze tarama için herhangi bir pilotta “Tekrar kontrol” kullan.",
     "updates.title": "PUBG Ban Kontrol - Güncellemeler",
     "links.hero.title": "Güvenilir PUBG Kaynakları",
-    "links.hero.lede":
-      "Hilecileri bildir, istatistiklere bak, 2D tekrarları izle ve hilecileri ifşa eden içerik üreticilerini takip et. Bunlar tavsiye ettiğimiz adresler.",
     "links.pubgtogether":
       "Topluluk kliplerine oy ver ve kanıtı PUBG desteğe gönder. Topluluk kararları raporları daha net yapar.",
     "links.lookup":
@@ -587,8 +569,6 @@ const TRANSLATIONS = {
       "راقب حالات الحظر عبر جميع المنصات. استخدم \"إعادة الفحص\" على أي لاعب عند الحاجة.",
     "updates.title": "فاحص حظر PUBG - التحديثات",
     "links.hero.title": "موارد PUBG الموثوقة",
-    "links.hero.lede":
-      "أبلغ عن الغشاشين، راجع الإحصائيات، شاهد إعادات ثنائية الأبعاد، وتابع منشئي المحتوى الذين يكشفون المخالفين.",
     "links.pubgtogether":
       "صوّت على مقاطع المجتمع وأرسل الأدلة مباشرة إلى دعم PUBG.",
     "links.lookup":
