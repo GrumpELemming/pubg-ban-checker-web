@@ -57,6 +57,10 @@ async function openGame(page) {
         },
         advance(dt) { testNow += dt; update(dt, testNow); },
         moveEnemy(dt) { testNow += dt; updateTryHard(testNow, dt); },
+        enemyHit() {
+          tryHard.bullets = [{ x: state.px * CELL + CELL, y: HUD_H + state.py * CELL + CELL, vx: 0, vy: 0, hue: 0 }];
+          updateTryHard(testNow, 0);
+        },
         phase(value) { state.phase = value; },
         finishCrossing(direction = -1) {
           tryHard.dir = direction; tryHard.vx = 100 * direction;
@@ -64,6 +68,7 @@ async function openGame(page) {
           updateTryHard(testNow + 1, 1);
         },
         hp(value) { state.hp = value; },
+        position(x, y) { state.px = x; state.py = y; },
         spawnLoot() { spawnItemNow(testNow); return state.items.map(item => ({ ...item })); },
         clearLoot() { state.items = []; },
         collectBlueChip() {
@@ -98,6 +103,7 @@ async function openGame(page) {
         },
         snapshot() { return { character: state.character, active: tryHardActive,
           hp: state.hp, bp: state.bp, phase: state.phase, dead: state.dead, hasBlueChip: state.hasBlueChip,
+          px: state.px, py: state.py,
           facingAngle: state.facingAngle, movementSpriteLoaded: !!raptureMovementSprite,
           jammerSpriteLoaded: !!raptureJammerMovementSprite,
           enemySpriteLoaded: tryHardSprite.complete && tryHardSprite.naturalWidth > 0,
@@ -277,6 +283,7 @@ test("BCD death prompt consumes one charge and R respawns Red13 at full health i
   await start(page, "red13");
   await page.evaluate(() => {
     window.gameTest.phase(3);
+    window.gameTest.position(9, 11);
     window.gameTest.collectBlueChip();
     window.gameTest.collectBlueChip();
     window.gameTest.hp(0);
@@ -284,6 +291,7 @@ test("BCD death prompt consumes one charge and R respawns Red13 at full health i
   });
   const before = await page.evaluate(() => window.gameTest.snapshot());
   await expect(page.locator("#goText")).toHaveText("You died! press r to send the bluechip to emily");
+  await expect(page.locator("#btnPlayAgain")).toHaveText("Continue");
   await page.keyboard.press("r");
   await page.evaluate(() => window.gameTest.freeze());
   const after = await page.evaluate(() => window.gameTest.snapshot());
@@ -291,13 +299,47 @@ test("BCD death prompt consumes one charge and R respawns Red13 at full health i
   expect(after.dead).toBe(false);
   expect(after.hasBlueChip).toBe(false);
   expect(after.phase).toBe(3);
+  expect(after.px).toBe(9);
+  expect(after.py).toBe(11);
   expect(after.bp).toBe(before.bp);
   expect(after.gcoin).toBe(before.gcoin);
   await expect(page.locator("#gameOverPopup")).toBeHidden();
   await page.evaluate(() => { window.gameTest.hp(0); window.gameTest.advance(1); });
   await expect(page.locator("#goText")).toHaveText("You died!");
+  await expect(page.locator("#btnPlayAgain")).toHaveText("Play Again");
   await page.keyboard.press("r");
   expect((await page.evaluate(() => window.gameTest.snapshot())).dead).toBe(true);
+});
+
+test("Red13 survives repeated blue-zone ticks at 1 HP for the full Jammer duration", async ({ page }) => {
+  await openGame(page);
+  await start(page, "red13");
+  await page.evaluate(() => {
+    window.gameTest.hp(1); window.gameTest.collectJammer(); window.gameTest.blueDamage();
+  });
+  for (let i = 0; i < 19; i++) {
+    await page.evaluate(() => { window.gameTest.advance(1000); window.gameTest.blueDamage(); });
+    expect((await page.evaluate(() => window.gameTest.snapshot())).hp).toBe(1);
+    expect((await page.evaluate(() => window.gameTest.snapshot())).dead).toBe(false);
+  }
+  await page.evaluate(() => { window.gameTest.advance(1000); window.gameTest.blueDamage(); });
+  expect((await page.evaluate(() => window.gameTest.snapshot())).dead).toBe(true);
+});
+
+test("BCD Continue resumes at the death location after an enemy hit", async ({ page }) => {
+  await openGame(page);
+  await start(page, "red13");
+  await page.evaluate(() => {
+    window.gameTest.enemy(); window.gameTest.position(7, 12);
+    window.gameTest.phase(6); window.gameTest.collectBlueChip(); window.gameTest.enemyHit();
+  });
+  await expect(page.locator("#goText")).toContainText("press r to send the bluechip to emily");
+  await expect(page.locator("#btnPlayAgain")).toHaveText("Continue");
+  await page.locator("#btnPlayAgain").click();
+  await page.evaluate(() => window.gameTest.freeze());
+  const after = await page.evaluate(() => window.gameTest.snapshot());
+  expect(after).toMatchObject({ hp: 100, phase: 6, px: 7, py: 12, hasBlueChip: false, dead: false });
+  await expect(page.locator("#gameOverPopup")).toBeHidden();
 });
 
 test("Rapture switches to the Jammer sprite, rotates in eight directions and restores her normal sprite", async ({ page }, testInfo) => {

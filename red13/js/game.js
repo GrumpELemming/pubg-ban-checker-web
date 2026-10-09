@@ -260,10 +260,14 @@ window.addEventListener("keydown", e => {
     for(const b of tryHard.bullets){
       if(Math.abs(b.x-px)<CELL && Math.abs(b.y-py)<CELL){
         // Hit!
+        state.hp=0;
+        state.diedAt=now;
         state.dead=true;
         stopGame();
         hideTryHardAlert();
-        showGameOverPopup("The Sweaty Try Hard got you!");
+        showGameOverPopup(state.character === "red13" && state.hasBlueChip
+          ? "The Sweaty Try Hard got you! press r to send the bluechip to emily"
+          : "The Sweaty Try Hard got you!");
         saveStats(state.bp,state.gcoin);
         return;
       }
@@ -695,7 +699,13 @@ if(!tryHardActive && (state.phase === 5 || state.phase >= 10)) {
     }
     popup.style.display="grid";
     document.getElementById("goText").textContent=text||"You Died!";
-    document.getElementById("btnPlayAgain").onclick=()=>{popup.style.display="none";startGameFixed();};
+    const canContinue = state.dead && state.character === "red13" && state.hasBlueChip;
+    const playButton = document.getElementById("btnPlayAgain");
+    playButton.textContent = canContinue ? "Continue" : "Play Again";
+    playButton.onclick = () => {
+      if (canContinue) respawnWithBlueChip();
+      else { popup.style.display="none"; startGameFixed(); }
+    };
     document.getElementById("btnMenu").onclick=()=>{popup.style.display="none";setScreen("menu");};
   }
   function hideGameOverPopup(){
@@ -712,7 +722,6 @@ if(!tryHardActive && (state.phase === 5 || state.phase >= 10)) {
     state.hasBlueChip = false;
     state.hp = MAX_HP;
     state.dead = false;
-    state.px = Math.floor(COLS / 2); state.py = Math.floor(ROWS / 2);
     state.nextPhaseAt += paused;
     state._nextItemAt += paused;
     for (const item of state.items) { item.born += paused; item.landTime += paused; }
