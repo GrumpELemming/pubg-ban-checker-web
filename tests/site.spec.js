@@ -8,6 +8,8 @@ for (const path of pages) {
     page.on("pageerror", error => errors.push(error.message));
     await page.goto(path);
     await expect(page.locator("h1")).toHaveCount(1);
+    expect(await page.content()).not.toMatch(/grump\s*e?\s*lemming|thegrumpylemming/i);
+    await expect(page.locator("[data-reveal-email], a[href^='mailto:']")).toHaveCount(0);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(1);
     expect(errors).toEqual([]);
@@ -20,6 +22,21 @@ test("navigation uses valid links and identifies the current page", async ({ pag
   await expect(page.locator(".nav-panel-buttons a button")).toHaveCount(0);
   await page.locator(".nav-panel-buttons a", { hasText: "Games" }).click();
   await expect(page).toHaveURL(/games\.html$/);
+  await expect(page.locator("a[href='red13/index.html']")).toBeVisible();
+});
+
+test("Red13 opens on the website without personal credits", async ({ page }) => {
+  const errors = [];
+  page.on("pageerror", error => errors.push(error.message));
+  await page.goto("/red13/index.html");
+  await expect(page.locator(".intro-img")).toBeVisible();
+  expect(await page.locator(".intro-img").evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
+  await page.locator(".press-enter").click();
+  await page.locator("#btnAbout").click();
+  await expect(page.locator("#about")).toBeVisible();
+  await expect(page.locator("#about")).toContainText("A PUBG-inspired endless survival game.");
+  expect(await page.content()).not.toMatch(/grump\s*e?\s*lemming/i);
+  expect(errors).toEqual([]);
 });
 
 test("theme choice persists", async ({ page }) => {
@@ -28,13 +45,6 @@ test("theme choice persists", async ({ page }) => {
   await page.reload();
   await expect(page.locator("html")).toHaveClass(/theme-gold/);
   await expect(page.locator(".theme-swatch[data-theme='gold']")).toHaveAttribute("aria-pressed", "true");
-});
-
-test("email address is hidden until requested", async ({ page }) => {
-  await page.goto("/privacy.html");
-  await expect(page.locator("a[href^='mailto:']")).toHaveCount(0);
-  await page.locator("[data-reveal-email]").first().click();
-  await expect(page.locator("a[href^='mailto:']").first()).toBeVisible();
 });
 
 test("watchlist keeps Discord saving and removes advanced controls", async ({ page }) => {
