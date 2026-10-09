@@ -332,9 +332,9 @@ window.addEventListener("keydown", e => {
       const it=state.items[i];
       if(it.falling) continue;
       if(it.x>=state.px-1&&it.x<=state.px+1&&it.y>=state.py-1&&it.y<=state.py+1){
-        if(it.type==="B"){if(state.hp<75)state.hp=Math.min(75,state.hp+10);state.bp+=5;}
-        if(it.type==="F"){if(state.hp<75)state.hp=75;state.bp+=10;}
-        if(it.type==="M"){state.hp=MAX_HP;state.bp+=20;}
+        if(it.type==="B"){if(state.hp<75)state.hp=Math.min(75,state.hp+10);state.bp+=100;}
+        if(it.type==="F"){if(state.hp<75)state.hp=75;state.bp+=200;}
+        if(it.type==="M"){state.hp=MAX_HP;state.bp+=400;}
         if(it.type==="G"){state.gcoin+=it.amount || 1;}
         saveStats(state.bp,state.gcoin);
         state.items.splice(i,1);

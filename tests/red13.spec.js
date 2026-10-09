@@ -28,6 +28,12 @@ async function openGame(page) {
           updateTryHard(testNow + 1, 1);
         },
         hp(value) { state.hp = value; },
+        collectHealing(type) {
+          state.items = [{ type, x: state.px, y: state.py, falling: false }];
+          pickupNearby();
+          pickupNearby();
+          return { bp: state.bp, hp: state.hp, items: state.items.length };
+        },
         collectLoot() {
           const loot = state.items.find(item => item.type === "G" && item.amount === 5);
           if (loot) { state.px = loot.x; state.py = loot.y; pickupNearby(); }
@@ -183,3 +189,21 @@ test("Red13 earns 3 saved GCoin once for each crossing he survives", async ({ pa
   await page.evaluate(() => { window.gameTest.enemy(); window.gameTest.hp(0); window.gameTest.finishCrossing(); });
   expect((await page.evaluate(() => window.gameTest.snapshot())).gcoin).toBe(6);
 });
+
+for (const character of ["red13", "rapture"]) {
+  test(`${character} earns saved BP once per healing pickup, even at full health`, async ({ page }) => {
+    await openGame(page);
+    await start(page, character);
+    const initial = await page.evaluate(() => Number(localStorage.getItem("red13_bp") || 0));
+    let earned = 0;
+    for (const [type, value] of [["B", 100], ["F", 200], ["M", 400]]) {
+      await page.evaluate(() => window.gameTest.hp(100));
+      const result = await page.evaluate(type => window.gameTest.collectHealing(type), type);
+      earned += value;
+      expect(result.bp).toBe(initial + earned);
+      expect(result.hp).toBe(100);
+      expect(result.items).toBe(0);
+      expect(await page.evaluate(() => Number(localStorage.getItem("red13_bp")))).toBe(initial + earned);
+    }
+  });
+}
