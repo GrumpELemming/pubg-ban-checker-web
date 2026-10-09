@@ -23,6 +23,7 @@ async function openGame(page) {
         moveEnemy(dt) { testNow += dt; updateTryHard(testNow, dt); },
         phase(value) { state.phase = value; },
         snapshot() { return { character: state.character, active: tryHardActive,
+          enemySpriteLoaded: tryHardSprite.complete && tryHardSprite.naturalWidth > 0,
           enemy: tryHard && { x: tryHard.x, hp: tryHard.hp, slowedUntil: tryHard.slowedUntil },
           shots: playerShots.length, phaseTriggered: tryHardPhaseTriggered }; }
       };
@@ -66,11 +67,14 @@ test("Rapture can be selected, rendered and remembered; Red13 stays playable", a
   expect(errors).toEqual([]);
 });
 
-test("Rapture shots slow the enemy and defeat it after three hits", async ({ page }) => {
+test("Rapture shots slow the enemy and defeat it after three hits", async ({ page }, testInfo) => {
   await openGame(page);
   await start(page, "rapture");
   await page.evaluate(() => window.gameTest.enemy());
   await expect(page.locator("#tryHardAlert")).toHaveText("SWEATY TRY HARD IN THE BLUE ZONE");
+  await expect.poll(() => page.evaluate(() => window.gameTest.snapshot().enemySpriteLoaded)).toBe(true);
+  await page.evaluate(() => window.gameTest.draw());
+  await page.screenshot({ path: testInfo.outputPath("sweaty-try-hard-gameplay.png") });
   await page.keyboard.down("Space");
   await page.evaluate(() => { for (let i = 0; i < 5; i++) window.gameTest.advance(50); });
   const hit = await page.evaluate(() => window.gameTest.snapshot());

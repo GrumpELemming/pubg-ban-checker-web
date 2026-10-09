@@ -27,6 +27,8 @@
   raptureSprite.src = "assets/rapture.png";
   const red13Sprite = new Image();
   red13Sprite.src = "assets/red13.png";
+  const tryHardSprite = new Image();
+  tryHardSprite.src = "assets/sweaty-try-hard.png";
   const shootButton = document.getElementById("shootBtn");
   let shooting = false;
   let lastShotAt = -Infinity;
@@ -248,16 +250,18 @@ window.addEventListener("keydown", e => {
     const col=`hsl(${tryHard.hue},100%,60%)`;
     ctx.save();
     ctx.translate(0,HUD_H);
-    // body
-    ctx.fillStyle=col;
-    ctx.fillRect(tryHard.x-CELL,tryHard.y-HUD_H-CELL, CELL*2, CELL*2);
-    // head
-    ctx.fillRect(tryHard.x-CELL*0.3,tryHard.y-HUD_H-CELL*1.6,CELL*0.6,CELL*0.6);
+    if (tryHardSprite.complete && tryHardSprite.naturalWidth) {
+      ctx.drawImage(tryHardSprite, tryHard.x-28, tryHard.y-HUD_H-36, 56, 72);
+    } else {
+      ctx.fillStyle=col;
+      ctx.fillRect(tryHard.x-CELL,tryHard.y-HUD_H-CELL, CELL*2, CELL*2);
+      ctx.fillRect(tryHard.x-CELL*0.3,tryHard.y-HUD_H-CELL*1.6,CELL*0.6,CELL*0.6);
+    }
     ctx.font = "bold 12px system-ui";
     ctx.textAlign = "center";
     ctx.fillStyle = now < tryHard.slowedUntil ? "#d5afff" : "#fff";
-    ctx.fillText(now < tryHard.slowedUntil ? "Sweaty Try Hard · slowed" : "Sweaty Try Hard", tryHard.x, tryHard.y-HUD_H-40);
-    ctx.fillRect(tryHard.x-20, tryHard.y-HUD_H-30, 40*tryHard.hp/3, 4);
+    ctx.fillText(now < tryHard.slowedUntil ? "Sweaty Try Hard · slowed" : "Sweaty Try Hard", tryHard.x, tryHard.y-HUD_H-50);
+    ctx.fillRect(tryHard.x-20, tryHard.y-HUD_H-43, 40*tryHard.hp/3, 4);
     // bullets
     for(const b of tryHard.bullets){
       ctx.fillStyle=`hsl(${b.hue},100%,70%)`;
