@@ -18,7 +18,7 @@
   const COLORS = {
     bg:"#111318", hud:"#0b0c10", playerBody:"#ff4040", playerHead:"#ff7373",
     playerFeet:"#b82020", text:"#e6e6e6", hp:"#e85d75",
-    item:"#7bdcb5", itemF:"#58a6ff", itemM:"#ffd166", itemG:"#b380ff"
+    item:"#7bdcb5", itemF:"#58a6ff", itemM:"#ffd166", itemG:"#b380ff", itemJ:"#6ee7d8"
   };
 
   const canvas = document.getElementById("game");
@@ -149,7 +149,7 @@ window.addEventListener("keydown", e => {
       character: window.selectedCharacter === "rapture" ? "rapture" : "red13",
       px: Math.floor(COLS/2),
       py: Math.floor(ROWS/2),
-      hp: START_HP, bp, gcoin: gc,
+      hp: START_HP, bp, gcoin: gc, jammerUntil: 0,
       dir: "down", facingAngle: Math.PI, phase: 1,
       nextPhaseAt: now + PHASE_LEN_MS,
       nextDmgAt: now + DMG_INTERVAL_MS,
@@ -289,10 +289,19 @@ window.addEventListener("keydown", e => {
   // ====== Items + Red Zones (same as v1.0 Stable) ======
   function spawnItemNow(now){
     if(state.items.length>=7) return;
-    const x=1+Math.floor(Math.random()*(COLS-2));
-    const y=1+Math.floor(Math.random()*(ROWS-2));
+    // Reserve an unoccupied in-bounds point before making the eligible roll.
+    const occupied = new Set(state.items.map(item => `${item.x},${item.y}`));
+    const available = [];
+    for (let y = 1; y < ROWS - 1; y++) {
+      for (let x = 1; x < COLS - 1; x++) {
+        if (!occupied.has(`${x},${y}`)) available.push({ x, y });
+      }
+    }
+    if (!available.length) return;
+    const { x, y } = available[Math.floor(Math.random() * available.length)];
+    const jammer = window.BZR.loot.rollJammer({ x, y });
     const r=Math.random();
-    const type=r<.4?"B":r<.7?"F":r<.9?"M":"G";
+    const type=jammer?"J":r<.4?"B":r<.7?"F":r<.9?"M":"G";
     const cx=x*CELL+CELL/2;
     const cy=HUD_H+y*CELL+CELL/2;
     const fallDur=550+Math.random()*150;
@@ -319,7 +328,7 @@ window.addEventListener("keydown", e => {
     }
   }
   function drawItem(it){
-    const f=it.type==="B"?COLORS.item:it.type==="F"?COLORS.itemF:it.type==="M"?COLORS.itemM:COLORS.itemG;
+    const f=it.type==="B"?COLORS.item:it.type==="F"?COLORS.itemF:it.type==="M"?COLORS.itemM:it.type==="J"?COLORS.itemJ:COLORS.itemG;
     ctx.save();ctx.translate(0,HUD_H);
     if(it.falling){
       for(let i=4;i>=1;i--){const gy=it.py-i*14,a=.06*i;
@@ -338,7 +347,7 @@ window.addEventListener("keydown", e => {
     }
     ctx.restore();
   }
-  function pickupNearby(){
+  function pickupNearby(now = performance.now()){
     for(let i=state.items.length-1;i>=0;i--){
       const it=state.items[i];
       if(it.falling) continue;
@@ -347,6 +356,8 @@ window.addEventListener("keydown", e => {
         if(it.type==="F"){if(state.hp<75)state.hp=75;state.bp+=200;}
         if(it.type==="M"){state.hp=MAX_HP;state.bp+=400;}
         if(it.type==="G"){state.gcoin+=it.amount || 1;}
+        // Refresh protection, never stack durations or carry it into another run.
+        if(it.type==="J"){state.jammerUntil=now+window.BZR.lootConfig.jammerProtectionMs;}
         saveStats(state.bp,state.gcoin);
         state.items.splice(i,1);
       }
@@ -459,6 +470,10 @@ function drawHUD(now) {
   ctx.fillText(`PH:${state.phase}`, 360, 15);
   ctx.fillText(`GC:${state.gcoin}`, 430, 15);
   ctx.fillText(`Next:${(remain / 1000).toFixed(1)}s`, 520, 15);
+  if (now < state.jammerUntil) {
+    ctx.fillStyle = COLORS.itemJ;
+    ctx.fillText(`Jammer: ${Math.ceil((state.jammerUntil - now) / 1000)}s`, 270, 33);
+  }
   ctx.fillStyle = state.character === "rapture" ? "#d5afff" : COLORS.text;
   ctx.fillText(state.character === "rapture" ? "Rapture · Space to shoot" : "Red13", 700, 24);
 
@@ -579,12 +594,13 @@ function drawPlayer(now) {
     }
     scheduleItems(now);
     updateFallingItems(now);
-    pickupNearby();
+    pickupNearby(now);
     state._bpAcc+=dt;
     while(state._bpAcc>=50){state.bp+=1;state._bpAcc-=50;}
     if(now>=state.nextDmgAt){
       const phaseDmg=DMG_BY_PHASE[Math.min(state.phase,DMG_BY_PHASE.length-1)];
-      state.hp-=phaseDmg;state.nextDmgAt+=DMG_INTERVAL_MS;
+      if (now >= state.jammerUntil) state.hp-=phaseDmg;
+      state.nextDmgAt+=DMG_INTERVAL_MS;
       if(state.hp<0)state.hp=0;
     }
     if(now>=state.nextPhaseAt){state.phase++;state.nextPhaseAt+=PHASE_LEN_MS;}

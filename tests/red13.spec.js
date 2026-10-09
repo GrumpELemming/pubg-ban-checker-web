@@ -50,6 +50,24 @@ async function openGame(page) {
           updateTryHard(testNow + 1, 1);
         },
         hp(value) { state.hp = value; },
+        spawnLoot() { spawnItemNow(testNow); return state.items.map(item => ({ ...item })); },
+        clearLoot() { state.items = []; },
+        collectJammer() {
+          state.items = [{ type: "J", x: state.px, y: state.py, falling: false }];
+          pickupNearby(testNow);
+          return state.jammerUntil - testNow;
+        },
+        blueDamage() {
+          state.phase = 2; state.nextDmgAt = testNow;
+          state.nextPhaseAt = state._nextItemAt = RED.nextSpawnAt = Infinity;
+          RED.zones = []; update(0, testNow); return state.hp;
+        },
+        redDamage() {
+          RED.lastDamageAt = testNow - RED.damageEvery;
+          RED.zones = [{ type: "solid", cx: state.px * CELL + CELL,
+            cy: HUD_H + state.py * CELL + CELL, r: 100, pulse: false }];
+          damageFromRedZones(testNow); RED.zones = []; return state.hp;
+        },
         collectHealing(type) {
           state.items = [{ type, x: state.px, y: state.py, falling: false }];
           pickupNearby();
@@ -105,6 +123,112 @@ test("Rapture can be selected, rendered and remembered; Red13 stays playable", a
   await page.keyboard.up("Space");
   expect((await page.evaluate(() => window.gameTest.snapshot())).shots).toBe(0);
   expect(errors).toEqual([]);
+});
+
+test("eligible loot rolls independently replace normal loot with one Jammer and avoid occupied points", async ({ page }) => {
+  await openGame(page);
+  await start(page, "red13");
+  await page.evaluate(() => {
+    window.gameTest.clearLoot();
+    window.lootRollCount = 0;
+    // Nearest 32-bit values below/above 5%, then another success. Test copy only.
+    const values = [214748364, 214748365, 0];
+    window.crypto.getRandomValues = array => {
+      array[0] = values[window.lootRollCount++] ?? 0; return array;
+    };
+    Math.random = () => 0;
+  });
+  const logs = [];
+  page.on("console", message => { if (message.type() === "debug") logs.push(message.text()); });
+  let items = await page.evaluate(() => window.gameTest.spawnLoot());
+  expect(items.map(item => item.type)).toEqual(["J"]);
+  items = await page.evaluate(() => window.gameTest.spawnLoot());
+  expect(items.map(item => item.type)).toEqual(["J", "B"]);
+  items = await page.evaluate(() => window.gameTest.spawnLoot());
+  expect(items.map(item => item.type)).toEqual(["J", "B", "J"]);
+  expect(new Set(items.map(item => `${item.x},${item.y}`)).size).toBe(3);
+  expect(items.every(item => item.x >= 1 && item.x <= 52 && item.y >= 1 && item.y <= 32)).toBe(true);
+  expect(logs.some(log => log.includes("success"))).toBe(true);
+  expect(logs.some(log => log.includes("failure"))).toBe(true);
+  await page.evaluate(() => { for (let i = 0; i < 8; i++) window.gameTest.spawnLoot(); });
+  expect(await page.evaluate(() => window.lootRollCount)).toBe(7);
+  expect((await page.evaluate(() => window.gameTest.spawnLoot())).length).toBe(7);
+});
+
+test("Jammer rolls have no pity guarantee, support configured probabilities and survive reloads", async ({ page }) => {
+  await openGame(page);
+  await start(page, "rapture");
+  const results = await page.evaluate(() => {
+    window.crypto.getRandomValues = array => { array[0] = 0xffffffff; return array; };
+    window.BZR.lootConfig.debugLootRolls = false;
+    const failures = [];
+    for (let i = 0; i < 100; i++) {
+      window.gameTest.clearLoot();
+      failures.push(window.gameTest.spawnLoot()[0].type);
+    }
+    window.BZR.lootConfig.jammerSpawnChance = 1;
+    window.gameTest.clearLoot();
+    const certain = window.gameTest.spawnLoot()[0].type;
+    window.BZR.lootConfig.jammerSpawnChance = 0;
+    window.crypto.getRandomValues = array => { array[0] = 0; return array; };
+    window.gameTest.clearLoot();
+    const disabled = window.gameTest.spawnLoot()[0].type;
+    window.BZR.lootConfig.jammerSpawnChance = -0.1;
+    let invalidRejected = false;
+    try { window.BZR.loot.rollJammer({ x: 1, y: 1 }); } catch (error) { invalidRejected = error instanceof RangeError; }
+    return { failures, certain, disabled, invalidRejected };
+  });
+  expect(results.failures).not.toContain("J");
+  expect(results.certain).toBe("J");
+  expect(results.disabled).not.toBe("J");
+  expect(results.invalidRejected).toBe(true);
+  await page.reload();
+  expect(await page.evaluate(() => window.BZR.lootConfig.jammerSpawnChance)).toBe(0.05);
+});
+
+for (const character of ["red13", "rapture"]) {
+  test(`${character} gets temporary blue-zone protection without red-zone immunity or stacked durations`, async ({ page }) => {
+    await openGame(page);
+    await start(page, character);
+    await page.evaluate(() => window.gameTest.hp(100));
+    expect(await page.evaluate(() => window.gameTest.collectJammer())).toBe(20_000);
+    expect(await page.evaluate(() => window.gameTest.blueDamage())).toBe(100);
+    expect(await page.evaluate(() => window.gameTest.redDamage())).toBeLessThan(100);
+    await page.evaluate(() => { window.gameTest.hp(100); window.gameTest.advance(10_000); });
+    expect(await page.evaluate(() => window.gameTest.collectJammer())).toBe(20_000);
+    await page.evaluate(() => window.gameTest.advance(19_999));
+    expect(await page.evaluate(() => window.gameTest.blueDamage())).toBe(100);
+    await page.evaluate(() => window.gameTest.advance(1));
+    expect(await page.evaluate(() => window.gameTest.blueDamage())).toBe(99);
+    await page.evaluate(() => { window.startGameFixed(); window.gameTest.freeze(); window.gameTest.hp(100); });
+    expect(await page.evaluate(() => window.gameTest.blueDamage())).toBe(99);
+  });
+}
+
+test("separate browser players have independent Jammer rolls and protection", async ({ page, browser }) => {
+  const otherContext = await browser.newContext();
+  const otherPage = await otherContext.newPage();
+  try {
+    await openGame(page);
+    await openGame(otherPage);
+    await start(page, "red13");
+    await start(otherPage, "rapture");
+    await page.evaluate(() => {
+      window.crypto.getRandomValues = array => { array[0] = 0; return array; };
+      window.gameTest.clearLoot(); window.gameTest.hp(100);
+    });
+    await otherPage.evaluate(() => {
+      window.crypto.getRandomValues = array => { array[0] = 0xffffffff; return array; };
+      window.gameTest.clearLoot(); window.gameTest.hp(100);
+    });
+    expect((await page.evaluate(() => window.gameTest.spawnLoot()))[0].type).toBe("J");
+    expect((await otherPage.evaluate(() => window.gameTest.spawnLoot()))[0].type).not.toBe("J");
+    await page.evaluate(() => window.gameTest.collectJammer());
+    expect(await page.evaluate(() => window.gameTest.blueDamage())).toBe(100);
+    expect(await otherPage.evaluate(() => window.gameTest.blueDamage())).toBe(99);
+  } finally {
+    await otherContext.close();
+  }
 });
 
 test("Rapture's reference sprite faces all eight movement directions and keeps its idle facing", async ({ page }) => {
