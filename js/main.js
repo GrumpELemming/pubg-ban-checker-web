@@ -310,24 +310,6 @@
     if (existing) return;
 
     const now = Date.now();
-    const signedIn = Boolean(window.PBCWatchlistStore?.getSession?.().authenticated);
-    const initialStatus = classifyStatus(platformLabel);
-    const observedStatus = initialStatus === "temp" ? "temporary" :
-      initialStatus === "perm" ? "permanent" :
-      initialStatus === "not" ? "innocent" : "";
-    const observationFields = signedIn && observedStatus ? {
-      schemaVersion: 2,
-      observations: [{ status: observedStatus, observedAt: now }],
-      effectiveStatus: observedStatus,
-      verificationState: "",
-      checkCount: 1,
-      tempBanCount: observedStatus === "temporary" ? 1 : 0,
-      firstWatchedAt: now,
-      lastStatusChangeAt: observedStatus === "innocent" ? 0 : now,
-      firstPermanentObservedAt: observedStatus === "permanent" ? now : 0,
-      consecutiveClearCount: 0,
-      clearCandidateSince: 0
-    } : {};
 
     list.push({
       player,
@@ -335,8 +317,7 @@
       clan: clan || "",
       platform,
       statusLabel: platformLabel || "",
-      lastChecked: now,
-      ...observationFields
+      lastChecked: now
     });
 
     saveWatchlist(platform, list);
@@ -433,19 +414,6 @@
     const actions = document.createElement("div");
     actions.className = "player-actions";
     actions.append(addBtn);
-
-    if (status === "perm") {
-      const cardBtn = document.createElement("button");
-      cardBtn.type = "button";
-      cardBtn.className = "secondary-btn generate-card-btn";
-      cardBtn.textContent = "Generate Ban Card";
-      cardBtn.addEventListener("click", () => {
-        if (window.BanCard) {
-          window.BanCard.open({ player, accountId, platform, trigger: cardBtn });
-        }
-      });
-      actions.append(cardBtn);
-    }
 
     if ((status === "perm" || status === "temp") && accountId) {
       const teammateBtn = document.createElement("button");

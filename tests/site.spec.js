@@ -37,20 +37,11 @@ test("email address is hidden until requested", async ({ page }) => {
   await expect(page.locator("a[href^='mailto:']").first()).toBeVisible();
 });
 
-test("watchlist exposes display and sweep controls", async ({ page }) => {
+test("watchlist keeps Discord saving and removes advanced controls", async ({ page }) => {
   await page.goto("/watchlist.html");
-  await expect(page.locator("#watchlistFilter")).toBeVisible();
-  await expect(page.locator("#watchlistSort")).toBeVisible();
-  await expect(page.locator("#pauseSweepBtn")).toBeHidden();
-  await expect(page.locator("#stopSweepBtn")).toBeHidden();
-  await expect(page.locator("#watchlistSyncDiagnostics")).toBeHidden();
-  await expect(page.locator("#exportWatchlistBtn")).toBeHidden();
-  await expect(page.locator("#importWatchlistBtn")).toBeHidden();
-  await expect(page.locator("#revokeSessionsBtn")).toBeHidden();
-  await expect(page.locator("#deleteSyncedWatchlistsBtn")).toBeHidden();
-  await expect(page.locator("#deleteAccountDataBtn")).toBeHidden();
+  await expect(page.locator("#watchlistSignInBtn")).toBeVisible();
+  await expect(page.locator("#refreshAllBtn, #pauseSweepBtn, #stopSweepBtn, #watchlistFilter, #watchlistSort, #watchlistSearch, #watchlistSyncDiagnostics, #exportWatchlistBtn, #importWatchlistBtn, #revokeSessionsBtn, #deleteSyncedWatchlistsBtn, #deleteAccountDataBtn, #watchlistObservationNotice")).toHaveCount(0);
 });
-
 test("incomplete translations visibly identify English fallbacks", async ({ page }) => {
   await page.goto("/watchlist.html");
   await page.evaluate(() => localStorage.setItem("siteLang", "de"));

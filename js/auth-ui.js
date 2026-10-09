@@ -30,13 +30,6 @@
     const status = document.getElementById("watchlistAccountStatus");
     const signInButton = document.getElementById("watchlistSignInBtn");
     const signOutButton = document.getElementById("watchlistSignOutBtn");
-    const exportButton = document.getElementById("exportWatchlistBtn");
-    const importButton = document.getElementById("importWatchlistBtn");
-    const importFile = document.getElementById("importWatchlistFile");
-    const diagnostics = document.getElementById("watchlistSyncDiagnostics");
-    const revokeSessionsButton = document.getElementById("revokeSessionsBtn");
-    const deleteWatchlistsButton = document.getElementById("deleteSyncedWatchlistsBtn");
-    const deleteAccountButton = document.getElementById("deleteAccountDataBtn");
 
     if (!panel || !summary || !accountName || !description || !status || !signInButton || !signOutButton) {
       return;
@@ -52,21 +45,6 @@
     let latestSync = null;
     let notice = consumeOAuthNotice();
     let sessionCheckFailed = false;
-    const syncStates = new Map();
-    let lastSyncedAt = 0;
-
-    function renderDiagnostics(authenticated) {
-      if (!diagnostics) return;
-      diagnostics.hidden = !authenticated;
-      if (!authenticated) return;
-      const synced = Array.from(syncStates.values()).filter(item => item.status === "synced" || item.status === "conflict-resolved").length;
-      const pending = Array.from(syncStates.values()).filter(item => ["syncing", "offline", "error"].includes(item.status)).length;
-      diagnostics.querySelector("[data-sync-last]").textContent = lastSyncedAt ? new Date(lastSyncedAt).toLocaleString() : "Not yet";
-      diagnostics.querySelector("[data-sync-platforms]").textContent = `${synced} synchronized`;
-      diagnostics.querySelector("[data-sync-pending]").textContent = navigator.onLine === false
-        ? `${pending || 1} waiting for connection`
-        : pending ? `${pending} pending` : "No pending changes";
-    }
 
     function userDisplayName(user) {
       if (!user || typeof user !== "object") return "Discord user";
@@ -94,12 +72,6 @@
       summary.setAttribute("aria-busy", actionPending ? "true" : "false");
       signInButton.hidden = authenticated;
       signOutButton.hidden = !authenticated;
-      if (exportButton) exportButton.hidden = !authenticated;
-      if (importButton) importButton.hidden = !authenticated;
-      [revokeSessionsButton, deleteWatchlistsButton, deleteAccountButton].forEach(button => {
-        if (button) button.hidden = !authenticated;
-      });
-      renderDiagnostics(authenticated);
 
       if (actionPending) {
         summary.dataset.authState = "loading";
@@ -206,8 +178,6 @@
     function onSync(event) {
       if (!notice?.sticky) notice = null;
       latestSync = event.detail && typeof event.detail === "object" ? event.detail : null;
-      if (latestSync?.platform) syncStates.set(latestSync.platform, latestSync);
-      if (latestSync?.status === "synced" || latestSync?.status === "conflict-resolved") lastSyncedAt = Date.now();
       if (session.authenticated && !actionPending) render();
     }
 
@@ -281,141 +251,6 @@
       }
     }
 
-    function exportWatchlistData() {
-      const store = window.PBCWatchlistStore;
-      if (!session.authenticated || !store?.get) return;
-      const platforms = store.platforms || ["steam", "xbox", "psn", "kakao"];
-      const payload = {
-        exportedAt: new Date().toISOString(),
-        account: { id: session.user?.id || "", username: session.user?.username || "", displayName: userDisplayName(session.user) },
-        watchlists: Object.fromEntries(platforms.map(platform => [platform, store.get(platform)]))
-      };
-      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `pubg-ban-checker-watchlist-${new Date().toISOString().slice(0, 10)}.json`;
-      link.click();
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-      setStatus("Watchlist data exported", "success");
-    }
-
-    async function importWatchlistData(file) {
-      const store = window.PBCWatchlistStore;
-      if (!session.authenticated || !store?.get || !store?.save || !store?.mergeEntries) return;
-      if (!file) return;
-      if (file.size > 5 * 1024 * 1024) {
-        setStatus("That backup is larger than the 5 MB import limit", "error");
-        return;
-      }
-
-      let payload;
-      try {
-        payload = JSON.parse(await file.text());
-      } catch {
-        setStatus("Import failed: select a valid PUBG Ban Checker JSON backup", "error");
-        return;
-      }
-
-      const watchlists = payload && typeof payload === "object" ? payload.watchlists : null;
-      const platforms = store.platforms || ["steam", "xbox", "psn", "kakao"];
-      if (!watchlists || typeof watchlists !== "object" || Array.isArray(watchlists)) {
-        setStatus("Import failed: this file does not contain Watchlist backup data", "error");
-        return;
-      }
-
-      const prepared = [];
-      for (const platform of platforms) {
-        if (watchlists[platform] === undefined) continue;
-        if (!Array.isArray(watchlists[platform])) {
-          setStatus(`Import failed: ${platform} Watchlist data is not a list`, "error");
-          return;
-        }
-        const normalized = store.mergeEntries(watchlists[platform], platform);
-        if (normalized.length > 500) {
-          setStatus(`Import failed: ${platform} contains more than 500 players`, "error");
-          return;
-        }
-        if (watchlists[platform].length && !normalized.length) {
-          setStatus(`Import failed: ${platform} contains no valid player records`, "error");
-          return;
-        }
-        prepared.push({ platform, entries: normalized });
-      }
-
-      const playerCount = prepared.reduce((total, item) => total + item.entries.length, 0);
-      if (!prepared.length || !playerCount) {
-        setStatus("Import stopped: the backup contains no players", "warning");
-        return;
-      }
-      const platformCount = prepared.filter(item => item.entries.length).length;
-      let newCount = 0;
-      prepared.forEach(item => {
-        const current = store.get(item.platform);
-        item.merged = store.mergeEntries(current, item.entries, item.platform);
-        newCount += Math.max(0, item.merged.length - current.length);
-      });
-      const mergeCount = Math.max(0, playerCount - newCount);
-      const preview = `${newCount} new · ${mergeCount} merged with existing`;
-      if (!window.confirm(`Import ${playerCount} player record${playerCount === 1 ? "" : "s"} across ${platformCount} platform${platformCount === 1 ? "" : "s"}?\n\n${preview}\n\nExisting records will be kept.`)) return;
-
-      actionPending = true;
-      render();
-      try {
-        let finalCount = 0;
-        for (const item of prepared) {
-          const merged = item.merged;
-          finalCount += merged.length;
-          await Promise.resolve(store.save(item.platform, merged));
-        }
-        notice = { message: `Backup imported successfully. ${finalCount} Watchlist record${finalCount === 1 ? "" : "s"} now available.`, tone: "success", sticky: true };
-      } catch {
-        notice = { message: "Import could not finish. Existing Watchlist data has been kept.", tone: "error" };
-      } finally {
-        actionPending = false;
-        render();
-      }
-    }
-
-    async function accountRequest(url, options = {}) {
-      const response = await fetch(url, {
-        method: options.method || "POST",
-        credentials: "same-origin",
-        headers: { "Accept": "application/json", "Content-Type": "application/json", "X-CSRF-Token": session.csrfToken },
-        body: options.body ? JSON.stringify(options.body) : undefined
-      });
-      const body = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(body?.error?.message || "The account request could not be completed");
-      return body;
-    }
-
-    async function revokeOtherSessions() {
-      if (!window.confirm("Sign out every other browser and device? This device will stay signed in.")) return;
-      try {
-        const result = await accountRequest("/api/auth/logout-others");
-        setStatus(`${result.sessionsRevoked || 0} other session${result.sessionsRevoked === 1 ? "" : "s"} signed out`, "success");
-      } catch (error) { setStatus(error.message, "error"); }
-    }
-
-    async function deleteSyncedWatchlists() {
-      if (!window.confirm("Permanently delete every synchronized Watchlist? This cannot be undone.")) return;
-      try {
-        await accountRequest("/api/account/watchlists", { method: "DELETE" });
-        const store = window.PBCWatchlistStore;
-        for (const platform of store?.platforms || []) await Promise.resolve(store.save(platform, []));
-        setStatus("Synchronized Watchlists deleted", "success");
-      } catch (error) { setStatus(error.message, "error"); }
-    }
-
-    async function deleteAccountData() {
-      const confirmation = window.prompt("This permanently deletes your synchronized Watchlists, account record, and sessions. Type DELETE to continue.");
-      if (confirmation !== "DELETE") return;
-      try {
-        await accountRequest("/api/account", { method: "DELETE", body: { confirmation } });
-        window.location.reload();
-      } catch (error) { setStatus(error.message, "error"); }
-    }
-
     signInButton.addEventListener("click", function () {
       if (signInButton.disabled) return;
       actionPending = true;
@@ -428,19 +263,6 @@
     });
 
     signOutButton.addEventListener("click", signOut);
-    exportButton?.addEventListener("click", exportWatchlistData);
-    importButton?.addEventListener("click", () => importFile?.click());
-    importFile?.addEventListener("change", async () => {
-      const file = importFile.files?.[0];
-      try {
-        await importWatchlistData(file);
-      } finally {
-        importFile.value = "";
-      }
-    });
-    revokeSessionsButton?.addEventListener("click", revokeOtherSessions);
-    deleteWatchlistsButton?.addEventListener("click", deleteSyncedWatchlists);
-    deleteAccountButton?.addEventListener("click", deleteAccountData);
     window.addEventListener("pbc:watchlist-session", onSession);
     window.addEventListener("pbc:watchlist-sync", onSync);
     window.addEventListener("online", render);
