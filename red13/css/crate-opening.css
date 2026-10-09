@@ -5,7 +5,14 @@
 #crates #crateImg { position: absolute; top: auto; bottom: 0; left: 50%; width: 160px; height: 160px; object-fit: contain; opacity: 0; z-index: 1; }
 #crates #crateItemLabel { position: relative; display: inline-block; max-width: 100%; font-size: 18px; z-index: 2; }
 #crates #crateStatus { order: 3; margin: 0; color: #ffe680; }
-#crates .reward-card { position: relative; top: auto; left: auto; transform: none; order: 4; width: min(100%, 700px); font-size: 20px; }
+#crates .reward-card { position: relative; top: auto; left: auto; transform: none; order: 4; width: min(100%, 700px); font-size: 20px; display: flex; align-items: center; gap: 24px; background: transparent; border: 0; padding: 0; margin: 0; flex-shrink: 0; visibility: hidden; }
+#crates .reward-card.show { visibility: visible; }
+.crate-red13 { width: 120px; height: 180px; object-fit: contain; flex-shrink: 0; }
+.red-speech { position: relative; flex: 1; min-width: 0; padding: 18px; border: 2px solid #ffe680; border-radius: 18px; background: #10141e; text-align: left; color: #fff; }
+.red-speech::before { content: ""; position: absolute; left: -12px; top: 50%; width: 20px; height: 20px; background: #10141e; border-left: 2px solid #ffe680; border-bottom: 2px solid #ffe680; transform: translateY(-50%) rotate(45deg); }
+.red-speaker { color: #ffe680; font-size: 14px; }
+.red-speech .reward-name { margin: 8px 0 0; font-size: clamp(15px, 2.5vw, 20px); line-height: 1.45; overflow-wrap: anywhere; }
+@media (max-width: 440px) { #crates .reward-card { gap: 14px; } .crate-red13 { width: 80px; height: 130px; } .red-speech { padding: 12px; } }
 #crates .crate-buttons { position: relative; bottom: auto; left: auto; transform: none; order: 6; }
 #crates .crate-inventory { position: relative; z-index: 1; order: 5; width: min(100%, 700px); border: 1px solid #646375; border-radius: 10px; padding: 14px; background: #10141ee6; flex-shrink: 0; }
 .crate-inventory summary { cursor: pointer; font-weight: bold; color: #ffe680; }

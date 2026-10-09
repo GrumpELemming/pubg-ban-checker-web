@@ -23,6 +23,11 @@ test("both crates open visibly, charge once and allow another purchase", async (
   await expect(page.locator("#crateItemLabel")).not.toBeEmpty();
   await expect(page.locator("#crateItemLabel")).toBeInViewport();
   await expect(page.locator("#rewardCard")).toHaveClass(/show/);
+  await expect(page.locator(".crate-red13")).toBeVisible();
+  expect(await page.locator(".crate-red13").evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
+  await expect(page.locator(".red-speech")).toBeVisible();
+  await expect(page.locator("#rewardName")).not.toBeEmpty();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
   await page.locator("#buyOutfit").focus();
   await page.keyboard.press("Enter");
   await expect(page.locator("#crateStatus")).toHaveText("Crate opened.");

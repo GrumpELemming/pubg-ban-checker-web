@@ -180,7 +180,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // === Reward display ===
   function showReward(quip) {
-    rewardName.textContent = `Red: ${quip}`;
+    rewardName.textContent = quip;
     rewardCard.classList.add("show");
   }
 
