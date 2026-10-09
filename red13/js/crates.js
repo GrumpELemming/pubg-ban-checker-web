@@ -15,6 +15,71 @@ window.addEventListener('DOMContentLoaded', () => {
   // === Economy ===
   const LS_BP = "red13_bp";
   const LS_GC = "red13_gc";
+  const LS_INVENTORY = "red13_inventory";
+  const inventoryItems = document.getElementById("inventoryItems");
+  function loadInventory() {
+    try {
+      const items = JSON.parse(localStorage.getItem(LS_INVENTORY) || "[]");
+      return Array.isArray(items) ? items.filter(item => item && typeof item.id === "string" && typeof item.name === "string" && ["outfit", "weapon"].includes(item.type)) : [];
+    } catch { return []; }
+  }
+  function saveInventory(items) {
+    localStorage.setItem(LS_INVENTORY, JSON.stringify(items));
+  }
+  function savePurchase(items, bp, gc) {
+    const previous = [LS_INVENTORY, LS_BP, LS_GC].map(key => [key, localStorage.getItem(key)]);
+    try {
+      setBP(bp);
+      setGC(gc);
+      saveInventory(items);
+      return true;
+    } catch {
+      for (const [key, value] of previous) {
+        try { if (value === null) localStorage.removeItem(key); else localStorage.setItem(key, value); } catch {}
+      }
+      return false;
+    }
+  }
+  function renderInventory() {
+    const items = loadInventory();
+    document.getElementById("inventoryCount").textContent = items.length;
+    inventoryItems.replaceChildren();
+    if (!items.length) {
+      const empty = document.createElement("li");
+      empty.textContent = "No items yet. Open a crate to add an item.";
+      inventoryItems.appendChild(empty);
+    }
+    for (const item of items) {
+      const row = document.createElement("li");
+      const copy = document.createElement("div");
+      const title = document.createElement("strong");
+      title.textContent = item.name;
+      const category = document.createElement("small");
+      category.textContent = item.type === "outfit" ? "Clothing" : "Weapon · GCoin crate";
+      copy.append(title, category);
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "ops-btn ghost scrap-item";
+      const value = item.type === "outfit" ? 500 : 1500;
+      button.textContent = `Scrap · ${value.toLocaleString()} BP`;
+      button.setAttribute("aria-label", `Scrap ${item.name} for ${value.toLocaleString()} BP`);
+      button.addEventListener("click", () => {
+        const current = loadInventory();
+        const index = current.findIndex(entry => entry.id === item.id);
+        if (index < 0) return;
+        current.splice(index, 1);
+        if (!savePurchase(current, getBP() + value, getGC())) {
+          status.textContent = "Could not save the scrap. Please check browser storage and try again.";
+          return;
+        }
+        status.textContent = `Scrapped ${item.name} for ${value.toLocaleString()} BP.`;
+        refreshCrateHUD();
+        renderInventory();
+      });
+      row.append(copy, button);
+      inventoryItems.appendChild(row);
+    }
+  }
   const getBP = () => parseInt(localStorage.getItem(LS_BP) || "0", 10);
   const getGC = () => parseInt(localStorage.getItem(LS_GC) || "0", 10);
   const setBP = (v) => localStorage.setItem(LS_BP, String(Math.max(0, v | 0)));
@@ -124,18 +189,23 @@ window.addEventListener('DOMContentLoaded', () => {
     if (opening || cratesScreen.classList.contains("hidden")) return;
     let bp = getBP(), gc = getGC();
     const cat = type === "outfit" ? "clothes" : "weapons";
+    if (type === "outfit" && bp < COST_BP_OUTFIT) { status.textContent = "Not enough BP! Outfit crates cost 5,000 BP."; return; }
+    if (type === "weapon" && gc < COST_GC_WEAPON) { status.textContent = "Not enough GCoin! Weapon crates cost 20 GCoin."; return; }
+    const drop = getRandomItem(cat);
+    const items = loadInventory();
+    items.push({ id: crypto.randomUUID(), name: drop.name, type });
+    if (!savePurchase(items, type === "outfit" ? bp-COST_BP_OUTFIT : bp, type === "weapon" ? gc-COST_GC_WEAPON : gc)) {
+      status.textContent = "Could not save the item. Please check browser storage and try again.";
+      return;
+    }
 
     if (type === "outfit") {
-      if (bp < COST_BP_OUTFIT) { status.textContent = "Not enough BP! Outfit crates cost 5,000 BP."; return; }
-      setBP(bp - COST_BP_OUTFIT);
       crateImg.src = "assets/clothescrate.png";
     } else {
-      if (gc < COST_GC_WEAPON) { status.textContent = "Not enough GCoin! Weapon crates cost 20 GCoin."; return; }
-      setGC(gc - COST_GC_WEAPON);
       crateImg.src = "assets/weaponcrate.png";
     }
 
-    const drop = getRandomItem(cat);
+    renderInventory();
     opening = true;
     outfitBtn.disabled = weaponBtn.disabled = true;
     status.textContent = "Opening crate…";
@@ -178,12 +248,13 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById("btnBackOps").addEventListener("click", resetOpening);
   new MutationObserver(() => {
     if (cratesScreen.classList.contains("hidden")) resetOpening();
-    else refreshCrateHUD();
+    else { refreshCrateHUD(); renderInventory(); }
   }).observe(cratesScreen, { attributes: true, attributeFilter: ["class"] });
 
   // === Init ===
   crateImg.style.display = "block";
   rewardCard.classList.remove("show");
   refreshCrateHUD();
+  renderInventory();
 })();
 });

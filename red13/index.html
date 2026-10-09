@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="css/ui.css">
 <link rel="stylesheet" href="css/crate-layout.css">
 <link rel="stylesheet" href="css/characters.css?v=20261009a">
-<link rel="stylesheet" href="css/crate-opening.css?v=20261009a">
+<link rel="stylesheet" href="css/crate-opening.css?v=20261009b">
 </head>
 <body>
 
@@ -95,6 +95,11 @@
     <div class="crate-buttons">
       <button id="btnBackOps" class="ops-btn ghost">← Back to OPS</button>
     </div>
+    <details id="crateInventory" class="crate-inventory">
+      <summary>Inventory (<span id="inventoryCount">0</span>)</summary>
+      <p>Scrap clothing for 500 BP each or weapon-crate items for 1,500 BP each.</p>
+      <ul id="inventoryItems"></ul>
+    </details>
   </div>
 <!-- HOW TO PLAY -->
 <div id="how" class="overlay hidden">
@@ -142,7 +147,7 @@
 <button id="shootBtn" type="button" hidden aria-label="Shoot as Rapture">Shoot · Space</button>
 <script src="js/characters.js?v=20261009a"></script>
 <script src="js/utils.js"></script>
-<script src="js/crates.js?v=20261009a"></script>
+<script src="js/crates.js?v=20261009b"></script>
 <script src="js/game.js?v=20261009e"></script>
 <script src="js/main.js?v=20261009a"></script>
 

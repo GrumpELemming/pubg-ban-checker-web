@@ -55,4 +55,42 @@ test("leaving during an opening cancels its reveal and permits reopening", async
   await page.locator("#buyWeapon").click();
   await expect(page.locator("#crateStatus")).toHaveText("Crate opened.");
   await expect(page.locator("#crHudGC")).toHaveText("0");
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("red13_inventory")).length)).toBe(2);
+});
+
+test("inventory persists crate items and scraps each for its correct BP value", async ({ page }) => {
+  await openCrates(page);
+  await page.locator("#buyWeapon").click();
+  await expect(page.locator("#crateStatus")).toHaveText("Crate opened.");
+  await page.locator("#buyOutfit").click();
+  await expect(page.locator("#crateStatus")).toHaveText("Crate opened.");
+  await expect(page.locator("#inventoryCount")).toHaveText("2");
+  await page.reload();
+  await page.locator(".press-enter").click();
+  await page.locator("#btnCrates").click();
+  await page.locator("#crateInventory summary").click();
+  await expect(page.locator("#inventoryItems li")).toHaveCount(2);
+  await page.getByRole("button", { name: /Scrap .* for 500 BP/ }).click();
+  await expect(page.locator("#crHudBP")).toHaveText("10,500");
+  await expect(page.locator("#inventoryCount")).toHaveText("1");
+  await page.getByRole("button", { name: /Scrap .* for 1,500 BP/ }).evaluate(button => { button.click(); button.click(); });
+  await expect(page.locator("#crHudBP")).toHaveText("12,000");
+  await expect(page.locator("#inventoryCount")).toHaveText("0");
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("red13_inventory")))).toEqual([]);
+  expect(await page.evaluate(() => localStorage.getItem("red13_gc"))).toBe("40");
+});
+
+test("failed inventory writes restore currency and do not create items", async ({ page }) => {
+  await openCrates(page);
+  await page.evaluate(() => {
+    const original = Storage.prototype.setItem;
+    Storage.prototype.setItem = function(key, value) {
+      if (key === "red13_inventory") throw new DOMException("Full", "QuotaExceededError");
+      return original.call(this, key, value);
+    };
+  });
+  await page.locator("#buyWeapon").click();
+  await expect(page.locator("#crateStatus")).toContainText("Could not save the item");
+  expect(await page.evaluate(() => localStorage.getItem("red13_gc"))).toBe("40");
+  await expect(page.locator("#inventoryCount")).toHaveText("0");
 });
