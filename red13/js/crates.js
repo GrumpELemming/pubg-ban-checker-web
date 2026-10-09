@@ -8,6 +8,9 @@ window.addEventListener('DOMContentLoaded', () => {
   const crateImg     = document.getElementById("crateImg");
   const rewardCard   = document.getElementById("rewardCard");
   const rewardName   = document.getElementById("rewardName");
+  const status = document.getElementById("crateStatus");
+  let opening = false;
+  let revealTimer;
 
   // === Economy ===
   const LS_BP = "red13_bp";
@@ -78,7 +81,8 @@ window.addEventListener('DOMContentLoaded', () => {
   wrap.className = "crate-options";
 
   const makeBtn = (id, img, label, cost, type) => {
-    const el = document.createElement("div");
+    const el = document.createElement("button");
+    el.type = "button";
     el.className = "crate-card";
     el.id = id;
     el.innerHTML = `
@@ -101,9 +105,7 @@ window.addEventListener('DOMContentLoaded', () => {
   cratesScreen.appendChild(wrap);
 
   // === Item name label ===
-  const nameLabel = document.createElement("div");
-  nameLabel.id = "crateItemLabel";
-  cratesScreen.appendChild(nameLabel);
+  const nameLabel = document.getElementById("crateItemLabel");
 
   // === Random item ===
   function getRandomItem(cat) {
@@ -119,20 +121,24 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // === Purchase logic ===
   function buyCrate(type) {
+    if (opening || cratesScreen.classList.contains("hidden")) return;
     let bp = getBP(), gc = getGC();
     const cat = type === "outfit" ? "clothes" : "weapons";
 
     if (type === "outfit") {
-      if (bp < COST_BP_OUTFIT) return alert("Not enough BP!");
+      if (bp < COST_BP_OUTFIT) { status.textContent = "Not enough BP! Outfit crates cost 5,000 BP."; return; }
       setBP(bp - COST_BP_OUTFIT);
       crateImg.src = "assets/clothescrate.png";
     } else {
-      if (gc < COST_GC_WEAPON) return alert("Not enough GCoin!");
+      if (gc < COST_GC_WEAPON) { status.textContent = "Not enough GCoin! Weapon crates cost 20 GCoin."; return; }
       setGC(gc - COST_GC_WEAPON);
       crateImg.src = "assets/weaponcrate.png";
     }
 
     const drop = getRandomItem(cat);
+    opening = true;
+    outfitBtn.disabled = weaponBtn.disabled = true;
+    status.textContent = "Opening crate…";
     refreshCrateHUD();
 
     // reset displays
@@ -150,23 +156,30 @@ window.addEventListener('DOMContentLoaded', () => {
     crateImg.style.transform = "translate(-50%, 0)";
 
     // after fall finishes
-    setTimeout(() => {
-      const crateRect = crateImg.getBoundingClientRect();
-      const labelY = crateRect.top - 170; // position above crate
-      const labelX = crateRect.left + crateRect.width / 2;
-
+    revealTimer = setTimeout(() => {
       nameLabel.textContent = drop.name;
-      Object.assign(nameLabel.style, {
-        position: "fixed",
-        left: labelX + "px",
-        top: labelY + "px",
-        transform: "translate(-50%, -100%)"
-      });
-
       nameLabel.classList.add("show");
       showReward(drop.quip);
+      status.textContent = "Crate opened.";
+      opening = false;
+      outfitBtn.disabled = weaponBtn.disabled = false;
     }, 950);
   }
+
+  function resetOpening() {
+    clearTimeout(revealTimer);
+    opening = false;
+    outfitBtn.disabled = weaponBtn.disabled = false;
+    crateImg.style.opacity = "0";
+    rewardCard.classList.remove("show");
+    nameLabel.classList.remove("show");
+    status.textContent = "";
+  }
+  document.getElementById("btnBackOps").addEventListener("click", resetOpening);
+  new MutationObserver(() => {
+    if (cratesScreen.classList.contains("hidden")) resetOpening();
+    else refreshCrateHUD();
+  }).observe(cratesScreen, { attributes: true, attributeFilter: ["class"] });
 
   // === Init ===
   crateImg.style.display = "block";

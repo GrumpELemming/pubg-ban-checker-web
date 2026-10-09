@@ -1,0 +1,13 @@
+#crates { position: fixed; flex-direction: column; justify-content: flex-start; gap: 16px; padding: 24px 16px; overflow-y: auto; }
+#crates .crate-hud { position: relative; top: auto; right: auto; flex-shrink: 0; }
+#crates:not(.hidden) .crate-options, #crates .crate-options { position: relative; top: auto; left: auto; transform: none; gap: 12px; order: 1; flex-shrink: 0; }
+#crates .crate-stage { position: relative; width: min(100%, 620px); min-height: 230px; order: 2; flex-shrink: 0; text-align: center; }
+#crates #crateImg { position: absolute; top: auto; bottom: 0; left: 50%; width: 160px; height: 160px; object-fit: contain; opacity: 0; z-index: 1; }
+#crates #crateItemLabel { position: relative; display: inline-block; max-width: 100%; font-size: 18px; z-index: 2; }
+#crates #crateStatus { order: 3; margin: 0; color: #ffe680; }
+#crates .reward-card { position: relative; top: auto; left: auto; transform: none; order: 4; width: min(100%, 700px); font-size: 20px; }
+#crates .crate-buttons { position: relative; bottom: auto; left: auto; transform: none; order: 5; }
+#crates .crate-card:disabled { cursor: wait; opacity: .6; }
+#crates .crate-card:focus-visible { outline: 2px solid #ffe680; outline-offset: 3px; }
+#crates #fx { position: absolute; pointer-events: none; }
+@media (max-height: 650px) { #crates { gap: 8px; padding: 12px; } #crates .crate-stage { min-height: 190px; } }

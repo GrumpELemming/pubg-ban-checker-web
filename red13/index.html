@@ -12,9 +12,9 @@
 <link rel="stylesheet" href="css/ui.css">
 <link rel="stylesheet" href="css/crate-layout.css">
 <link rel="stylesheet" href="css/characters.css?v=20261009a">
+<link rel="stylesheet" href="css/crate-opening.css?v=20261009a">
 </head>
 <body>
-  <img id="crateImg" src="assets/weaponcrate.png" alt="crate" style="display:none">
 
   <!-- GAME WRAP -->
   <div class="wrap">
@@ -81,6 +81,11 @@
       <div class="hud-pill gc">GCoin: <span id="crHudGC">0</span></div>
       <div class="hud-pill bp">BP: <span id="crHudBP">0</span></div>
     </div>
+    <div class="crate-stage">
+      <div id="crateItemLabel" aria-live="polite"></div>
+      <img id="crateImg" src="assets/weaponcrate.png" alt="Opened crate">
+    </div>
+    <p id="crateStatus" role="status" aria-live="polite"></p>
 
     <div id="rewardCard" class="reward-card">
       <div id="rewardName" class="reward-name"></div>
@@ -137,9 +142,9 @@
 <button id="shootBtn" type="button" hidden aria-label="Shoot as Rapture">Shoot · Space</button>
 <script src="js/characters.js?v=20261009a"></script>
 <script src="js/utils.js"></script>
-<script src="js/crates.js"></script>
+<script src="js/crates.js?v=20261009a"></script>
 <script src="js/game.js?v=20261009e"></script>
-<script src="js/main.js"></script>
+<script src="js/main.js?v=20261009a"></script>
 
 <script>
   window.addEventListener("DOMContentLoaded", () => {

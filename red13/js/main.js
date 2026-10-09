@@ -25,7 +25,7 @@
 
   // ===== Menu + Crates navigation (keyboard) =====
   window.addEventListener("keydown", (e) => {
-    if (window.uiScreen === "crates" && e.key === "Enter") {
+    if (window.uiScreen === "crates" && e.key === "Enter" && !e.target.closest("button")) {
       e.preventDefault();
       setScreen("menu");
     }
