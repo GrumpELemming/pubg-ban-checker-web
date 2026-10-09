@@ -318,7 +318,7 @@ window.addEventListener("keydown", e => {
       const x=it.x*CELL,y=it.y*CELL;
       ctx.fillStyle=f;ctx.fillRect(x+3,y+3,CELL-6,CELL-6);
       ctx.fillStyle="#0b0c10";ctx.font="bold 12px monospace";
-      ctx.fillText(it.type,x+7,y+14);
+      ctx.fillText(it.type === "G" && it.amount === 5 ? "5G" : it.type, x+(it.amount === 5 ? 3 : 7), y+14);
     }
     ctx.restore();
   }
@@ -330,7 +330,7 @@ window.addEventListener("keydown", e => {
         if(it.type==="B"){if(state.hp<75)state.hp=Math.min(75,state.hp+10);state.bp+=5;}
         if(it.type==="F"){if(state.hp<75)state.hp=75;state.bp+=10;}
         if(it.type==="M"){state.hp=MAX_HP;state.bp+=20;}
-        if(it.type==="G"){state.gcoin+=1;}
+        if(it.type==="G"){state.gcoin+=it.amount || 1;}
         saveStats(state.bp,state.gcoin);
         state.items.splice(i,1);
       }
@@ -507,6 +507,11 @@ function drawPlayer(now) {
           if (tryHard.hp <= 0) {
             tryHardActive = false;
             tryHard.bullets = [];
+            state.items.push({
+              type: "G", amount: 5, falling: false,
+              x: clamp(Math.floor(tryHard.x / CELL), 0, COLS-1),
+              y: clamp(Math.floor((tryHard.y-HUD_H) / CELL), 0, ROWS-1)
+            });
             hideTryHardAlert();
             canvas.setAttribute("aria-label", "Sweaty Try Hard defeated by Rapture");
           }

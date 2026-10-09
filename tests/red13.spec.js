@@ -22,8 +22,13 @@ async function openGame(page) {
         advance(dt) { testNow += dt; update(dt, testNow); },
         moveEnemy(dt) { testNow += dt; updateTryHard(testNow, dt); },
         phase(value) { state.phase = value; },
+        collectLoot() {
+          const loot = state.items.find(item => item.type === "G" && item.amount === 5);
+          if (loot) { state.px = loot.x; state.py = loot.y; pickupNearby(); }
+        },
         snapshot() { return { character: state.character, active: tryHardActive,
           enemySpriteLoaded: tryHardSprite.complete && tryHardSprite.naturalWidth > 0,
+          gcoin: state.gcoin, loot: state.items.filter(item => item.type === "G" && item.amount === 5),
           enemy: tryHard && { x: tryHard.x, hp: tryHard.hp, slowedUntil: tryHard.slowedUntil },
           shots: playerShots.length, phaseTriggered: tryHardPhaseTriggered }; }
       };
@@ -85,7 +90,15 @@ test("Rapture shots slow the enemy and defeat it after three hits", async ({ pag
   expect(slowed.enemy.x - hit.enemy.x).toBeCloseTo(-40, 5);
   await page.evaluate(() => { for (let i = 0; i < 30; i++) window.gameTest.advance(50); });
   await page.keyboard.up("Space");
-  expect((await page.evaluate(() => window.gameTest.snapshot())).active).toBe(false);
+  const defeated = await page.evaluate(() => window.gameTest.snapshot());
+  expect(defeated.active).toBe(false);
+  expect(defeated.loot).toHaveLength(1);
+  expect(defeated.gcoin).toBe(0);
+  await page.evaluate(() => window.gameTest.collectLoot());
+  expect((await page.evaluate(() => window.gameTest.snapshot())).gcoin).toBe(5);
+  expect(await page.evaluate(() => localStorage.getItem("red13_gc"))).toBe("5");
+  await page.evaluate(() => window.gameTest.collectLoot());
+  expect((await page.evaluate(() => window.gameTest.snapshot())).gcoin).toBe(5);
   await expect(page.locator("#game")).toHaveAttribute("aria-label", /defeated by Rapture/);
   await expect(page.locator("#tryHardAlert")).toHaveCount(0);
 });
