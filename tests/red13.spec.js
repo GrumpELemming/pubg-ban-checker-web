@@ -71,6 +71,7 @@ async function openGame(page) {
         position(x, y) { state.px = x; state.py = y; },
         spawnLoot() { spawnItemNow(testNow); return state.items.map(item => ({ ...item })); },
         clearLoot() { state.items = []; },
+        freshRun() { reset(); },
         collectBlueChip() {
           state.items = [{ type: "BCD", x: state.px, y: state.py, falling: false }];
           pickupNearby(testNow);
@@ -173,7 +174,7 @@ test("eligible loot rolls independently replace normal loot with one Jammer and 
   items = await page.evaluate(() => window.gameTest.spawnLoot());
   expect(items.map(item => item.type)).toEqual(["J", "B"]);
   items = await page.evaluate(() => window.gameTest.spawnLoot());
-  expect(items.map(item => item.type)).toEqual(["J", "B", "J"]);
+  expect(items.map(item => item.type)).toEqual(["J", "B", "B"]);
   expect(new Set(items.map(item => `${item.x},${item.y}`)).size).toBe(3);
   expect(items.every(item => item.x >= 1 && item.x <= 52 && item.y >= 1 && item.y <= 32)).toBe(true);
   expect(logs.some(log => log.includes("success"))).toBe(true);
@@ -267,7 +268,7 @@ test("default loot gives 10% Jammer and 5% BCD only to Red13", async ({ page }) 
     const values = [0, 429496729, 429496730, 644245094, 644245095, 0xffffffff];
     window.crypto.getRandomValues = array => { array[0] = values.shift(); return array; };
     Math.random = () => 0;
-    return values.slice().map(() => { window.gameTest.clearLoot(); return window.gameTest.spawnLoot()[0].type; });
+    return values.slice().map(() => { window.gameTest.freshRun(); return window.gameTest.spawnLoot()[0].type; });
   });
   expect(redTypes).toEqual(["J", "J", "BCD", "BCD", "B", "B"]);
   await page.evaluate(() => { window.selectedCharacter = "rapture"; window.startGameFixed(); window.gameTest.freeze(); });
@@ -276,6 +277,27 @@ test("default loot gives 10% Jammer and 5% BCD only to Red13", async ({ page }) 
     window.gameTest.clearLoot(); return window.gameTest.spawnLoot()[0].type;
   });
   expect(raptureType).toBe("B");
+});
+
+test("only one Jammer spawns per run, including after pickup, expiry and BCD Continue", async ({ page }) => {
+  await openGame(page);
+  await start(page, "red13");
+  await page.evaluate(() => {
+    window.BZR.lootConfig.blueChipSpawnChance = 0;
+    window.crypto.getRandomValues = array => { array[0] = 0; return array; };
+    Math.random = () => 0;
+  });
+  expect((await page.evaluate(() => window.gameTest.spawnLoot()))[0].type).toBe("J");
+  await page.evaluate(() => { window.gameTest.clearLoot(); window.gameTest.collectJammer(); window.gameTest.blueDamage(); });
+  expect((await page.evaluate(() => window.gameTest.spawnLoot()))[0].type).toBe("B");
+  await page.evaluate(() => { window.gameTest.advance(20_000); window.gameTest.clearLoot(); });
+  expect((await page.evaluate(() => window.gameTest.spawnLoot()))[0].type).toBe("B");
+  await page.evaluate(() => { window.gameTest.collectBlueChip(); window.gameTest.hp(0); window.gameTest.advance(1); });
+  await page.locator("#btnPlayAgain").click();
+  await page.evaluate(() => { window.gameTest.freeze(); window.gameTest.clearLoot(); });
+  expect((await page.evaluate(() => window.gameTest.spawnLoot()))[0].type).toBe("B");
+  await page.evaluate(() => { window.startGameFixed(); window.gameTest.freeze(); });
+  expect((await page.evaluate(() => window.gameTest.spawnLoot()))[0].type).toBe("J");
 });
 
 test("BCD death prompt consumes one charge and R respawns Red13 at full health in the same run", async ({ page }) => {

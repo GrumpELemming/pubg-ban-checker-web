@@ -4,8 +4,8 @@
     rollJammer(location) {
       return this.rollSpecialLoot(location, "rapture") === "J";
     },
-    rollSpecialLoot(location, character) {
-      const chance = BZR.lootConfig.jammerSpawnChance;
+    rollSpecialLoot(location, character, jammerEligible = true) {
+      const chance = jammerEligible ? BZR.lootConfig.jammerSpawnChance : 0;
       if (!Number.isFinite(chance) || chance < 0 || chance > 1) {
         throw new RangeError("jammerSpawnChance must be a number between 0 and 1");
       }

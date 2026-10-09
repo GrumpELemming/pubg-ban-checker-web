@@ -168,7 +168,7 @@ window.addEventListener("keydown", e => {
       character: window.selectedCharacter === "rapture" ? "rapture" : "red13",
       px: Math.floor(COLS/2),
       py: Math.floor(ROWS/2),
-      hp: START_HP, bp, gcoin: gc, jammerUntil: 0, hasBlueChip: false,
+      hp: START_HP, bp, gcoin: gc, jammerUntil: 0, jammerSpawned: false, hasBlueChip: false,
       dir: "down", facingAngle: Math.PI, phase: 1,
       nextPhaseAt: now + PHASE_LEN_MS,
       nextDmgAt: now + DMG_INTERVAL_MS,
@@ -322,7 +322,7 @@ window.addEventListener("keydown", e => {
     }
     if (!available.length) return;
     const { x, y } = available[Math.floor(Math.random() * available.length)];
-    const specialLoot = window.BZR.loot.rollSpecialLoot({ x, y }, state.character);
+    const specialLoot = window.BZR.loot.rollSpecialLoot({ x, y }, state.character, !state.jammerSpawned);
     const r=Math.random();
     const type=specialLoot || (r<.4?"B":r<.7?"F":r<.9?"M":"G");
     const cx=x*CELL+CELL/2;
@@ -332,6 +332,7 @@ window.addEventListener("keydown", e => {
       x,y,type,falling:true,born:now,landTime:now+fallDur,
       targetX:cx,targetY:cy,px:cx,py:-CELL
     });
+    if (type === "J") state.jammerSpawned = true;
   }
   function scheduleItems(now){
     if(!state._nextItemAt) state._nextItemAt=now+1300;
