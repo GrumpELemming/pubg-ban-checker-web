@@ -24,7 +24,18 @@
   const canvas = document.getElementById("game");
   const ctx = canvas.getContext("2d");
   const raptureSprite = new Image();
-  raptureSprite.src = "assets/rapture.png";
+  let raptureMovementSprite = null;
+  raptureSprite.onload = () => {
+    // Known alpha bounds of the original reference. No pixel readback: this
+    // also works when index.html is opened directly with a file:// URL.
+    const trimmed = document.createElement("canvas");
+    trimmed.width = 744;
+    trimmed.height = 1339;
+    trimmed.getContext("2d").drawImage(raptureSprite, 1554, 79, 744, 1339,
+      0, 0, trimmed.width, trimmed.height);
+    raptureMovementSprite = trimmed;
+  };
+  raptureSprite.src = "assets/rapture-top-down.png";
   const red13Sprite = new Image();
   red13Sprite.src = "assets/red13.png";
   const tryHardSprite = new Image();
@@ -139,7 +150,7 @@ window.addEventListener("keydown", e => {
       px: Math.floor(COLS/2),
       py: Math.floor(ROWS/2),
       hp: START_HP, bp, gcoin: gc,
-      dir: "down", phase: 1,
+      dir: "down", facingAngle: Math.PI, phase: 1,
       nextPhaseAt: now + PHASE_LEN_MS,
       nextDmgAt: now + DMG_INTERVAL_MS,
       items: [], _nextItemAt: 0,
@@ -461,8 +472,18 @@ function drawHUD(now) {
 function drawPlayer(now) {
   const bounce = Math.sin(now / 120) * 2;
   const px = state.px * CELL, py = state.py * CELL;
+  if (state.character === "rapture" && raptureMovementSprite) {
+    const height = 72;
+    const width = height * raptureMovementSprite.width / raptureMovementSprite.height;
+    ctx.save();
+    ctx.translate(px + CELL, HUD_H + py + CELL);
+    ctx.rotate(state.facingAngle);
+    ctx.drawImage(raptureMovementSprite, -width / 2, -height / 2, width, height);
+    ctx.restore();
+    return;
+  }
   const sprite = state.character === "rapture" ? raptureSprite : red13Sprite;
-  if (sprite.complete && sprite.naturalWidth) {
+  if (state.character !== "rapture" && sprite.complete && sprite.naturalWidth) {
     ctx.drawImage(sprite, px - 8, HUD_H + py - 20 - bounce, 56, 72);
     return;
   }
@@ -491,6 +512,10 @@ function drawPlayer(now) {
       const y = HUD_H + state.py * CELL + CELL;
       const direction = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[state.dir];
       let [dx, dy] = direction;
+      if (state.character === "rapture") {
+        dx = Math.sin(state.facingAngle);
+        dy = -Math.cos(state.facingAngle);
+      }
       if (tryHardActive && tryHard) {
         const distance = Math.hypot(tryHard.x - x, tryHard.y - y);
         if (distance > 0) { dx = (tryHard.x - x) / distance; dy = (tryHard.y - y) / distance; }
@@ -542,6 +567,9 @@ function drawPlayer(now) {
     state._moveAcc+=dt;
     while(state._moveAcc>=stepMs){
       state._moveAcc-=stepMs;
+      const moveX = Number(keysDown.has("d")) - Number(keysDown.has("a"));
+      const moveY = Number(keysDown.has("s")) - Number(keysDown.has("w"));
+      if (moveX || moveY) state.facingAngle = Math.atan2(moveY, moveX) + Math.PI / 2;
       if(keysDown.has("w")){state.py--;state.dir="up";}
       if(keysDown.has("s")){state.py++;state.dir="down";}
       if(keysDown.has("a")){state.px--;state.dir="left";}

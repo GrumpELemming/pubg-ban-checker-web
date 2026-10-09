@@ -1,5 +1,27 @@
 const { test, expect } = require("@playwright/test");
 
+test("Rapture renders when the game is opened directly from a local HTML file", async ({ page }) => {
+  const errors = [];
+  page.on("pageerror", error => errors.push(error.message));
+  await page.addInitScript(() => {
+    window.raptureDrawn = false;
+    const drawImage = CanvasRenderingContext2D.prototype.drawImage;
+    CanvasRenderingContext2D.prototype.drawImage = function(source, ...args) {
+      if (this.canvas.id === "game" && source instanceof HTMLCanvasElement &&
+          source.width === 744 && source.height === 1339) window.raptureDrawn = true;
+      return drawImage.call(this, source, ...args);
+    };
+  });
+  const { pathToFileURL } = require("url");
+  const path = require("path");
+  await page.goto(pathToFileURL(path.resolve(__dirname, "../red13/index.html")).href);
+  await page.locator(".press-enter").click();
+  await page.locator("input[value='rapture']").check();
+  await page.locator("#btnStart").click();
+  await expect.poll(() => page.evaluate(() => window.raptureDrawn)).toBe(true);
+  expect(errors).toEqual([]);
+});
+
 async function openGame(page) {
   // Expose deterministic controls in the intercepted test copy only.
   await page.route("**/red13/js/game.js?**", async route => {
@@ -39,6 +61,7 @@ async function openGame(page) {
           if (loot) { state.px = loot.x; state.py = loot.y; pickupNearby(); }
         },
         snapshot() { return { character: state.character, active: tryHardActive,
+          facingAngle: state.facingAngle, movementSpriteLoaded: !!raptureMovementSprite,
           enemySpriteLoaded: tryHardSprite.complete && tryHardSprite.naturalWidth > 0,
           gcoin: state.gcoin, loot: state.items.filter(item => item.type === "G" && item.amount === 5),
           enemy: tryHard && { x: tryHard.x, hp: tryHard.hp, slowedUntil: tryHard.slowedUntil },
@@ -82,6 +105,26 @@ test("Rapture can be selected, rendered and remembered; Red13 stays playable", a
   await page.keyboard.up("Space");
   expect((await page.evaluate(() => window.gameTest.snapshot())).shots).toBe(0);
   expect(errors).toEqual([]);
+});
+
+test("Rapture's reference sprite faces all eight movement directions and keeps its idle facing", async ({ page }) => {
+  await openGame(page);
+  await start(page, "rapture");
+  await expect.poll(async () => (await page.evaluate(() => window.gameTest.snapshot())).movementSpriteLoaded).toBe(true);
+  const directions = [
+    ["w", 0], ["wd", Math.PI / 4], ["d", Math.PI / 2],
+    ["sd", 3 * Math.PI / 4], ["s", Math.PI],
+    ["sa", 5 * Math.PI / 4], ["a", 3 * Math.PI / 2], ["wa", -Math.PI / 4]
+  ];
+  for (const [keys, angle] of directions) {
+    for (const key of keys) await page.keyboard.down(key);
+    await page.evaluate(() => window.gameTest.advance(120));
+    expect((await page.evaluate(() => window.gameTest.snapshot())).facingAngle).toBeCloseTo(angle);
+    await page.evaluate(() => window.gameTest.draw());
+    for (const key of keys) await page.keyboard.up(key);
+    await page.evaluate(() => window.gameTest.advance(120));
+    expect((await page.evaluate(() => window.gameTest.snapshot())).facingAngle).toBeCloseTo(angle);
+  }
 });
 
 test("Rapture shots slow the enemy and defeat it after three hits", async ({ page }, testInfo) => {
