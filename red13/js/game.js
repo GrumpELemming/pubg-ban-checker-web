@@ -564,8 +564,8 @@ function drawPlayer(now) {
     RED.zones=RED.zones.filter(z=>(now-z.born)<=z.life);
     damageFromRedZones(now);
 
-   // Rapture meets the enemy in phase 5; both modes encounter it from phase 10.
-if(!tryHardActive && (state.phase >= 10 || (state.character === "rapture" && state.phase === 5))) {
+   // Both modes meet the enemy in phase 5 and again from phase 10.
+if(!tryHardActive && (state.phase === 5 || state.phase >= 10)) {
   if(!tryHardPhaseTriggered || state.phase > tryHardPhaseTriggered) {
     spawnTryHard(now);
     tryHardPhaseTriggered = state.phase; // remember last phase triggered
