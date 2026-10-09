@@ -47,7 +47,7 @@ test("Rapture can be selected, rendered and remembered; Red13 stays playable", a
   await start(page, "rapture");
   await expect(page.locator("#shootBtn")).toBeVisible();
   await expect(page.locator("#game")).toHaveAttribute("aria-label", /Rapture/);
-  expect(await page.locator(".character-choice img").evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
+  expect(await page.locator(".character-choice:has(input[value='rapture']) img").evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
   await page.evaluate(() => window.gameTest.draw());
   await page.screenshot({ path: testInfo.outputPath("rapture-gameplay.png") });
   await page.reload();
@@ -56,6 +56,9 @@ test("Rapture can be selected, rendered and remembered; Red13 stays playable", a
   await start(page, "red13");
   await expect(page.locator("#shootBtn")).toBeHidden();
   await expect(page.locator("#game")).toHaveAttribute("aria-label", /Red13/);
+  expect(await page.locator(".character-choice:has(input[value='red13']) img").evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
+  await page.evaluate(() => window.gameTest.draw());
+  await page.screenshot({ path: testInfo.outputPath("red13-gameplay.png") });
   await page.keyboard.down("Space");
   await page.evaluate(() => window.gameTest.advance(400));
   await page.keyboard.up("Space");

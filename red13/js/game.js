@@ -25,6 +25,8 @@
   const ctx = canvas.getContext("2d");
   const raptureSprite = new Image();
   raptureSprite.src = "assets/rapture.png";
+  const red13Sprite = new Image();
+  red13Sprite.src = "assets/red13.png";
   const shootButton = document.getElementById("shootBtn");
   let shooting = false;
   let lastShotAt = -Infinity;
@@ -450,8 +452,9 @@ function drawHUD(now) {
 function drawPlayer(now) {
   const bounce = Math.sin(now / 120) * 2;
   const px = state.px * CELL, py = state.py * CELL;
-  if (state.character === "rapture" && raptureSprite.complete && raptureSprite.naturalWidth) {
-    ctx.drawImage(raptureSprite, px - 8, HUD_H + py - 20 - bounce, 56, 72);
+  const sprite = state.character === "rapture" ? raptureSprite : red13Sprite;
+  if (sprite.complete && sprite.naturalWidth) {
+    ctx.drawImage(sprite, px - 8, HUD_H + py - 20 - bounce, 56, 72);
     return;
   }
   ctx.save();
