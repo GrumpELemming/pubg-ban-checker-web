@@ -22,6 +22,12 @@ async function openGame(page) {
         advance(dt) { testNow += dt; update(dt, testNow); },
         moveEnemy(dt) { testNow += dt; updateTryHard(testNow, dt); },
         phase(value) { state.phase = value; },
+        finishCrossing(direction = -1) {
+          tryHard.dir = direction; tryHard.vx = 100 * direction;
+          tryHard.x = direction === 1 ? CANVAS_W + CELL*3 : -CELL*3;
+          updateTryHard(testNow + 1, 1);
+        },
+        hp(value) { state.hp = value; },
         collectLoot() {
           const loot = state.items.find(item => item.type === "G" && item.amount === 5);
           if (loot) { state.px = loot.x; state.py = loot.y; pickupNearby(); }
@@ -131,4 +137,41 @@ test("the Shoot button fires for Rapture and stops when released", async ({ page
   await page.mouse.up();
   await page.evaluate(() => window.gameTest.advance(400));
   expect((await page.evaluate(() => window.gameTest.snapshot())).shots).toBe(1);
+});
+
+test("Rapture meets the enemy in phase 5 and again from phase 10", async ({ page }) => {
+  await openGame(page);
+  await start(page, "rapture");
+  await page.evaluate(() => { window.gameTest.phase(4); window.gameTest.advance(1); });
+  expect((await page.evaluate(() => window.gameTest.snapshot())).active).toBe(false);
+  await page.evaluate(() => { window.gameTest.phase(5); window.gameTest.advance(1); });
+  expect((await page.evaluate(() => window.gameTest.snapshot())).active).toBe(true);
+  await page.evaluate(() => { window.gameTest.enemy(); window.gameTest.finishCrossing(); window.gameTest.advance(1); });
+  expect((await page.evaluate(() => window.gameTest.snapshot())).active).toBe(false);
+  expect((await page.evaluate(() => window.gameTest.snapshot())).gcoin).toBe(0);
+  for (const phase of [6, 9]) {
+    await page.evaluate(value => { window.gameTest.phase(value); window.gameTest.advance(1); }, phase);
+    expect((await page.evaluate(() => window.gameTest.snapshot())).active).toBe(false);
+  }
+  await page.evaluate(() => { window.gameTest.phase(10); window.gameTest.advance(1); });
+  expect((await page.evaluate(() => window.gameTest.snapshot())).active).toBe(true);
+});
+
+test("Red13 earns 3 saved GCoin once for each crossing he survives", async ({ page }) => {
+  await openGame(page);
+  await start(page, "red13");
+  await page.evaluate(() => { window.gameTest.phase(5); window.gameTest.advance(1); });
+  expect((await page.evaluate(() => window.gameTest.snapshot())).active).toBe(false);
+  await page.evaluate(() => { window.gameTest.phase(10); window.gameTest.advance(1); });
+  expect((await page.evaluate(() => window.gameTest.snapshot())).active).toBe(true);
+  for (const direction of [1, -1]) {
+    await page.evaluate(value => { window.gameTest.enemy(); window.gameTest.finishCrossing(value); }, direction);
+    const expected = direction === 1 ? 3 : 6;
+    expect((await page.evaluate(() => window.gameTest.snapshot())).gcoin).toBe(expected);
+    expect(await page.evaluate(() => Number(localStorage.getItem("red13_gc")))).toBe(expected);
+    await page.evaluate(() => window.gameTest.moveEnemy(1000));
+    expect((await page.evaluate(() => window.gameTest.snapshot())).gcoin).toBe(expected);
+  }
+  await page.evaluate(() => { window.gameTest.enemy(); window.gameTest.hp(0); window.gameTest.finishCrossing(); });
+  expect((await page.evaluate(() => window.gameTest.snapshot())).gcoin).toBe(6);
 });

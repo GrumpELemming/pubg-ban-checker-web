@@ -241,6 +241,11 @@ window.addEventListener("keydown", e => {
     // end event
     if(tryHard.dir===1 && tryHard.x>CANVAS_W+CELL*3 || tryHard.dir===-1 && tryHard.x<-CELL*3){
       tryHardActive=false;
+      if (state.character === "red13" && !state.dead && state.hp > 0) {
+        state.gcoin += 3;
+        saveStats(state.bp, state.gcoin);
+        canvas.setAttribute("aria-label", "Red13 survived the Sweaty Try Hard crossing: +3 GCoin");
+      }
       hideTryHardAlert();
     }
   }
@@ -559,8 +564,8 @@ function drawPlayer(now) {
     RED.zones=RED.zones.filter(z=>(now-z.born)<=z.life);
     damageFromRedZones(now);
 
-   // === Sweaty Try-Hard Trigger (once per phase from 10+) ===
-if(!tryHardActive && state.phase >= 10) {
+   // Rapture meets the enemy in phase 5; both modes encounter it from phase 10.
+if(!tryHardActive && (state.phase >= 10 || (state.character === "rapture" && state.phase === 5))) {
   if(!tryHardPhaseTriggered || state.phase > tryHardPhaseTriggered) {
     spawnTryHard(now);
     tryHardPhaseTriggered = state.phase; // remember last phase triggered
