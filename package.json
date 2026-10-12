@@ -2,10 +2,14 @@
   "name": "pubg-ban-checker-web",
   "private": true,
   "scripts": {
+    "build:i18n": "node scripts/build-i18n.cjs",
+    "check:i18n": "node scripts/extract-ui.cjs && node scripts/check-i18n.cjs",
     "test:e2e": "playwright test"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
-    "@playwright/test": "^1.55.0"
+    "@playwright/test": "^1.55.0",
+    "acorn": "^8.19.0",
+    "acorn-walk": "^8.3.5"
   }
 }

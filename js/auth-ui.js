@@ -68,6 +68,7 @@
       const online = navigator.onLine !== false;
       const authenticated = Boolean(session && session.authenticated);
       const available = Boolean(session && session.available);
+      if (actionPending || sessionCheckFailed || !authenticated) delete accountName.dataset.userName;
 
       summary.setAttribute("aria-busy", actionPending ? "true" : "false");
       signInButton.hidden = authenticated;
@@ -92,6 +93,7 @@
       }
 
       if (authenticated) {
+        accountName.dataset.userName = "true";
         accountName.textContent = userDisplayName(session.user);
         description.textContent = online
           ? "Signed in with Discord. This watchlist syncs across your devices."
@@ -102,6 +104,7 @@
       }
 
       signInButton.disabled = !available || !online;
+      delete accountName.dataset.userName;
 
       if (!online) {
         accountName.textContent = "Guest watchlist";
@@ -145,10 +148,10 @@
         syncing: ["Syncing changes…", "neutral"],
         synced: ["Watchlist synced", "success"],
         offline: ["Offline — waiting to sync", "warning"],
-        error: [latestSync.message || "Sync could not finish. Your local changes are safe.", "error"],
+        error: ["Sync could not finish. Your local changes are safe.", "error"],
         "conflict-resolved": ["Watchlist changes merged and synced", "success"]
       };
-      const nextStatus = syncMessages[latestSync.status] || [latestSync.message || "Sync ready", "neutral"];
+      const nextStatus = syncMessages[latestSync.status] || ["Sync ready", "neutral"];
       setStatus(nextStatus[0], nextStatus[1]);
     }
 

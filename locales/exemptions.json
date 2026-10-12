@@ -1,0 +1,192 @@
+[
+  {
+    "source": "QWERTYUIOP",
+    "files": [
+      "hangman.html"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  },
+  {
+    "source": "ASDFGHJKL",
+    "files": [
+      "hangman.html"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  },
+  {
+    "source": "ZXCVBNM",
+    "files": [
+      "hangman.html"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  },
+  {
+    "source": "identify",
+    "files": [
+      "privacy.html"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  },
+  {
+    "source": "pbc_oauth_state",
+    "files": [
+      "privacy.html"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  },
+  {
+    "source": "pbc_oauth_next",
+    "files": [
+      "privacy.html"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  },
+  {
+    "source": "pbc_session",
+    "files": [
+      "privacy.html"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  },
+  {
+    "source": "pbc_csrf",
+    "files": [
+      "privacy.html"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  },
+  {
+    "source": "Secure",
+    "files": [
+      "privacy.html"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  },
+  {
+    "source": "HttpOnly",
+    "files": [
+      "privacy.html"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  },
+  {
+    "source": "OldName → NewName",
+    "files": [
+      "watchlist.html"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  },
+  {
+    "source": "error",
+    "files": [
+      "js/auth-ui.js"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  },
+  {
+    "source": "warning",
+    "files": [
+      "js/auth-ui.js"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  },
+  {
+    "source": "neutral",
+    "files": [
+      "js/auth-ui.js"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  },
+  {
+    "source": "success",
+    "files": [
+      "js/auth-ui.js"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  },
+  {
+    "source": "AbortError",
+    "files": [
+      "js/main.js",
+      "js/watchlist-store.js"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  },
+  {
+    "source": "perm",
+    "files": [
+      "js/watchlist.js"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  },
+  {
+    "source": "temp",
+    "files": [
+      "js/watchlist.js"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  },
+  {
+    "source": "ok",
+    "files": [
+      "js/watchlist.js"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  },
+  {
+    "source": "BebasNeue,system-ui",
+    "files": [
+      "red13/js/game.js"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  },
+  {
+    "source": "Special loot chances must be nonnegative and total at most 1",
+    "files": [
+      "red13/js/loot.js"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  },
+  {
+    "source": "P{0}-C{1}.png",
+    "files": [
+      "bluemem/bluemem.html"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  },
+  {
+    "source": "UMP.png",
+    "files": [
+      "shne/game.js"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  },
+  {
+    "source": "MP9.png",
+    "files": [
+      "shne/game.js"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  },
+  {
+    "source": "Vector.png",
+    "files": [
+      "shne/game.js"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  },
+  {
+    "source": "P90.png",
+    "files": [
+      "shne/game.js"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  },
+  {
+    "source": "NumpadEnter",
+    "files": [
+      "shne/game.js"
+    ],
+    "reason": "Internal code, asset filename, or non-user-facing token"
+  }
+]

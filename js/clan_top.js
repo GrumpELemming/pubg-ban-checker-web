@@ -171,7 +171,8 @@ function renderBoard(container, boardKey, title, subtitle, rows) {
       const tr = document.createElement("tr");
       (boardDef?.columns || []).forEach(col => {
         const td = document.createElement("td");
-        td.textContent = col.render(row, idx);
+        if (col.label === "Name") td.setAttribute("translate", "no");
+        td.textContent = col.label === "Name" && !row.name && !row.player_id ? window.pbcTranslate("Unknown") : col.render(row, idx);
         tr.appendChild(td);
       });
       tbody.appendChild(tr);
@@ -199,7 +200,7 @@ async function loadRecords() {
   } catch (err) {
     console.error(err);
     if (statusEl) {
-      statusEl.textContent = `Error: ${err.message}`;
+      statusEl.textContent = "Failed to load records.";
       statusEl.classList.add("error");
     }
     const fallback = document.createElement("div");

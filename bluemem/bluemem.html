@@ -12,6 +12,11 @@
     body { height: 100dvh; }
     canvas { display:block; width:100%; height:100%; outline:none; touch-action: manipulation; }
   </style>
+
+  <link rel="stylesheet" href="../css/i18n.css?v=20261012b">
+  <script src="../js/i18n-catalog.js?v=20261012b"></script>
+  <script src="../js/i18n.js?v=20261012b"></script>
+  <script src="../js/i18n-runtime.js?v=20261012b"></script>
 </head>
 <body>
 <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Blue Memory</h1>
@@ -395,13 +400,13 @@
     ctx.textAlign="left"; ctx.textBaseline="top";
     ctx.font="900 44px BebasNeue,Impact,sans-serif";
     ctx.fillStyle="#f2c32f"; ctx.shadowColor="#f2c32f"; ctx.shadowBlur=22;
-    ctx.fillText("BLUE MEMORY",40,24);
+    window.pbcCanvasText(ctx, "BLUE MEMORY", 40, 24);
     ctx.restore();
     ctx.save();
     ctx.textAlign="left"; ctx.textBaseline="top";
     ctx.font="700 20px system-ui";
     ctx.fillStyle="rgba(230,240,255,0.9)";
-    ctx.fillText(PHASES[state.phase-1].label,40,70);
+    window.pbcCanvasText(ctx, PHASES[state.phase-1].label, 40, 70);
     ctx.restore();
   }
   function statsDraw(){
@@ -424,13 +429,13 @@
     ctx.textAlign="left"; ctx.textBaseline="top";
     ctx.font="700 18px system-ui";
     ctx.fillStyle="rgba(210,230,255,0.9)";
-    ctx.fillText("Best Time", x, y0-28);
+    window.pbcCanvasText(ctx, "Best Time", x, y0-28);
     ctx.font="500 16px system-ui";
     ctx.fillStyle="rgba(210,230,255,0.85)";
     const bestArr = stats.best || [];
     for(let p=1;p<=8;p++){
       const v = (bestArr[p] === null || bestArr[p] === undefined) ? "—" : bestArr[p];
-      ctx.fillText("Best Time Phase "+p+" : "+v, x, y0+(p-1)*lh);
+      window.pbcCanvasText(ctx, "Best Time Phase "+p+" : "+v, x, y0+(p-1)*lh);
     }
     ctx.restore();
   }
@@ -480,7 +485,7 @@
           ctx.font="900 30px system-ui";
           ctx.textAlign="center";
           ctx.textBaseline="middle";
-          ctx.fillText("?", cx+cw/2, cy+ch/2);
+          window.pbcCanvasText(ctx, "?", cx+cw/2, cy+ch/2);
           ctx.restore();
         }
       }else{
@@ -504,9 +509,9 @@
       ctx.textAlign="center"; ctx.textBaseline="middle";
       ctx.font="900 44px BebasNeue,Impact,sans-serif";
       ctx.fillStyle=THEME.Y;
-      ctx.fillText("BLUE ZONE STARTS IN "+secs+" s", W/2, H*0.14);
+      window.pbcCanvasText(ctx, "BLUE ZONE STARTS IN "+secs+" s", W/2, H*0.14);
       ctx.font="600 18px system-ui"; ctx.fillStyle="rgba(230,240,255,0.95)";
-      ctx.fillText("Match pairs to HEAL through the zone.", W/2, H*0.87);
+      window.pbcCanvasText(ctx, "Match pairs to HEAL through the zone.", W/2, H*0.87);
       ctx.restore();
     }
     // Phase intro transition (phase 2+ only)
@@ -522,7 +527,7 @@
       ctx.textAlign="center"; ctx.textBaseline="middle";
       ctx.font="900 50px BebasNeue,Impact,sans-serif";
       ctx.fillStyle=THEME.Y; ctx.shadowColor=THEME.Y; ctx.shadowBlur=glow;
-      ctx.fillText("PHASE "+state.phase+" - Blue Zone Intensifying", W/2, H*0.15);
+      window.pbcCanvasText(ctx, "PHASE "+state.phase+" - Blue Zone Intensifying", W/2, H*0.15);
       ctx.restore();
     }
     // Loading overlay
@@ -531,9 +536,9 @@
       ctx.fillStyle="rgba(0,0,0,0.6)"; ctx.fillRect(0,0,W,H);
       ctx.textAlign="center"; ctx.textBaseline="middle";
       ctx.font="900 36px BebasNeue,Impact,sans-serif"; ctx.fillStyle=THEME.Y;
-      ctx.fillText(state.loadMsg, W/2, H*0.40);
+      window.pbcCanvasText(ctx, state.loadMsg, W/2, H*0.40);
       ctx.font="600 18px system-ui"; ctx.fillStyle="rgba(230,240,255,0.95)";
-      ctx.fillText("Preparing card images for this phase...", W/2, H*0.46);
+      window.pbcCanvasText(ctx, "Preparing card images for this phase...", W/2, H*0.46);
       ctx.restore();
     }
     // Phase survive banner
@@ -552,7 +557,7 @@
       ctx.textAlign="center"; ctx.textBaseline="middle";
       ctx.font="900 54px BebasNeue,Impact,sans-serif";
       ctx.fillStyle=THEME.Y;
-      ctx.fillText("PHASE SURVIVED!", W/2, H*0.38);
+      window.pbcCanvasText(ctx, "PHASE SURVIVED!", W/2, H*0.38);
       ctx.restore();
     } else if(state.mode==="winner"){
       const hue=(state.pulse*100)%360; const color="hsl("+hue+",90%,60%)";
@@ -560,9 +565,9 @@
       ctx.textAlign="center"; ctx.textBaseline="middle";
       ctx.font="900 56px BebasNeue,Impact,sans-serif";
       ctx.fillStyle=color; ctx.shadowColor=color; ctx.shadowBlur=30+Math.sin(state.pulse*2)*10;
-      ctx.fillText("WINNER WINNER CHICKEN DINNER!", W/2, H*0.32);
+      window.pbcCanvasText(ctx, "WINNER WINNER CHICKEN DINNER!", W/2, H*0.32);
       ctx.font="600 20px system-ui"; ctx.shadowBlur=0; ctx.fillStyle="rgba(230,240,255,0.95)";
-      ctx.fillText("Press Enter/Space to restart", W/2, H*0.40);
+      window.pbcCanvasText(ctx, "Press Enter/Space to restart", W/2, H*0.40);
       ctx.restore();
     } else if(state.mode==="knocked"){
       const beat=(Math.sin(state.pulse*2*Math.PI*1.0)+1)*0.5;
@@ -588,12 +593,12 @@
       ctx.textAlign="center"; ctx.textBaseline="middle";
       ctx.fillStyle="#b3d1ff"; ctx.font="900 44px BebasNeue,Impact,sans-serif";
       const maxW=Math.min(W-200, 1000);
-      const words=deathMsg.split(" ");
+      const words=window.pbcTranslate(deathMsg).split(" ");
       const lines=[]; let line="";
       for(let i=0;i<words.length;i++){
         const w=words[i];
         const test=line?line+" "+w:w;
-        if(ctx.measureText(test).width>maxW){
+        if(ctx.measureText(window.pbcTranslate(test)).width>maxW){
           if(line) lines.push(line);
           line=w;
         } else line=test;
@@ -602,12 +607,12 @@
       const lh=48;
       let y=H*0.37-(lines.length*lh)/2+lh/2;
       for(let i=0;i<lines.length;i++){
-        ctx.fillText(lines[i], W/2, y);
+        window.pbcCanvasText(ctx, lines[i], W/2, y);
         y+=lh;
       }
       ctx.restore();
       ctx.font="600 20px system-ui"; ctx.fillStyle="rgba(220,235,255,0.95)";
-      ctx.fillText("Press Enter/Space to try again (Phase 1)", W/2, H*0.46);
+      window.pbcCanvasText(ctx, "Press Enter/Space to try again (Phase 1)", W/2, H*0.46);
       ctx.restore();
     }
   }
@@ -637,7 +642,7 @@
     ctx.textAlign="center"; ctx.textBaseline="middle";
     ctx.font="700 16px system-ui";
     ctx.fillStyle="#111";
-    ctx.fillText(label,x+w/2,y+h/2+1);
+    window.pbcCanvasText(ctx, label, x+w/2, y+h/2+1);
     ctx.restore();
   }
   function drawButtons(){
@@ -710,7 +715,7 @@
     ctx.fillStyle=THEME.RED;
     ctx.font="600 20px system-ui";
     ctx.textAlign="center";
-    ctx.fillText("Init error", (canvas.width||W)/2, (canvas.height||H)/2);
+    window.pbcCanvasText(ctx, "Init error", (canvas.width||W)/2, (canvas.height||H)/2);
   }
 })();
 </script>

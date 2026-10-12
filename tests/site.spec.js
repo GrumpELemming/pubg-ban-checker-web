@@ -52,11 +52,12 @@ test("watchlist keeps Discord saving and removes advanced controls", async ({ pa
   await expect(page.locator("#watchlistSignInBtn")).toBeVisible();
   await expect(page.locator("#refreshAllBtn, #pauseSweepBtn, #stopSweepBtn, #watchlistFilter, #watchlistSort, #watchlistSearch, #watchlistSyncDiagnostics, #exportWatchlistBtn, #importWatchlistBtn, #revokeSessionsBtn, #deleteSyncedWatchlistsBtn, #deleteAccountDataBtn, #watchlistObservationNotice")).toHaveCount(0);
 });
-test("incomplete translations visibly identify English fallbacks", async ({ page }) => {
+test("watchlist translations include account labels without English fallback notes", async ({ page }) => {
   await page.goto("/watchlist.html");
   await page.evaluate(() => localStorage.setItem("siteLang", "de"));
   await page.reload();
-  await expect(page.locator(".i18n-fallback-note")).toContainText("shown in English");
+  await expect(page.locator(".i18n-fallback-note")).toHaveCount(0);
+  await expect(page.locator("#watchlistSignInBtn")).not.toHaveText("Sign in with Discord");
 });
 
 for (const path of ["/hangman.html", "/pubg-mini.html", "/bluemem/bluemem.html", "/shne/shne.html"]) {

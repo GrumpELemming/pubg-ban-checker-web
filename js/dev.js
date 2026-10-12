@@ -90,7 +90,7 @@ function formatResult(containerId, data) {
 
 async function resolveByName() {
   const name = el("nameInput").value.trim();
-  if (!name) return alert("Please enter a name");
+  if (!name) return alert(window.pbcTranslate("Please enter a name"));
   const out = el("nameResult");
   setText(out, "Loading...");
   try {
@@ -107,7 +107,7 @@ async function resolveByName() {
 
 async function resolveById() {
   const id = el("idInput").value.trim();
-  if (!id) return alert("Please enter an account ID");
+  if (!id) return alert(window.pbcTranslate("Please enter an account ID"));
   const out = el("idResult");
   setText(out, "Loading...");
   try {

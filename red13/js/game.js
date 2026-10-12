@@ -299,7 +299,7 @@ window.addEventListener("keydown", e => {
     ctx.font = "bold 12px system-ui";
     ctx.textAlign = "center";
     ctx.fillStyle = now < tryHard.slowedUntil ? "#d5afff" : "#fff";
-    ctx.fillText(now < tryHard.slowedUntil ? "Sweaty Try Hard · slowed" : "Sweaty Try Hard", tryHard.x, tryHard.y-HUD_H-50);
+    window.pbcCanvasText(ctx, now < tryHard.slowedUntil ? "Sweaty Try Hard · slowed" : "Sweaty Try Hard", tryHard.x, tryHard.y-HUD_H-50);
     ctx.fillRect(tryHard.x-20, tryHard.y-HUD_H-43, 40*tryHard.hp/3, 4);
     // bullets
     for(const b of tryHard.bullets){
@@ -362,12 +362,12 @@ window.addEventListener("keydown", e => {
       ctx.fillStyle=rgba(f,.82);
       ctx.fillRect(it.px-CELL/2+3,it.py-CELL/2+3,CELL-6,CELL-6);
       ctx.fillStyle="#0b0c10";ctx.font=it.type==="BCD"?"bold 8px monospace":"bold 12px monospace";
-      ctx.fillText(it.type,it.px-(it.type==="BCD"?7:4),it.py+4);
+      window.pbcCanvasText(ctx, it.type, it.px-(it.type==="BCD"?7:4), it.py+4);
     }else{
       const x=it.x*CELL,y=it.y*CELL;
       ctx.fillStyle=f;ctx.fillRect(x+3,y+3,CELL-6,CELL-6);
       ctx.fillStyle="#0b0c10";ctx.font=it.type==="BCD"?"bold 8px monospace":"bold 12px monospace";
-      ctx.fillText(it.type === "G" && it.amount === 5 ? "5G" : it.type, x+(it.type==="BCD"?3:it.amount === 5 ? 3 : 7), y+14);
+      window.pbcCanvasText(ctx, it.type === "G" && it.amount === 5 ? "5G" : it.type, x+(it.type==="BCD"?3:it.amount === 5 ? 3 : 7), y+14);
     }
     ctx.restore();
   }
@@ -490,21 +490,21 @@ function drawHUD(now) {
   ctx.font = "14px monospace";
 
   const remain = Math.max(0, state.nextPhaseAt - now);
-  ctx.fillText(`HP:${state.hp}`, 10, 15);
-  ctx.fillText(`BP:${state.bp}`, 270, 15);
-  ctx.fillText(`PH:${state.phase}`, 360, 15);
-  ctx.fillText(`GC:${state.gcoin}`, 430, 15);
-  ctx.fillText(`Next:${(remain / 1000).toFixed(1)}s`, 520, 15);
+  window.pbcCanvasText(ctx, `HP:${state.hp}`, 10, 15);
+  window.pbcCanvasText(ctx, `BP:${state.bp}`, 270, 15);
+  window.pbcCanvasText(ctx, `PH:${state.phase}`, 360, 15);
+  window.pbcCanvasText(ctx, `GC:${state.gcoin}`, 430, 15);
+  window.pbcCanvasText(ctx, `Next:${(remain / 1000).toFixed(1)}s`, 520, 15);
   if (now < state.jammerUntil) {
     ctx.fillStyle = COLORS.itemJ;
-    ctx.fillText(`Jammer: ${Math.ceil((state.jammerUntil - now) / 1000)}s`, 270, 33);
+    window.pbcCanvasText(ctx, `Jammer: ${Math.ceil((state.jammerUntil - now) / 1000)}s`, 270, 33);
   }
   if (state.character === "red13" && state.hasBlueChip) {
     ctx.fillStyle = "#79c5ff";
-    ctx.fillText("BCD ready", 520, 33);
+    window.pbcCanvasText(ctx, "BCD ready", 520, 33);
   }
   ctx.fillStyle = state.character === "rapture" ? "#d5afff" : COLORS.text;
-  ctx.fillText(state.character === "rapture" ? "Rapture · Space to shoot" : "Red13", 700, 24);
+  window.pbcCanvasText(ctx, state.character === "rapture" ? "Rapture · Space to shoot" : "Red13", 700, 24);
 
   const barW = 180, barH = 10, x0 = 70, y0 = 18;
   ctx.fillStyle = "#2b2f36";
@@ -663,7 +663,8 @@ if(!tryHardActive && (state.phase === 5 || state.phase >= 10)) {
 
   function loop(now){
     if(!gameActive)return;
-    const dt=Math.min(50,now-(state.lastFrame||now));
+    // The first animation timestamp can precede reset's performance.now().
+    const dt=Math.max(0,Math.min(50,now-(state.lastFrame||now)));
     state.lastFrame=now;
     update(dt,now);
     drawBackground();

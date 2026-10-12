@@ -13,18 +13,26 @@
 <link rel="stylesheet" href="css/crate-layout.css">
 <link rel="stylesheet" href="css/characters.css?v=20261009a">
 <link rel="stylesheet" href="css/crate-opening.css?v=20261009d">
+
+  <link rel="stylesheet" href="../css/i18n.css?v=20261012b">
+  <script src="../js/i18n-catalog.js?v=20261012b"></script>
+  <script src="../js/i18n.js?v=20261012b"></script>
+  <script src="../js/i18n-runtime.js?v=20261012b"></script>
 </head>
 <body>
 
   <!-- GAME WRAP -->
   <div class="wrap">
-    <canvas id="game" width="1080" height="740"></canvas>
+    <canvas id="game" width="1080" height="740" tabindex="0"></canvas>
   </div>
 
   <!-- INTRO -->
   <div id="intro" class="overlay">
     <div class="intro-layer">
-      <img class="intro-img" src="assets/intro.png" alt="RED13 poster">
+      <div class="poster-frame">
+        <img class="intro-img" src="assets/intro.png" alt="RED13 poster">
+        <h1 class="localized-poster-title">Red13 — The Life of a Blue Zone Runner</h1>
+      </div>
       <div class="intro-text">
         <div class="line l1"><strong>Red13 lives where others fear to tread — deep inside the blue zone.</strong></div>
         <div class="line l2">He runs endlessly, dodging sweaty try-hards and deadly bombardments.</div>
@@ -169,8 +177,8 @@
 <script src="js/loot-config.js?v=20261009b"></script>
 <script src="js/loot.js?v=20261009c"></script>
 <script src="js/crates.js?v=20261009c"></script>
-<script src="js/game.js?v=20261009n"></script>
-<script src="js/main.js?v=20261009a"></script>
+<script src="js/game.js?v=20261012b"></script>
+<script src="js/main.js?v=20261012b"></script>
 
 <script>
   window.addEventListener("DOMContentLoaded", () => {

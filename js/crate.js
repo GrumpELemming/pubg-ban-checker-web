@@ -283,7 +283,14 @@
   function setBestHit(cards) {
     const target = qs("bestHit");
     if (!target) return;
-    target.textContent = bestHit(cards);
+    const value = bestHit(cards);
+    const parts = /^(.*) \(([^()]*)\)$/.exec(value);
+    if (!parts) { target.textContent = value; return; }
+    const name = document.createElement("span");
+    name.textContent = parts[1];
+    const tier = document.createElement("span");
+    tier.textContent = parts[2];
+    target.replaceChildren(name, " (", tier, ")");
   }
 
   function revealedCards() {

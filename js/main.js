@@ -386,9 +386,9 @@
 
     const info = document.createElement("div");
     info.innerHTML = `
-      <strong>${escapeHtml(player)}</strong><br>
-      ${translated("results.id")}: ${accountId ? escapeHtml(accountId) : translated("results.unknown")}<br>
-      ${translated("results.clan")}: ${clan ? escapeHtml(clan) : translated("results.none")}<br>
+      <strong translate="no">${escapeHtml(player)}</strong><br>
+      ${translated("results.id")}: ${accountId ? `<span translate="no">${escapeHtml(accountId)}</span>` : translated("results.unknown")}<br>
+      ${translated("results.clan")}: ${clan ? `<span translate="no">${escapeHtml(clan)}</span>` : translated("results.none")}<br>
       ${translated("results.status")}: <span class="ban-label" data-i18n="${labelKey}">${escapeHtml(label)}</span>
       <div class="status-detail">${translated(confidenceKey)}</div>
       ${
@@ -448,7 +448,7 @@
           });
           const data = await response.json();
           if (!signedIn() || !row.isConnected) return;
-          if (!response.ok) throw new Error(data?.error?.message || (response.status === 429 ? "Too many reports. Wait a minute and try again." : "Could not generate the report. Please try again."));
+          if (!response.ok) throw new Error(response.status === 429 ? "Too many reports. Wait a minute and try again." : "Could not generate the report. Please try again.");
           report.innerHTML = `<h3>Most frequent teammates</h3>
             <p>Based on ${escapeHtml(data.matchesAnalyzed)} of ${escapeHtml(data.matchesAvailable)} available matches (up to ${escapeHtml(data.matchLimit)} checked). PUBG match history covers the past 14 days; these are not lifetime counts.</p>
             ${data.matchesSkipped ? `<p>${escapeHtml(data.matchesSkipped)} matches could not be read. Counts are incomplete.</p>` : ""}`;
@@ -460,7 +460,7 @@
             const list = document.createElement("ol");
             for (const mate of data.teammates) {
               const item = document.createElement("li");
-              item.innerHTML = `<strong>${escapeHtml(mate.player)}</strong> — ${escapeHtml(mate.games)} ${mate.games === 1 ? "game" : "games"}
+              item.innerHTML = `<strong translate="no">${escapeHtml(mate.player)}</strong> — <span>${escapeHtml(mate.games)}</span> <span>${mate.games === 1 ? "game" : "games"}</span>
                 <span class="profile-links">
                   <a href="https://pubglookup.com/players/${encodeURIComponent(platform)}/${encodeURIComponent(mate.player)}" target="_blank" rel="noopener noreferrer">PUBGLookup</a>
                   <a href="https://www.pubg-meta.com/player-stats/${encodeURIComponent(platform)}/${encodeURIComponent(mate.player)}/profile" target="_blank" rel="noopener noreferrer">PUBG Meta</a>
@@ -470,7 +470,7 @@
             report.append(list);
           }
         } catch (error) {
-          if (signedIn() && row.isConnected) report.textContent = error.name === "AbortError" ? "Report timed out. Please try again." : error.message;
+          if (signedIn() && row.isConnected) report.textContent = error.name === "AbortError" ? "Report timed out. Please try again." : error.message === "Too many reports. Wait a minute and try again." ? error.message : "Could not generate the report. Please try again.";
         } finally {
           clearTimeout(timeout);
           teammateBtn.disabled = false;

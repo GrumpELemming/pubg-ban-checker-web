@@ -1,0 +1,26 @@
+.site-language-switch { display:flex; align-items:center; gap:.5rem; padding:.5rem; color:inherit; font:14px system-ui,sans-serif; }
+.site-language-switch select { max-width:10rem; padding:.35rem; border-radius:.4rem; background:#071426; color:#fff; border:1px solid #66809c; }
+body:has(>canvas) > .site-language-switch, body:has(#intro) > .site-language-switch, body:has(#titleScreen) > .site-language-switch { position:fixed; top:0; left:0; z-index:100; background:#071426; border-radius:0 0 .4rem 0; }
+[dir="rtl"] .site-language-switch { direction:rtl; }
+.lang-switch { flex-wrap:wrap; }
+.privacy-nav { flex-wrap:wrap; gap:1rem; }
+.privacy-nav-links { flex-wrap:wrap; }
+.clan-shell, .hero-body, .controls { min-width:0; max-width:100%; }
+.clan-hero .lede { min-width:0; max-width:100%; }
+.controls select { width:100%; min-width:0; max-width:100%; }
+body:has(.canvas-wrap) .panel { box-sizing:border-box; width:100%; max-width:min(980px,calc(100vw - 36px)); min-width:0; }
+button, a, h1, h2, h3, p, label, th, td { overflow-wrap:anywhere; }
+.ops-btn, .nav-button, .secondary-btn, .wl-btn { white-space:normal; }
+.poster-frame { position:relative; display:inline-block; background:#527f9b; }
+.poster-frame img { display:block; }
+.localized-poster-title { display:none; }
+html:not([lang="en"]) .localized-poster-title { position:absolute; display:flex; align-items:center; justify-content:center; box-sizing:border-box; margin:0; padding:1rem; text-align:center; font:800 clamp(14px,3vw,42px)/1.3 system-ui,sans-serif; color:#ffe9c2; text-shadow:0 2px 3px #111; }
+html:not([lang="en"]) .intro-layer .poster-frame .intro-img { mask-image:linear-gradient(90deg,#000 0%,#000 32%,transparent 35%,transparent 70%,#000 72%); }
+html:not([lang="en"]) .intro-layer .localized-poster-title { top:0; left:32%; width:40%; height:61%; background:linear-gradient(#527f9b,#7095a7); }
+html:not([lang="en"]) #titleScreen .poster-frame #titleImg { mask-image:linear-gradient(90deg,#000 0%,#000 64%,transparent 65%); }
+html:not([lang="en"]) #titleScreen .localized-poster-title { top:4%; right:0; width:36%; height:61%; background:#cb91ed; color:#111; text-shadow:none; }
+body:has(#titleScreen) #wrap canvas { width:min(1280px,calc(100vw - 24px)); height:auto; aspect-ratio:1280/720; box-sizing:border-box; }
+body:has(#titleScreen) .panel { box-sizing:border-box; max-width:calc(100vw - 24px); max-height:calc(100dvh - 84px); overflow:auto; }
+body:has(>canvas) > small, body:has(#titleScreen) > small { max-width:calc(100vw - 16px); width:max-content; white-space:normal !important; text-align:center; }
+@media(max-width:600px) { .site-language-switch { font-size:12px; } .site-language-switch select { max-width:8rem; } }
+@media(max-width:600px) { body:has(>canvas) > a, body:has(#titleScreen) > a { max-width:42vw; box-sizing:border-box; font-size:12px !important; text-align:center; } }

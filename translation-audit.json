@@ -1,0 +1,5882 @@
+[
+  {
+    "source": "LULZ CLAN RECORDS",
+    "files": [
+      "clan-top.html"
+    ]
+  },
+  {
+    "source": "All-time clan records pulled from server-cached matches (no TDM/arena). Refresh to fetch the latest pulls.",
+    "files": [
+      "clan-top.html"
+    ]
+  },
+  {
+    "source": "← Back to weekly leaderboard",
+    "files": [
+      "clan-top.html"
+    ]
+  },
+  {
+    "source": "Top 10 records",
+    "files": [
+      "clan-top.html"
+    ]
+  },
+  {
+    "source": "All-time top 10",
+    "files": [
+      "clan-top.html"
+    ]
+  },
+  {
+    "source": "Data comes from your scheduled pulls; PUBG lifetime stats aren’t queried directly.",
+    "files": [
+      "clan-top.html"
+    ]
+  },
+  {
+    "source": "Disclaimer: These totals reflect only BR matches ingested by the clan backend via /tasks/pull-latest. PUBG’s public API does not expose full lifetime history, so “all-time” here means “since we started pulling matches on 2025-11-26.” Longest kill, kills, wins, damage, and KDR are all derived from that ingested set.",
+    "files": [
+      "clan-top.html"
+    ]
+  },
+  {
+    "source": "Include Casual",
+    "files": [
+      "clan-top.html",
+      "clan.html"
+    ]
+  },
+  {
+    "source": "Refresh",
+    "files": [
+      "clan-top.html"
+    ]
+  },
+  {
+    "source": "Loaded",
+    "files": [
+      "clan-top.html",
+      "clan.html",
+      "js/clan.js",
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "LULZ CLAN TRACKER",
+    "files": [
+      "clan.html"
+    ]
+  },
+  {
+    "source": "Weekly performance leaderboard for the LULZ clan (Wed → Wed).",
+    "files": [
+      "clan.html"
+    ]
+  },
+  {
+    "source": "Stats are pulled server-side and cached.",
+    "files": [
+      "clan.html"
+    ]
+  },
+  {
+    "source": "Clan week",
+    "files": [
+      "clan.html"
+    ]
+  },
+  {
+    "source": "Load",
+    "files": [
+      "clan.html"
+    ]
+  },
+  {
+    "source": "View all-time records",
+    "files": [
+      "clan.html"
+    ]
+  },
+  {
+    "source": "Current week",
+    "files": [
+      "clan.html"
+    ]
+  },
+  {
+    "source": "0 players",
+    "files": [
+      "clan.html"
+    ]
+  },
+  {
+    "source": "Overall",
+    "files": [
+      "clan.html"
+    ]
+  },
+  {
+    "source": "Kills",
+    "files": [
+      "clan.html",
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Time Played",
+    "files": [
+      "clan.html",
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Wins",
+    "files": [
+      "clan.html",
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Name",
+    "files": [
+      "clan.html",
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Matches",
+    "files": [
+      "clan.html",
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "KDR",
+    "files": [
+      "clan.html",
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Damage",
+    "files": [
+      "clan.html",
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Time Played (h)",
+    "files": [
+      "clan.html"
+    ]
+  },
+  {
+    "source": "No data yet.",
+    "files": [
+      "clan.html",
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Inactive members this week (0)",
+    "files": [
+      "clan.html"
+    ]
+  },
+  {
+    "source": "Toggle list",
+    "files": [
+      "clan.html"
+    ]
+  },
+  {
+    "source": "Loading…",
+    "files": [
+      "clan.html"
+    ]
+  },
+  {
+    "source": "Hideout Crate Simulator - \"Winter Eclipse\"",
+    "files": [
+      "crate.html",
+      "games.html"
+    ]
+  },
+  {
+    "source": "PUBG BAN CHECKER",
+    "files": [
+      "crate.html",
+      "games.html",
+      "index.html",
+      "links.html",
+      "privacy.html",
+      "updates.html",
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Ban Checker",
+    "files": [
+      "crate.html",
+      "games.html",
+      "index.html",
+      "links.html",
+      "privacy.html",
+      "updates.html",
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Watchlist",
+    "files": [
+      "crate.html",
+      "games.html",
+      "index.html",
+      "links.html",
+      "privacy.html",
+      "updates.html",
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Links",
+    "files": [
+      "crate.html",
+      "games.html",
+      "index.html",
+      "links.html",
+      "updates.html",
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "About",
+    "files": [
+      "crate.html",
+      "games.html",
+      "index.html",
+      "links.html",
+      "privacy.html",
+      "updates.html",
+      "watchlist.html",
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Games",
+    "files": [
+      "crate.html",
+      "games.html",
+      "index.html",
+      "links.html",
+      "updates.html",
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Language",
+    "files": [
+      "crate.html",
+      "games.html",
+      "index.html",
+      "links.html",
+      "updates.html",
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Hideout Crate Simulator",
+    "files": [
+      "crate.html"
+    ]
+  },
+  {
+    "source": "Winter Eclipse",
+    "files": [
+      "crate.html"
+    ]
+  },
+  {
+    "source": "Spend 1800 G-Coin per 10-pack, flip each card to reveal the drop, and keep track of how much you've spent.",
+    "files": [
+      "crate.html"
+    ]
+  },
+  {
+    "source": "Open 10 for 1800 GC",
+    "files": [
+      "crate.html"
+    ]
+  },
+  {
+    "source": "Flip all",
+    "files": [
+      "crate.html"
+    ]
+  },
+  {
+    "source": "Reset",
+    "files": [
+      "crate.html"
+    ]
+  },
+  {
+    "source": "G-Coin Spent",
+    "files": [
+      "crate.html"
+    ]
+  },
+  {
+    "source": "Packs Opened",
+    "files": [
+      "crate.html"
+    ]
+  },
+  {
+    "source": "Crates Flipped",
+    "files": [
+      "crate.html"
+    ]
+  },
+  {
+    "source": "Best Hit (last pack)",
+    "files": [
+      "crate.html"
+    ]
+  },
+  {
+    "source": "10-Pack Reveal",
+    "files": [
+      "crate.html"
+    ]
+  },
+  {
+    "source": "Flip each card to see what dropped.",
+    "files": [
+      "crate.html"
+    ]
+  },
+  {
+    "source": "Mythic",
+    "files": [
+      "crate.html",
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Legendary",
+    "files": [
+      "crate.html",
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Rare",
+    "files": [
+      "crate.html",
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Uncommon",
+    "files": [
+      "crate.html",
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Polymers",
+    "files": [
+      "crate.html",
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Open a 10-pack to start flipping.",
+    "files": [
+      "crate.html",
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Progressive weapon",
+    "files": [
+      "crate.html"
+    ]
+  },
+  {
+    "source": "Winter Eclipse MP5K line",
+    "files": [
+      "crate.html"
+    ]
+  },
+  {
+    "source": "Collection",
+    "files": [
+      "crate.html"
+    ]
+  },
+  {
+    "source": "What you've pulled",
+    "files": [
+      "crate.html"
+    ]
+  },
+  {
+    "source": "PUBG Ban Checker - Games",
+    "files": [
+      "games.html"
+    ]
+  },
+  {
+    "source": "PUBG Inspired Games",
+    "files": [
+      "games.html"
+    ]
+  },
+  {
+    "source": "Flip 10 crates at a time for 1800 GC, track total spend, and reveal your drops with the published probabilities.",
+    "files": [
+      "games.html"
+    ]
+  },
+  {
+    "source": "HANGMAN",
+    "files": [
+      "games.html"
+    ]
+  },
+  {
+    "source": "BLUE MEMORY",
+    "files": [
+      "games.html",
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Red13 - Life Of A Bluezone Runner",
+    "files": [
+      "games.html"
+    ]
+  },
+  {
+    "source": "Red13: The Life of a Blue Zone Runner is a fan-made web game inspired by the intensity and atmosphere of PUBG's blue zone mechanic. This project is not affiliated with or endorsed by PUBG or Krafton.",
+    "files": [
+      "games.html"
+    ]
+  },
+  {
+    "source": "SCHNEEFUCHS HATES SMG'S",
+    "files": [
+      "games.html"
+    ]
+  },
+  {
+    "source": "Help Schneefuchs survive his nightmare where he is facing what he hates the most.........",
+    "files": [
+      "games.html"
+    ]
+  },
+  {
+    "source": "Cyber Blue",
+    "files": [
+      "games.html",
+      "index.html",
+      "links.html",
+      "updates.html",
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Blood Red",
+    "files": [
+      "games.html",
+      "index.html",
+      "links.html",
+      "updates.html",
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Toxic",
+    "files": [
+      "games.html",
+      "index.html",
+      "links.html",
+      "updates.html",
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Phantom",
+    "files": [
+      "games.html",
+      "index.html",
+      "links.html",
+      "updates.html",
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Solar Gold",
+    "files": [
+      "games.html",
+      "index.html",
+      "links.html",
+      "updates.html",
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Void",
+    "files": [
+      "games.html",
+      "index.html",
+      "links.html",
+      "updates.html",
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Ember",
+    "files": [
+      "games.html",
+      "index.html",
+      "links.html",
+      "updates.html",
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Synthwave",
+    "files": [
+      "games.html",
+      "index.html",
+      "links.html",
+      "updates.html",
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Arctic",
+    "files": [
+      "games.html",
+      "index.html",
+      "links.html",
+      "updates.html",
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Toxic Orange",
+    "files": [
+      "games.html",
+      "index.html",
+      "links.html",
+      "updates.html",
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Play free PUBG-inspired browser mini-games from PUBG Ban Checker.",
+    "files": [
+      "games.html"
+    ]
+  },
+  {
+    "source": "PUBG Ban Checker Games",
+    "files": [
+      "games.html"
+    ]
+  },
+  {
+    "source": "A collection of free PUBG-inspired browser mini-games.",
+    "files": [
+      "games.html"
+    ]
+  },
+  {
+    "source": "PUBG Hangman",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "← Back to Games",
+    "files": [
+      "hangman.html",
+      "pubg-mini.html",
+      "bluemem/bluemem.html",
+      "shne/shne.html"
+    ]
+  },
+  {
+    "source": "Fan project — not affiliated with PUBG or Krafton.",
+    "files": [
+      "hangman.html",
+      "pubg-mini.html",
+      "bluemem/bluemem.html",
+      "shne/shne.html"
+    ]
+  },
+  {
+    "source": "A fan-made PUBG-inspired Hangman browser game.",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "PAN",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "FRAG GRENADE",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "SMOKE GRENADE",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "MOLLY",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "ENERGY DRINK",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "PAINKILLERS",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "ADRENALINE SYRINGE",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "MED KIT",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "FIRST AID",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "LEVEL THREE HELMET",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "LEVEL THREE VEST",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "GHILLIE SUIT",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "EXTENDED MAG",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "QUICKDRAW MAG",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "SUPPRESSOR",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "COMPENSATOR",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "VERTICAL GRIP",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "ANGLED GRIP",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "THUMB GRIP",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "RED DOT",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "HOLOGRAPHIC SIGHT",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "SCOPE",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "AIRDROP",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "FLARE GUN",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "BLUE ZONE",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "RED ZONE",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "CIRCLE",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "PLAYZONE",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "CHICKEN DINNER",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "MIRAMAR",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "ERANGEL",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "SANHOK",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "VIKENDI",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "TAEGO",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "DESTON",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "PARACHUTE",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "VEHICLE",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "BUGGY",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "DACIA",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "MOTORCYCLE",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "GLIDER",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "BOAT",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "BRIDGE CAMP",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "PRONE",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "PEAKING",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "BOOSTING",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "ROTATION",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "COMPOUND",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "HARD COVER",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "THIRD PARTY",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "DROP SHOT",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "HEADSHOT",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "CROSSHAIR",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "SPECTATOR",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "RECOIL",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "ZEROING",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "BULLET DROP",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "HITMARKER",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "REVIVE",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "KILLFEED",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "KNOCKED",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "FINISHER",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "FOOTSTEPS",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "BATTLE ROYALE",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "ASSAULT RIFLE",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "REPAIR KIT",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "PARADISE RESORT",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "SWEATY TRY HARD",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "BATTLEGROUNDS",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "BOOTCAMP",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "BIZON",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "BAD BOY PEEK",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "BLUEZONE GRENADE",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "BERYL",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "CAMPER",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "CARE PACKAGE",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "CASUALS",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "CROSSBOW",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "CROWBAR",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "CANTED SIGHT",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "CHEATER",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "DBS",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "UMP",
+    "files": [
+      "hangman.html",
+      "shne/game.js"
+    ]
+  },
+  {
+    "source": "MICRO UZI",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "DOBRO MESTO",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "DINO LAND",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "DESERT EAGLE",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "DECOY GRENADE",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "DEATH CAM",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "UAZ JEEP",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "EL AZAHAR",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "EXTENDED QUICKDRAW MAG",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "FIRST PERSON PERSPECTIVE",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "FLASHBANG",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "FAMAS",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "GAS CAN",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "GRENADE LAUNCHER",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "G COIN",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "GAS STATION",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "GUNPLAY",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "HAVEN",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "HACKER",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "HEALTH INDICATOR",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "HACIENDA DEL PATRON",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "JAMMER PACK",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "PARAMO",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "RONDO",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "SOSNOVKA",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "IRON SIGHT",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "KILL FEED",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "LOOT CRATE",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "LOOT TRUCK",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "LOBBY",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "LEVEL ONE HELMET",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "LEVEL TWO VEST",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "LINE OF SIGHT",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "LOS LEONES",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "LIPOVKA",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "MINI MAP",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "MILITARY BASE",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "MYLTA POWER",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "MANSION",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "MORTAR",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "MINI FOURTEEN",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "MOSIN NAGANT",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "NOBLE STEED",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "MUZZLE BREAK",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "TACTICAL STOCK",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "FLASH HIDER",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "DUCKBILL",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "HALF GRIP",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "LIGHTWEIGHT GRIP",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "LASER SIGHT",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "CHEEK PAD",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "BULLET LOOPS",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "STUN GRENADE",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "MOLOTOV COCKTAIL",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "TACTICAL PACK",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "PANZERFAUST",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "RIFLE SUPPRESSOR",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "REPORT PLAYER",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "SHOTGUN CHOKE",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "SKORPION",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "THIRD PERSON PERSPECTIVE",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "TEAM KILL",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "WEAPON ANIMATION",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "VEHICLE SPAWN",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "WINCHESTER",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "LYNX AMR",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "NFC",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "Reset all progress and stats?",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "QWERTYUIOP",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "ASDFGHJKL",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "ZXCVBNM",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "PUBG HANGMAN",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "Games: {0}",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "Wins: {0}",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "Losses: {0}",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "Streak: {0}",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "Best: {0}",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "Words Seen: {0}/{1} ({2}%)",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "Misses Left: {0}",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "New Word (Esc)",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "Reset Progress",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "Back To Games",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "WINNER WINNER CHICKEN DINNER!",
+    "files": [
+      "hangman.html",
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "BETTER LUCK NEXT TIME!",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "The word was: {0}",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "Press Enter or Space for a new round",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "Error loading game",
+    "files": [
+      "hangman.html"
+    ]
+  },
+  {
+    "source": "PUBG Ban Checker",
+    "files": [
+      "index.html"
+    ]
+  },
+  {
+    "source": "Select Platform",
+    "files": [
+      "index.html"
+    ]
+  },
+  {
+    "source": "Currently searching:",
+    "files": [
+      "index.html",
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "Steam",
+    "files": [
+      "index.html",
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Ban &amp; Clan Checker",
+    "files": [
+      "index.html"
+    ]
+  },
+  {
+    "source": "Check",
+    "files": [
+      "index.html"
+    ]
+  },
+  {
+    "source": "Clear",
+    "files": [
+      "index.html"
+    ]
+  },
+  {
+    "source": "No results yet.",
+    "files": [
+      "index.html"
+    ]
+  },
+  {
+    "source": "Search by Account ID",
+    "files": [
+      "index.html"
+    ]
+  },
+  {
+    "source": "Lookup ID",
+    "files": [
+      "index.html"
+    ]
+  },
+  {
+    "source": "Xbox",
+    "files": [
+      "index.html",
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "PlayStation Network",
+    "files": [
+      "index.html"
+    ]
+  },
+  {
+    "source": "PSN",
+    "files": [
+      "index.html",
+      "watchlist.html",
+      "js/main.js",
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "Kakao",
+    "files": [
+      "index.html",
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Enter player names, separated by commas or new lines (max 10 per check)",
+    "files": [
+      "index.html"
+    ]
+  },
+  {
+    "source": "Enter PUBG Account ID",
+    "files": [
+      "index.html"
+    ]
+  },
+  {
+    "source": "Check current PUBG account ban signals by player name and platform, and track observed changes with a personal watchlist.",
+    "files": [
+      "index.html"
+    ]
+  },
+  {
+    "source": "Check PUBG account ban signals and monitor observed status changes.",
+    "files": [
+      "index.html"
+    ]
+  },
+  {
+    "source": "PUBG Ban Checker - Community Links",
+    "files": [
+      "links.html"
+    ]
+  },
+  {
+    "source": "Community Radar",
+    "files": [
+      "links.html"
+    ]
+  },
+  {
+    "source": "Trusted PUBG Resources",
+    "files": [
+      "links.html"
+    ]
+  },
+  {
+    "source": "Stat Tracking",
+    "files": [
+      "links.html"
+    ]
+  },
+  {
+    "source": "PUBG Lookup",
+    "files": [
+      "links.html"
+    ]
+  },
+  {
+    "source": "Deep personal stats, leaderboards, and match history—great for scouting your own performance or checking other pilots.",
+    "files": [
+      "links.html"
+    ]
+  },
+  {
+    "source": "pubglookup.com",
+    "files": [
+      "links.html",
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "PUBG Meta",
+    "files": [
+      "links.html",
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "Rich dashboards, meta insights, and compare views. Another must-have for digging into player or squad performance.",
+    "files": [
+      "links.html"
+    ]
+  },
+  {
+    "source": "pubg-meta.com",
+    "files": [
+      "links.html",
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "2D Replays",
+    "files": [
+      "links.html"
+    ]
+  },
+  {
+    "source": "PUBG.SH",
+    "files": [
+      "links.html"
+    ]
+  },
+  {
+    "source": "Fast, clean 2D match replays—scan drops, rotations, and team paths to spot patterns or suspicious routes.",
+    "files": [
+      "links.html"
+    ]
+  },
+  {
+    "source": "pubg.sh",
+    "files": [
+      "links.html"
+    ]
+  },
+  {
+    "source": "Chicken Dinner GG",
+    "files": [
+      "links.html"
+    ]
+  },
+  {
+    "source": "Detailed heatmaps and timelines in 2D. Great for reviewing engagements and positioning across the entire lobby.",
+    "files": [
+      "links.html"
+    ]
+  },
+  {
+    "source": "chickendinner.gg",
+    "files": [
+      "links.html"
+    ]
+  },
+  {
+    "source": "Community Spotlight",
+    "files": [
+      "links.html"
+    ]
+  },
+  {
+    "source": "Shady Knights",
+    "files": [
+      "links.html"
+    ]
+  },
+  {
+    "source": "Exposes cheaters with polished breakdowns and commentary. A solid pulse-check on the state of fair play.",
+    "files": [
+      "links.html"
+    ]
+  },
+  {
+    "source": "YouTube channel",
+    "files": [
+      "links.html"
+    ]
+  },
+  {
+    "source": "Trusted PUBG resources, community channels, and official platform links.",
+    "files": [
+      "links.html"
+    ]
+  },
+  {
+    "source": "PUBG Community Links",
+    "files": [
+      "links.html"
+    ]
+  },
+  {
+    "source": "Trusted PUBG resources and community channels.",
+    "files": [
+      "links.html"
+    ]
+  },
+  {
+    "source": "PUBG Ban Checker - Privacy Policy",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Your data, plainly explained",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Privacy Policy",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Discord sign-in is optional. You can continue using a browser-saved Watchlist without an account. If you sign in, we use the minimum Discord profile information needed to identify your account and sync your Watchlist across devices.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Effective and last updated:",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "9 October 2026",
+    "files": [
+      "privacy.html",
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "1. Who we are",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "PUBG Ban Checker is an independently operated PUBG utility. A dedicated privacy contact address is not currently published.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "2. What this policy covers",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "This policy covers pubgbanchecker.com, including the optional Discord sign-in and cloud Watchlist sync. Discord separately controls the information in your Discord account and processes it under",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Discord's Privacy Policy",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "3. Information we process",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Discord account information",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "We request only Discord's",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "identify",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "OAuth scope. Discord returns basic profile information, but we retain only your:",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Discord user ID;",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Discord username; and",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Discord display name.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "We do not request or store your Discord email address, password, guild or server memberships, friends, messages, linked accounts, or payment information. Discord may include an avatar reference in its basic profile response, but PUBG Ban Checker does not store or use it.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Synced Watchlist information",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "When you enable account sync, we store Watchlist information associated with your Discord user ID, including:",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "platform and PUBG player names or account IDs;",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "clan, current and previously observed ban statuses, check timestamps, status-change counts, and name-history information;",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "notes you choose to add; and",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "record identifiers, revision numbers, and creation or update timestamps used for syncing.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Do not place sensitive personal information in Watchlist notes.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Authentication and security information",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "We create an opaque session token and an anti-forgery token. Only cryptographic hashes of these tokens are stored in the database, along with session creation, last-use, and expiry times. Discord's temporary OAuth access token is used once to retrieve your basic profile and is not saved.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Browser storage and service logs",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Guest Watchlists, signed-in cache copies, sync state, theme, language, and selected platform can be stored locally in your browser. Our hosting and security providers may also process routine technical information such as IP address, request time, requested path, browser user-agent, and security headers for delivery, rate limiting, abuse prevention, and troubleshooting.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "4. Why we use this information",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "We use the information described above only to:",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "sign you in and show which Discord account is connected;",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "save, merge, protect, and synchronise your Watchlist across devices;",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "check the public PUBG player and ban information you request;",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "maintain session security, prevent abuse, and resolve sync conflicts; and",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "diagnose errors and keep the service reliable.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "We do not sell your information, use Discord information for advertising, profile your relationships, or send marketing messages to your Discord account.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Where UK data-protection law applies, account and Watchlist processing is necessary to provide the optional service you request. Limited security and operational processing is based on our legitimate interest in protecting and maintaining the service. We process information when legally required to do so.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "5. Cookies and local storage",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "We use only the following account cookies. They are strictly necessary when you request Discord sign-in or a signed-in session; they are not advertising or analytics cookies.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Cookie",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Purpose",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Lifetime",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "pbc_oauth_state",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Prevents forged Discord login callbacks.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "10 minutes",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "pbc_oauth_next",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Returns you safely to the Watchlist after sign-in.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "pbc_session",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Maintains your signed-in session using an opaque token.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Up to 30 days",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "pbc_csrf",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Protects Watchlist changes and sign-out requests.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Account cookies are marked",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Secure",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "and",
+    "files": [
+      "privacy.html",
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "HttpOnly",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": ". Browser local storage remains on that device until you clear the site's storage or remove the entries. Disabling storage may prevent guest Watchlists, preferences, or offline cache features from working.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "6. Service providers and sharing",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "We disclose information only where needed to operate the service:",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Discord",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "provides OAuth sign-in and your basic profile response.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Cloudflare",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "proxies and protects API traffic.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Render",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "hosts the application backend.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Neon",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "hosts the PostgreSQL database used for accounts, sessions, and synced Watchlists.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "GitHub Pages",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "hosts the static website files.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "PUBG's public API",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "receives the platform and PUBG player identifiers required for checks. We do not send your Discord identity to the PUBG API.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "We may also disclose information if required by law, or when reasonably necessary to protect users, the service, or legal rights. We do not sell or rent personal information.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "7. International processing",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "The website uses global providers, and the account backend and database are hosted in Oregon, United States. Information may therefore be processed outside your country. Where UK data-protection law applies, international processing must be covered by an applicable adequacy decision or appropriate safeguards, such as provider contractual protections. Contact us if you would like more information.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "8. How long we keep information",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Discord OAuth access tokens are discarded immediately after the login profile request.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "OAuth state cookies expire after 10 minutes.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Sessions stop being accepted after no more than 30 days; expired session records are removed during database cleanup.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Discord identity fields and synced Watchlists are kept while the sync account remains in use, until deletion is requested, or until the service is discontinued.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Operational logs and backups are retained for limited periods determined by security needs and provider configuration.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Browser-saved data remains until you clear it on that device.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "9. Your choices and deletion requests",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Discord sign-in is optional. Signing out ends the current server session but does not delete the synced Watchlist or account record. You can also remove the application through Discord's authorised-app settings; sign out of PUBG Ban Checker as well to end the current website session.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "A dedicated contact address for account-data requests is not currently published. Never share your Discord password, OAuth code, session cookie, or database credentials.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Depending on where you live, you may have rights to access, correct, erase, restrict, object to, or receive a portable copy of personal data. In the UK, you may also complain to the",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Information Commissioner's Office",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "10. Security",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "We minimise the Discord information retained, use HTTPS, protect account cookies from JavaScript access, hash session and anti-forgery tokens in the database, restrict write requests, and do not retain Discord access tokens. No online service can guarantee absolute security, so take care when sharing account information.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "11. Age limits",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Do not use Discord sign-in if you are below Discord's minimum permitted age in your country. We do not knowingly use Discord API data belonging to children below the legally permitted age. Contact us if you believe such information has been submitted.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "12. Changes to this policy",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "We may update this policy when the service, providers, or legal requirements change. The date at the top will show the latest revision. Material changes affecting Discord-linked information will be made clearly available from the Watchlist sign-in area.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "This notice is intended to explain the service's actual data handling in clear language. It is not a substitute for legal advice about obligations that may apply to the operator in a particular jurisdiction.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Return to Watchlist",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Main navigation",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "Privacy policy for PUBG Ban Checker and its optional Discord Watchlist sign-in.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "PUBG Ban Checker Privacy Policy",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "How PUBG Ban Checker handles searches, watchlists, Discord sign-in, and retained observations.",
+    "files": [
+      "privacy.html"
+    ]
+  },
+  {
+    "source": "PUNG Zombies",
+    "files": [
+      "pubg-mini.html"
+    ]
+  },
+  {
+    "source": "Bluezone closes fast. Zombies swarm. Shoot or die.",
+    "files": [
+      "pubg-mini.html"
+    ]
+  },
+  {
+    "source": "Redeploy",
+    "files": [
+      "pubg-mini.html"
+    ]
+  },
+  {
+    "source": "Move with",
+    "files": [
+      "pubg-mini.html"
+    ]
+  },
+  {
+    "source": "WASD / Arrows",
+    "files": [
+      "pubg-mini.html"
+    ]
+  },
+  {
+    "source": ". Aim with mouse; hold",
+    "files": [
+      "pubg-mini.html"
+    ]
+  },
+  {
+    "source": "Click",
+    "files": [
+      "pubg-mini.html"
+    ]
+  },
+  {
+    "source": "or",
+    "files": [
+      "pubg-mini.html",
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Space",
+    "files": [
+      "pubg-mini.html",
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "to shoot. Press",
+    "files": [
+      "pubg-mini.html"
+    ]
+  },
+  {
+    "source": "G",
+    "files": [
+      "pubg-mini.html",
+      "red13/js/game.js",
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "to toss a grenade (start with 1, rare pickups). No mouse? It auto-aims nearest zombie. Medkits heal. R to restart after knock.",
+    "files": [
+      "pubg-mini.html"
+    ]
+  },
+  {
+    "source": "Score:",
+    "files": [
+      "pubg-mini.html"
+    ]
+  },
+  {
+    "source": "Kills:",
+    "files": [
+      "pubg-mini.html"
+    ]
+  },
+  {
+    "source": "Zombies:",
+    "files": [
+      "pubg-mini.html"
+    ]
+  },
+  {
+    "source": "Nades:",
+    "files": [
+      "pubg-mini.html"
+    ]
+  },
+  {
+    "source": "HP:",
+    "files": [
+      "pubg-mini.html"
+    ]
+  },
+  {
+    "source": "Safe Radius:",
+    "files": [
+      "pubg-mini.html"
+    ]
+  },
+  {
+    "source": "Best:",
+    "files": [
+      "pubg-mini.html"
+    ]
+  },
+  {
+    "source": "You",
+    "files": [
+      "pubg-mini.html"
+    ]
+  },
+  {
+    "source": "Zombies",
+    "files": [
+      "pubg-mini.html"
+    ]
+  },
+  {
+    "source": "Grenade pickup",
+    "files": [
+      "pubg-mini.html"
+    ]
+  },
+  {
+    "source": "Medkit",
+    "files": [
+      "pubg-mini.html"
+    ]
+  },
+  {
+    "source": "Blue zone",
+    "files": [
+      "pubg-mini.html"
+    ]
+  },
+  {
+    "source": "Tip: Strafe around center to stay in zone. Kills refill medkit spawns. R to restart after knock.",
+    "files": [
+      "pubg-mini.html"
+    ]
+  },
+  {
+    "source": "A fan-made PUBG-inspired blue-zone zombie survival browser game.",
+    "files": [
+      "pubg-mini.html"
+    ]
+  },
+  {
+    "source": "PUBG Ban Checker - About",
+    "files": [
+      "updates.html"
+    ]
+  },
+  {
+    "source": "About PUBG Ban Checker",
+    "files": [
+      "updates.html"
+    ]
+  },
+  {
+    "source": "PUBG Ban Checker lets you check the ban status of PUBG accounts on Steam, Xbox, PlayStation and Kakao using a player name or account ID. You can add accounts to a watchlist and re-check them one at a time, with optional Discord sign-in to save your watchlist across devices. Ban results reflect the information returned by PUBG at the time of each check.",
+    "files": [
+      "updates.html"
+    ]
+  },
+  {
+    "source": "Check PUBG account ban status and save a watchlist with Discord.",
+    "files": [
+      "updates.html"
+    ]
+  },
+  {
+    "source": "PUBG Ban Checker – Watchlist",
+    "files": [
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Watchlist account",
+    "files": [
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Sign in with Discord to save your watchlist",
+    "files": [
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Checking sign-in…",
+    "files": [
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Your watchlist remains available while we check sync.",
+    "files": [
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Sign in with Discord",
+    "files": [
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Sign out",
+    "files": [
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Discord sign-in uses your user ID, username, and display name for account sync.",
+    "files": [
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Read the Privacy Policy",
+    "files": [
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "JavaScript is required for sign-in. Your browser-saved watchlist is unchanged.",
+    "files": [
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Platform selection",
+    "files": [
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Viewing watchlist for:",
+    "files": [
+      "watchlist.html",
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "Your Watchlist Feed",
+    "files": [
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Check one account at a time using its Re-check button. Sign in with Discord to save your watchlist across devices.",
+    "files": [
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "No players in your watchlist yet.",
+    "files": [
+      "watchlist.html",
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "Name Change Detected",
+    "files": [
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "OldName → NewName",
+    "files": [
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "OK",
+    "files": [
+      "watchlist.html",
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "Platform selection buttons",
+    "files": [
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Save your PUBG watchlist with Discord and check one account at a time.",
+    "files": [
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "PUBG Ban Checker Watchlist",
+    "files": [
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Monitor observed PUBG account status changes one player at a time.",
+    "files": [
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Discord sign-in was cancelled or could not be completed. Your guest watchlist is unchanged.",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "Discord user",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "Guest watchlist",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "Sign-in could not be checked. Your watchlist is still saved in this browser.",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "Could not reach sign-in. Try again after checking your connection.",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "error",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "Signed in with Discord. This watchlist syncs across your devices.",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "You are offline. Changes stay available here and sync after reconnecting.",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "You are offline. Your watchlist remains saved in this browser.",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "Offline — sign-in is temporarily unavailable",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "warning",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "Sign-in is unavailable here. Your watchlist is still saved in this browser.",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "Browser-only mode",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "neutral",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "Saved in this browser. Sign in to sync it across your devices.",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "Signing in is optional",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "Offline — waiting to sync",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "Sync ready",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "success",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "Watchlist synced",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "Sync could not finish. Your local changes are safe.",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "Watchlist changes merged and synced",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "Could not check sign-in. Your browser-saved watchlist is still available.",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "Signing out…",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "Your browser-saved guest watchlist will remain available.",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "Ending this session…",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "Logout failed",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "Signed out. Your guest watchlist is available on this device.",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "Could not sign out. Please check your connection and try again.",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "Opening Discord…",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "You will return here after authorising sign-in.",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "Redirecting securely…",
+    "files": [
+      "js/auth-ui.js"
+    ]
+  },
+  {
+    "source": "Week",
+    "files": [
+      "js/clan.js"
+    ]
+  },
+  {
+    "source": "Loading...",
+    "files": [
+      "js/clan.js",
+      "js/clan_top.js",
+      "js/dev.js"
+    ]
+  },
+  {
+    "source": "Backend error ({0})",
+    "files": [
+      "js/clan.js",
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Inactive member this week (1)",
+    "files": [
+      "js/clan.js"
+    ]
+  },
+  {
+    "source": "Inactive members this week ({0})",
+    "files": [
+      "js/clan.js"
+    ]
+  },
+  {
+    "source": "No inactive members this week.",
+    "files": [
+      "js/clan.js"
+    ]
+  },
+  {
+    "source": "Unknown",
+    "files": [
+      "js/clan.js",
+      "js/clan_top.js",
+      "js/main.js",
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "Week {0}",
+    "files": [
+      "js/clan.js"
+    ]
+  },
+  {
+    "source": "1 player",
+    "files": [
+      "js/clan.js"
+    ]
+  },
+  {
+    "source": "No data for this week.",
+    "files": [
+      "js/clan.js"
+    ]
+  },
+  {
+    "source": "Loaded (no data)",
+    "files": [
+      "js/clan.js"
+    ]
+  },
+  {
+    "source": "Failed to load leaderboard.",
+    "files": [
+      "js/clan.js"
+    ]
+  },
+  {
+    "source": "Longest Kills",
+    "files": [
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Top 10 longest shots (meters)",
+    "files": [
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Distance (m)",
+    "files": [
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Total Kills",
+    "files": [
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Most kills across all BR matches",
+    "files": [
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Total Wins",
+    "files": [
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Most chicken dinners",
+    "files": [
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Total Damage",
+    "files": [
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Most damage dealt",
+    "files": [
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Most time survived (hours)",
+    "files": [
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Hours",
+    "files": [
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Headshots",
+    "files": [
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Most headshot kills",
+    "files": [
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Assists",
+    "files": [
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Most assists",
+    "files": [
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "KDR (min 5 matches)",
+    "files": [
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Kills / (matches - wins)",
+    "files": [
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Kill Streak (single match)",
+    "files": [
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Highest kills in one BR match",
+    "files": [
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Failed to load records.",
+    "files": [
+      "js/clan_top.js"
+    ]
+  },
+  {
+    "source": "Chroma Winter Eclipse MP5K (Red Purple)",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Winter Eclipse MP5K",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Tiger Hunter SLR Battlestat",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Zodiac Killer M416 Battlestat",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Zodiac Killer SKS Battlestat",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Winter Reign AKM Battlestat",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Schematic",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Psycho Killer SCAR-L",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Giftwrapped Kar98",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Psycho Killer MP5K",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Barracuda Vector",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Giftwrapped Beryl M762",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Gilded Depths K2",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Feral Flower Crossbow",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Feral Flower Groza",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Feral Flower Beryl M762",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Flower Power AKM",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Flower Power AWM",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Flower Power Vector",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Desert Digital M416",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Lucky Knight SKS",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Lucky Knight M24",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Winter Reign Kar98",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Winter Reign S686",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Plaid To The Bone M249",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Plaid To The Bone Beryl M762",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Plaid To The Bone VSS",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Slithershot M249",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Snow Flake K2",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Slithershot VSS",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Desert Digital P92",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Desert Digital Mini14",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Desert Digital Kar98",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Urban Hunter Crossbow",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Urban Hunter Sawed Off",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Urban Hunter P92",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Pastel Power S1897",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Chain Gang S12K",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Chain Gang M16A4",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Chain Gang Micro UZI",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Jungle Prowler G36C",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Jungle Prowler P92",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Jungle Prowler Sawed Off",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Pastel Power R1895",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Safari Stripe S12K",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Safari Stripe M16A4",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Safari Stripe UMP",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Desert Digital Win94",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Desert Digital Sawed Off",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Jungle Digital P18C",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "200 Polymers",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "100 Polymers",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "50 Polymers",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Chroma",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Battlestats",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Schematics / Polymers",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Everything Else",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "gcSpent",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "packsOpened",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "cratesOpened",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Crate {0}: {1}",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Drop",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Crate {0}",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Flip",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "{3}% chance",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "No drops yet. Open a pack to build your collection.",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "{2}x",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Progressive",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "{1}x",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "cardsGrid",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "bestHit",
+    "files": [
+      "js/crate.js"
+    ]
+  },
+  {
+    "source": "Please enter a key.",
+    "files": [
+      "js/dev.js"
+    ]
+  },
+  {
+    "source": "Error: {0}",
+    "files": [
+      "js/dev.js"
+    ]
+  },
+  {
+    "source": "Player:",
+    "files": [
+      "js/dev.js"
+    ]
+  },
+  {
+    "source": "Account ID:",
+    "files": [
+      "js/dev.js"
+    ]
+  },
+  {
+    "source": "Copy",
+    "files": [
+      "js/dev.js"
+    ]
+  },
+  {
+    "source": "Copied!",
+    "files": [
+      "js/dev.js"
+    ]
+  },
+  {
+    "source": "Please enter a name",
+    "files": [
+      "js/dev.js"
+    ]
+  },
+  {
+    "source": "Please enter an account ID",
+    "files": [
+      "js/dev.js"
+    ]
+  },
+  {
+    "source": "Rate limited by backend. Please wait a moment and try again.",
+    "files": [
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "Player not found",
+    "files": [
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "PUBG API is temporarily unavailable",
+    "files": [
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "The request could not be completed",
+    "files": [
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "AbortError",
+    "files": [
+      "js/main.js",
+      "js/watchlist-store.js"
+    ]
+  },
+  {
+    "source": "Request timed out",
+    "files": [
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "You are offline",
+    "files": [
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "Network error while contacting the checker",
+    "files": [
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "Permanently Banned",
+    "files": [
+      "js/main.js",
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "Temporarily Banned",
+    "files": [
+      "js/main.js",
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "Not Banned",
+    "files": [
+      "js/main.js",
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "Checking...",
+    "files": [
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "Generate teammate report",
+    "files": [
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "Frequent teammates of {0}",
+    "files": [
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "Checking recent matches for teammates...",
+    "files": [
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "Too many reports. Wait a minute and try again.",
+    "files": [
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "Could not generate the report. Please try again.",
+    "files": [
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "{0} matches could not be read. Counts are incomplete.",
+    "files": [
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "Most frequent teammates",
+    "files": [
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "Based on {0} of {1} available matches (up to {2} checked). PUBG match history covers the past 14 days; these are not lifetime counts.",
+    "files": [
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "No teammates found in the analyzed matches.",
+    "files": [
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "No recent matches are available for this player.",
+    "files": [
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "game",
+    "files": [
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "games",
+    "files": [
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "PUBGLookup",
+    "files": [
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "Report timed out. Please try again.",
+    "files": [
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "common.noresults",
+    "files": [
+      "js/main.js"
+    ]
+  },
+  {
+    "source": "You were knocked!",
+    "files": [
+      "js/pubg-mini.js"
+    ]
+  },
+  {
+    "source": "Press R to redeploy",
+    "files": [
+      "js/pubg-mini.js"
+    ]
+  },
+  {
+    "source": "Theme",
+    "files": [
+      "js/theme.js"
+    ]
+  },
+  {
+    "source": "Use",
+    "files": [
+      "js/theme.js"
+    ]
+  },
+  {
+    "source": "Use {0} theme",
+    "files": [
+      "js/theme.js"
+    ]
+  },
+  {
+    "source": "Changes are saved on this device and will retry online.",
+    "files": [
+      "js/watchlist-store.js"
+    ]
+  },
+  {
+    "source": "Your sign-in expired. Sign in again to resume syncing.",
+    "files": [
+      "js/watchlist-store.js"
+    ]
+  },
+  {
+    "source": "Sync failed with status {0}.",
+    "files": [
+      "js/watchlist-store.js"
+    ]
+  },
+  {
+    "source": "The sync response was incomplete.",
+    "files": [
+      "js/watchlist-store.js"
+    ]
+  },
+  {
+    "source": "Unable to sync right now.",
+    "files": [
+      "js/watchlist-store.js"
+    ]
+  },
+  {
+    "source": "Cloud Watchlist is temporarily unavailable; this device's signed-in cache is unchanged.",
+    "files": [
+      "js/watchlist-store.js"
+    ]
+  },
+  {
+    "source": "Unable to load Cloud Watchlist.",
+    "files": [
+      "js/watchlist-store.js"
+    ]
+  },
+  {
+    "source": "Sign out failed with status {0}.",
+    "files": [
+      "js/watchlist-store.js"
+    ]
+  },
+  {
+    "source": "Never",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "Player Not Found",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "Error / Unknown",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "Watchlist check failed ({0})",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "TRACK",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "perm",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "PERMA",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "temp",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "TEMP",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "ok",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "UNK",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "translate=\"no\"",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "none",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "unknown",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "Clan",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "Account ID",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "Status",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "Last checked",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "Re-check",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "Remove",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "Checking account…",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "Checking {0}…",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "Account check failed",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "Checked {0}: {1}.",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "Could not check {0}. Please try again.",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "No items yet. Open a crate to add an item.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "outfit",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Clothing",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Weapon · GCoin crate",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Scrap · {0} BP",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Scrap {0} for {1} BP",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Could not save the scrap. Please check browser storage and try again.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Scrapped {0} for {1} BP.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "P1911 - Water Pistol",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Are you serious? It's not even summer.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Beryl M762 - Polish Flag",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Great. Just what I need—a reminder that Poland created the weapon I hate.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Beryl M762 - Nerf Gun",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "WHYYYYYYYY I HATE IT HERE!",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "P18-C - Confetti Effect",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "OMG WHAT IS THIS?! You planning a party or a firefight?",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "MP5K - Technicolour Rabbit",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "More cotton candy bullshit. I'd give this to Schnee if he didn't hate SMGs.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Beryl M762 - Candy Floss",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Just what we need, more cotton candy bullshit.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Beryl M762 - Rainbow Pillar",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Finally, a Pillar skin... ARE YOU KIDDING ME? NOOOOOOOOOOO I HATE IT HERE!",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Beryl M762 - Flower Power",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "If I see another Beryl, I'm going to play Tarkov PVE.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Beryl M762 - BlackPink",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "K-Pop and Beryl. It couldn't get any worse.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Beryl M762 - Aespa",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "All I want is my Pillar DBS and Pillar Set—instead I get K-Pop cotton candy.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "M416 - Pizza",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "I like pizza. I like the M416. I HATE THIS SKIN.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Beryl M762 - The Devil Made Me Do It",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "And Jesus made me uninstall this game.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Beryl M762 - Bubblegum Fury",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Nothing says professional like a gun that looks like a toddler's lunchbox.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Beryl M762 - Unicorn Vomit Edition",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "They taste the rainbow... I choke on the recoil.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "DBS - Glitter Boom",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Congratulations, you've weaponized a craft store.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "DBS - Cotton Candy Carnage",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Sweet on the outside, trauma on the inside.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Beryl M762 - Rapture's Knockers",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Why did it have to be the Beryl... WHYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY!",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Beryl M762 - Skibidi Toilet",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Where’s Tarkov? Oh well, at least the sweats can use a skin that matches their appearance.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Ice Lolly Hoodie",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Seriously, another cotton candy skin?",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Glow-Up In The Dark TGLTN Set",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Did you mistake me for Schneefuchs?",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Proper Pink Vest Level 1",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "They finally added a Level 1 vest and it's for Bianca and QWQ.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Pikachu Set With Mask",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Gotta collect them all... then throw them in the trash where they belong.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Hippy Tie-Dye Military Camo Set",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Can't they just be serious for once?",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Panda Set With Mask",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Great, more furry skins. Get that shit out of my face.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Sheep Set With Mask",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Bahhhhhhhhhhhhhhhhhhh no. Bah-bullshit.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Cat Ears",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "If I'm going to die, I want to look cool doing it. I DON'T WANT TO LOOK LIKE A FUCKING CAT!",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Donut Mask",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "About time we got something nice. Nope—a creepy donut-ass mask.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Jammer Pack - Technicolour",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "I'd rather die in the blue a thousand more times than pick that up.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Banana Suit",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Yeah, nothing screams stealth like being bright yellow.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Chicken Mask",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Perfect. Now you can cluck while you die.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Coca-Cola Tracksuit",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Because nothing hydrates better than 42 grams of sugar.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Inflatable Lifeguard Vest Level 1",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Ideal for drowning in the blue zone and self-pity.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "TV Head",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "I'm going to Tarkov PVE till this brainrot blows over.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Skibidi Toilet Mask",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "As if bunnies and cotton candy weren't enough, enter brain rot.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Emil Mask",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "I refuse to look like Lem in this game.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Buy Outfit Crate",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Buy Weapons Crate",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Not enough BP! Outfit crates cost 5,000 BP.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Not enough GCoin! Weapon crates cost 20 GCoin.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Could not save the item. Please check browser storage and try again.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Opening crate…",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Crate opened.",
+    "files": [
+      "red13/js/crates.js"
+    ]
+  },
+  {
+    "source": "Rapture",
+    "files": [
+      "red13/js/game.js",
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Red13",
+    "files": [
+      "red13/js/game.js",
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "SWEATY TRY HARD IN THE BLUE ZONE",
+    "files": [
+      "red13/js/game.js"
+    ]
+  },
+  {
+    "source": "BebasNeue,system-ui",
+    "files": [
+      "red13/js/game.js"
+    ]
+  },
+  {
+    "source": "The Sweaty Try Hard got you! press r to send the bluechip to emily",
+    "files": [
+      "red13/js/game.js"
+    ]
+  },
+  {
+    "source": "The Sweaty Try Hard got you!",
+    "files": [
+      "red13/js/game.js"
+    ]
+  },
+  {
+    "source": "Red13 survived the Sweaty Try Hard crossing: +3 GCoin",
+    "files": [
+      "red13/js/game.js"
+    ]
+  },
+  {
+    "source": "Sweaty Try Hard · slowed",
+    "files": [
+      "red13/js/game.js"
+    ]
+  },
+  {
+    "source": "Sweaty Try Hard",
+    "files": [
+      "red13/js/game.js"
+    ]
+  },
+  {
+    "source": "B",
+    "files": [
+      "red13/js/game.js",
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "F",
+    "files": [
+      "red13/js/game.js",
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "M",
+    "files": [
+      "red13/js/game.js",
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "J",
+    "files": [
+      "red13/js/game.js",
+      "red13/js/loot.js",
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "BCD",
+    "files": [
+      "red13/js/game.js",
+      "red13/js/loot.js",
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "HP:{0}",
+    "files": [
+      "red13/js/game.js"
+    ]
+  },
+  {
+    "source": "BP:{0}",
+    "files": [
+      "red13/js/game.js"
+    ]
+  },
+  {
+    "source": "PH:{0}",
+    "files": [
+      "red13/js/game.js"
+    ]
+  },
+  {
+    "source": "GC:{0}",
+    "files": [
+      "red13/js/game.js"
+    ]
+  },
+  {
+    "source": "Next:{0}s",
+    "files": [
+      "red13/js/game.js"
+    ]
+  },
+  {
+    "source": "Jammer: {0}s",
+    "files": [
+      "red13/js/game.js"
+    ]
+  },
+  {
+    "source": "BCD ready",
+    "files": [
+      "red13/js/game.js"
+    ]
+  },
+  {
+    "source": "Rapture · Space to shoot",
+    "files": [
+      "red13/js/game.js"
+    ]
+  },
+  {
+    "source": "Sweaty Try Hard defeated by Rapture",
+    "files": [
+      "red13/js/game.js"
+    ]
+  },
+  {
+    "source": "You died! press r to send the bluechip to emily",
+    "files": [
+      "red13/js/game.js"
+    ]
+  },
+  {
+    "source": "You died!",
+    "files": [
+      "red13/js/game.js"
+    ]
+  },
+  {
+    "source": "Play Again",
+    "files": [
+      "red13/js/game.js"
+    ]
+  },
+  {
+    "source": "Back to Menu",
+    "files": [
+      "red13/js/game.js",
+      "shne/shne.html"
+    ]
+  },
+  {
+    "source": "You Died!",
+    "files": [
+      "red13/js/game.js"
+    ]
+  },
+  {
+    "source": "Continue",
+    "files": [
+      "red13/js/game.js"
+    ]
+  },
+  {
+    "source": "Red13 respawned with full health: bluechip sent to emily",
+    "files": [
+      "red13/js/game.js"
+    ]
+  },
+  {
+    "source": "Special loot chances must be nonnegative and total at most 1",
+    "files": [
+      "red13/js/loot.js"
+    ]
+  },
+  {
+    "source": "BLUE MEMORY — PNG Version (v2.1)",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Blue Memory",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "BLUE MEMORY — PNG Version",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "A fan-made PUBG-inspired blue-zone memory browser game.",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Phase 1",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Phase 2",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Phase 3",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Phase 4",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Phase 5",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Phase 6",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Phase 7",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Phase 8",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Loading cards...",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "P",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "P{0}-C{1}.png",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Phase {0} complete — moves: {1}, mistakes: {2}, time: {3}",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Moves (this phase):",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Moves (this phase): {0}",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Matches:",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Matches: {0}/{1}",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Mistakes:",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Mistakes: {0}",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Phase time:",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Phase time: {0}",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Phase {0} — moves: {1}, matches: {2}, mistakes: {3}, elapsed: {4}",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Best Time",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Best Time Phase",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Best Time Phase {0} : {1}",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "BLUE ZONE STARTS IN",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "BLUE ZONE STARTS IN {0} s",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Match pairs to HEAL through the zone.",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "PHASE",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "PHASE {0} - Blue Zone Intensifying",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Preparing card images for this phase...",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "PHASE SURVIVED!",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Press Enter/Space to restart",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "YOU DIED TO THE BLUEZONE",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "The Force Is Strong In This One",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "You Died in the Bluezone",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Shroud Sprayed You With an AKM",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "You Died to the Bluezone - and Now Reddit Hates You",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "WackyJacky101 Killed You and Posted a How-To Video Guide",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Shneefuchs Killed You With an SMG and Hates Himself For It",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "You Died to a Sliding, Wiggling, BadBoy Peeking Try-Hard",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "TGLTN Was Waiting at the Edge of the Bluezone",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Press Enter/Space to try again (Phase 1)",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "New Game",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "Back to Games",
+    "files": [
+      "bluemem/bluemem.html",
+      "shne/game.js",
+      "shne/shne.html"
+    ]
+  },
+  {
+    "source": "Init error",
+    "files": [
+      "bluemem/bluemem.html"
+    ]
+  },
+  {
+    "source": "UMP.png",
+    "files": [
+      "shne/game.js"
+    ]
+  },
+  {
+    "source": "MP9",
+    "files": [
+      "shne/game.js"
+    ]
+  },
+  {
+    "source": "MP9.png",
+    "files": [
+      "shne/game.js"
+    ]
+  },
+  {
+    "source": "Vector",
+    "files": [
+      "shne/game.js"
+    ]
+  },
+  {
+    "source": "Vector.png",
+    "files": [
+      "shne/game.js"
+    ]
+  },
+  {
+    "source": "P90",
+    "files": [
+      "shne/game.js"
+    ]
+  },
+  {
+    "source": "P90.png",
+    "files": [
+      "shne/game.js"
+    ]
+  },
+  {
+    "source": "NumpadEnter",
+    "files": [
+      "shne/game.js"
+    ]
+  },
+  {
+    "source": "Best Time: {0}",
+    "files": [
+      "shne/game.js"
+    ]
+  },
+  {
+    "source": "You reached Phase {0} and survived {1}:{2}.",
+    "files": [
+      "shne/game.js"
+    ]
+  },
+  {
+    "source": "HP: {0}",
+    "files": [
+      "shne/game.js"
+    ]
+  },
+  {
+    "source": "Phase {0} • {1}:{2}",
+    "files": [
+      "shne/game.js"
+    ]
+  },
+  {
+    "source": "Press Enter to Start",
+    "files": [
+      "shne/game.js"
+    ]
+  },
+  {
+    "source": "SCHNEEFUCHS HATES SMGS",
+    "files": [
+      "shne/shne.html"
+    ]
+  },
+  {
+    "source": "Click or press Enter",
+    "files": [
+      "shne/shne.html"
+    ]
+  },
+  {
+    "source": "SCHNEEFUCHS hates SMGs so much he is having a nightmare where he is constantly being shot at by SMGs. How long can he survive this nightmare?",
+    "files": [
+      "shne/shne.html"
+    ]
+  },
+  {
+    "source": "Move:",
+    "files": [
+      "shne/shne.html"
+    ]
+  },
+  {
+    "source": "WASD",
+    "files": [
+      "shne/shne.html",
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Arrows",
+    "files": [
+      "shne/shne.html"
+    ]
+  },
+  {
+    "source": "&nbsp; | &nbsp; Dash:",
+    "files": [
+      "shne/shne.html"
+    ]
+  },
+  {
+    "source": "Shift",
+    "files": [
+      "shne/shne.html"
+    ]
+  },
+  {
+    "source": "&nbsp; | &nbsp; Start:",
+    "files": [
+      "shne/shne.html"
+    ]
+  },
+  {
+    "source": "Enter",
+    "files": [
+      "shne/shne.html"
+    ]
+  },
+  {
+    "source": "Start Game",
+    "files": [
+      "shne/shne.html"
+    ]
+  },
+  {
+    "source": "GAME OVER",
+    "files": [
+      "shne/shne.html"
+    ]
+  },
+  {
+    "source": "You reached Phase 1 and survived 00:00.",
+    "files": [
+      "shne/shne.html"
+    ]
+  },
+  {
+    "source": "Restart",
+    "files": [
+      "shne/shne.html"
+    ]
+  },
+  {
+    "source": "SCHNEEFUCHS HATES SMGS Title",
+    "files": [
+      "shne/shne.html"
+    ]
+  },
+  {
+    "source": "A fan-made PUBG-inspired arcade survival browser game.",
+    "files": [
+      "shne/shne.html"
+    ]
+  },
+  {
+    "source": "Red13 – The Life Of A Blue Zone Runner",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Red13 — The Life of a Blue Zone Runner",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Red13 lives where others fear to tread — deep inside the blue zone.",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "He runs endlessly, dodging sweaty try-hards and deadly bombardments.",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "From afar, his love Rapture guides him, sending medical drops from the sky.",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "But the ruthless Sergei Kalimnick has other plans — the red zones never stop falling.",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Click to continue",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "RED13 — BLUE ZONE RUNNER",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "A game by A Hap E Lemming, ReD_13Official and a Clanker",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Choose your character",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Classic blue zone survival",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Rapture hunts down sweaty try-hards to protect Red13.",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "▶ Start Run",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "🎁 Open Crates",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "📘 How To Play",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "❓ About",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "GCoin:",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "BP:",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "← Back to OPS",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Inventory (",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Scrap clothing for 500 BP each or weapon-crate items for 1,500 BP each.",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "How To Play",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Help",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "in his endless endeavour to obtain the elusive",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Pillar",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "skins by surviving as long as possible in the blue zone. Avoid the",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "red zones",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "launched by the evil",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Sergei Kalimnick",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "and collect",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "heals",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "GCoin",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "drops sent by",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Rapture’s drones",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Controls:",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Arrow Keys",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "to move",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Choose Red13 or Rapture before starting. As Rapture, hold",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "or the",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Shoot",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "button to fire. Shots aim at the Sweaty Try Hard while it crosses the screen; each hit slows it for two seconds, and three hits defeat it. Collect the 5 GCoin it drops. It appears in phase 5, then from phase 10 in both modes. Red13 earns 3 GCoin for surviving each complete crossing. Press",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "R",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "to restart.",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Item Types:",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "— Bandage (+10 HP to 75%, +100 BP)",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "— First Aid Kit (restore to 75%, +200 BP)",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "— Med Kit (full heal to 100%, +400 BP)",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "— GCoin (+1 for Crates)",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "— Jammer Pack (20 seconds of blue-zone protection; red zones still hurt)",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "— Blue Chip Detector (Red13 only; press R after dying to send the bluechip to emily and respawn with full health; one use)",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "A PUBG-inspired endless survival game.",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Latest updates",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Play as Red13 or Rapture.",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "The Sweaty Try Hard appears in phase 5 in both modes, then returns from phase 10.",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Rapture can shoot and slow the Sweaty Try Hard. Defeating it drops 5 GCoin to collect.",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Red13 earns 3 GCoin for surviving each complete crossing.",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Healing pickups award BP: bandages 100, first aid 200, and med kits 400.",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Crate opening and reward displays have been fixed. Red13 reacts to each reward with a speech bubble.",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "New crate rewards are saved in your inventory. Scrap clothing for 500 BP each or GCoin-crate weapons for 1,500 BP each.",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Shoot · Space",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "RED13 poster",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Red13 wearing a cap, glasses and security vest",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Rapture in her dark tactical outfit",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Opened crate",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Red13 reacting to the crate reward",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Shoot as Rapture",
+    "files": [
+      "red13/index.html"
+    ]
+  },
+  {
+    "source": "Please enter names.",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Enter an ID.",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Looking up...",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Could not resolve that ID on this platform.",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Lookup failed.",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "ID",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Checking PUBG now",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Reported by PUBG now",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "PUBG response could not be confirmed",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Rate limited — wait before retrying",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Offline — reconnect and retry",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "PUBG took too long to respond",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Network connection failed",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "No matching player was returned",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "The result could not be verified",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Add to Watchlist",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Added",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Crate Simulator",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Ban & Clan Checker",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Watchlist controls",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Refresh All",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Clear All",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Monitor ban states across every platform like a command desk. Use “Re-check” on any pilot when you need a fresh scan.",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Export my data",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Import backup",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Sign out other sessions",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Delete synced Watchlists",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Delete account data",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Filter",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Sort",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Pause",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Stop",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Retry failed checks",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "PUBG Ban Checker - Updates",
+    "files": [
+      "js/i18n.js"
+    ]
+  },
+  {
+    "source": "Vote on community clips and send evidence straight to PUBG Support. Crowd-sourced verdicts make reports clear and credible.",
+    "files": [
+      "js/i18n.js"
+    ]
+  }
+]

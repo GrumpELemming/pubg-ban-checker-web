@@ -437,10 +437,10 @@
       ctx.fillStyle = "#ffc107";
       ctx.font = "24px 'Segoe UI', sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("You were knocked!", W / 2, H / 2 - 10);
+      window.pbcCanvasText(ctx, "You were knocked!", W / 2, H / 2 - 10);
       ctx.fillStyle = "#f4f6f9";
       ctx.font = "16px 'Segoe UI', sans-serif";
-      ctx.fillText("Press R to redeploy", W / 2, H / 2 + 20);
+      window.pbcCanvasText(ctx, "Press R to redeploy", W / 2, H / 2 + 20);
       ctx.restore();
     }
   }

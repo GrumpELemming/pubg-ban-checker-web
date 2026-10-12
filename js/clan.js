@@ -29,7 +29,7 @@ function getClanWeekStart(date) {
 
 function formatDateRange(start, end) {
   const opts = { year: "numeric", month: "short", day: "numeric" };
-  return `${start.toLocaleDateString(undefined, opts)} → ${end.toLocaleDateString(undefined, opts)}`;
+  return `${start.toLocaleDateString(window.pbcLocale(), opts)} → ${end.toLocaleDateString(window.pbcLocale(), opts)}`;
 }
 
 function buildWeekOptions(count = 2) {
@@ -52,7 +52,7 @@ function buildWeekOptions(count = 2) {
     }
 
     const value = start.toISOString().slice(0, 10);
-    const label = `${value} - Week ${formatDateRange(start, end)}`;
+    const label = `${value} - ${window.pbcTranslate("Week")} ${formatDateRange(start, end)}`;
 
     const opt = document.createElement("option");
     opt.value = value;
@@ -199,7 +199,7 @@ function renderLeaderboard(data) {
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${index + 1}</td>
-      <td>${entry.name || entry.player_id || "Unknown"}</td>
+      <td translate="no">${entry.name || entry.player_id || window.pbcTranslate("Unknown")}</td>
       <td>${entry.matches ?? 0}</td>
       <td>${entry.kills ?? 0}</td>
       <td>${kdr.toFixed(2)}</td>
@@ -231,7 +231,7 @@ async function loadLeaderboard() {
   } catch (err) {
     console.error(err);
     if (statusEl) {
-      statusEl.textContent = `Error: ${err.message}`;
+      statusEl.textContent = "Failed to load leaderboard.";
       statusEl.classList.add("error");
     }
 
@@ -294,4 +294,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Auto-load the currently selected (current) week on first visit
   loadLeaderboard();
+});
+window.addEventListener("pbc:language-change", () => {
+  const selectedWeek = $("weekSelect")?.value;
+  buildWeekOptions(8);
+  if (selectedWeek) $("weekSelect").value = selectedWeek;
+  if (currentData) renderLeaderboard(currentData);
 });

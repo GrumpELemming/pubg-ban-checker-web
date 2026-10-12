@@ -470,19 +470,19 @@ function drawHUD(dim=false){
 
   ctx.fillStyle='#ccefff';
   ctx.font='bold 14px system-ui,-apple-system,Segoe UI';
-  ctx.fillText(`HP: ${p?Math.ceil(p.hp):100}`, 20,46);
+  window.pbcCanvasText(ctx, `HP: ${p?Math.ceil(p.hp):100}`, 20, 46);
 
   const secs=Math.floor(state.time/1000);
   const mm=String(Math.floor(secs/60)).padStart(2,'0');
   const ss=String(secs%60).padStart(2,'0');
   ctx.textAlign='right';
-  ctx.fillText(`Phase ${state.phase}  •  ${mm}:${ss}`, W-20,46);
+  window.pbcCanvasText(ctx, `Phase ${state.phase}  •  ${mm}:${ss}`, W-20, 46);
   ctx.textAlign='left';
 
   if(dim && !state.running && introEl && !introEl.classList.contains('hidden')){
     ctx.fillStyle='rgba(140,210,255,.85)';
     ctx.font='600 18px system-ui,-apple-system,Segoe UI';
-    ctx.fillText('Press Enter to Start', 24, H-24);
+    window.pbcCanvasText(ctx, 'Press Enter to Start', 24, H-24);
   }
 }
 

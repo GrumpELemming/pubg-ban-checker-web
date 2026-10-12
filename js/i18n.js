@@ -1,5 +1,5 @@
-// Simple i18n helper for static pages (excluding clan tracker)
-// Languages: English (default), Korean, Chinese, German, Finnish, Polish, Russian, Turkish, Armenian
+// Shared language selection and explicit keys for every page.
+// Languages: English, Korean, Chinese, German, Finnish, Polish, Russian, Turkish, Armenian, Arabic.
 
 const LANGS = {
   en: "English",
@@ -67,7 +67,7 @@ const TRANSLATIONS = {
     "watchlist.feed.body":
       "Monitor ban states across every platform like a command desk. Use “Re-check” on any pilot when you need a fresh scan.",
     "watchlist.account.title": "Watchlist account",
-    "watchlist.account.subtitle": "Optional sign-in for cross-device sync",
+    "watchlist.account.subtitle": "Sign in with Discord to save your watchlist",
     "watchlist.account.export": "Export my data",
     "watchlist.account.import": "Import backup",
     "watchlist.account.sessions": "Sign out other sessions",
@@ -841,14 +841,15 @@ const TRANSLATIONS = {
 };
 
 function getCurrentLang() {
-  const saved = localStorage.getItem("siteLang");
+  let saved;
+  try { saved = localStorage.getItem("siteLang"); } catch {}
   if (saved && LANGS[saved]) return saved;
   return "en";
 }
 
 function setCurrentLang(lang) {
   if (!LANGS[lang]) return;
-  localStorage.setItem("siteLang", lang);
+  try { localStorage.setItem("siteLang", lang); } catch {}
 }
 
 function tr(key) {
@@ -861,30 +862,21 @@ window.tr = tr;
 const RTL_LANGS = new Set(["ar"]);
 
 function applyTranslations(lang) {
+  document.documentElement.lang = lang;
   document.documentElement.dir = RTL_LANGS.has(lang) ? "rtl" : "ltr";
-  const dict = TRANSLATIONS[lang] || TRANSLATIONS.en;
-  let fallbackCount = 0;
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     const key = el.getAttribute("data-i18n");
-    if (lang !== "en" && !dict[key] && TRANSLATIONS.en[key]) fallbackCount += 1;
-    const txt = dict[key] || TRANSLATIONS.en[key] || el.textContent;
+    const txt = window.tr(key);
     el.textContent = txt;
   });
   document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
     const key = el.getAttribute("data-i18n-placeholder");
-    const txt = dict[key] || TRANSLATIONS.en[key];
+    const txt = window.tr(key);
     if (txt) el.setAttribute("placeholder", txt);
   });
   document.querySelectorAll(".i18n-fallback-note").forEach(note => note.remove());
-  if (fallbackCount > 0) {
-    document.querySelectorAll(".lang-switch").forEach(container => {
-      const note = document.createElement("small");
-      note.className = "i18n-fallback-note";
-      note.textContent = `${fallbackCount} newer label${fallbackCount === 1 ? "" : "s"} shown in English`;
-      note.setAttribute("role", "status");
-      container.appendChild(note);
-    });
-  }
+  document.querySelectorAll('.lang-switch select').forEach(select => { select.value = lang; });
+  window.pbcTranslatePage?.();
 }
 
 function buildLangSelector() {

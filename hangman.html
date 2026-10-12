@@ -12,6 +12,11 @@
     body { height: 100dvh; }
     canvas { display: block; width: 100%; height: 100%; outline: none; cursor: default; touch-action: manipulation; }
   </style>
+
+  <link rel="stylesheet" href="css/i18n.css?v=20261012b">
+  <script src="js/i18n-catalog.js?v=20261012b"></script>
+  <script src="js/i18n.js?v=20261012b"></script>
+  <script src="js/i18n-runtime.js?v=20261012b"></script>
 </head>
 <body>
 <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">PUBG Hangman</h1>
@@ -72,14 +77,16 @@
   WEAPON ANIMATION, VEHICLE SPAWN, WINCHESTER, LYNX AMR
   `;
 
-  function normalizeWord(w) { return w.trim().toUpperCase().replace(/[^A-Z\s]/g, ""); }
+  const GAME_LANG = getCurrentLang();
+  function normalizeWord(w) { return w.normalize("NFC").trim().toUpperCase().replace(/[^\p{L}\p{M}\s]/gu, ""); }
   const UNIQUE_WORDS = Array.from(new Set(
-    RAW_WORDS.split(",").map(w => normalizeWord(w)).filter(w => w.length > 0)
+    RAW_WORDS.split(",").map(w => normalizeWord(window.pbcTranslate(w.trim()))).filter(w => w.length > 0)
   ));
 
   // ---------- Storage ----------
-  const LS_KEY_STATE = `pubgHangman.state.v${VERSION}`;
-  const LS_KEY_STATS = `pubgHangman.stats.v${VERSION}`;
+  const languageSuffix = GAME_LANG === "en" ? "" : `.${GAME_LANG}`;
+  const LS_KEY_STATE = `pubgHangman.state.v${VERSION}${languageSuffix}`;
+  const LS_KEY_STATS = `pubgHangman.stats.v${VERSION}${languageSuffix}`;
   const LS_KEY_SOUND = `pubgHangman.sound.v${VERSION}`;
 
   function loadJSON(key, fallback) {
@@ -112,7 +119,7 @@
   function saveAll() { saveJSON(LS_KEY_STATE, state); saveJSON(LS_KEY_STATS, stats); saveJSON(LS_KEY_SOUND, {enabled: soundEnabled}); }
 
   function resetProgress() {
-    if (!confirm("Reset all progress and stats?")) return;
+    if (!confirm(window.pbcTranslate("Reset all progress and stats?"))) return;
     stats = JSON.parse(JSON.stringify(defaultStats));
     state = defaultState();
     state.word = nextWordNoRepeat();
@@ -182,7 +189,20 @@
     resizeTimeout = setTimeout(doResize, 150);
   }, { passive: true });
 
-  const KEY_ROWS = [ "QWERTYUIOP".split(""), "ASDFGHJKL".split(""), "ZXCVBNM".split("") ];
+  let KEY_ROWS = [ "QWERTYUIOP".split(""), "ASDFGHJKL".split(""), "ZXCVBNM".split("") ];
+  let keyboardWord;
+  const alphabet = Array.from(new Set(UNIQUE_WORDS.join("").replace(/\s/g, ""))).sort();
+  function updateKeyboard() {
+    if (GAME_LANG === "en" || keyboardWord === state.word) return;
+    keyboardWord = state.word;
+    const required = Array.from(new Set(state.word.replace(/\s/g, "")));
+    const choices = alphabet.length <= 36 ? alphabet : [...required, ...shuffle(alphabet.filter(ch => !required.includes(ch))).slice(0, Math.max(0, 36-required.length))].sort();
+    KEY_ROWS = [];
+    for (let i = 0; i < choices.length; i += 12) KEY_ROWS.push(choices.slice(i, i + 12));
+  }
+  window.addEventListener("pbc:language-change", () => {
+    if (getCurrentLang() !== GAME_LANG) { saveAll(); window.location.reload(); }
+  });
 
   function mapClientToVirtual(clientX, clientY) {
     const r = canvas.getBoundingClientRect();
@@ -239,7 +259,7 @@
       if (e.key === "Enter" || e.key === " ") { newRound(); playSound(winLoseChime, 0.35); }
       return;
     }
-    if (/^[a-zA-Z]$/.test(e.key)) guessLetter(e.key.toUpperCase());
+    if (/^[\p{L}\p{M}]$/u.test(e.key)) guessLetter(e.key.toUpperCase());
     else if (e.key === "Escape") newRound();
     else if (e.key.toLowerCase() === "r") resetProgress();
     
@@ -360,7 +380,7 @@
     ctx.fillStyle = color;
     ctx.shadowColor = color;
     ctx.shadowBlur = 22 + Math.sin(state.pulse) * 6;
-    ctx.fillText("PUBG HANGMAN", 40, 28);
+    window.pbcCanvasText(ctx, "PUBG HANGMAN", 40, 28);
     ctx.restore();
   }
 
@@ -382,7 +402,7 @@
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
     ctx.fillStyle = "rgba(210,230,255,0.85)";
-    lines.forEach((t,i)=>ctx.fillText(t,40,120+i*24));
+    lines.forEach((t,i)=>window.pbcCanvasText(ctx, t, 40, 120+i*24));
     ctx.restore();
   }
 
@@ -392,7 +412,7 @@
     ctx.save();
     ctx.textAlign="center";ctx.textBaseline="bottom";
     ctx.font="600 18px system-ui";ctx.fillStyle="rgba(255,255,255,0.85)";
-    ctx.fillText(`Misses Left: ${state.missesLeft}`,x-80,y-10);
+    window.pbcCanvasText(ctx, `Misses Left: ${state.missesLeft}`, x-80, y-10);
     ctx.restore();
 
     drawLine(x-200,y+260,x-40,y+260,"#4b5a77",8);
@@ -419,8 +439,9 @@
     ensureWord();
     const baseY = VIRTUAL_H*0.60;
     const centerX = VIRTUAL_W*0.5;
-    const letters = state.word.split("");
-    const slotW = Math.min(48, Math.max(26, Math.floor(1000/Math.max(letters.length,8))));
+    const letters = Array.from(state.word);
+    if (GAME_LANG === "ar") letters.reverse();
+    const slotW = Math.min(48, Math.max(10, Math.floor(1000/Math.max(letters.length,8)) - 10));
     const totalW = letters.length*(slotW+10);
     const startX = centerX-totalW/2;
     for (let i=0;i<letters.length;i++){
@@ -433,12 +454,13 @@
         ctx.textAlign="center";ctx.textBaseline="bottom";
         ctx.font=`900 ${Math.floor(slotW)}px BebasNeue,Impact,sans-serif`;
         ctx.fillStyle=THEME.YELLOW;ctx.shadowColor=THEME.YELLOW;ctx.shadowBlur=12;
-        ctx.fillText(ch,x+slotW/2,y+6);ctx.restore();
+        window.pbcCanvasText(ctx, ch, x+slotW/2, y+6);ctx.restore();
       }
     }
   }
 
   function drawKeyboard() {
+    updateKeyboard();
     const keys = [];
     const kbTop = VIRTUAL_H * 0.68;
     const rowGap = 14;
@@ -467,7 +489,7 @@
         if (usedGood)      ctx.fillStyle = THEME.GREEN_GOOD;
         else if (usedBad)  ctx.fillStyle = THEME.RED_BAD;
         else               ctx.fillStyle = THEME.GRAY_KEY_TEXT;
-        ctx.fillText(letter, x + keyW/2, y + keyH/2 + 1);
+        window.pbcCanvasText(ctx, letter, x + keyW/2, y + keyH/2 + 1);
         ctx.restore();
 
         keys.push({ letter, bounds: { x, y, w: keyW, h: keyH } });
@@ -550,7 +572,7 @@
     ctx.save();ctx.textAlign="center";ctx.textBaseline="middle";
     ctx.font="800 16px system-ui";
     ctx.fillStyle="rgba(230,240,255,0.92)";
-    ctx.fillText(txt,x+w/2,y+h/2);
+    window.pbcCanvasText(ctx, txt, x+w/2, y+h/2);
     ctx.restore();
   }
 
@@ -570,7 +592,7 @@
     ctx.fillStyle=color;
     ctx.shadowColor=color;
     ctx.shadowBlur=30+Math.sin(state.pulse*2)*10;
-    ctx.fillText(title,VIRTUAL_W/2,VIRTUAL_H*0.32);
+    window.pbcCanvasText(ctx, title, VIRTUAL_W/2, VIRTUAL_H*0.32);
     ctx.restore();
 
     ctx.save();
@@ -578,10 +600,10 @@
     ctx.textBaseline="middle";
     ctx.font="700 28px system-ui";
     ctx.fillStyle="rgba(255,255,255,0.95)";
-    ctx.fillText(`The word was: ${state.word}`,VIRTUAL_W/2,VIRTUAL_H*0.42);
+    window.pbcCanvasText(ctx, `The word was: ${state.word}`, VIRTUAL_W/2, VIRTUAL_H*0.42);
     ctx.font="600 18px system-ui";
     ctx.fillStyle="rgba(230,240,255,0.88)";
-    ctx.fillText("Press Enter or Space for a new round",VIRTUAL_W/2,VIRTUAL_H*0.50);
+    window.pbcCanvasText(ctx, "Press Enter or Space for a new round", VIRTUAL_W/2, VIRTUAL_H*0.50);
     ctx.restore();
   }
 
@@ -691,7 +713,7 @@
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.font = "700 22px system-ui";
-    ctx.fillText('Error loading game', VIRTUAL_W/2, VIRTUAL_H/2);
+    window.pbcCanvasText(ctx, 'Error loading game', VIRTUAL_W/2, VIRTUAL_H/2);
   }
 
   window.addEventListener('unload', () => {

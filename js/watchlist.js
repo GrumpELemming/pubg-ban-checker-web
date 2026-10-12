@@ -81,7 +81,7 @@
     if (!ts) return "Never";
     try {
       const d = new Date(ts);
-      return d.toLocaleString();
+      return d.toLocaleString(window.pbcLocale());
     } catch {
       return "Never";
     }
@@ -325,6 +325,7 @@
     const row = document.createElement("div");
     row.className = `watchlist-player wl-player-status-${statusInfo.code}`;
     row.dataset.slot = String(index + 1).padStart(2, "0");
+    row.dataset.trackLabel = "TRACK";
 
     // NAME LINE
     const nameLine = document.createElement("div");
@@ -352,8 +353,8 @@
     const meta = document.createElement("div");
     meta.className = "wl-meta";
     meta.innerHTML = `
-      <span class="wl-meta-item"><small>Clan</small><strong>${escapeHtml(entry.clan || "none")}</strong></span>
-      <span class="wl-meta-item wl-meta-account" title="${escapeHtml(entry.accountId || "unknown")}"><small>Account ID</small><strong>${escapeHtml(entry.accountId || "unknown")}</strong></span>
+      <span class="wl-meta-item"><small>Clan</small><strong ${entry.clan ? 'translate="no"' : ''}>${escapeHtml(entry.clan || "none")}</strong></span>
+      <span class="wl-meta-item wl-meta-account" title="${escapeHtml(entry.accountId || "unknown")}"><small>Account ID</small><strong ${entry.accountId ? 'translate="no"' : ''}>${escapeHtml(entry.accountId || "unknown")}</strong></span>
       <span class="wl-meta-item"><small>Status</small><strong>${escapeHtml(statusInfo.text)}</strong></span>
       <span class="wl-meta-item"><small>Last checked</small><strong>${escapeHtml(formatDateTime(entry.lastChecked))}</strong></span>
     `;
@@ -542,6 +543,7 @@
     if (detail.platform && detail.platform !== getPlatform()) return;
     renderWatchlist(undefined, { animate: false });
   });
+  window.addEventListener("pbc:language-change", () => renderWatchlist(undefined, { animate: false }));
 
   document.addEventListener("DOMContentLoaded", () => {
 

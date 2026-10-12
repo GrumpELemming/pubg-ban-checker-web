@@ -547,7 +547,7 @@ body.watchlist div.watchlist-player:hover {
 }
 
 body.watchlist div.watchlist-player::before {
-  content: "TRACK " attr(data-slot);
+  content: attr(data-track-label) " " attr(data-slot);
   position: absolute;
   top: 15px;
   right: 18px;
