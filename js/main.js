@@ -13,6 +13,8 @@
   const MAX_RATE_LIMIT_ATTEMPTS = 3;
   const INITIAL_RETRY_DELAY = 700;
 
+  const message = key => `<p class="muted" data-i18n="${key}">${escapeHtml(window.tr(key))}</p>`;
+
   // ---------- Helpers ----------
   function wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -350,7 +352,7 @@
     else if (status === "not") row.classList.add("not-banned");
     else row.classList.add("unknown");
 
-    const label =
+    const canonicalLabel =
       status === "perm"
         ? "Permanently Banned"
         : status === "temp"
@@ -359,26 +361,21 @@
         ? "Not Banned"
         : "Unknown";
 
+    const labelKey = `results.${status === "unknown" ? "unknown" : status}`;
+    const label = window.tr(labelKey);
+    const translated = key => `<span data-i18n="${key}">${escapeHtml(window.tr(key))}</span>`;
+
     const showDetail =
       statusText &&
-      statusText.trim().toLowerCase() !== label.toLowerCase() &&
+      statusText.trim().toLowerCase() !== canonicalLabel.toLowerCase() &&
       status !== "unknown";
 
     const isLoading = statusText === "Checking...";
-    const confidenceText = isLoading
-      ? "Checking PUBG now"
+    const confidenceKey = isLoading
+      ? "results.checking"
       : errorCode
-        ? ({
-            rate_limited: "Rate limited — wait before retrying",
-            offline: "Offline — reconnect and retry",
-            timeout: "PUBG took too long to respond",
-            network_error: "Network connection failed",
-            api_unavailable: "PUBG API is temporarily unavailable",
-            player_not_found: "No matching player was returned"
-          }[errorCode] || "The result could not be verified")
-      : status === "unknown"
-        ? "PUBG response could not be confirmed"
-        : "Reported by PUBG now";
+        ? `results.${["rate_limited", "offline", "timeout", "network_error", "api_unavailable", "player_not_found"].includes(errorCode) ? errorCode : "unverified"}`
+        : status === "unknown" ? "results.unconfirmed" : "results.reported";
     const profileLinks =
       !isLoading && platform
         ? `<div class="profile-links">
@@ -390,10 +387,10 @@
     const info = document.createElement("div");
     info.innerHTML = `
       <strong>${escapeHtml(player)}</strong><br>
-      ID: ${escapeHtml(accountId || "unknown")}<br>
-      Clan: ${escapeHtml(clan || "none")}<br>
-      Status: <span class="ban-label">${escapeHtml(label)}</span>
-      <div class="status-detail">${escapeHtml(confidenceText)}</div>
+      ${translated("results.id")}: ${accountId ? escapeHtml(accountId) : translated("results.unknown")}<br>
+      ${translated("results.clan")}: ${clan ? escapeHtml(clan) : translated("results.none")}<br>
+      ${translated("results.status")}: <span class="ban-label" data-i18n="${labelKey}">${escapeHtml(label)}</span>
+      <div class="status-detail">${translated(confidenceKey)}</div>
       ${
         showDetail
           ? `<div class="status-detail">${escapeHtml(statusText)}</div>`
@@ -403,10 +400,12 @@
     `;
 
     const addBtn = document.createElement("button");
-    addBtn.textContent = "Add to Watchlist";
+    addBtn.dataset.i18n = "results.add";
+    addBtn.textContent = window.tr("results.add");
     addBtn.addEventListener("click", () => {
-      addWatchlist(player, accountId, clan, label);
-      addBtn.textContent = "Added";
+      addWatchlist(player, accountId, clan, canonicalLabel);
+      addBtn.dataset.i18n = "results.added";
+      addBtn.textContent = window.tr("results.added");
       addBtn.disabled = true;
       addBtn.classList.add("added-btn");
     });
@@ -513,7 +512,7 @@
       .slice(0, 10);
 
     if (!names.length) {
-      results.innerHTML = "<p class='muted'>Please enter names.</p>";
+      results.innerHTML = message("results.enter_names");
       return;
     }
 
@@ -560,24 +559,24 @@
     const platform = getPlatform();
 
     if (!id) {
-      out.innerHTML = "<p class='muted'>Enter an ID.</p>";
+      out.innerHTML = message("results.enter_id");
       return;
     }
 
-    out.innerHTML = "<p class='muted'>Looking up...</p>";
+    out.innerHTML = message("results.looking_up");
 
     try {
       const resolved = await resolveById(id, platform);
 
       if (resolved.error) {
-        out.innerHTML = `<p class='muted'>${escapeHtml(resolved.error)}</p>`;
+        out.innerHTML = message("results.lookup_failed");
         return;
       }
 
       const name = resolved.currentName || resolved.name;
       if (!name) {
         out.innerHTML =
-          "<p class='muted'>Could not resolve that ID on this platform.</p>";
+          message("results.unresolved");
         return;
       }
 
@@ -592,9 +591,7 @@
       out.innerHTML = "";
       out.append(row);
     } catch (err) {
-      out.innerHTML = `<p class='muted'>${escapeHtml(
-        "Lookup failed: " + err
-      )}</p>`;
+      out.innerHTML = message("results.lookup_failed");
     }
   }
 
@@ -635,7 +632,7 @@
       clearResultsBtn.addEventListener("click", () => {
         const results = document.getElementById("results");
         if (results) {
-          results.innerHTML = `<p class='muted'>${(window.tr && window.tr("common.noresults")) || "No results yet."}</p>`;
+          results.innerHTML = message("common.noresults");
         }
       });
     }
@@ -645,7 +642,7 @@
       clearIdBtn.addEventListener("click", () => {
         const out = document.getElementById("idLookupResults");
         const input = document.getElementById("accountIdInput");
-        if (out) out.innerHTML = `<p class='muted'>${(window.tr && window.tr("common.noresults")) || "No results yet."}</p>`;
+        if (out) out.innerHTML = message("common.noresults");
         if (input) input.value = "";
       });
     }

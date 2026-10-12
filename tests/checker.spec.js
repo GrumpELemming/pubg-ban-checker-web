@@ -1,5 +1,30 @@
 const { test, expect } = require("@playwright/test");
 
+test("search results switch languages and preserve canonical Watchlist status", async ({ page }) => {
+  await page.route("**/api/check-ban-clan?**", route => route.fulfill({
+    contentType: "application/json",
+    body: JSON.stringify({ results: [{ player: "Alpha", accountId: "account.alpha", banStatus: "Temporarily Banned" }] })
+  }));
+  await openChecker(page);
+  await page.locator("#langSelect").selectOption("ko");
+  await page.locator("#playerInput").fill("Alpha");
+  await page.locator("#checkBanBtn").click();
+  const result = page.locator("#results .player-row");
+  await expect(result.locator(".ban-label")).toHaveText("일시 이용 정지 (임시 제재)");
+  await expect(result).toContainText("클랜: 없음");
+  await expect(result).toContainText("PUBG(배틀그라운드) 에서 보고됨");
+  await result.getByRole("button", { name: "관심 목록에 추가", exact: true }).click();
+  const stored = await page.evaluate(() => JSON.parse(localStorage.getItem("watchlist_steam")));
+  expect(stored[0].statusLabel).toBe("Temporarily Banned");
+  for (const lang of ["zh", "de", "fi", "pl", "ru", "tr", "hy", "ar"]) {
+    await page.locator("#langSelect").selectOption(lang);
+    await expect(result.locator(".ban-label")).not.toHaveText("Temporarily Banned");
+    await expect(result).not.toContainText("Reported by PUBG now");
+    await expect(result.locator('[data-i18n="results.added"]')).toBeDisabled();
+    await expect(result).not.toContainText("results.");
+  }
+});
+
 async function openChecker(page) {
   await page.route("**/api/auth/session", route => route.fulfill({
     status: 200,
