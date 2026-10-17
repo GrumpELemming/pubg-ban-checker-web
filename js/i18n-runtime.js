@@ -110,6 +110,18 @@
       (document.querySelector('.privacy-nav, .nav-panel, header') || document.body).prepend(container);
       buildLangSelector();
     }
+    document.querySelectorAll('.lang-switch select').forEach(select => {
+      const group = document.createElement('span');
+      group.className = 'language-select-group';
+      select.before(group);
+      group.append(select);
+      const credit = document.createElement('span');
+      credit.className = 'korean-language-credit';
+      credit.setAttribute('translate', 'no');
+      credit.lang = 'ko';
+      credit.textContent = '제작지원 백뚤기';
+      group.append(credit);
+    });
     observer = new MutationObserver(mutations => {
       observer.disconnect();
       for (const mutation of mutations) {

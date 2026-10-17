@@ -3,6 +3,10 @@
 body:has(>canvas) > .site-language-switch, body:has(#intro) > .site-language-switch, body:has(#titleScreen) > .site-language-switch { position:fixed; top:0; left:0; z-index:100; background:#071426; border-radius:0 0 .4rem 0; }
 [dir="rtl"] .site-language-switch { direction:rtl; }
 .lang-switch { flex-wrap:wrap; }
+.language-select-group { display:inline-flex; align-items:center; gap:10px; min-width:0; max-width:100%; }
+.language-select-group select { min-width:0; }
+.korean-language-credit { display:none; color:var(--muted, inherit); font:0.78rem/1.4 "Segoe UI", sans-serif; letter-spacing:normal; white-space:nowrap; }
+html[lang="ko"] .korean-language-credit { display:inline; }
 .privacy-nav { flex-wrap:wrap; gap:1rem; }
 .privacy-nav-links { flex-wrap:wrap; }
 .clan-shell, .hero-body, .controls { min-width:0; max-width:100%; }
