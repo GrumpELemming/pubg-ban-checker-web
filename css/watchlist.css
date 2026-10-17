@@ -90,12 +90,12 @@ button {
 button:hover { transform: scale(1.04); box-shadow: 0px 4px 14px rgba(0,0,0,0.25); }
 button:active { transform: scale(0.97); }
 
-button.secondary-btn { background: #6c757d; }
-button.secondary-btn:hover { background: #5a6268; }
+button.secondary-btn { background: var(--accent); }
+button.secondary-btn:hover { background: var(--accent); }
 
 /* Added-to-watchlist */
 button.added-btn {
-  background: #6c757d;
+  background: var(--accent);
   cursor: default;
   opacity: 0.8;
   box-shadow: none;
@@ -229,9 +229,9 @@ button.added-btn {
 .platform-row .platform-btn:nth-child(4) { animation-delay: 0.4s; }
 
 /* Active buttons */
-.platform-btn.active.steam { background: #1b2838; border-color: #1b2838; box-shadow: 0 0 14px #1b2838; }
+.platform-btn.active.steam { background: var(--panel-strong); border-color: var(--panel-strong); box-shadow: 0 0 14px var(--panel-strong); }
 .platform-btn.active.xbox { background: #107C10; border-color: #107C10; box-shadow: 0 0 14px #107C10; }
-.platform-btn.active.psn { background: #003791; border-color: #003791; box-shadow: 0 0 14px #003791; }
+.platform-btn.active.psn { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 14px var(--accent); }
 .platform-btn.active.kakao { background: #FEE500; border-color: #FEE500; box-shadow: 0 0 14px #FEE500; color: #000; }
 
 /* Tooltip shimmer */
@@ -745,7 +745,7 @@ body.watchlist .wl-modal {
 }
 
 body.watchlist .wl-modal-content {
-  background: #1e1e2f;
+  background: var(--panel-strong);
   padding: 24px 30px;
   border-radius: 14px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.35);
@@ -798,7 +798,7 @@ body.watchlist .wl-account-summary[data-auth-state="signed-out"] .wl-account-ind
 body.watchlist .wl-account-summary[data-auth-state="offline"] .wl-account-indicator,
 body.watchlist .wl-account-summary[data-auth-state="unavailable"] .wl-account-indicator {
   border-color: rgba(190, 198, 210, 0.55);
-  background: rgba(150, 160, 175, 0.3);
+  background: rgba(var(--accent-rgb), 0.3);
 }
 
 body.watchlist .wl-account-summary[data-auth-state="error"] .wl-account-indicator {
@@ -824,7 +824,7 @@ body.watchlist .wl-account-copy strong {
 
 body.watchlist .wl-account-copy p {
   margin: 5px 0 0;
-  color: #b8d9ea;
+  color: var(--text);
   font-size: 0.82rem;
   line-height: 1.45;
 }
@@ -866,7 +866,7 @@ body.watchlist .wl-account-noscript {
   z-index: 1;
   min-height: 1.25em;
   margin: 12px 0 0;
-  color: #9fc5d9;
+  color: var(--muted);
   font-size: 0.76rem;
   line-height: 1.4;
 }
@@ -875,13 +875,13 @@ body.watchlist .wl-account-privacy {
   position: relative;
   z-index: 1;
   margin: 12px 0 0;
-  color: #9fc5d9;
+  color: var(--muted);
   font-size: 0.75rem;
   line-height: 1.45;
 }
 
 body.watchlist .wl-account-privacy a {
-  color: #8ef2df;
+  color: var(--muted);
   font-weight: 700;
   text-underline-offset: 0.2em;
 }
@@ -897,7 +897,7 @@ body.watchlist .wl-account-privacy a:focus-visible {
 }
 
 body.watchlist .wl-account-status[data-tone="success"] {
-  color: #71e9c8;
+  color: var(--muted);
 }
 
 body.watchlist .wl-account-status[data-tone="warning"] {

@@ -75,7 +75,7 @@
 }
 .profile-links a {
   font-size: 0.82rem;
-  color: #7ecfff;
+  color: var(--muted);
   text-decoration: none;
   opacity: 0.8;
   transition: opacity 0.15s;

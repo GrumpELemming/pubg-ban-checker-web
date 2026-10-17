@@ -24,13 +24,13 @@
 .updates-hero > p:last-child {
   max-width: 720px;
   margin: 0;
-  color: #b9ddf2;
+  color: var(--text);
   line-height: 1.55;
 }
 
 .updates-eyebrow {
   margin: 0;
-  color: #43ffd2;
+  color: var(--accent);
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.2em;
@@ -48,7 +48,7 @@
   gap: 18px;
   margin-bottom: 22px;
   padding-bottom: 18px;
-  border-bottom: 1px solid rgba(90, 196, 255, 0.2);
+  border-bottom: 1px solid rgba(var(--accent-2-rgb), 0.2);
 }
 
 .release-heading h2 {
@@ -79,22 +79,22 @@
   position: relative;
   min-width: 0;
   padding: 20px;
-  border: 1px solid rgba(77, 192, 255, 0.2);
+  border: 1px solid rgba(var(--accent-2-rgb), 0.2);
   border-radius: 16px;
-  background: linear-gradient(145deg, rgba(10, 31, 52, 0.78), rgba(5, 14, 31, 0.9));
+  background: linear-gradient(145deg, rgba(var(--surface-rgb), 0.78), rgba(var(--surface-rgb), 0.9));
   box-shadow: inset 0 1px rgba(255, 255, 255, 0.025);
 }
 
 .release-group:nth-child(even) {
-  border-color: rgba(124, 91, 255, 0.28);
-  background: linear-gradient(145deg, rgba(27, 24, 66, 0.58), rgba(5, 14, 31, 0.9));
+  border-color: rgba(var(--accent-2-rgb), 0.28);
+  background: linear-gradient(145deg, rgba(var(--surface-rgb), 0.58), rgba(var(--surface-rgb), 0.9));
 }
 
 .release-number {
   position: absolute;
   top: 16px;
   right: 18px;
-  color: rgba(139, 228, 255, 0.22);
+  color: rgba(var(--accent-rgb), 0.22);
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.18em;
@@ -102,7 +102,7 @@
 
 .release-group h3 {
   margin: 0 42px 12px 0;
-  color: #9fe9ff;
+  color: var(--muted);
   font-size: 1rem;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -111,7 +111,7 @@
 .release-group ul {
   margin: 0;
   padding-left: 18px;
-  color: #d2ecff;
+  color: var(--text);
 }
 
 .release-group li {
@@ -150,7 +150,7 @@
   bottom: 5px;
   left: 38px;
   width: 1px;
-  background: rgba(72, 217, 255, 0.24);
+  background: rgba(var(--accent-rgb), 0.24);
 }
 
 .version-timeline li {
@@ -159,13 +159,13 @@
   grid-template-columns: 70px 1fr;
   gap: 12px;
   padding: 8px 0;
-  color: #cce8f8;
+  color: var(--text);
 }
 
 .version-timeline strong {
   position: relative;
   z-index: 1;
-  color: #43ffd2;
+  color: var(--accent);
 }
 
 .version-timeline span {

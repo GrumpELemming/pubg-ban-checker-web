@@ -3,7 +3,21 @@
    ============================================== */
 
 /* --- Default additions to :root (Cyber Blue) --- */
-:root {
+html.theme-cyber {
+  --bg: #03070f;
+  --bg-accent-1: rgba(46, 227, 255, 0.18);
+  --bg-accent-2: rgba(123, 97, 255, 0.16);
+  --panel: rgba(6, 18, 36, 0.9);
+  --panel-strong: rgba(4, 16, 32, 0.88);
+  --border: rgba(64, 175, 255, 0.35);
+  --border-strong: rgba(86, 233, 255, 0.45);
+  --text: #e0f6ff;
+  --muted: #8ab9d6;
+  --accent: #48ffe1;
+  --accent-2: #1e51ff;
+  --warn: #ffd558;
+  --danger: #ff8f8f;
+  --neutral: #c5ccdb;
   --accent-rgb: 72, 255, 225;
   --accent-2-rgb: 30, 81, 255;
   --grid-line: rgba(33, 147, 176, 0.2);
@@ -645,3 +659,27 @@ html.theme-arctic body.watchlist .wl-note-input:focus,
 html.theme-orange body.watchlist .wl-note-input:focus {
   border-color: rgba(var(--accent-rgb), 0.5) !important;
 }
+
+/* Shared surface channels follow the selected palette on every page. */
+html[class*="theme-"] {
+  color-scheme: dark;
+  --accent-strong: var(--accent-2);
+  --card: var(--panel);
+  --surface-rgb: 6, 18, 36;
+  --surface-strong-rgb: 4, 16, 32;
+}
+html.theme-red { --surface-rgb: 22, 5, 8; --surface-strong-rgb: 16, 3, 6; }
+html.theme-green { --surface-rgb: 5, 18, 6; --surface-strong-rgb: 3, 13, 4; }
+html.theme-phantom { --surface-rgb: 12, 12, 18; --surface-strong-rgb: 8, 8, 14; }
+html.theme-gold { --surface-rgb: 18, 14, 3; --surface-strong-rgb: 12, 9, 2; }
+html.theme-void { --surface-rgb: 14, 6, 26; --surface-strong-rgb: 8, 3, 18; }
+html.theme-ember { --surface-rgb: 24, 10, 5; --surface-strong-rgb: 16, 6, 3; }
+html.theme-synthwave { --surface-rgb: 24, 5, 22; --surface-strong-rgb: 16, 3, 14; }
+html.theme-arctic { --surface-rgb: 5, 18, 24; --surface-strong-rgb: 3, 12, 18; }
+html.theme-orange { --surface-rgb: 24, 13, 3; --surface-strong-rgb: 16, 8, 2; }
+html[class*="theme-"] .lang-switch :is(select, select option),
+html[class*="theme-"] .site-language-switch select {
+  background: var(--panel-strong); color: var(--text); border-color: var(--border);
+}
+html[class*="theme-"] .lang-switch label { color: var(--text); }
+html[class*="theme-"] .platform-box .platform-btn:is(.active, :hover) { box-shadow: none !important; }
