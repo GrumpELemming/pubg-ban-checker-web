@@ -1,3 +1,58 @@
+.platform-box {
+  padding: 18px 24px;
+}
+
+.platform-box::after { display: none; }
+.platform-box h2 { margin-bottom: 12px; font-size: 0.8rem; }
+.platform-box .platform-row {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+.platform-box .platform-btn {
+  aspect-ratio: auto;
+  min-height: 48px;
+  padding: 10px 14px;
+  gap: 9px;
+  border-radius: 10px;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  box-shadow: none;
+  transform: none;
+}
+.platform-box .platform-btn .platform-icon {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  filter: none;
+}
+.platform-box .platform-btn:hover,
+.platform-box .platform-btn.active {
+  background: rgba(var(--accent-rgb), 0.1);
+  border-color: var(--accent);
+  box-shadow: none;
+  transform: none;
+}
+.platform-box .platform-btn.active::before { display: none; }
+.platform-box .platform-btn:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}
+.platform-box .active-platform-label {
+  margin: 10px 0 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+@media (max-width: 520px) {
+  .platform-box { padding: 16px; }
+  .platform-box .platform-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
 .player-row {
   overflow-wrap: anywhere;
   word-break: break-word;

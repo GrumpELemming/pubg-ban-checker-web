@@ -62,6 +62,7 @@
     const current = getPlatform();
     buttons.forEach(btn => {
       const p = btn.getAttribute("data-platform");
+      btn.setAttribute("aria-pressed", String(p === current));
       if (p === current) {
         btn.classList.add("active");
       } else {
@@ -77,8 +78,12 @@
         setTimeout(() => row.classList.remove("shimmer"), 450);
 
         // set active
-        buttons.forEach(b => b.classList.remove("active"));
+        buttons.forEach(b => {
+          b.classList.remove("active");
+          b.setAttribute("aria-pressed", "false");
+        });
         btn.classList.add("active");
+        btn.setAttribute("aria-pressed", "true");
 
         // persist + hidden input
         setPlatform(platform);

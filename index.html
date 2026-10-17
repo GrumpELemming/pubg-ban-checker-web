@@ -24,17 +24,17 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"PUBG Ban Checker","url":"https://pubgbanchecker.com/","applicationCategory":"UtilityApplication","operatingSystem":"Any","description":"Check PUBG account ban signals and monitor observed status changes."}</script>
 <link rel="preload" href="css/command-center.css?v=20260828a" as="style" />
 <link rel="stylesheet" href="css/lang.css" />
-<link rel="preload" href="img/steam.svg" as="image" type="image/svg+xml" />
-<link rel="preload" href="img/xbox.svg" as="image" type="image/svg+xml" />
-<link rel="preload" href="img/psn.svg" as="image" type="image/svg+xml" />
-<link rel="preload" href="img/kakao.svg" as="image" type="image/svg+xml" />
+<link rel="preload" href="img/platform-steam.svg" as="image" type="image/svg+xml" />
+<link rel="preload" href="img/platform-xbox.svg" as="image" type="image/svg+xml" />
+<link rel="preload" href="img/platform-psn.svg" as="image" type="image/svg+xml" />
+<link rel="preload" href="img/platform-kakao.svg" as="image" type="image/svg+xml" />
   <link rel="stylesheet" href="css/command-center.css?v=20260828a" />
-  <link rel="stylesheet" href="css/index-page.css?v=20261009a" />
+  <link rel="stylesheet" href="css/index-page.css?v=20261017platform" />
   <script src="js/theme.js?v=20260827b"></script>
   <link rel="stylesheet" href="css/themes.css">
   <link rel="stylesheet" href="css/site-layout.css?v=20260827b">
   <script defer src="js/watchlist-store.js?v=20260827c"></script>
-  <script defer src="js/main.js?v=20261012b"></script>
+  <script defer src="js/main.js?v=20261017platform"></script>
 
   <link rel="stylesheet" href="css/i18n.css?v=20261012b">
   <script src="js/i18n-catalog.js?v=20261017ko"></script>
@@ -72,23 +72,23 @@
   </div>
 
   <!-- =======================================================
-       Platform Selection (with shimmer + active label)
+       Compact platform selection
        ======================================================= -->
   <section class="container platform-box">
-    <h2 data-i18n="hero.index.platform">Select Platform</h2>
+    <h2 id="platformHeading" data-i18n="hero.index.platform">Select Platform</h2>
 
-    <div id="platformRowIndex" class="platform-row" role="group">
+    <div id="platformRowIndex" class="platform-row" role="group" aria-labelledby="platformHeading">
       <button class="platform-btn steam" data-platform="steam" data-tooltip="Steam">
-        <img src="img/steam.svg" alt="Steam" class="platform-icon" />
+        <img src="img/platform-steam.svg" alt="" class="platform-icon" /><span>Steam</span>
       </button>
       <button class="platform-btn xbox" data-platform="xbox" data-tooltip="Xbox">
-        <img src="img/xbox.svg" alt="Xbox" class="platform-icon" />
+        <img src="img/platform-xbox.svg" alt="" class="platform-icon" /><span>Xbox</span>
       </button>
       <button class="platform-btn psn" data-platform="psn" data-tooltip="PlayStation Network">
-        <img src="img/psn.svg" alt="PSN" class="platform-icon" />
+        <img src="img/platform-psn.svg" alt="" class="platform-icon" /><span>PSN</span>
       </button>
       <button class="platform-btn kakao" data-platform="kakao" data-tooltip="Kakao">
-        <img src="img/kakao.svg" alt="Kakao" class="platform-icon" />
+        <img src="img/platform-kakao.svg" alt="" class="platform-icon" /><span>Kakao</span>
       </button>
     </div>
 
