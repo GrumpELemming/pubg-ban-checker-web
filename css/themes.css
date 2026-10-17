@@ -683,3 +683,40 @@ html[class*="theme-"] .site-language-switch select {
 }
 html[class*="theme-"] .lang-switch label { color: var(--text); }
 html[class*="theme-"] .platform-box .platform-btn:is(.active, :hover) { box-shadow: none !important; }
+
+/* The solid canvas keeps the chosen theme's colours without grids or glow layers. */
+html.background-effects-off,
+html.background-effects-off body,
+html.background-effects-off body.watchlist {
+  background: var(--bg) !important;
+}
+html.background-effects-off body::before,
+html.background-effects-off body::after,
+html.background-effects-off .wl-backdrop,
+html.background-effects-off .wl-scanlines {
+  display: none !important;
+}
+.theme-switcher { flex-wrap: wrap; }
+.theme-background-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  color: var(--muted);
+  font: 0.8rem/1.4 "Segoe UI", sans-serif;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+  cursor: pointer;
+}
+.theme-switcher .theme-background-toggle { flex-basis: 100%; margin-top: 6px; }
+.theme-background-toggle .theme-background-input {
+  appearance: auto;
+  width: 15px;
+  height: 15px;
+  min-width: 15px;
+  margin: 0;
+  padding: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}

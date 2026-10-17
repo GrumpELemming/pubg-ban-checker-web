@@ -6,7 +6,7 @@ const themes = ['phantom', 'cyber', 'red', 'green', 'gold', 'void', 'ember', 'sy
 for (const path of pages) {
   test(`${path} uses Phantom by default and shares saved theme colours`, async ({ page }) => {
     await page.goto(path);
-    await expect(page.locator('html')).toHaveClass('theme-phantom');
+    await expect(page.locator('html')).toHaveClass(/\btheme-phantom\b/);
     const swatches = page.locator('.theme-swatch');
     if (await swatches.count()) {
       await expect(swatches.first()).toHaveAttribute('data-theme', 'phantom');
@@ -21,7 +21,7 @@ for (const path of pages) {
         await page.evaluate(value => localStorage.setItem('pubgTheme', value), theme);
         await page.reload();
       }
-      await expect(page.locator('html')).toHaveClass(`theme-${theme}`);
+      await expect(page.locator('html')).toHaveClass(new RegExp(`\\btheme-${theme}\\b`));
       backgrounds.add(await page.locator('body').evaluate(body => getComputedStyle(body).background));
       const title = page.locator('.nav-title');
       if (await title.count()) {
@@ -38,7 +38,7 @@ for (const path of pages) {
     }
     expect(backgrounds.size).toBe(themes.length);
     await page.goto('/');
-    await expect(page.locator('html')).toHaveClass('theme-orange');
+    await expect(page.locator('html')).toHaveClass(/\btheme-orange\b/);
   });
 }
 
@@ -46,5 +46,23 @@ test('invalid saved theme falls back to Phantom', async ({ page }) => {
   await page.goto('/');
   await page.evaluate(() => localStorage.setItem('pubgTheme', 'invalid'));
   await page.reload();
-  await expect(page.locator('html')).toHaveClass('theme-phantom');
+  await expect(page.locator('html')).toHaveClass(/\btheme-phantom\b/);
+});
+
+test('background effects are off by default and the checkbox persists across pages', async ({ page }) => {
+  await page.goto('/');
+  const checkbox = page.getByRole('checkbox', { name: 'Show background effects' });
+  await expect(checkbox).not.toBeChecked();
+  await expect(page.locator('body')).toHaveCSS('background-image', 'none');
+  await checkbox.check();
+  await expect(page.locator('html')).not.toHaveClass(/background-effects-off/);
+  await page.goto('/watchlist.html');
+  const watchlistCheckbox = page.getByRole('checkbox', { name: 'Show background effects' });
+  await expect(watchlistCheckbox).toBeChecked();
+  await watchlistCheckbox.uncheck();
+  await expect(page.locator('.wl-backdrop')).toBeHidden();
+  await expect(page.locator('body')).toHaveCSS('background-image', 'none');
+  await page.goto('/links.html');
+  await expect(page.getByRole('checkbox', { name: 'Show background effects' })).not.toBeChecked();
+  await expect(page.locator('body')).toHaveCSS('background-image', 'none');
 });
