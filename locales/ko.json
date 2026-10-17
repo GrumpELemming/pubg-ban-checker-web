@@ -208,5 +208,6 @@
   "Rich dashboards, meta insights, and compare views. Another must-have for digging into player or squad performance.": "시각화된 대시보드와 메타 분석, 팀원 비교 기능을 제공하는 필수 전적 분석 도구입니다.",
   "Saved in this browser. Sign in to sync it across your devices.": "이 브라우저에 저장되었습니다. 다른 기기에서도 보려면 로그인하세요.",
   "Temporarily Banned": "임시 이용 정지",
-  "Trusted PUBG Resources": "신뢰할 수 있는 PUBG 리소스 (아래 유튜브 및 사이트는 홍보용이 아닙니다)"
+  "Trusted PUBG Resources": "신뢰할 수 있는 PUBG 리소스 (아래 유튜브 및 사이트는 홍보용이 아닙니다)",
+  "Enter player names, separated by commas or new lines (max 10 per check)": "플레이어 닉네임을 대문자,소문자 구분하여 입력하세요. (1회 최대 10명 조회가능)"
 }
