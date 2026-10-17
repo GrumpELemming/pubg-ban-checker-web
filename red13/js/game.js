@@ -202,6 +202,7 @@ window.addEventListener("keydown", e => {
   const TRYHARD_ALERT_DURATION = 3000;
 
   function showTryHardAlert(){
+    hideTryHardAlert();
     const alert=document.createElement("div");
     alert.id="tryHardAlert";
     alert.textContent="SWEATY TRY HARD IN THE BLUE ZONE";
@@ -212,16 +213,20 @@ window.addEventListener("keydown", e => {
       textAlign:"center",letterSpacing:"1px",zIndex:9999,
       boxShadow:"0 0 20px rgba(255,64,64,0.6)",animation:"flashAlert 0.5s infinite alternate"
     });
-    const style=document.createElement("style");
-    style.textContent=`@keyframes flashAlert{from{opacity:1;}to{opacity:0.6;}}`;
-    document.head.appendChild(style);
+    if (!document.getElementById("tryHardAlertStyle")) {
+      const style=document.createElement("style");
+      style.id="tryHardAlertStyle";
+      style.textContent=`@keyframes flashAlert{from{opacity:1;}to{opacity:0.6;}}`;
+      document.head.appendChild(style);
+    }
     document.body.appendChild(alert);
-    tryHardAlertTimer = performance.now() + TRYHARD_ALERT_DURATION;
+    tryHardAlertTimer = setTimeout(hideTryHardAlert, TRYHARD_ALERT_DURATION);
   }
 
   function hideTryHardAlert(){
-    const el=document.getElementById("tryHardAlert");
-    if(el) el.remove();
+    clearTimeout(tryHardAlertTimer);
+    tryHardAlertTimer = 0;
+    document.querySelectorAll('[id="tryHardAlert"]').forEach(el => el.remove());
   }
 
   function spawnTryHard(now){
@@ -750,6 +755,7 @@ if(!tryHardActive && (state.phase === 5 || state.phase >= 10)) {
     frameId=requestAnimationFrame(loop);
   }
   function stopGame(){
+    hideTryHardAlert();
     gameActive=false;
     window.gameActive=false;
     shooting = false;

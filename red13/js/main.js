@@ -10,6 +10,7 @@
   window.uiScreen = "intro";
 
   window.setScreen = (name) => {
+  if (name !== "game") window.stopGame?.();
   for (const key in screens) {
     if (screens[key]) screens[key].classList.toggle("hidden", key !== name);
   }

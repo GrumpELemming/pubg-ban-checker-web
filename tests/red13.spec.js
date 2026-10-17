@@ -125,6 +125,20 @@ async function start(page, character) {
   await page.evaluate(() => window.gameTest.freeze());
 }
 
+test("Try Hard alert expires, never duplicates, and clears on exit or menus", async ({ page }) => {
+  await openGame(page);
+  await start(page, "red13");
+  await page.evaluate(() => { gameTest.enemy(); gameTest.enemy(); });
+  await expect(page.locator('[id="tryHardAlert"]')).toHaveCount(1);
+  await expect(page.locator('[id="tryHardAlert"]')).toHaveCount(0, { timeout: 4500 });
+  await page.evaluate(() => { gameTest.enemy(); gameTest.finishCrossing(); });
+  await expect(page.locator('[id="tryHardAlert"]')).toHaveCount(0);
+  await page.evaluate(() => { gameTest.enemy(); setScreen("menu"); });
+  await expect(page.locator('[id="tryHardAlert"]')).toHaveCount(0);
+  await expect(page.locator("#menu")).toBeVisible();
+  expect(await page.evaluate(() => window.gameActive)).toBe(false);
+});
+
 test("Rapture can be selected, rendered and remembered; Red13 stays playable", async ({ page }, testInfo) => {
   const errors = [];
   page.on("pageerror", error => errors.push(error.message));
