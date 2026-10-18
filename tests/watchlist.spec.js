@@ -139,6 +139,50 @@ test("Discord accounts save individual checks and removals", async ({ page }) =>
   await expect(page.locator("#watchlistSignOutBtn")).toBeVisible();
 });
 
+test("Discord check all spaces checks, saves results, and continues after failures", async ({ page }) => {
+  await openSignedInWatchlist(page, { steam: {
+    platform: "steam", revision: 1,
+    entries: [entry("Alpha"), entry("Bravo"), entry("Charlie")]
+  } });
+  const requests = [];
+  const writes = [];
+  await page.route("**/api/watchlist/steam", route => {
+    const body = route.request().postDataJSON();
+    writes.push(body.entries);
+    return route.fulfill({ json: { watchlist: {
+      platform: "steam", entries: body.entries, revision: body.expectedRevision + 1
+    } } });
+  });
+  await mockBanChecks(page, route => {
+    const player = new URL(route.request().url()).searchParams.get("player");
+    requests.push({ player, time: Date.now() });
+    return route.fulfill(player === "Bravo"
+      ? { status: 503, json: { error: "Unavailable" } }
+      : { json: { results: [{ player, banStatus: "Temporarily banned" }] } });
+  });
+  const button = page.getByRole("button", { name: "Check all", exact: true });
+  await button.click();
+  await expect(button).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Re-check" }).first()).toBeDisabled();
+  await expect(page.locator("#watchlistCheckStatus")).toHaveText(
+    "Check all complete: 2 checked, 1 failed.", { timeout: 15000 }
+  );
+  expect(requests.map(item => item.player)).toEqual(["Alpha", "Bravo", "Charlie"]);
+  for (let index = 1; index < requests.length; index++) {
+    expect(requests[index].time - requests[index - 1].time).toBeGreaterThanOrEqual(1900);
+  }
+  await expect.poll(() => writes.at(-1)?.filter(item => item.statusLabel === "Temporarily banned").length).toBe(2);
+  await expect(button).toBeEnabled();
+});
+
+test("check all is hidden for guests and disabled for empty Discord lists", async ({ page }) => {
+  await openGuestWatchlist(page, [entry("Alpha")]);
+  await expect(page.locator("#watchlistCheckAllBtn")).toBeHidden();
+  await openSignedInWatchlist(page);
+  await expect(page.locator("#watchlistCheckAllBtn")).toBeVisible();
+  await expect(page.locator("#watchlistCheckAllBtn")).toBeDisabled();
+});
+
 test("primary pages have no serious or critical automated accessibility violations", async ({ page }) => {
   await page.route("**/api/auth/session", route => route.fulfill({
     status: 200,

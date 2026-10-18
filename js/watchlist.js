@@ -15,6 +15,70 @@
   const LS_PLATFORM = "selectedPlatform";
   const BAN_CACHE_TTL_MS = 5 * 60 * 1000;
   let checkInProgress = false;
+  const CHECK_ALL_DELAY_MS = 2000;
+
+  function updateCheckAllButton() {
+    const button = document.getElementById("watchlistCheckAllBtn");
+    if (!button) return;
+    button.hidden = !window.PBCWatchlistStore?.getSession().authenticated;
+    button.disabled = checkInProgress || !getWatchlist(getPlatform()).length;
+  }
+
+  async function recheckAll() {
+    const store = window.PBCWatchlistStore;
+    const session = store?.getSession();
+    if (checkInProgress || !session?.authenticated) return;
+    const platform = getPlatform();
+    const entries = getWatchlist(platform);
+    if (!entries.length) return;
+    const status = document.getElementById("watchlistCheckStatus");
+    let checked = 0;
+    let failed = 0;
+    checkInProgress = true;
+    setRefreshControlsLocked(true);
+    updateCheckAllButton();
+    try {
+      for (let index = 0; index < entries.length; index++) {
+        if (index) await wait(CHECK_ALL_DELAY_MS);
+        const active = store.getSession();
+        if (!active.authenticated || active.user?.id !== session.user?.id) {
+          status.textContent = "Check all stopped because your sign-in changed.";
+          return;
+        }
+        const original = entries[index];
+        const current = getWatchlist(platform);
+        const currentIndex = current.findIndex(item => item.id === original.id);
+        if (currentIndex < 0) continue;
+        const entry = { ...current[currentIndex], history: [...(current[currentIndex].history || [])] };
+        status.textContent = `Checking ${index + 1} of ${entries.length}: ${entry.player}…`;
+        markRowChecking(document.getElementById("watchlistContainer")?.children[currentIndex]);
+        try {
+          await updateEntryFromBan(entry, platform);
+          const active = store.getSession();
+          if (!active.authenticated || active.user?.id !== session.user?.id) {
+            status.textContent = "Check all stopped because your sign-in changed.";
+            return;
+          }
+          const latest = getWatchlist(platform);
+          const latestIndex = latest.findIndex(item => item.id === original.id);
+          if (latestIndex >= 0) {
+            latest[latestIndex] = entry;
+            saveWatchlist(platform, latest);
+          }
+          checked++;
+        } catch (error) {
+          failed++;
+        }
+        renderWatchlist(undefined, { animate: false });
+      }
+      status.textContent = `Check all complete: ${checked} checked, ${failed} failed.`;
+    } finally {
+      checkInProgress = false;
+      renderWatchlist(undefined, { animate: false });
+      setRefreshControlsLocked(false);
+      updateCheckAllButton();
+    }
+  }
   // --------------------------------------------------------------------
   // Helpers
   // --------------------------------------------------------------------
@@ -392,6 +456,7 @@
   // --------------------------------------------------------------------
 
   function renderWatchlist(baseList, options = {}) {
+    updateCheckAllButton();
     const container = document.getElementById("watchlistContainer");
     if (!container) return;
 
@@ -413,6 +478,7 @@
   }
 
   function setRefreshControlsLocked(locked) {
+    updateCheckAllButton();
     document.querySelectorAll(
       "#platformRowWatchlist .platform-btn, #watchlistContainer .wl-btn"
     ).forEach(button => {
@@ -544,10 +610,12 @@
     renderWatchlist(undefined, { animate: false });
   });
   window.addEventListener("pbc:language-change", () => renderWatchlist(undefined, { animate: false }));
+  window.addEventListener("pbc:watchlist-session", updateCheckAllButton);
 
   document.addEventListener("DOMContentLoaded", () => {
 
     clearLegacyDarkMode();
+    document.getElementById("watchlistCheckAllBtn")?.addEventListener("click", recheckAll);
 
     applyPlatformToButtons(
       "platformRowWatchlist",

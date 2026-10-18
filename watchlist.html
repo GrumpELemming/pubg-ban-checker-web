@@ -40,7 +40,7 @@
 
   <script defer src="js/watchlist-store.js?v=20260827c"></script>
   <script defer src="js/auth-ui.js?v=20261012b"></script>
-  <script defer src="js/watchlist.js?v=20261012b"></script>
+  <script defer src="js/watchlist.js?v=20261018a"></script>
 
   <link rel="stylesheet" href="css/i18n.css?v=20261017credit">
   <script src="js/i18n-catalog.js?v=20261017aboutcredit"></script>
@@ -156,9 +156,10 @@
     <section class="wl-feed-column">
       <div class="wl-feed-header">
         <h1 data-i18n="watchlist.feed.title">Your Watchlist Feed</h1>
-        <p>Check one account at a time using its Re-check button. Sign in with Discord to save your watchlist across devices.</p>
+        <p>Re-check individual accounts, or sign in with Discord to check all players on the selected platform with a two-second pause between players.</p>
       </div>
 
+      <button id="watchlistCheckAllBtn" class="wl-btn wl-btn-primary" type="button" hidden>Check all</button>
       <p id="watchlistCheckStatus" role="status" aria-live="polite"></p>
       <div class="wl-feed-live wl-list-card" id="watchlistContainer">
         <p class="wl-empty">No players in your watchlist yet.</p>
