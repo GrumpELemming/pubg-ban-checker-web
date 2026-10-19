@@ -210,7 +210,7 @@ const TRANSLATIONS = {
     "results.timeout": "PUBG 응답 시간이 초과되었습니다",
     "results.network_error": "네트워크 연결에 실패했습니다",
     "results.api_unavailable": "PUBG API를 일시적으로 사용할 수 없습니다",
-    "results.player_not_found": "일치하는 플레이어가 없습니다",
+    "results.player_not_found": "일치하는 플레이어가 없습니다. 닉네임을 다시 확인 해주세요.",
     "results.unverified": "결과를 확인할 수 없습니다",
     "results.add": "관심 목록에 추가",
     "results.added": "추가됨",

@@ -498,7 +498,7 @@ P0496,No data yet.,아직 자료가 없습니다.,"clan.html, js/clan_top.js",Dr
 P0497,No drops yet. Open a pack to build your collection.,아직 드롭이 없어 컬렉션을 만들 수 있는 팩을 열어봐,js/crate.js,Draft — native review requested,,
 P0498,No inactive members this week.,이번 주에 활동이 중단된 멤버가 없습니다.,js/clan.js,Draft — native review requested,,
 P0499,No items yet. Open a crate to add an item.,아직 물건은 없습니다. 물건을 추가하기 위해 상자를 열어보세요.,red13/js/crates.js,Draft — native review requested,,
-P0500,No matching player was returned,일치하는 플레이어가 반환되지 않았습니다,js/i18n.js,Draft — native review requested,,
+P0500,No matching player was returned,일치하는 플레이어가 없습니다. 닉네임을 다시 확인 해주세요.,js/i18n.js,Draft — native review requested,,
 P0501,No players in your watchlist yet.,관심 목록에 아직 플레이어가 없습니다.,"js/watchlist.js, watchlist.html",Authored translation,,
 P0502,No recent matches are available for this player.,이 플레이어의 최근 경기 기록이 없습니다.,js/main.js,Authored translation,,
 P0503,No results yet.,아직 결과가 없습니다.,index.html,Authored translation,,
