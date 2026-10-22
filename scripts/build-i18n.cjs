@@ -27,6 +27,13 @@ if (fs.existsSync('locales/ko.json')) for (const [source, korean] of Object.entr
   if (!phrases[source]) phrases[source] = { en: source };
   phrases[source].ko = korean;
 }
+// Welsh is maintained separately so the existing authored column order stays stable.
+langs.push('cy');
+const welsh = JSON.parse(fs.readFileSync('locales/cy.json', 'utf8'));
+for (const [source, values] of Object.entries(phrases)) {
+  if (!welsh[source]?.trim()) throw new Error('Missing Welsh translation: ' + source);
+  values.cy = welsh[source];
+}
 for (const [alias, source] of Object.entries({unknown:'Unknown', 'Player Not Found':'Player not found', 'Back To Games':'Back to Games'})) {
   if (phrases[alias] && phrases[source]) for (const lang of langs) if (lang !== 'en') phrases[alias][lang] = phrases[source][lang];
 }

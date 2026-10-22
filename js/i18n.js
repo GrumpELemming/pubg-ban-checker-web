@@ -1,5 +1,5 @@
 // Shared language selection and explicit keys for every page.
-// Languages: English, Korean, Chinese, German, Finnish, Polish, Russian, Turkish, Armenian, Arabic.
+// Languages: English, Korean, Chinese, German, Finnish, Polish, Russian, Turkish, Armenian, Arabic, Welsh.
 
 const LANGS = {
   en: "English",
@@ -12,6 +12,7 @@ const LANGS = {
   tr: "Türkçe",
   hy: "ՀԱՅ",
   ar: "العربية",
+  cy: "Cymraeg",
 };
 
 const TRANSLATIONS = {
@@ -839,6 +840,10 @@ const TRANSLATIONS = {
       "ساعد Schneefuchs على النجاة من كابوسه حيث يواجه أكثر ما يكرهه...",
   },
 };
+
+// Welsh explicit keys share the catalogue used by dynamic UI and games.
+TRANSLATIONS.cy = Object.fromEntries(Object.entries(TRANSLATIONS.en).map(([key, source]) =>
+  [key, window.PBC_PHRASES?.[source]?.cy || source]));
 
 function getCurrentLang() {
   let saved;

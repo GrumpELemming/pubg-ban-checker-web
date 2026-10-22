@@ -480,6 +480,16 @@
     ]
   },
   {
+    "source": "Phantom",
+    "files": [
+      "games.html",
+      "index.html",
+      "links.html",
+      "updates.html",
+      "watchlist.html"
+    ]
+  },
+  {
     "source": "Cyber Blue",
     "files": [
       "games.html",
@@ -501,16 +511,6 @@
   },
   {
     "source": "Toxic",
-    "files": [
-      "games.html",
-      "index.html",
-      "links.html",
-      "updates.html",
-      "watchlist.html"
-    ]
-  },
-  {
-    "source": "Phantom",
     "files": [
       "games.html",
       "index.html",
@@ -1662,17 +1662,40 @@
     ]
   },
   {
-    "source": "Currently searching:",
-    "files": [
-      "index.html",
-      "js/main.js"
-    ]
-  },
-  {
     "source": "Steam",
     "files": [
       "index.html",
       "watchlist.html"
+    ]
+  },
+  {
+    "source": "Xbox",
+    "files": [
+      "index.html",
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "PSN",
+    "files": [
+      "index.html",
+      "watchlist.html",
+      "js/main.js",
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "Kakao",
+    "files": [
+      "index.html",
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Currently searching:",
+    "files": [
+      "index.html",
+      "js/main.js"
     ]
   },
   {
@@ -1712,32 +1735,9 @@
     ]
   },
   {
-    "source": "Xbox",
-    "files": [
-      "index.html",
-      "watchlist.html"
-    ]
-  },
-  {
     "source": "PlayStation Network",
     "files": [
       "index.html"
-    ]
-  },
-  {
-    "source": "PSN",
-    "files": [
-      "index.html",
-      "watchlist.html",
-      "js/main.js",
-      "js/watchlist.js"
-    ]
-  },
-  {
-    "source": "Kakao",
-    "files": [
-      "index.html",
-      "watchlist.html"
     ]
   },
   {
@@ -2783,7 +2783,13 @@
     ]
   },
   {
-    "source": "Check one account at a time using its Re-check button. Sign in with Discord to save your watchlist across devices.",
+    "source": "Re-check individual accounts, or sign in with Discord to check all players on the selected platform with a two-second pause between players.",
+    "files": [
+      "watchlist.html"
+    ]
+  },
+  {
+    "source": "Check all",
     "files": [
       "watchlist.html"
     ]
@@ -3881,6 +3887,12 @@
     ]
   },
   {
+    "source": "Show background effects",
+    "files": [
+      "js/theme.js"
+    ]
+  },
+  {
     "source": "Theme",
     "files": [
       "js/theme.js"
@@ -3944,6 +3956,24 @@
     "source": "Sign out failed with status {0}.",
     "files": [
       "js/watchlist-store.js"
+    ]
+  },
+  {
+    "source": "Check all stopped because your sign-in changed.",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "Checking {0} of {1}: {2}…",
+    "files": [
+      "js/watchlist.js"
+    ]
+  },
+  {
+    "source": "Check all complete: {0} checked, {1} failed.",
+    "files": [
+      "js/watchlist.js"
     ]
   },
   {
@@ -5877,12 +5907,6 @@
     "source": "Vote on community clips and send evidence straight to PUBG Support. Crowd-sourced verdicts make reports clear and credible.",
     "files": [
       "js/i18n.js"
-    ]
-  },
-  {
-    "source": "Production support - a hap e lemming,백뚤기",
-    "files": [
-      "updates.html"
     ]
   }
 ]

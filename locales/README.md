@@ -18,3 +18,5 @@ New longer translations in `generated.json` were drafted locally with an NLLB tr
 `docs/korean-translation-review.xlsx` pairs each catalogue phrase with the Korean wording actually shipped. Its Words tab is a separate vocabulary index; standalone meanings can differ from meanings in a sentence. Both tabs provide correction and notes columns. UTF-8 CSV copies are included for other spreadsheet applications.
 
 Regenerate the workbook with `scripts/review-ko.py` in a Python environment containing openpyxl, after building the catalogue. The optional draft-generation scripts also require a local translation model, sentencepiece, and CTranslate2. Model weights and Python environments are kept outside the repository.
+
+Welsh (`cy`, Cymraeg) is maintained in `cy.json` and merged by the catalogue builder. Initial Welsh wording was machine translated from the English catalogue with Google Translate and requires Welsh-speaker review. Keep numbered placeholders unchanged.

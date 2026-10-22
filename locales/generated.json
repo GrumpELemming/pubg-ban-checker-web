@@ -11098,5 +11098,65 @@
     "tr": "Sandık açıldı.",
     "hy": "Կապը բացվել է:",
     "ar": "الصندوق مفتوح"
+  },
+  "Re-check individual accounts, or sign in with Discord to check all players on the selected platform with a two-second pause between players.": {
+    "en": "Re-check individual accounts, or sign in with Discord to check all players on the selected platform with a two-second pause between players.",
+    "hy": "Կրկին ստուգեք անհատական ​​հաշիվները կամ մուտք գործեք Discord-ով, որպեսզի ստուգեք ընտրված հարթակի բոլոր խաղացողներին խաղացողների միջև երկու վայրկյան դադարով:",
+    "tr": "Bireysel hesapları yeniden kontrol edin veya oyuncular arasında iki saniyelik duraklamalarla seçilen platformdaki tüm oyuncuları kontrol etmek için Discord'da oturum açın.",
+    "ko": "개별 계정을 다시 확인하거나 Discord에 로그인하여 선택한 플랫폼의 모든 플레이어를 플레이어 간 2초 간격으로 확인하세요.",
+    "de": "Überprüfen Sie einzelne Konten erneut oder melden Sie sich bei Discord an, um alle Spieler auf der ausgewählten Plattform mit einer Pause von zwei Sekunden zwischen den Spielern zu überprüfen.",
+    "zh": "重新检查个人帐户，或使用 Discord 登录来检查所选平台上的所有玩家，玩家之间有两秒的暂停。",
+    "ru": "Перепроверьте отдельные учетные записи или войдите в Discord, чтобы проверить всех игроков на выбранной платформе с двухсекундной паузой между игроками.",
+    "fi": "Tarkista yksittäiset tilit uudelleen tai kirjaudu sisään Discordilla tarkistaaksesi kaikki pelaajat valitulla alustalla kahden sekunnin tauolla pelaajien välillä.",
+    "ar": "أعد التحقق من الحسابات الفردية، أو قم بتسجيل الدخول باستخدام Discord للتحقق من جميع اللاعبين على النظام الأساسي المحدد مع توقف مؤقت لمدة ثانيتين بين اللاعبين.",
+    "pl": "Sprawdź ponownie poszczególne konta lub zaloguj się na Discordzie, aby sprawdzić wszystkich graczy na wybranej platformie z dwusekundową przerwą między graczami."
+  },
+  "Check all": {
+    "en": "Check all",
+    "hy": "Ստուգեք բոլորը",
+    "tr": "Tümünü kontrol et",
+    "ko": "모두 확인",
+    "de": "Überprüfen Sie alles",
+    "zh": "检查全部",
+    "ru": "Проверить все",
+    "fi": "Tarkista kaikki",
+    "ar": "تحقق من كل شيء",
+    "pl": "Sprawdź wszystko"
+  },
+  "Check all stopped because your sign-in changed.": {
+    "en": "Check all stopped because your sign-in changed.",
+    "hy": "Ստուգեք բոլորը դադարեցված են, քանի որ ձեր մուտքը փոխվել է:",
+    "tr": "Oturum açma bilgileriniz değiştiği için tüm kontroller durduruldu.",
+    "ko": "로그인이 변경되어 중지된 항목을 모두 확인하세요.",
+    "de": "Alle Überprüfungen wurden gestoppt, da sich Ihre Anmeldung geändert hat.",
+    "zh": "由于您的登录状态发生更改，检查全部停止。",
+    "ru": "Проверка всех остановлена, поскольку изменился вход в систему.",
+    "fi": "Tarkista kaikki pysähtyneet, koska kirjautumisesi muuttui.",
+    "ar": "تم إيقاف التحقق من كل شيء بسبب تغيير تسجيل الدخول الخاص بك.",
+    "pl": "Sprawdź, czy wszystkie zostały zatrzymane, ponieważ zmieniło się Twoje logowanie."
+  },
+  "Checking {0} of {1}: {2}…": {
+    "en": "Checking {0} of {1}: {2}…",
+    "hy": "Ստուգվում է {0}-ը {1}-ից՝ {2}…",
+    "tr": "{1} / {0} tanesi kontrol ediliyor: {2}…",
+    "ko": "{1}개 중 {0}개 확인 중: {2}…",
+    "de": "{0} von {1} wird geprüft: {2}…",
+    "zh": "正在检查 {0} 个（共 {1} 个）：{2}...",
+    "ru": "Проверка {0} из {1}: {2}…",
+    "fi": "Tarkistetaan {0}/{1}: {2}…",
+    "ar": "جارٍ التحقق من {0} من {1}: {2}...",
+    "pl": "Sprawdzam {0} z {1}: {2}…"
+  },
+  "Check all complete: {0} checked, {1} failed.": {
+    "en": "Check all complete: {0} checked, {1} failed.",
+    "hy": "Ստուգեք ամեն ինչ ավարտված է՝ {0} նշված է, {1} ձախողվել է:",
+    "tr": "Tümünü kontrol et tamamlandı: {0} işaretlendi, {1} başarısız oldu.",
+    "ko": "모두 확인 완료: {0} 확인, {1} 실패.",
+    "de": "Alles prüfen abgeschlossen: {0} geprüft, {1} fehlgeschlagen.",
+    "zh": "检查全部完成：{0}已检查，{1}失败。",
+    "ru": "Проверка завершена: {0} проверено, {1} не выполнено.",
+    "fi": "Tarkista kaikki valmiit: {0} valittu, {1} epäonnistui.",
+    "ar": "تم التحقق من الكل: تم تحديد {0}، وفشل {1}.",
+    "pl": "Sprawdź, czy wszystko zostało wykonane: {0} sprawdzone, {1} nie powiodło się."
   }
 }

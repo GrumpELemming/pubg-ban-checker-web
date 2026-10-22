@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 const pages = ['/', '/watchlist.html', '/links.html', '/updates.html', '/games.html', '/privacy.html', '/clan.html', '/clan-top.html', '/crate.html', '/hangman.html', '/pubg-mini.html', '/bluemem/bluemem.html', '/shne/shne.html', '/red13/index.html'];
-const languages = ['ko', 'zh', 'de', 'fi', 'pl', 'ru', 'tr', 'hy', 'ar'];
+const languages = ['ko', 'zh', 'de', 'fi', 'pl', 'ru', 'tr', 'hy', 'ar', 'cy'];
 
 test('Korean Watchlist localizes missing values and sign-out while preserving the Discord name', async ({ page }) => {
   const entry = { id:'review-player', player:'About', platform:'steam', statusLabel:'Not Banned', accountId:'', clan:'', createdAt:Date.now(), updatedAt:Date.now() };

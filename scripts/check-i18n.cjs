@@ -4,7 +4,7 @@ const context = { window: {} };
 vm.createContext(context);
 vm.runInContext(fs.readFileSync('js/i18n-catalog.js','utf8'), context);
 const phrases = context.window.PBC_PHRASES;
-const languages = ['en','ko','zh','de','fi','pl','ru','tr','hy','ar'];
+const languages = ['en','ko','zh','de','fi','pl','ru','tr','hy','ar','cy'];
 const normalize = source => source.replace(/&amp;/g,'&').replace(/&nbsp;/g,'\u00a0').replace(/&quot;/g,'"').replace(/&#39;|&apos;/g,"'").replace(/\s+/g,' ').trim().toLowerCase();
 const catalogSources = new Set(Object.keys(phrases).map(normalize));
 const exemptions = new Set(JSON.parse(fs.readFileSync('locales/exemptions.json','utf8')).map(row => normalize(row.source)));
